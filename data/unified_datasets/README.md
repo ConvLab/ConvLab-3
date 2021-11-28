@@ -1,13 +1,16 @@
-# Unified data format with example
+# Unified data format
 
-Under `data/unified_datasets` directory.
+## Overview
+We transform different datasets into a unified format under `data/unified_datasets` directory. One could also access processed datasets from Hugging Face's `Dataset`:
+```python
+from datasets import load_dataset
+dataset = load_dataset('ConvLab/$dataset')
+```
 
-single turn->dialogue with one turn
+Each dataset contains at least these files:
 
-Each dataset have at least 4 files:
-
-- `README.md`: dataset description and the main changes from original data to processed data.
-- `preprocess.py`: python script that preprocess the data. By running `python preprocess.py` we can get the following two files. The structure `preprocess.py`  should be:
+- `README.md`: dataset description and the **main changes** from original data to processed data. Should include the instruction on how to get the original data and transform them into the unified format.
+- `preprocess.py`: python script that transform the original data into the unified format. By running `python preprocess.py` we can get `data.zip` that contains all data. The structure `preprocess.py` should be like:
 
 ```python
 def preprocess():
@@ -16,16 +19,28 @@ if __name__ == '__main__':
     preprocess()
 ```
 
-- `ontology.json`: dataset ontology, contains descriptions, state definition, etc.
-- `data.json.zip`: contains `data.json`.
+- `data.zip`: (also available in https://huggingface.co/ConvLab) the zipped directory contains:
+  - `ontology.json`: dataset ontology, contains descriptions, state definition, etc.
+  - `dialogues.json`, a list of all dialogues in the dataset.
+  - other necessary files such as databases.
 
-### README
+Datasets that require database interaction should also include the following file:
+- `database.py`: load the database and define the query function:
+```python
+class Database:
+    def __init__(self):
+        """extract data.zip and load the database."""
 
-- Data source: publication, original data download link, etc.
-- Data description:
-  - Annotations: whether have dialogue act, belief state annotation.
-  - Statistics: \# domains, # dialogues, \# utterances, Avg. turns, Avg. tokens (split by space), etc.
-- Main changes from original data to processed data.
+    def query(self, domain:str, state:dict, topk:int, **kwargs)->list:
+        """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
+```
+
+## Unified format
+We first introduce the unified format of `ontology` and `dialogues`. To transform a new dataset into the unified format:
+1. Create `data/unified_datasets/$dataset` folder, where `$dataset` is the name of the dataset.
+2. Write `preprocess.py` to transform the original dataset into the unified format, producing `data.zip`.
+3. Run `python test.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
+4. Write `README.md` to describe the data.
 
 ### Ontology
 
@@ -43,519 +58,50 @@ if __name__ == '__main__':
 - `intents`: (*dict*) descriptions for intents.
   - `$intent_name`: (*dict*)
     - `description`: (*str*) description for this intent.
-- `binary_dialogue_act`: (*list* of *dict*) special dialogue acts that the value may not present in the utterance, e.g. request the address of a hotel.
-  - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. domain, slot, value may be empty.
-- `state`: (*dict*) belief state of all domains.
+- `binary_dialogue_acts`: (*list* of *dict*) binary dialogue act is a more detailed intent where the value is not extracted from dialogues, e.g. request the address of a hotel.
+  - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. domain, slot, and value may be empty.
+- `state`: (*dict*) dialogue state of all domains.
   - `$domain_name`: (*dict*)
     - `$slot_name: ""`: slot with empty value. Note that the slot set are the subset of the slot set in Part 1 definition.
 
 ### Dialogues
 
-`data.json`: a *list* of dialogues containing:
+`data.json`: a *list* of dialogues (*dict*) containing:
 
-- `dataset`: (*str*) dataset name, must be one of  ['schema', 'multiwoz', 'camrest', 'woz', ...], and be the same as the current dataset.
-- `data_split`: (*str*) in [train, val, test].
-- `dialogue_id`: (*str*) use dataset name as prefix, add count.
-- `domains`: (*list*) domains in this dialogue.
+- `dataset`: (*str*) dataset name, must be the same as the data directory.
+- `data_split`: (*str*) in `["train", "validation", "test"]`.
+- `dialogue_id`: (*str*) `"$dataset-$split-$id"`, `id` increases from 0.
+- `domains`: (*list*) involved domains in this dialogue.
+- `goal`: (*dict*, optional)
+  - `description`: (*str*) a string describes the user goal.
+  - `constraints`: (*dict*, optional) same format as dialogue state of involved domains but with only filled slots as constraints.
+  - `requirements`: (*dict*, optional) same format as dialogue state of involved domains but with only empty required slots.
 - `turns`: (*list* of *dict*)
-  - `speaker`: (*str*) "user" or "system". **User side first, user side final**, "user" and "system" appear alternately?
-  - `utterance`: (*str*) sentence.
+  - `speaker`: (*str*) "user" or "system".
+  - `utterance`: (*str*)
   - `utt_idx`: (*int*) `turns['utt_idx']` gives current turn.
-  - `dialogue_act`: (*dict*)
+  - `dialogue_acts`: (*dict*, optional)
     - `categorical`: (*list* of *dict*) for categorical slots.
       - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. Value sets are defined in the ontology.
     - `non-categorical` (*list* of *dict*) for non-categorical slots.
-      - `{"intent": (str), "domain": (str), "slot": (str), "value": (str), "start": (int), "end": (int)}`. `start` and `end` are character indexes for the value span.
+      - `{"intent": (str), "domain": (str), "slot": (str), "value": (str), "start": (int), "end": (int)}`. `start` and `end` are character indexes for the value span in the utterance and can be absent.
     - `binary` (*list* of *dict*) for binary dialogue acts in ontology.
-      - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. Possible dialogue acts are listed in the `ontology['binary_dialogue_act']`.
-  - `state`: (*dict*, optional, user side) full state are shown in `ontology['state']`.
+      - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. Possible dialogue acts are listed in the `ontology['binary_dialogue_acts']`.
+  - `state`: (*dict*, user side, optional) dialogue state of involved domains. full state is shown in `ontology['state']`.
     - `$domain_name`: (*dict*) contains all slots in this domain.
       - `$slot_name`: (*str*) value for this slot.
-  - `state_update`: (*dict*, optional, user side) records the difference of states between the current turn and the last turn.
-    - `categorical`: (*list* of *dict*) for categorical slots.
-      - `{"domain": (str), "slot": (str), "value": (str)}`. Value sets are defined in the ontology (**dontcare** may not be included).
-    - `non-categorical` (*list* of *dict*) for non-categorical slots.
-      - `{"domain": (str), "slot": (str), "value": (str), "utt_idx": (int), "start": (int), "end": (int)}`. `utt_idx` is the utterance index of the value. `start` and `end` are character indexes for the value span in the current turn. `turn[utt_idx]['utterance'][start:end]` gives the value.
+  - `db_results`: (*dict*, optional)
+    - `$domain_name`: (*list* of *dict*) topk entities (each entity contains slot-value pairs)
 
 Other attributes are optional.
 
-Run `python evaluate.py $dataset` to check the validation of processed dataset.
+Run `python test.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
 
-## Example of Schema Dataset
+### README
+Each dataset has a README.md to describe the original and transformed data. Follow the Hugging Face's [dataset card creation](https://huggingface.co/docs/datasets/dataset_card.html) to export `README.md`. Make sure that the following additional information is included in the **Dataset Summary** section:
+- Main changes from original data to processed data.
+- Annotations: whether have user goal, dialogue acts, state, db results, etc.
 
-```json
-	{
-    "dataset": "schema",
-    "data_split": "train",
-    "dialogue_id": "schema_535",
-    "original_id": "5_00022",
-    "domains": [
-      "event_2"
-    ],
-    "turns": [
-      {
-        "speaker": "user",
-        "utterance": "I feel like going out to do something in Oakland. I've heard the Raiders Vs Bengals game should be good.",
-        "utt_idx": 0,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "inform_intent",
-              "domain": "event_2",
-              "slot": "intent",
-              "value": "geteventdates"
-            }
-          ],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "event_2",
-              "slot": "event_name",
-              "value": "raiders vs bengals",
-              "start": 65,
-              "end": 83
-            },
-            {
-              "intent": "inform",
-              "domain": "event_2",
-              "slot": "city",
-              "value": "oakland",
-              "start": 41,
-              "end": 48
-            }
-          ]
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "",
-            "time": "",
-            "number_of_tickets": "",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [],
-          "non-categorical": [
-            {
-              "domain": "event_2",
-              "slot": "city",
-              "value": "oakland",
-              "utt_idx": 0,
-              "start": 41,
-              "end": 48
-            },
-            {
-              "domain": "event_2",
-              "slot": "event_name",
-              "value": "raiders vs bengals",
-              "utt_idx": 0,
-              "start": 65,
-              "end": 83
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "The Raiders Vs Bengals game is at Oakland-Alameda County Coliseum today.",
-        "utt_idx": 1,
-        "dialogue_act": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "offer",
-              "domain": "event_2",
-              "slot": "date",
-              "value": "today",
-              "start": 66,
-              "end": 71
-            },
-            {
-              "intent": "offer",
-              "domain": "event_2",
-              "slot": "event_name",
-              "value": "raiders vs bengals",
-              "start": 4,
-              "end": 22
-            },
-            {
-              "intent": "offer",
-              "domain": "event_2",
-              "slot": "venue",
-              "value": "oakland-alameda county coliseum",
-              "start": 34,
-              "end": 65
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "What time does it start?",
-        "utt_idx": 2,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "request",
-              "domain": "event_2",
-              "slot": "time",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "",
-            "time": "",
-            "number_of_tickets": "",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [],
-          "non-categorical": []
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "It starts at 7 pm.",
-        "utt_idx": 3,
-        "dialogue_act": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "event_2",
-              "slot": "time",
-              "value": "7 pm",
-              "start": 13,
-              "end": 17
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "That sounds fine.",
-        "utt_idx": 4,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "select",
-              "domain": "event_2",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "today",
-            "time": "",
-            "number_of_tickets": "",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [],
-          "non-categorical": [
-            {
-              "domain": "event_2",
-              "slot": "date",
-              "value": "today",
-              "utt_idx": 1,
-              "start": 66,
-              "end": 71
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Do you want to get tickets for it?",
-        "utt_idx": 5,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "offer_intent",
-              "domain": "event_2",
-              "slot": "intent",
-              "value": "buyeventtickets"
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "Yes, can you buy 3 tickets for me?",
-        "utt_idx": 6,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "affirm_intent",
-              "domain": "event_2",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [
-            {
-              "intent": "inform",
-              "domain": "event_2",
-              "slot": "number_of_tickets",
-              "value": "3"
-            }
-          ],
-          "non-categorical": []
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "today",
-            "time": "",
-            "number_of_tickets": "3",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [
-            {
-              "domain": "event_2",
-              "slot": "number_of_tickets",
-              "value": "3"
-            }
-          ],
-          "non-categorical": []
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Sure. I will go ahead and buy 3 tickets for the Raiders Vs Bengals game in Oakland today. Is that right?",
-        "utt_idx": 7,
-        "dialogue_act": {
-          "binary": [],
-          "categorical": [
-            {
-              "intent": "confirm",
-              "domain": "event_2",
-              "slot": "number_of_tickets",
-              "value": "3"
-            }
-          ],
-          "non-categorical": [
-            {
-              "intent": "confirm",
-              "domain": "event_2",
-              "slot": "event_name",
-              "value": "raiders vs bengals",
-              "start": 48,
-              "end": 66
-            },
-            {
-              "intent": "confirm",
-              "domain": "event_2",
-              "slot": "date",
-              "value": "today",
-              "start": 83,
-              "end": 88
-            },
-            {
-              "intent": "confirm",
-              "domain": "event_2",
-              "slot": "city",
-              "value": "oakland",
-              "start": 75,
-              "end": 82
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "Yes, that's good. What's the address?",
-        "utt_idx": 8,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "request",
-              "domain": "event_2",
-              "slot": "venue_address",
-              "value": ""
-            },
-            {
-              "intent": "affirm",
-              "domain": "",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "today",
-            "time": "",
-            "number_of_tickets": "3",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [],
-          "non-categorical": []
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "The game is at 7000 Coliseum Way. I've bought the tickets.",
-        "utt_idx": 9,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "notify_success",
-              "domain": "event_2",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "event_2",
-              "slot": "venue_address",
-              "value": "7000 coliseum way",
-              "start": 15,
-              "end": 32
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "Thanks! That's all.",
-        "utt_idx": 10,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "thank_you",
-              "domain": "",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "today",
-            "time": "",
-            "number_of_tickets": "3",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [],
-          "non-categorical": []
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Need help with anything else?",
-        "utt_idx": 11,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "req_more",
-              "domain": "",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "No, thank you.",
-        "utt_idx": 12,
-        "dialogue_act": {
-          "binary": [
-            {
-              "intent": "negate",
-              "domain": "",
-              "slot": "",
-              "value": ""
-            },
-            {
-              "intent": "thank_you",
-              "domain": "",
-              "slot": "",
-              "value": ""
-            }
-          ],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "event_2": {
-            "event_type": "",
-            "category": "",
-            "event_name": "raiders vs bengals",
-            "date": "today",
-            "time": "",
-            "number_of_tickets": "3",
-            "city": "oakland",
-            "venue": "",
-            "venue_address": ""
-          }
-        },
-        "state_update": {
-          "categorical": [],
-          "non-categorical": []
-        }
-      }
-    ]
-  }
-```
+And the data statistics given by `test.py` should be included in the **Data Splits** section.
 
+## Example dialogue of Schema-Guided Dataset
