@@ -32,6 +32,7 @@ setup(
     ],
     install_requires=[
         'tabulate',
+        'python-Levenshtein',
         'requests',
         'numpy',
         'nltk',
