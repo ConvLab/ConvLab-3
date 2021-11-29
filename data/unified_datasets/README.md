@@ -1,7 +1,7 @@
 # Unified data format
 
 ## Overview
-We transform different datasets into a unified format under `data/unified_datasets` directory. One could also access processed datasets from Hugging Face's `Dataset`:
+We transform different datasets into a unified format under `data/unified_datasets` directory. We also upload processed datasets to Hugging Face's `Datasets`, which can be loaded by:
 ```python
 from datasets import load_dataset
 dataset = load_dataset('ConvLab/$dataset')
@@ -10,7 +10,7 @@ dataset = load_dataset('ConvLab/$dataset')
 Each dataset contains at least these files:
 
 - `README.md`: dataset description and the **main changes** from original data to processed data. Should include the instruction on how to get the original data and transform them into the unified format.
-- `preprocess.py`: python script that transform the original data into the unified format. By running `python preprocess.py` we can get `data.zip` that contains all data. The structure `preprocess.py` should be like:
+- `preprocess.py`: python script that transform the original data into the unified format. By running `python preprocess.py` we can get `data.zip` and `dummy_data.json`. The structure `preprocess.py` should be like:
 
 ```python
 def preprocess():
@@ -19,10 +19,13 @@ if __name__ == '__main__':
     preprocess()
 ```
 
-- `data.zip`: (also available in https://huggingface.co/ConvLab) the zipped directory contains:
+- `data.zip`: the zipped directory contains:
   - `ontology.json`: dataset ontology, contains descriptions, state definition, etc.
-  - `dialogues.json`, a list of all dialogues in the dataset.
+  - `dialogues.json`: a list of all dialogues in the dataset.
   - other necessary files such as databases.
+- `dummy_data.json`: a list of 10 dialogues from `dialogues.json` for illustration.
+- `$dataset.py`: dataset loading script for Hugging Face's `Datasets`.
+- `dataset_infos.json`: dataset metadata for Hugging Face's `Datasets`.
 
 Datasets that require database interaction should also include the following file:
 - `database.py`: load the database and define the query function:
@@ -38,9 +41,10 @@ class Database:
 ## Unified format
 We first introduce the unified format of `ontology` and `dialogues`. To transform a new dataset into the unified format:
 1. Create `data/unified_datasets/$dataset` folder, where `$dataset` is the name of the dataset.
-2. Write `preprocess.py` to transform the original dataset into the unified format, producing `data.zip`.
+2. Write `preprocess.py` to transform the original dataset into the unified format, producing `data.zip` and `dummy_data.json`.
 3. Run `python test.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
-4. Write `README.md` to describe the data.
+4. Write `README.md` to describe the data following [How to create dataset README](#how-to-create-dataset-readme).
+5. Add `$dataset.py` and `dataset_info.json` following this [instruction](https://huggingface.co/docs/datasets/dataset_script.html) (Here no need to generate dummy data). Upload the dataset directory to Hugging Face's `Datasets` following this [instruction](https://huggingface.co/docs/datasets/share.html#add-a-community-dataset) (set `--organization` to `ConvLab`).
 
 ### Ontology
 
@@ -66,14 +70,14 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
 
 ### Dialogues
 
-`data.json`: a *list* of dialogues (*dict*) containing:
+`dialogues.json`: a *list* of dialogues (*dict*) containing:
 
 - `dataset`: (*str*) dataset name, must be the same as the data directory.
 - `data_split`: (*str*) in `["train", "validation", "test"]`.
 - `dialogue_id`: (*str*) `"$dataset-$split-$id"`, `id` increases from 0.
 - `domains`: (*list*) involved domains in this dialogue.
 - `goal`: (*dict*, optional)
-  - `description`: (*str*) a string describes the user goal.
+  - `description`: (*str*, optional) a string describes the user goal.
   - `constraints`: (*dict*, optional) same format as dialogue state of involved domains but with only filled slots as constraints.
   - `requirements`: (*dict*, optional) same format as dialogue state of involved domains but with only empty required slots.
 - `turns`: (*list* of *dict*)
@@ -97,11 +101,9 @@ Other attributes are optional.
 
 Run `python test.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
 
-### README
+### How to create dataset README
 Each dataset has a README.md to describe the original and transformed data. Follow the Hugging Face's [dataset card creation](https://huggingface.co/docs/datasets/dataset_card.html) to export `README.md`. Make sure that the following additional information is included in the **Dataset Summary** section:
 - Main changes from original data to processed data.
 - Annotations: whether have user goal, dialogue acts, state, db results, etc.
 
 And the data statistics given by `test.py` should be included in the **Data Splits** section.
-
-## Example dialogue of Schema-Guided Dataset
