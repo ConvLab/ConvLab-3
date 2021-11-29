@@ -97,6 +97,8 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
   - `db_results`: (*dict*, system side, could be empty)
     - `$domain_name`: (*list* of *dict*) topk entities (each entity contains slot-value pairs)
 
+Note that multiple descriptions/values are separated by `"|"`.
+
 Other attributes are optional.
 
 Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
