@@ -31,6 +31,7 @@ setup(
                 'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
     install_requires=[
+        'tabulate',
         'requests',
         'numpy',
         'nltk',
