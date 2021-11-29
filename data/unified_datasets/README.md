@@ -19,7 +19,7 @@ if __name__ == '__main__':
     preprocess()
 ```
 
-- `data.zip`: the zipped directory contains:
+- `data.zip`: the zipped directory `data` contains:
   - `ontology.json`: dataset ontology, contains descriptions, state definition, etc.
   - `dialogues.json`: a list of all dialogues in the dataset.
   - other necessary files such as databases.
@@ -42,7 +42,7 @@ class Database:
 We first introduce the unified format of `ontology` and `dialogues`. To transform a new dataset into the unified format:
 1. Create `data/unified_datasets/$dataset` folder, where `$dataset` is the name of the dataset.
 2. Write `preprocess.py` to transform the original dataset into the unified format, producing `data.zip` and `dummy_data.json`.
-3. Run `python test.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
+3. Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
 4. Write `README.md` to describe the data following [How to create dataset README](#how-to-create-dataset-readme).
 5. Add `$dataset.py` and `dataset_info.json` following this [instruction](https://huggingface.co/docs/datasets/dataset_script.html) (Here no need to generate dummy data). Upload the dataset directory to Hugging Face's `Datasets` following this [instruction](https://huggingface.co/docs/datasets/share.html#add-a-community-dataset) (set `--organization` to `ConvLab`).
 
@@ -73,37 +73,37 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
 `dialogues.json`: a *list* of dialogues (*dict*) containing:
 
 - `dataset`: (*str*) dataset name, must be the same as the data directory.
-- `data_split`: (*str*) in `["train", "validation", "test"]`.
+- `data_split`: (*str*) in `["train", "validation", "test", ...]`.
 - `dialogue_id`: (*str*) `"$dataset-$split-$id"`, `id` increases from 0.
 - `domains`: (*list*) involved domains in this dialogue.
-- `goal`: (*dict*, optional)
-  - `description`: (*str*, optional) a string describes the user goal.
-  - `constraints`: (*dict*, optional) same format as dialogue state of involved domains but with only filled slots as constraints.
-  - `requirements`: (*dict*, optional) same format as dialogue state of involved domains but with only empty required slots.
+- `goal`: (*dict*)
+  - `description`: (*str*, could be empty) a string describes the user goal.
+  - `constraints`: (*dict*, could be empty) same format as dialogue state of involved domains but with only filled slots as constraints.
+  - `requirements`: (*dict*, could be empty) same format as dialogue state of involved domains but with only empty required slots.
 - `turns`: (*list* of *dict*)
   - `speaker`: (*str*) "user" or "system".
   - `utterance`: (*str*)
   - `utt_idx`: (*int*) `turns['utt_idx']` gives current turn.
-  - `dialogue_acts`: (*dict*, optional)
-    - `categorical`: (*list* of *dict*) for categorical slots.
+  - `dialogue_acts`: (*dict*)
+    - `categorical`: (*list* of *dict*, could be empty) for categorical slots.
       - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. Value sets are defined in the ontology.
-    - `non-categorical` (*list* of *dict*) for non-categorical slots.
+    - `non-categorical` (*list* of *dict*, could be empty) for non-categorical slots.
       - `{"intent": (str), "domain": (str), "slot": (str), "value": (str), "start": (int), "end": (int)}`. `start` and `end` are character indexes for the value span in the utterance and can be absent.
-    - `binary` (*list* of *dict*) for binary dialogue acts in ontology.
+    - `binary` (*list* of *dict*, could be empty) for binary dialogue acts in ontology.
       - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. Possible dialogue acts are listed in the `ontology['binary_dialogue_acts']`.
-  - `state`: (*dict*, user side, optional) dialogue state of involved domains. full state is shown in `ontology['state']`.
+  - `state`: (*dict*, user side, could be empty) dialogue state of involved domains. full state is shown in `ontology['state']`.
     - `$domain_name`: (*dict*) contains all slots in this domain.
       - `$slot_name`: (*str*) value for this slot.
-  - `db_results`: (*dict*, optional)
+  - `db_results`: (*dict*, system side, could be empty)
     - `$domain_name`: (*list* of *dict*) topk entities (each entity contains slot-value pairs)
 
 Other attributes are optional.
 
-Run `python test.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
+Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
 
 ### How to create dataset README
 Each dataset has a README.md to describe the original and transformed data. Follow the Hugging Face's [dataset card creation](https://huggingface.co/docs/datasets/dataset_card.html) to export `README.md`. Make sure that the following additional information is included in the **Dataset Summary** section:
-- Main changes from original data to processed data.
+- How to get the transformed data from original data and what are the main changes.
 - Annotations: whether have user goal, dialogue acts, state, db results, etc.
 
-And the data statistics given by `test.py` should be included in the **Data Splits** section.
+And the data statistics given by `check.py` should be included in the **Data Splits** section.
