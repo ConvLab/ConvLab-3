@@ -162,16 +162,16 @@ def check_dialogues(name, dialogues, ontology):
         
         goal = dialogue['goal']
         assert isinstance(goal['description'], str), f'{dialogue_id}\tgoal description {goal["description"]} should be string'
-        assert isinstance(goal['constraints'], dict), f'{dialogue_id}\tgoal constraints {goal["constraints"]} should be dict'
-        assert isinstance(goal['requirements'], dict), f'{dialogue_id}\tgoal requirements {goal["requirements"]} should be dict'
-        for domain_name, domain in goal['constraints'].items():
+        assert isinstance(goal['inform'], dict), f'{dialogue_id}\tgoal inform {goal["inform"]} should be dict'
+        assert isinstance(goal['request'], dict), f'{dialogue_id}\tgoal request {goal["request"]} should be dict'
+        for domain_name, domain in goal['inform'].items():
             for slot_name, value in domain.items():
-                check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:goal:constraints')
-                assert value != "", f'{dialogue_id}\tshould set non-empty value in goal constraints {goal["constraints"]}'
-        for domain_name, domain in goal['requirements'].items():
+                check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:goal:inform')
+                assert value != "", f'{dialogue_id}\tshould set non-empty value in goal inform {goal["inform"]}'
+        for domain_name, domain in goal['request'].items():
             for slot_name, value in domain.items():
-                check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:goal:requirements')
-                assert value == "", f'{dialogue_id}\tshould set empty value in goal requirements {goal["requirements"]}'
+                check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:goal:request')
+                assert value == "", f'{dialogue_id}\tshould set empty value in goal request {goal["request"]}'
 
         turns = dialogue['turns']
         cur_stat['utterances'] += len(turns)

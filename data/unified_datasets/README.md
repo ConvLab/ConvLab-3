@@ -78,8 +78,8 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
 - `domains`: (*list*) involved domains in this dialogue.
 - `goal`: (*dict*)
   - `description`: (*str*, could be empty) a string describes the user goal.
-  - `constraints`: (*dict*, could be empty) same format as dialogue state of involved domains but with only filled slots as constraints.
-  - `requirements`: (*dict*, could be empty) same format as dialogue state of involved domains but with only empty required slots.
+  - `inform`: (*dict*, could be empty) same format as dialogue state of involved domains but with only filled slots as constraints.
+  - `request`: (*dict*, could be empty) same format as dialogue state of involved domains but with only empty requested slots.
 - `turns`: (*list* of *dict*)
   - `speaker`: (*str*) "user" or "system".
   - `utterance`: (*str*)
