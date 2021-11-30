@@ -5,7 +5,7 @@ from zipfile import ZipFile
 import importlib
 from tabulate import tabulate
 
-special_values = ['', 'dontcare', None]
+special_values = ['', 'dontcare', None, '?']
 
 
 def check_ontology(ontology):
@@ -145,14 +145,16 @@ def check_dialogues(name, dialogues, ontology):
             assert slot_name in domain['slots'], f'{prefix}\t{slot_name} not presented in domain {domain_name} in ontology'
             slot = domain['slots'][slot_name]
             if categorical is None:
+                # for state
                 categorical = slot['is_categorical']
             else:
+                # for dialog act
                 assert categorical == slot['is_categorical'], \
                     f'{prefix}\t{domain_name}-{slot_name} is_categorical should be {slot["is_categorical"]} as in ontology'
             if categorical:
-                value = value.lower()
-                assert value in special_values or value in slot['possible_values'], \
-                    f'{prefix}\t`{value}` not presented in possible values of {domain_name}-{slot_name}: {slot["possible_values"]}'
+                for v in value.split('|'):
+                    assert v in special_values or v in slot['possible_values'], \
+                        f'{prefix}\t`{v}` not presented in possible values of {domain_name}-{slot_name}: {slot["possible_values"]}'
 
         def check_da(da, categorical):
             assert da['intent'] in ontology['intents'], f'{dialogue_id}:{turn_id}:da\tundefined intent {da["intent"]}'
