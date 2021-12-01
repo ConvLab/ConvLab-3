@@ -101,11 +101,12 @@ Note that multiple descriptions/values are separated by `"|"`.
 
 Other attributes are optional.
 
-Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
+> **Necessary**: Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics in `data/unified_datasets/$dataset/stat.txt`.
 
 ### How to create dataset README
-Each dataset has a README.md to describe the original and transformed data. Follow the Hugging Face's [dataset card creation](https://huggingface.co/docs/datasets/dataset_card.html) to export `README.md`. Make sure that the following additional information is included in the **Dataset Summary** section:
-- How to get the transformed data from original data and what are the main changes.
-- Annotations: whether have user goal, dialogue acts, state, db results, etc.
-
-And the data statistics given by `check.py` should be included in the **Data Splits** section.
+Each dataset has a README.md to describe the original and transformed data. Follow the Hugging Face's [dataset card creation](https://huggingface.co/docs/datasets/dataset_card.html) to export `README.md`. Make sure that you:
+- include your name and email in the **Urls->Point of Contact** section.
+- include the following additional information in the **Dataset Description->Dataset Summary** section:
+  - How to get the transformed data from original data and what are the main changes.
+  - Annotations: whether has user goal, dialogue acts, state, db results, etc.
+- include the data statistics given by `check.py` (in `data/unified_datasets/$dataset/stat.txt`) in the **Dataset Structure->Data Splits** section.

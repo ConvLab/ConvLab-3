@@ -95,12 +95,16 @@ def check_dialogues(name, dialogues, ontology):
 
     all_id = set()
     splits = ['train', 'validation', 'test']
-    da_values = 0
-    da_matches = 0
-    stat_keys = ['dialogues', 'utterances', 'tokens', 'domains']
+    match_rate = {
+        'categorical': {'dialogue act': [0, 0], 'goal': [0, 0], 'state': [0, 0]},
+        'noncategorical': {'dialogue act': [0, 0]}
+    }
+    stat_keys = ['dialogues', 'utterances', 'tokens', 'domains', 
+                 'cat slot match(state)', 'cat slot match(goal)', 'cat slot match(dialogue act)',
+                 'non-cat slot span(dialogue act)']
     stat = {
         split: {
-            key: 0 for key in stat_keys
+            key: 0 if 'slot' not in key else [0, 0] for key in stat_keys
         } for split in splits
     }
 
@@ -116,7 +120,7 @@ def check_dialogues(name, dialogues, ontology):
         assert isinstance(split, str), f'{dialogue_id}\t`split` is expected to be str type but got {type(split)}'
         if split not in splits:
             splits.append(split)
-            stat[split] = {key: 0 for key in stat_keys}
+            stat[split] = {key: 0 if 'slot' not in key else [0, 0] for key in stat_keys}
         
         cur_stat = stat[split]
         cur_stat['dialogues'] += 1
@@ -139,26 +143,30 @@ def check_dialogues(name, dialogues, ontology):
 
         # check domain-slot-value
         # prefix: error prefix
-        def check_dsv(domain_name, slot_name, value, categorical=None, prefix=f'{dialogue_id}'):
-            assert domain_name in cur_domains, f'{prefix}\t{domain_name} not presented in current domains'
+        def check_dsv(domain_name, slot_name, value, anno_type, categorical=None, prefix=f'{dialogue_id}'):
+            if anno_type != 'state':
+                assert domain_name in cur_domains, f'{prefix}\t{domain_name} not presented in current domains'
             domain = ontology['domains'][domain_name]
             assert slot_name in domain['slots'], f'{prefix}\t{slot_name} not presented in domain {domain_name} in ontology'
             slot = domain['slots'][slot_name]
             if categorical is None:
-                # for state
+                # for state and goal
                 categorical = slot['is_categorical']
             else:
                 # for dialog act
                 assert categorical == slot['is_categorical'], \
                     f'{prefix}\t{domain_name}-{slot_name} is_categorical should be {slot["is_categorical"]} as in ontology'
-            if categorical:
+            if categorical and len(value) > 0:
                 for v in value.split('|'):
-                    assert v in special_values or v in slot['possible_values'], \
-                        f'{prefix}\t`{v}` not presented in possible values of {domain_name}-{slot_name}: {slot["possible_values"]}'
+                    stat[split][f'cat slot match({anno_type})'][1] += 1
+                    if v in special_values or v.lower() in [s.lower() for s in slot['possible_values']]:
+                        stat[split][f'cat slot match({anno_type})'][0] += 1
+                    # else:
+                    #     print(f'{prefix}\t`{v}` not presented in possible values of {domain_name}-{slot_name}: {slot["possible_values"]}')
 
         def check_da(da, categorical):
             assert da['intent'] in ontology['intents'], f'{dialogue_id}:{turn_id}:da\tundefined intent {da["intent"]}'
-            check_dsv(da['domain'], da['slot'], da['value'], categorical, f'{dialogue_id}:{turn_id}:da')
+            check_dsv(da['domain'], da['slot'], da['value'], 'dialogue act', categorical, f'{dialogue_id}:{turn_id}:da')
         
         goal = dialogue['goal']
         assert isinstance(goal['description'], str), f'{dialogue_id}\tgoal description {goal["description"]} should be string'
@@ -166,18 +174,17 @@ def check_dialogues(name, dialogues, ontology):
         assert isinstance(goal['request'], dict), f'{dialogue_id}\tgoal request {goal["request"]} should be dict'
         for domain_name, domain in goal['inform'].items():
             for slot_name, value in domain.items():
-                check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:goal:inform')
+                check_dsv(domain_name, slot_name, value, 'goal', prefix=f'{dialogue_id}:goal:inform')
                 assert value != "", f'{dialogue_id}\tshould set non-empty value in goal inform {goal["inform"]}'
         for domain_name, domain in goal['request'].items():
             for slot_name, value in domain.items():
-                check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:goal:request')
+                check_dsv(domain_name, slot_name, value, 'goal', prefix=f'{dialogue_id}:goal:request')
                 assert value == "", f'{dialogue_id}\tshould set empty value in goal request {goal["request"]}'
 
         turns = dialogue['turns']
         cur_stat['utterances'] += len(turns)
         assert turns, f'{dialogue_id}\tempty turn'
 
-        # assert turns[0]['speaker'] == 'user', f'{dialogue_id}\tnot start with user role'
         for turn_id, turn in enumerate(turns):
             assert turn['speaker'] in ['user', 'system'], f'{dialogue_id}:{turn_id}\tunknown speaker value: {turn["speaker"]}'
             assert turn_id == turn['utt_idx'], f'{dialogue_id}:{turn_id}\twrong utt_idx'
@@ -197,13 +204,13 @@ def check_dialogues(name, dialogues, ontology):
                 check_da(da, False)
                 # values only match after .strip() in some case, it's the issue of pre-processing
                 if da['value'] not in special_values:
-                    da_values += 1
+                    stat[split][f'non-cat slot span(dialogue act)'][1] += 1
                     assert ('start' in da) == ('end' in da), \
                         f'{dialogue_id}:{turn_id}\tstart and end field in da should both present or neither not present'
                     if 'start' in da:
                         value = utterance[da['start']:da['end']]
-                        if da['value'].lower() == value.lower():
-                            da_matches += 1
+                        assert da['value'] == value, f'{dialogue_id}:{turn_id}\tspan({value}) and value{da["value"]} not match' 
+                        stat[split][f'non-cat slot span(dialogue act)'][0] += 1
 
             for da in dialogue_acts['binary']:
                 assert tuple(da.values()) in ontology['bda_set'], f'{dialogue_id}:{turn_id}\tbinary dialog act {da} not present in ontology'
@@ -216,7 +223,7 @@ def check_dialogues(name, dialogues, ontology):
                 assert isinstance(state, dict), f'{dialogue_id}:{turn_id}\tstate should be a dict'
                 for domain_name, domain in state.items():
                     for slot_name, value in domain.items():
-                        check_dsv(domain_name, slot_name, value, prefix=f'{dialogue_id}:{turn_id}:state')
+                        check_dsv(domain_name, slot_name, value, 'state', prefix=f'{dialogue_id}:{turn_id}:state')
 
             else:
                 assert 'state' not in turn, f"{dialogue_id}:{turn_id}\tstate cannot present in system's role"
@@ -227,14 +234,21 @@ def check_dialogues(name, dialogues, ontology):
                     assert domain_name in cur_domains, f'{dialogue_id}:{turn_id}:db_results\t{domain_name} not presented in current domains'
                     assert isinstance(results, list)
 
-        # assert turns[-1]['speaker'] == 'user', f'{dialogue_id} dialog must end with user role'
+    for _, value_match in match_rate.items():
+        for anno_type, (match, total) in value_match.items():
+            if total == 0:
+                value_match[anno_type] = '-'
+            else:
+                value_match[anno_type] = '{:.3f}'.format(match*100/total)
 
-    if da_values:
-        print('da values span match rate:    {:.3f}'.format(da_matches * 100 / da_values))
-
-    all_stat = {key: 0 for key in stat_keys}
+    all_stat = {key: 0 if 'slot' not in key else [0, 0] for key in stat_keys}
     for key in stat_keys:
-        all_stat[key] = sum(stat[split][key] for split in splits)
+        if 'slot' not in key:
+            all_stat[key] = sum(stat[split][key] for split in splits)
+        else:
+            all_stat[key] = []
+            all_stat[key].append(sum(stat[split][key][0] for split in splits))
+            all_stat[key].append(sum(stat[split][key][1] for split in splits))
     stat['all'] = all_stat
 
     table = []
@@ -244,18 +258,25 @@ def check_dialogues(name, dialogues, ontology):
             cur_stat['avg_utt'] = round(cur_stat['utterances'] / cur_stat['dialogues'], 2)
             cur_stat['avg_tokens'] = round(cur_stat['tokens'] / cur_stat['utterances'], 2)
             cur_stat['avg_domains'] = round(cur_stat.pop('domains') / cur_stat['dialogues'], 2)
+            for key in stat_keys:
+                if 'slot' in key:
+                    if cur_stat[key][1] == 0:
+                        cur_stat[key] = '-'
+                    else:
+                        cur_stat[key] = round(cur_stat[key][0] * 100 / cur_stat[key][1], 2)
+            table.append({
+                'split':split, 
+                'dialogues': cur_stat['dialogues'], 'utterances': cur_stat['utterances'],
+                'avg_utt': cur_stat['avg_utt'], 'avg_tokens': cur_stat['avg_tokens'], 'avg_domains': cur_stat['avg_domains'],
+                'cat slot match(state)': cur_stat['cat slot match(state)'], 
+                'cat slot match(goal)': cur_stat['cat slot match(goal)'],
+                'cat slot match(dialogue act)': cur_stat['cat slot match(dialogue act)'],
+                'non-cat slot span(dialogue act)': cur_stat['non-cat slot span(dialogue act)']
+            })
         else:
             del stat[split]
-        table.append({
-            'split':split, 
-            '\# dialogues': cur_stat['dialogues'], '\# utterances': cur_stat['utterances'],
-            'avg_utt': cur_stat['avg_utt'], 'avg_tokens': cur_stat['avg_tokens'], 'avg_domains': cur_stat['avg_domains']
-        })
     
-    print(f'domains: {len(ontology["domains"])}')
-    print('\n\nCopy-and-paste the following statistics to dataset README.md->Dataset Summary section')
-    print(tabulate(table, headers='keys', tablefmt='github'))
-    print()
+    return tabulate(table, headers='keys', tablefmt='github')
 
 
 if __name__ == '__main__':
@@ -283,7 +304,6 @@ if __name__ == '__main__':
 
     for name in datasets:
         try:
-            print('')
             if not os.path.isdir(name):
                 raise FileNotFoundError(f'dataset {name} not found')
 
@@ -300,20 +320,32 @@ if __name__ == '__main__':
                 preprocess.preprocess()
                 os.chdir('..')
 
-            data_file = os.path.join(f'{name}', 'data.zip')
+            data_file = f'{name}/data.zip'
             if not os.path.exists(data_file):
                 raise FileNotFoundError(f'cannot find {data_file}')
 
             with ZipFile(data_file) as zipfile:
-                print('check ontology')
+                print('check ontology...', end='')
                 with zipfile.open('data/ontology.json', 'r') as f:
                     ontology = json.load(f)
                     check_ontology(ontology)
+                print('pass')
+
+                print('check dummy data...', end='')
+                dummy_data = json.load(open(f'{name}/dummy_data.json'))
+                check_dialogues(name, dummy_data, ontology)
+                print('pass')
                 
-                print('check dialogues')
+                print('check dialogues...', end='')
                 with zipfile.open('data/dialogues.json', 'r') as f:
                     dialogues = json.load(f)
-                    check_dialogues(name, dialogues, ontology)
+                    stat = check_dialogues(name, dialogues, ontology)
+                    print('pass')
+                
+                print(f'Please copy-and-paste the statistics in {name}/stat.txt to dataset README.md->Data Splits section\n')
+                with open(f'{name}/stat.txt', 'w') as f:
+                    print(stat, file=f)
+
         except Exception as e:
             if args.no_int:
                 print(e)
