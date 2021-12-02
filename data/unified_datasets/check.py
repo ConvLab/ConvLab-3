@@ -345,6 +345,11 @@ if __name__ == '__main__':
                 print(f'Please copy-and-paste the statistics in {name}/stat.txt to dataset README.md->Data Splits section\n')
                 with open(f'{name}/stat.txt', 'w') as f:
                     print(stat, file=f)
+                    print('', file=f)
+                    all_domains = list(ontology["domains"].keys())
+                    print(f'{len(all_domains)} domains: {all_domains}', file=f)
+                    print('- **cat slot match**: how many values of categorical slots are in the possible values of ontology in percentage.', file=f)
+                    print('- **non-cat slot span**: how many values of non-categorical slots have span annotation in percentage.', file=f)
 
         except Exception as e:
             if args.no_int:
