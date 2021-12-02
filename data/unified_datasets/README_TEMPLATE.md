@@ -1,4 +1,4 @@
-## Dataset Card for [dataset name]
+# Dataset Card for [dataset name]
 
 - **Repository:** data link
 - **Paper:** paper link
