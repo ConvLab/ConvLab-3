@@ -744,11 +744,9 @@ def preprocess():
     new_data_dir = 'data'
 
     if not os.path.exists(original_data_dir):
-        # should manually download MultiWOZ_2.1.zip from 
-        # https://github.com/budzianowski/multiwoz/blob/master/data/MultiWOZ_2.1.zip
         original_data_zip = 'MultiWOZ_2.1.zip'
         if not os.path.exists(original_data_zip):
-            raise FileNotFoundError(f'cannot find original data: {original_data_zip}')
+            raise FileNotFoundError(f'cannot find original data {original_data_zip} in multiwoz21/, should manually download MultiWOZ_2.1.zip from https://github.com/budzianowski/multiwoz/blob/master/data/MultiWOZ_2.1.zip')
         else:
             archive = ZipFile(original_data_zip)
             archive.extractall()
