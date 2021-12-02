@@ -1,11 +1,7 @@
 # Unified data format
 
 ## Overview
-We transform different datasets into a unified format under `data/unified_datasets` directory. We also upload processed datasets to Hugging Face's `Datasets`, which can be loaded by:
-```python
-from datasets import load_dataset
-dataset = load_dataset('ConvLab/$dataset')
-```
+We transform different datasets into a unified format under `data/unified_datasets` directory.
 
 Each dataset contains at least these files:
 
@@ -24,8 +20,6 @@ if __name__ == '__main__':
   - `dialogues.json`: a list of all dialogues in the dataset.
   - other necessary files such as databases.
 - `dummy_data.json`: a list of 10 dialogues from `dialogues.json` for illustration.
-- `$dataset.py`: dataset loading script for Hugging Face's `Datasets`.
-- `dataset_infos.json`: dataset metadata for Hugging Face's `Datasets`.
 
 Datasets that require database interaction should also include the following file:
 - `database.py`: load the database and define the query function:
@@ -44,7 +38,6 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
 2. Write `preprocess.py` to transform the original dataset into the unified format, producing `data.zip` and `dummy_data.json`.
 3. Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
 4. Write `README.md` to describe the data following [How to create dataset README](#how-to-create-dataset-readme).
-5. Add `$dataset.py` and `dataset_info.json` following this [instruction](https://huggingface.co/docs/datasets/dataset_script.html) (Here no need to generate dummy data). Upload the dataset directory to Hugging Face's `Datasets` following this [instruction](https://huggingface.co/docs/datasets/share.html#add-a-community-dataset) (set `--organization` to `ConvLab`).
 
 ### Ontology
 
@@ -104,9 +97,10 @@ Other attributes are optional.
 > **Necessary**: Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics in `data/unified_datasets/$dataset/stat.txt`.
 
 ### How to create dataset README
-Each dataset has a README.md to describe the original and transformed data. Follow the Hugging Face's [dataset card creation](https://huggingface.co/docs/datasets/dataset_card.html) to export `README.md`. Make sure that you:
-- include your name and email in the **Urls->Point of Contact** section.
-- include the following additional information in the **Dataset Description->Dataset Summary** section:
-  - How to get the transformed data from original data and what are the main changes.
+Each dataset has a README.md to describe the original and transformed data. Please follow the `README_TEMPLATE.md` and make sure that you:
+- include your name and email in **Who transforms the dataset**.
+- include the following additional information in the **Dataset Summary** section:
+  - How to get the transformed data from original data.
+  - Main changes of the transformation.
   - Annotations: whether has user goal, dialogue acts, state, db results, etc.
-- include the data statistics given by `check.py` (in `data/unified_datasets/$dataset/stat.txt`) in the **Dataset Structure->Data Splits** section.
+- include the data statistics given by `check.py` (in `data/unified_datasets/$dataset/stat.txt`) in the **Data Splits** section.

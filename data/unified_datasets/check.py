@@ -342,7 +342,7 @@ if __name__ == '__main__':
                     stat = check_dialogues(name, dialogues, ontology)
                     print('pass')
                 
-                print(f'Please copy-and-paste the statistics in {name}/stat.txt to dataset README.md->Data Splits section\n')
+                print(f'Please copy and paste the statistics in {name}/stat.txt to dataset README.md->Data Splits section\n')
                 with open(f'{name}/stat.txt', 'w') as f:
                     print(stat, file=f)
                     print('', file=f)
