@@ -1,7 +1,7 @@
 import copy
 import re
 from zipfile import ZipFile, ZIP_DEFLATED
-from shutil import copy2
+from shutil import copy2, rmtree
 import json
 import os
 from tqdm import tqdm
@@ -684,7 +684,6 @@ def convert_da(da_dict, utt, sent_tokenizer, word_tokenizer):
             })
             # correct some value and try to give char level span
             match = False
-            ori_value = value
             value = value.lower()
             if span and span[0] <= span[1]:
                 # use original span annotation, but tokenizations are different
@@ -813,7 +812,7 @@ def preprocess():
         }
 
         for turn_id, turn in enumerate(ori_dialog['log']):
-            # correct some grammar error in text, mainly follow tokenization.md in MultiWOZ_2.1
+            # correct some grammar errors in the text, mainly following `tokenization.md` in MultiWOZ_2.1
             text = turn['text']
             text = re.sub(" Im ", " I'm ", text)
             text = re.sub(" im ", " i'm ", text)
@@ -877,13 +876,15 @@ def preprocess():
     dialogues = []
     for split in splits:
         dialogues += dialogues_by_split[split]
-    init_ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in init_ontology['binary_dialogue_acts']]
+    init_ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(init_ontology['binary_dialogue_acts'])]
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w'), indent=2)
     json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w'), indent=2)
     json.dump(init_ontology, open(f'{new_data_dir}/ontology.json', 'w'), indent=2)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
+    rmtree(original_data_dir)
+    rmtree(new_data_dir)
     return dialogues, init_ontology
 
 if __name__ == '__main__':
