@@ -877,9 +877,9 @@ def preprocess():
     for split in splits:
         dialogues += dialogues_by_split[split]
     init_ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(init_ontology['binary_dialogue_acts'])]
-    json.dump(dialogues[:10], open(f'dummy_data.json', 'w'), indent=2)
-    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w'), indent=2)
-    json.dump(init_ontology, open(f'{new_data_dir}/ontology.json', 'w'), indent=2)
+    json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(init_ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
