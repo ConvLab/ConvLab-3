@@ -3,7 +3,7 @@
 - **Repository:** https://github.com/budzianowski/multiwoz
 - **Paper:** https://aclanthology.org/2020.lrec-1.53
 - **Leaderboard:** https://github.com/budzianowski/multiwoz
-- **Who transforms the dataset:** Qi Zhu(zhuq96@gmail.com)
+- **Who transforms the dataset:** Qi Zhu(zhuq96 at gmail dot com)
 
 ### Dataset Summary
 
@@ -40,6 +40,23 @@ English
 9 domains: ['attraction', 'hotel', 'taxi', 'restaurant', 'train', 'police', 'hospital', 'booking', 'general']
 - **cat slot match**: how many values of categorical slots are in the possible values of ontology.
 - **non-cat slot span**: how many values of non-categorical slots have span annotation.
+
+### Citation
+
+```
+@inproceedings{eric-etal-2020-multiwoz,
+    title = "{M}ulti{WOZ} 2.1: A Consolidated Multi-Domain Dialogue Dataset with State Corrections and State Tracking Baselines",
+    author = "Eric, Mihail and Goel, Rahul and Paul, Shachi and Sethi, Abhishek and Agarwal, Sanchit and Gao, Shuyag and Hakkani-Tur, Dilek",
+    booktitle = "Proceedings of the 12th Language Resources and Evaluation Conference",
+    month = may,
+    year = "2020",
+    address = "Marseille, France",
+    publisher = "European Language Resources Association",
+    url = "https://aclanthology.org/2020.lrec-1.53",
+    pages = "422--428",
+    ISBN = "979-10-95546-34-4",
+}
+```
 
 ### Licensing Information
 
