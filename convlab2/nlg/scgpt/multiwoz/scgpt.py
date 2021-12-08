@@ -26,12 +26,15 @@ class SCGPT(NLG):
         model_dir = os.path.dirname(os.path.abspath(__file__))
         if not os.path.isfile(model_file):
             model_file = cached_path(model_file)
+        if not os.path.isdir(model_file):
             archive = zipfile.ZipFile(model_file, 'r')
             archive.extractall(model_dir)
-        # Get model directory
-        model_file = archive.filelist[0].filename.replace('/', '')
-        
-        self.model_name_or_path = os.path.join(model_dir, model_file)
+            # Get model directory
+            model_file = archive.filelist[0].filename.replace('/', '')
+            self.model_name_or_path = os.path.join(model_dir, model_file)
+        else:
+            self.model_name_or_path = model_file
+            
         self.length = 50
         self.num_samples = 5
         self.temperature = 1.0
