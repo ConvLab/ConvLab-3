@@ -2,7 +2,7 @@
 
 - **Repository:** data link
 - **Paper:** paper link
-- **Leaderboard:** leaderboard link if any else empty
+- **Leaderboard:** leaderboard link if any else None
 - **Who transforms the dataset:** Name(email, e.g. xxx at gmail dot com)
 
 ### Dataset Summary
