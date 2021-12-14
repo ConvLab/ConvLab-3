@@ -106,6 +106,9 @@ if __name__ == '__main__':
                 domain = key.split('-')[0]
                 if domain not in ['general', 'Booking']:
                     current_domain = domain
+        else:
+            if args.role == 'sys':
+                turns.append(turn)
         title = title
         if title in val_list:
             current = results_val
