@@ -33,6 +33,8 @@ setup(
                 'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
     install_requires=[
+        'tabulate',
+        'python-Levenshtein',
         'requests',
         'numpy',
         'nltk',
