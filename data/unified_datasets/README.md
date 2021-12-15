@@ -1,7 +1,14 @@
 # Unified data format
 
 ## Overview
-We transform different datasets into a unified format under `data/unified_datasets` directory.
+We transform different datasets into a unified format under `data/unified_datasets` directory. To import a unified datasets:
+
+```python
+from convlab2 import load_dataset, load_database
+
+dialogues, ontology = load_dataset('multiwoz21')
+database = load_database('multiwoz21')
+```
 
 Each dataset contains at least these files:
 

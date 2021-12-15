@@ -6,6 +6,7 @@ from convlab2.policy import Policy
 from convlab2.nlg import NLG
 from convlab2.dialog_agent import Agent, PipelineAgent
 from convlab2.dialog_agent import Session, BiSession, DealornotSession
+from convlab2.util.unified_datasets_util import load_dataset, load_database
 
 from os.path import abspath, dirname
 
