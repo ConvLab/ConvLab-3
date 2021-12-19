@@ -1,31 +1,64 @@
-# README
+# Dataset Card for MultiWOZ 2.1
 
-## Features
+- **Repository:** https://github.com/budzianowski/multiwoz
+- **Paper:** https://aclanthology.org/2020.lrec-1.53
+- **Leaderboard:** https://github.com/budzianowski/multiwoz
+- **Who transforms the dataset:** Qi Zhu(zhuq96 at gmail dot com)
 
-- Annotations: dialogue act, character-level span for non-categorical slots. state and state updates.   
+### Dataset Summary
 
-Statistics: 
+MultiWOZ 2.1 fixed the noise in state annotations and dialogue utterances. It also includes user dialogue acts from ConvLab (Lee et al., 2019) as well as multiple slot descriptions per dialogue state slot.
 
-|       | \# dialogues | \# utterances | avg. turns | avg. tokens | \# domains |
-| ----- | ------------ | ------------- | ---------- | ----------- | ---------- |
-| train | 8434         | 105066         | 12.46     | 17.27      | 7          |
-| dev | 999         | 13731         | 13.74      | 17.72       | 7          |
-| train | 1000         | 13744         | 13.74       | 17.67       | 7          |
+- **How to get the transformed data from original data:** 
+  - Download [MultiWOZ_2.1.zip](https://github.com/budzianowski/multiwoz/blob/master/data/MultiWOZ_2.1.zip).
+  - Run `python preprocess.py` in the current directory.
+- **Main changes of the transformation:**
+  - Create a new ontology in the unified format, taking slot descriptions from MultiWOZ 2.2.
+  - Correct some grammar errors in the text, mainly following `tokenization.md` in MultiWOZ_2.1.
+  - Normalize slot name and value. See `normalize_domain_slot_value` function in `preprocess.py`.
+  - Correct some non-categorical slots' values and provide character level span annotation.
+  - Concatenate multiple values in user goal & state using `|`.
+- **Annotations:**
+  - user goal, dialogue acts, state.
 
+### Supported Tasks and Leaderboards
 
-## Main changes
+NLU, DST, Policy, NLG, E2E, User simulator
 
-- only keep 5 domains in state annotations and dialog acts. 
-- `pricerange`, `area`, `day`, `internet`, `parking`, `stars` are considered categorical slots.
-- punctuation marks are split from their previous tokens. e.g `I want to find a hotel. -> 
-  I want to find a hotel .`
+### Languages
 
-Run `evaluate.py`:
+English
 
-da values match rate:    97.944
-state values match rate: 66.017
+### Data Splits
 
-### original data
+| split      |   dialogues |   utterances |   avg_utt |   avg_tokens |   avg_domains |   cat slot match(state) |   cat slot match(goal) |   cat slot match(dialogue act) |   non-cat slot span(dialogue act) |
+|------------|-------------|--------------|-----------|--------------|---------------|-------------------------|------------------------|--------------------------------|-----------------------------------|
+| train      |        8438 |       113556 |     13.46 |        13.23 |          3.39 |                   98.84 |                  99.48 |                          86.39 |                             98.22 |
+| validation |        1000 |        14748 |     14.75 |        13.5  |          3.64 |                   98.84 |                  99.46 |                          86.59 |                             98.17 |
+| test       |        1000 |        14744 |     14.74 |        13.5  |          3.59 |                   99.21 |                  99.32 |                          85.83 |                             98.58 |
+| all        |       10438 |       143048 |     13.7  |        13.28 |          3.44 |                   98.88 |                  99.47 |                          86.36 |                             98.25 |
 
-- from [multiwoz](https://github.com/budzianowski/multiwoz) repo.
+9 domains: ['attraction', 'hotel', 'taxi', 'restaurant', 'train', 'police', 'hospital', 'booking', 'general']
+- **cat slot match**: how many values of categorical slots are in the possible values of ontology.
+- **non-cat slot span**: how many values of non-categorical slots have span annotation.
 
+### Citation
+
+```
+@inproceedings{eric-etal-2020-multiwoz,
+    title = "{M}ulti{WOZ} 2.1: A Consolidated Multi-Domain Dialogue Dataset with State Corrections and State Tracking Baselines",
+    author = "Eric, Mihail and Goel, Rahul and Paul, Shachi and Sethi, Abhishek and Agarwal, Sanchit and Gao, Shuyag and Hakkani-Tur, Dilek",
+    booktitle = "Proceedings of the 12th Language Resources and Evaluation Conference",
+    month = may,
+    year = "2020",
+    address = "Marseille, France",
+    publisher = "European Language Resources Association",
+    url = "https://aclanthology.org/2020.lrec-1.53",
+    pages = "422--428",
+    ISBN = "979-10-95546-34-4",
+}
+```
+
+### Licensing Information
+
+Apache License, Version 2.0

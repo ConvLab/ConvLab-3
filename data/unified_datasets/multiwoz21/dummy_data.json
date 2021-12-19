@@ -1,0 +1,5896 @@
+[
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-0",
+    "original_id": "SNG01856.json",
+    "domains": [
+      "hotel",
+      "booking",
+      "general"
+    ],
+    "goal": {
+      "description": "You are looking for a <span class='emphasis'>place to stay</span>. The hotel should be in the <span class='emphasis'>cheap</span> price range and should be in the type of <span class='emphasis'>hotel</span>. The hotel should <span class='emphasis'>include free parking</span> and should <span class='emphasis'>include free wifi</span>. Once you find the <span class='emphasis'>hotel</span> you want to book it for <span class='emphasis'>6 people</span> and <span class='emphasis'>3 nights</span> starting from <span class='emphasis'>tuesday</span>. If the booking fails how about <span class='emphasis'>2 nights</span>. Make sure you get the <span class='emphasis'>reference number</span>",
+      "inform": {
+        "hotel": {
+          "type": "hotel",
+          "parking": "yes",
+          "price range": "cheap",
+          "internet": "yes",
+          "book stay": "3|2",
+          "book day": "tuesday",
+          "book people": "6"
+        }
+      },
+      "request": {
+        "hotel": {}
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "am looking for a place to to stay that has cheap price range it should be in a type of hotel",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": "cheap"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "hotel",
+              "start": 87,
+              "end": 92
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "cheap",
+            "stars": "",
+            "internet": "",
+            "type": "hotel",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, do you have a specific area you want to stay in?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "area",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "no, i just need to make sure it's cheap. oh, and i need parking",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "parking",
+              "value": "yes"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "yes",
+            "price range": "cheap",
+            "stars": "",
+            "internet": "",
+            "type": "hotel",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I found 1 cheap hotel for you that includes parking. Do you like me to book it?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": "cheap"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "1",
+              "start": 8,
+              "end": 9
+            }
+          ],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "booking",
+              "slot": "",
+              "value": ""
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "parking",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, please. 6 people 3 nights starting on tuesday.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book day",
+              "value": "tuesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book stay",
+              "value": "3",
+              "start": 22,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book people",
+              "value": "6",
+              "start": 13,
+              "end": 14
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "yes",
+            "price range": "cheap",
+            "stars": "",
+            "internet": "",
+            "type": "hotel",
+            "book stay": "3",
+            "book day": "tuesday",
+            "book people": "6"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I am sorry but I wasn't able to book that for you for Tuesday. Is there another day you would like to stay or perhaps a shorter stay?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "nobook",
+              "domain": "booking",
+              "slot": "day",
+              "value": "Tuesday"
+            }
+          ],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "booking",
+              "slot": "book stay",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "booking",
+              "slot": "day",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "how about only 2 nights.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book stay",
+              "value": "2",
+              "start": 15,
+              "end": 16
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "yes",
+            "price range": "cheap",
+            "stars": "",
+            "internet": "",
+            "type": "hotel",
+            "book stay": "2",
+            "book day": "tuesday",
+            "book people": "6"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Booking was successful.\nReference number is : 7GAWK763. Anything else I can do for you?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "book",
+              "domain": "booking",
+              "slot": "ref",
+              "value": "7GAWK763",
+              "start": 46,
+              "end": 54
+            }
+          ],
+          "binary": [
+            {
+              "intent": "reqmore",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No, that will be all. Good bye.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "yes",
+            "price range": "cheap",
+            "stars": "",
+            "internet": "",
+            "type": "hotel",
+            "book stay": "2",
+            "book day": "tuesday",
+            "book people": "6"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Thank you for using our services.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-1",
+    "original_id": "SNG0129.json",
+    "domains": [
+      "police",
+      "general"
+    ],
+    "goal": {
+      "description": "You were <span class='emphasis'>robbed</span> and are looking for help. Make sure you get <span class='emphasis'>postcode</span>, <span class='emphasis'>address</span>, and <span class='emphasis'>phone number</span>",
+      "inform": {
+        "police": {}
+      },
+      "request": {
+        "police": {
+          "postcode": "",
+          "address": "",
+          "phone": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hello, I have been robbed.  Can you please help me get in touch with the police?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Parkside Police Station is in Parkside, Cambridge. Their number is 01223358966. Anything else I can do for you?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "name",
+              "value": "Parkside Police Station",
+              "start": 0,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "phone",
+              "value": "01223358966",
+              "start": 67,
+              "end": 78
+            },
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "address",
+              "value": "Parkside, Cambridge",
+              "start": 30,
+              "end": 49
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Can I please have the postcode as well?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "police",
+              "slot": "postcode",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The postcode for the Parkside Police Station is CB11JG. Can I help you with anything else?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "name",
+              "value": "Parkside Police Station",
+              "start": 21,
+              "end": 44
+            },
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "postcode",
+              "value": "CB11JG",
+              "start": 48,
+              "end": 54
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Was Parkside the address of the police station? If not, can I have the address please?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "police",
+              "slot": "address",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yes, Parkside is the address.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you that will be all for now.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great. Thank you for contacting Cambridge Towninfo Centre.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "welcome",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "You were great. Goodbye.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "We are happy to help. Have a good day!",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            },
+            {
+              "intent": "welcome",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-2",
+    "original_id": "MUL2168.json",
+    "domains": [
+      "hotel",
+      "train",
+      "booking",
+      "general"
+    ],
+    "goal": {
+      "description": "You are planning your trip in Cambridge. You are looking for a <span class='emphasis'>train</span>. The train should go to <span class='emphasis'>cambridge</span> and should <span class='emphasis'>arrive by 20:45</span>. The train should depart from <span class='emphasis'>birmingham new street</span> and should leave on <span class='emphasis'>wednesday</span>. Once you find the train you want to make a booking for <span class='emphasis'>5 people</span>. Make sure you get the <span class='emphasis'>reference number</span>. You are also looking for a <span class='emphasis'>place to stay</span>. The hotel should have <span class='emphasis'>a star of 4</span> and should <span class='emphasis'>include free wifi</span>. The hotel <span class='emphasis'>doesn't need to have free parking</span> and should be in the <span class='emphasis'>cheap</span> price range. If there is no such hotel, how about one that has <span class='emphasis'>free parking</span>. Once you find the <span class='emphasis'>hotel</span> you want to book it for <span class='emphasis'>the same group of people</span> and <span class='emphasis'>5 nights</span> starting from <span class='emphasis'>the same day</span>. Make sure you get the <span class='emphasis'>reference number</span>",
+      "inform": {
+        "hotel": {
+          "parking": "no|yes",
+          "price range": "cheap|cheap",
+          "stars": "4|4",
+          "internet": "yes|yes",
+          "book stay": "5",
+          "book day": "wednesday",
+          "book people": "5"
+        },
+        "train": {
+          "destination": "cambridge",
+          "day": "wednesday",
+          "arrive by": "20:45",
+          "departure": "birmingham new street",
+          "book people": "5"
+        }
+      },
+      "request": {
+        "hotel": {},
+        "train": {}
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi, I'm looking for a train that is going to cambridge and arriving there by 20:45, is there anything like that?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "cambridge",
+              "start": 45,
+              "end": 54
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "20:45",
+              "start": 77,
+              "end": 82
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "",
+            "arrive by": "20:45",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are over 1,000 trains like that.  Where will you be departing from?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "choice",
+              "value": "over 1",
+              "start": 10,
+              "end": 16
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "choice",
+              "value": "000"
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "departure",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I am departing from birmingham new street.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "birmingham new street",
+              "start": 20,
+              "end": 41
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Can you confirm your desired travel day?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "day",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like to leave on wednesday",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "wednesday"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "wednesday",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I show a train leaving birmingham new street at 17:40 and arriving at 20:23 on Wednesday.  Will this work for you?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "Wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "20:23",
+              "start": 70,
+              "end": 75
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "17:40",
+              "start": 48,
+              "end": 53
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "birmingham new street",
+              "start": 23,
+              "end": 44
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That will, yes. Please make a booking for 5 people please.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "book people",
+              "value": "5",
+              "start": 42,
+              "end": 43
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "wednesday",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": "5"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I've booked your train tickets, and your reference number is A9NHSO9Y.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "ref",
+              "value": "A9NHSO9Y",
+              "start": 61,
+              "end": 69
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks so much. I would also need a place to say. I am looking for something with 4 stars and has free wifi. ",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "internet",
+              "value": "yes"
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "stars",
+              "value": "4"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "4",
+            "internet": "yes",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "wednesday",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": "5"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "How about the cambridge belfry?  It has all the attributes you requested and a great name!  Maybe even a real belfry?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "recommend",
+              "domain": "hotel",
+              "slot": "name",
+              "value": "the cambridge belfry",
+              "start": 10,
+              "end": 30
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds great, could you make a booking for me please?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "cambridge belfry",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "4",
+            "internet": "yes",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "wednesday",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": "5"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What day would you like your booking for?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "booking",
+              "slot": "day",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Please book it for Wednesday for 5 people and 5 nights, please.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book day",
+              "value": "wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book stay",
+              "value": "5",
+              "start": 46,
+              "end": 47
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book people",
+              "value": "5",
+              "start": 33,
+              "end": 34
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "cambridge belfry",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "4",
+            "internet": "yes",
+            "type": "",
+            "book stay": "5",
+            "book day": "wednesday",
+            "book people": "5"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "wednesday",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": "5"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Booking was successful. Reference number is : 5NAWGJDC.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "book",
+              "domain": "booking",
+              "slot": "ref",
+              "value": "5NAWGJDC",
+              "start": 46,
+              "end": 54
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you, goodbye",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "cambridge belfry",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "4",
+            "internet": "yes",
+            "type": "",
+            "book stay": "5",
+            "book day": "wednesday",
+            "book people": "5"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "cambridge",
+            "day": "wednesday",
+            "arrive by": "20:45",
+            "departure": "birmingham new street",
+            "book people": "5"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Goodbye. If you think of anything else you need don't hesitate to contact us.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-3",
+    "original_id": "SNG01445.json",
+    "domains": [
+      "police",
+      "general"
+    ],
+    "goal": {
+      "description": "You were <span class='emphasis'>robbed</span> and are looking for help. Make sure you get <span class='emphasis'>address</span>, <span class='emphasis'>phone number</span>, and <span class='emphasis'>postcode</span>",
+      "inform": {
+        "police": {}
+      },
+      "request": {
+        "police": {
+          "address": "",
+          "phone": "",
+          "postcode": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I was robbed a few minutes ago and need assistance.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Please contact the Parkside, Cambridge police station.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "address",
+              "value": "Parkside, Cambridge",
+              "start": 19,
+              "end": 38
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I need the address including postcode of the police station and also the phone number.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "police",
+              "slot": "address",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "police",
+              "slot": "postcode",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "police",
+              "slot": "phone",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Of course. Their address is Parkside, Cambridge postcode CB11JG and phone number is 01223358966.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "phone",
+              "value": "01223358966",
+              "start": 84,
+              "end": 95
+            },
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "address",
+              "value": "Parkside, Cambridge",
+              "start": 28,
+              "end": 47
+            },
+            {
+              "intent": "inform",
+              "domain": "police",
+              "slot": "postcode",
+              "value": "CB11JG",
+              "start": 57,
+              "end": 63
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you. That's all I needed.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You are more than welcome!\n",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "greet",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Ok, have a good day. Goodbye.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You are very welcome. Goodbye.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-4",
+    "original_id": "MUL2105.json",
+    "domains": [
+      "hotel",
+      "train",
+      "general",
+      "booking"
+    ],
+    "goal": {
+      "description": "You are looking for information in Cambridge. You are looking for a <span class='emphasis'>place to stay</span>. The hotel should be in the <span class='emphasis'>east</span> and <span class='emphasis'>doesn't need to include internet</span>. The hotel should <span class='emphasis'>include free parking</span> and should be in the type of <span class='emphasis'>guesthouse</span>. If there is no such hotel, how about one that has <span class='emphasis'>free wifi</span>. Make sure you get <span class='emphasis'>address</span>. You are also looking for a <span class='emphasis'>train</span>. The train should leave on <span class='emphasis'>wednesday</span> and should <span class='emphasis'>arrive by 11:30</span>. The train should go to <span class='emphasis'>cambridge</span> and should depart from <span class='emphasis'>ely</span>. Once you find the train you want to make a booking for <span class='emphasis'>8 people</span>. Make sure you get the <span class='emphasis'>reference number</span>",
+      "inform": {
+        "hotel": {
+          "parking": "yes|yes",
+          "type": "guesthouse|guesthouse",
+          "internet": "no|yes",
+          "area": "east|centre"
+        },
+        "train": {
+          "destination": "cambridge",
+          "day": "wednesday",
+          "arrive by": "11:30",
+          "departure": "ely",
+          "book people": "8"
+        }
+      },
+      "request": {
+        "hotel": {
+          "address": ""
+        },
+        "train": {}
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi. I'm looking for a hotel in the east.  The internet is not needed.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "area",
+              "value": "east"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "no",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are no hotels that do not have internet, but 7 which do have it. Do you have a specific price range you'd prefer?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "7",
+              "start": 51,
+              "end": 52
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": ""
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "internet",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "no, but it should have free parking, please.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "parking",
+              "value": "yes"
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": "dontcare"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The Express by Holiday Inn Cambridge is in the area and has free parking, would you like more information?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "name",
+              "value": "Express by Holiday Inn Cambridge",
+              "start": 4,
+              "end": 36
+            }
+          ],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "parking",
+              "value": ""
+            },
+            {
+              "intent": "reqmore",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Is that a guesthouse or a hotel? I'd really prefer a guesthouse.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "guesthouse",
+              "start": 10,
+              "end": 20
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "express by holiday inn cambridge",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "It's a hotel. There are 5 guesthouses in the area. Do you prefer cheap or moderate for the price range?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "5",
+              "start": 24,
+              "end": 25
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "hotel",
+              "start": 7,
+              "end": 12
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "guesthouse",
+              "start": 26,
+              "end": 36
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "The price doesn't really matter. I just need free parking. It doesn't really need to have internet though. ",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are 5 guesthouses that have free parking. Should I book one of them for you?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "guesthouse",
+              "start": 12,
+              "end": 22
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "5",
+              "start": 10,
+              "end": 11
+            }
+          ],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "booking",
+              "slot": "",
+              "value": ""
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "parking",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, none of them DON'T offer free wifi? If not, I'll need the address for one that does have wifi, please. Tell me about your favorite.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "internet",
+              "value": "yes"
+            }
+          ],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "address",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The allenbell is a guesthouse on the east.  The addres sis 517a coldham lane post code cb13js.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "recommend",
+              "domain": "hotel",
+              "slot": "area",
+              "value": "east"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "recommend",
+              "domain": "hotel",
+              "slot": "address",
+              "value": "517a coldham lane",
+              "start": 59,
+              "end": 76
+            },
+            {
+              "intent": "recommend",
+              "domain": "hotel",
+              "slot": "postcode",
+              "value": "cb13js",
+              "start": 87,
+              "end": 93
+            },
+            {
+              "intent": "recommend",
+              "domain": "hotel",
+              "slot": "name",
+              "value": "allenbell",
+              "start": 4,
+              "end": 13
+            },
+            {
+              "intent": "recommend",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "guesthouse",
+              "start": 19,
+              "end": 29
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great. Can you help me with a train as well? I'm looking to come in from Ely.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "Ely",
+              "start": 73,
+              "end": 76
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "ely",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What is your destination? And do you have any preference for day, departure or arrival time?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "day",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "destination",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "leave at",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I want to go from cambridge to ely, no preference for time but I need to book for 8 people.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "ely",
+              "start": 31,
+              "end": 34
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "cambridge",
+              "start": 18,
+              "end": 27
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "dontcare",
+            "destination": "ely",
+            "day": "",
+            "arrive by": "dontcare",
+            "departure": "cambridge",
+            "book people": "8"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are trains that run every two hours every day starting at 5:50. Do you know what day you'd like to travel?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "starting at 5:50",
+              "start": 52,
+              "end": 68
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "day",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm looking for Wednesday , arrive by 11:30 for 8 people Please.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "11:30",
+              "start": 38,
+              "end": 43
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "book people",
+              "value": "8",
+              "start": 48,
+              "end": 49
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "dontcare",
+            "destination": "ely",
+            "day": "wednesday",
+            "arrive by": "11:30",
+            "departure": "cambridge",
+            "book people": "8"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Booking was successful, the total fee is 35.2 GBP payable at the station. You reference number is 7ZCVR4Q3. Can I help you with anything else?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "ref",
+              "value": "7ZCVR4Q3",
+              "start": 98,
+              "end": 106
+            },
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "price",
+              "value": "35.2 GBP",
+              "start": 41,
+              "end": 49
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No, I don't need anything else right now.  Thank you for your assistance.  Good Bye.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "east",
+            "parking": "yes",
+            "price range": "dontcare",
+            "stars": "",
+            "internet": "no",
+            "type": "guesthouse",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "dontcare",
+            "destination": "ely",
+            "day": "wednesday",
+            "arrive by": "11:30",
+            "departure": "cambridge",
+            "book people": "8"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Thank you and enjoy your visit. Have a great day.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-5",
+    "original_id": "PMUL1690.json",
+    "domains": [
+      "hotel",
+      "train",
+      "booking",
+      "general"
+    ],
+    "goal": {
+      "description": "You are planning your trip in Cambridge. You are looking for a <span class='emphasis'>train</span>. The train should depart from <span class='emphasis'>norwich</span> and should <span class='emphasis'>leave after 21:15</span>. The train should leave on <span class='emphasis'>monday</span> and should go to <span class='emphasis'>cambridge</span>. Make sure you get <span class='emphasis'>arrival time</span>, <span class='emphasis'>travel time</span>, and <span class='emphasis'>price</span>. You are also looking for a <span class='emphasis'>place to stay</span>. The hotel should have <span class='emphasis'>a star of 4</span> and should be in the <span class='emphasis'>north</span>. The hotel should be in the <span class='emphasis'>moderate</span> price range and should be in the type of <span class='emphasis'>hotel</span>. If there is no such hotel, how about one that is in <span class='emphasis'>the type of guesthouse</span>. Once you find the <span class='emphasis'>hotel</span> you want to book it for <span class='emphasis'>4 people</span> and <span class='emphasis'>2 nights</span> starting from <span class='emphasis'>the same day</span>. Make sure you get the <span class='emphasis'>reference number</span>",
+      "inform": {
+        "hotel": {
+          "type": "hotel|guesthouse",
+          "price range": "moderate|moderate",
+          "stars": "4|4",
+          "area": "north|north",
+          "book stay": "2",
+          "book day": "monday",
+          "book people": "4"
+        },
+        "train": {
+          "leave at": "21:15",
+          "destination": "cambridge",
+          "day": "monday",
+          "departure": "norwich"
+        }
+      },
+      "request": {
+        "hotel": {},
+        "train": {
+          "arrive by": "",
+          "duration": "",
+          "price": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I need to take a train from Norwich, leaving after 21:15.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "Norwich",
+              "start": 28,
+              "end": 35
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "21:15",
+              "start": 51,
+              "end": 56
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Where would you like to go to?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "destination",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like to go to Ely please.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "Ely",
+              "start": 22,
+              "end": 25
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "ely",
+            "day": "",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I don't have any listings for trains leaving Norwich and arriving in Ely. Would you like to try a different departure station?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "nooffer",
+              "domain": "train",
+              "slot": "destination",
+              "value": "Ely",
+              "start": 69,
+              "end": 72
+            },
+            {
+              "intent": "nooffer",
+              "domain": "train",
+              "slot": "departure",
+              "value": "Norwich",
+              "start": 45,
+              "end": 52
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "departure",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I meant Cambridge please. I would like to arrive in Cambridge on Monday after 21:15.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "monday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "Cambridge",
+              "start": 8,
+              "end": 17
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "21:15",
+              "start": 78,
+              "end": 83
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "ely",
+            "day": "",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok I will book that for you and get you a confirmation number",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "offerbook",
+              "domain": "train",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I don't need anything booked.  I just need to get the arrival time, travel time and price of a train from norwich to cambridge leaving after 21:15.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "cambridge",
+              "start": 117,
+              "end": 126
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "norwich",
+              "start": 106,
+              "end": 113
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "21:15",
+              "start": 141,
+              "end": 146
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "duration",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "price",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are trains arriving at 22:35, 23:35 and 24:35. They are 17.60 pounds and 79 minutes each.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "price",
+              "value": "17.60 pounds",
+              "start": 62,
+              "end": 74
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "duration",
+              "value": "79 minutes",
+              "start": 79,
+              "end": 89
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "22:35",
+              "start": 29,
+              "end": 34
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "23:35",
+              "start": 36,
+              "end": 41
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "24:35",
+              "start": 46,
+              "end": 51
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great, thanks! I'm also looking for a 4 star hotel in the north. Can you please help with that? ",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "area",
+              "value": "north"
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "stars",
+              "value": "4"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are several that meet your criteria. Is there a price range you are interested in?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "several",
+              "start": 10,
+              "end": 17
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like to keep it in the moderate range, please.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "price range",
+              "value": "moderate"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "moderate",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I see 7 options. They are all guesthouses. Do you have preferences for internet and parking?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "type",
+              "value": "guesthouses",
+              "start": 30,
+              "end": 41
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "7",
+              "start": 6,
+              "end": 7
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "choice",
+              "value": "all",
+              "start": 26,
+              "end": 29
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "internet",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "parking",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I do not have a preference on those things.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "moderate",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Shall I try to start and book you into one?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "booking",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Please book it and provide the reference number.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hotel",
+              "slot": "ref",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "moderate",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "How many nights will you be staying?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "booking",
+              "slot": "book stay",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Please book the hotel for 4 people and 2 nights.  Thank you.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book stay",
+              "value": "2",
+              "start": 39,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book people",
+              "value": "4",
+              "start": 26,
+              "end": 27
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "moderate",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What day will you be arriving?",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "booking",
+              "slot": "day",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "the same day... monday please.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "hotel",
+              "slot": "book day",
+              "value": "monday"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "moderate",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "2",
+            "book day": "monday",
+            "book people": "4"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I apologize, some of our new workers have phobias of the booking system, I booked you at Acorn guest house, the reference number is 04CSEO7Q any other questions?",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "book",
+              "domain": "booking",
+              "slot": "ref",
+              "value": "04CSEO7Q",
+              "start": 132,
+              "end": 140
+            },
+            {
+              "intent": "book",
+              "domain": "booking",
+              "slot": "name",
+              "value": "Acorn guest house",
+              "start": 89,
+              "end": 106
+            }
+          ],
+          "binary": [
+            {
+              "intent": "reqmore",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's all I need for today.  Thanks for your help!",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "north",
+            "parking": "",
+            "price range": "moderate",
+            "stars": "4",
+            "internet": "",
+            "type": "",
+            "book stay": "2",
+            "book day": "monday",
+            "book people": "4"
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "21:15",
+            "destination": "cambridge",
+            "day": "monday",
+            "arrive by": "",
+            "departure": "norwich",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I'm happy to help, and I hope you enjoy your stay!",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-6",
+    "original_id": "MUL2395.json",
+    "domains": [
+      "attraction",
+      "restaurant",
+      "general"
+    ],
+    "goal": {
+      "description": "You are planning your trip in Cambridge. You are looking for <span class='emphasis'>places to go</span> in town. The attraction should be in the <span class='emphasis'>centre</span>. Make sure you get <span class='emphasis'>entrance fee</span>, <span class='emphasis'>attraction type</span>, and <span class='emphasis'>address</span>. You are also looking for a <span class='emphasis'>place to dine</span>. The restaurant should be in the <span class='emphasis'>expensive</span> price range and should be <span class='emphasis'>in the same area as the attraction</span>. The restaurant should serve <span class='emphasis'>caribbean</span> food. If there is no such restaurant, how about one that serves <span class='emphasis'>turkish</span> food. Make sure you get <span class='emphasis'>phone number</span>, <span class='emphasis'>postcode</span>, and <span class='emphasis'>address</span>",
+      "inform": {
+        "attraction": {
+          "area": "east|centre"
+        },
+        "restaurant": {
+          "food": "caribbean|turkish",
+          "price range": "expensive|expensive",
+          "area": "centre|centre"
+        }
+      },
+      "request": {
+        "attraction": {
+          "entrance fee": "",
+          "type": "",
+          "address": ""
+        },
+        "restaurant": {
+          "phone": "",
+          "postcode": "",
+          "address": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I am planning a trip to town and want to sight see a bit. Can you let me know some attractions I may be interested in?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are 79 attractions in the city. Do you have a specific type of attraction or specific area of the attraction that you are interested in?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "choice",
+              "value": "79",
+              "start": 10,
+              "end": 12
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "area",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "type",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like something in the centre.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "area",
+              "value": "centre"
+            }
+          ],
+          "non-categorical": [],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great! How about All Saints Church? It has fantastic architecture and free entrance. Would you like more information?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "recommend",
+              "domain": "attraction",
+              "slot": "type",
+              "value": "architecture"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "recommend",
+              "domain": "attraction",
+              "slot": "entrance fee",
+              "value": "free",
+              "start": 70,
+              "end": 74
+            },
+            {
+              "intent": "recommend",
+              "domain": "attraction",
+              "slot": "name",
+              "value": "All Saints Church",
+              "start": 17,
+              "end": 34
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Could I get the address for it? I would also like an expensive place to eat around it. ",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "address",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "expensive",
+            "name": "",
+            "area": "centre",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The address is Jesus Lane. What type of food would you like to eat?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "address",
+              "value": "Jesus Lane",
+              "start": 15,
+              "end": 25
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm in the mood for Caribbean food.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Caribbean",
+              "start": 20,
+              "end": 29
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "caribbean",
+            "price range": "expensive",
+            "name": "",
+            "area": "centre",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Unfortunately, there are no expensive caribbean restaurants in that area. Would you like me to check a different type of cuisine, or another area?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "nooffer",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "nooffer",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "caribbean",
+              "start": 38,
+              "end": 47
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, I also love turkish food. Is there something in the center that's expensive? Also, what type of attraction is All Saints Church?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "name",
+              "value": "All Saints Church",
+              "start": 115,
+              "end": 132
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "turkish",
+              "start": 17,
+              "end": 24
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "type",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "all saints church",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "turkish",
+            "price range": "expensive",
+            "name": "",
+            "area": "centre",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The Meze Bar Restaurant is an expensive Turkish restaurant in the city centre.  The All Saints Church is an architecture attraction.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "the city centre"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            },
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "type",
+              "value": "architecture"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Turkish",
+              "start": 40,
+              "end": 47
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "The Meze Bar Restaurant",
+              "start": 0,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "name",
+              "value": "The All Saints Church",
+              "start": 80,
+              "end": 101
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Can I have the phone number, address and postcode for the restaurant please?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "postcode",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "all saints church",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "turkish",
+            "price range": "expensive",
+            "name": "meze bar",
+            "area": "centre",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I don't have a phone number available, but the address is 196 Mill Road City Centre, postal code cb13nf. Anything else I can do for you? ",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "postcode",
+              "value": "cb13nf",
+              "start": 97,
+              "end": 103
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "196 Mill Road City Centre",
+              "start": 58,
+              "end": 83
+            }
+          ],
+          "binary": [
+            {
+              "intent": "reqmore",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great that's all that I needed to know, thank you!",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "all saints church",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "turkish",
+            "price range": "expensive",
+            "name": "meze bar",
+            "area": "centre",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome, feel free to contact us about anything else you need.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            },
+            {
+              "intent": "welcome",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-7",
+    "original_id": "SNG0190.json",
+    "domains": [
+      "hospital",
+      "general"
+    ],
+    "goal": {
+      "description": "You got injured and are looking for a <span class='emphasis'>hospital</span> nearby. Make sure you get <span class='emphasis'>address</span> and <span class='emphasis'>phone number</span>",
+      "inform": {
+        "hospital": {}
+      },
+      "request": {
+        "hospital": {
+          "address": "",
+          "phone": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I've been injured and need to find a hospital nearby.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "hospital",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The Addenbrookes Hospital is located at Hills Rd., Cambridge. Are you looking for a specific department?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hospital",
+              "slot": "department",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No, I just need the general phone number, please.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hospital",
+              "slot": "phone",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "01223245151, is the number. Do you need anything else?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hospital",
+              "slot": "phone",
+              "value": "01223245151",
+              "start": 0,
+              "end": 11
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you that will do.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Feel better soon! Have a better night! ",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-8",
+    "original_id": "PMUL1170.json",
+    "domains": [
+      "attraction",
+      "train",
+      "general"
+    ],
+    "goal": {
+      "description": "You are planning your trip in Cambridge. You are looking for a <span class='emphasis'>train</span>. The train should depart from <span class='emphasis'>cambridge</span> and should leave on <span class='emphasis'>wednesday</span>. The train should <span class='emphasis'>leave after 12:45</span> and should go to <span class='emphasis'>peterborough</span>. Make sure you get <span class='emphasis'>train ID</span>, <span class='emphasis'>arrival time</span>, and <span class='emphasis'>price</span>. You are also looking for <span class='emphasis'>places to go</span> in town. The attraction should be in the <span class='emphasis'>centre</span> and should be in the type of <span class='emphasis'>museum</span>. Make sure you get <span class='emphasis'>address</span>, <span class='emphasis'>postcode</span>, and <span class='emphasis'>phone number</span>",
+      "inform": {
+        "attraction": {
+          "type": "museum",
+          "area": "centre"
+        },
+        "train": {
+          "leave at": "12:45",
+          "destination": "peterborough",
+          "day": "wednesday",
+          "departure": "cambridge"
+        }
+      },
+      "request": {
+        "attraction": {
+          "address": "",
+          "postcode": "",
+          "phone": ""
+        },
+        "train": {
+          "train id": "",
+          "arrive by": "",
+          "price": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I need to take a train out of Cambridge, I will be leaving town on Wednesday.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "Cambridge",
+              "start": 30,
+              "end": 39
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "wednesday",
+            "arrive by": "",
+            "departure": "cambridge",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are 5 trains out of Cambridge on Wednesday. Do you have a departure time in mind? ",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "Wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "choice",
+              "value": "5",
+              "start": 10,
+              "end": 11
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "departure",
+              "value": "Cambridge",
+              "start": 26,
+              "end": 35
+            }
+          ],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "leave at",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like to go to peterborough and leave after 12:45, I have to attend a meeting beforehand.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "peterborough",
+              "start": 18,
+              "end": 30
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "12:45",
+              "start": 47,
+              "end": 52
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "12:45",
+            "destination": "peterborough",
+            "day": "wednesday",
+            "arrive by": "",
+            "departure": "cambridge",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "TR1879 leaves at 13:06 on Wednesday.  Will that work for you?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "day",
+              "value": "Wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "13:06",
+              "start": 17,
+              "end": 22
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "train id",
+              "value": "TR1879",
+              "start": 0,
+              "end": 6
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is the price of the fair and could you tell me what is the arrival time into Peterborough?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "train",
+              "slot": "price",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "12:45",
+            "destination": "peterborough",
+            "day": "wednesday",
+            "arrive by": "",
+            "departure": "cambridge",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The price is 16.50 pounds and the train will arrive in Peterborough by 13:56 Wednesday.  Would you like me to book a ticket for you?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "price",
+              "value": "16.50 pounds",
+              "start": 13,
+              "end": 25
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "destination",
+              "value": "Peterborough",
+              "start": 55,
+              "end": 67
+            },
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "arrive by",
+              "value": "13:56",
+              "start": 71,
+              "end": 76
+            }
+          ],
+          "binary": [
+            {
+              "intent": "offerbook",
+              "domain": "train",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, one ticket please, can I also get the reference number?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "train",
+              "slot": "book people",
+              "value": "one",
+              "start": 5,
+              "end": 8
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "12:45",
+            "destination": "peterborough",
+            "day": "wednesday",
+            "arrive by": "",
+            "departure": "cambridge",
+            "book people": "1"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I booked you one seat on TR1879 departing Cambridge for Peterborough on Wednesday at 13:06, Reference: xu1qlhvw. Can I help further today?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "day",
+              "value": "Wednesday"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "ref",
+              "value": "xu1qlhvw",
+              "start": 103,
+              "end": 111
+            },
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "departure",
+              "value": "Cambridge",
+              "start": 42,
+              "end": 51
+            },
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "book people",
+              "value": "one",
+              "start": 13,
+              "end": 16
+            },
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "train id",
+              "value": "TR1879",
+              "start": 25,
+              "end": 31
+            },
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "destination",
+              "value": "Peterborough",
+              "start": 56,
+              "end": 68
+            },
+            {
+              "intent": "offerbooked",
+              "domain": "train",
+              "slot": "leave at",
+              "value": "13:06",
+              "start": 85,
+              "end": 90
+            }
+          ],
+          "binary": [
+            {
+              "intent": "reqmore",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I am also looking for a museum in centre. Could you give me the address, postcode and phone number of one? ",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "area",
+              "value": "centre"
+            },
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "type",
+              "value": "museum"
+            }
+          ],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "address",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "postcode",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "attraction",
+              "slot": "phone",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "museum",
+            "name": "",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "12:45",
+            "destination": "peterborough",
+            "day": "wednesday",
+            "arrive by": "",
+            "departure": "cambridge",
+            "book people": "1"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The Broughton House Gallery is located at 98 King Street, postcode cb11ln. Their phone number is 01223314960. Is there anything else you need?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "phone",
+              "value": "01223314960",
+              "start": 97,
+              "end": 108
+            },
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "address",
+              "value": "98 King Street",
+              "start": 42,
+              "end": 56
+            },
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "name",
+              "value": "Broughton House Gallery",
+              "start": 4,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "attraction",
+              "slot": "postcode",
+              "value": "cb11ln",
+              "start": 67,
+              "end": 73
+            }
+          ],
+          "binary": [
+            {
+              "intent": "reqmore",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's all I need right now. Thanks, you have been very helpful!",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "thank",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "museum",
+            "name": "",
+            "area": "centre"
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "12:45",
+            "destination": "peterborough",
+            "day": "wednesday",
+            "arrive by": "",
+            "departure": "cambridge",
+            "book people": "1"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome, I hope you enjoy your time in Cambridge!",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            },
+            {
+              "intent": "welcome",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "multiwoz21",
+    "data_split": "train",
+    "dialogue_id": "multiwoz21-train-9",
+    "original_id": "SNG01741.json",
+    "domains": [
+      "hospital",
+      "general"
+    ],
+    "goal": {
+      "description": "You want to find a <span class='emphasis'>hospital</span> in town. The hospital should have the <span class='emphasis'>paediatric clinic</span> department. Make sure you get <span class='emphasis'>address</span>, <span class='emphasis'>postcode</span>, and <span class='emphasis'>phone number</span>",
+      "inform": {
+        "hospital": {
+          "department": "paediatric clinic"
+        }
+      },
+      "request": {
+        "hospital": {
+          "address": "",
+          "postcode": "",
+          "phone": ""
+        }
+      }
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I am looking in town  for a hospital with a paediatric clinic",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hospital",
+              "slot": "department",
+              "value": "paediatric clinic",
+              "start": 44,
+              "end": 61
+            }
+          ],
+          "binary": []
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Addenbrookes Hosptial on Hills Rd. in Cambridge has a paediatric clinic.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "hospital",
+              "slot": "department",
+              "value": "paediatric clinic",
+              "start": 54,
+              "end": 71
+            }
+          ],
+          "binary": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I need the address and phone number and postal code",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "hospital",
+              "slot": "address",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "hospital",
+              "slot": "postcode",
+              "value": ""
+            },
+            {
+              "intent": "request",
+              "domain": "hospital",
+              "slot": "phone",
+              "value": ""
+            }
+          ]
+        },
+        "state": {
+          "attraction": {
+            "type": "",
+            "name": "",
+            "area": ""
+          },
+          "hotel": {
+            "name": "",
+            "area": "",
+            "parking": "",
+            "price range": "",
+            "stars": "",
+            "internet": "",
+            "type": "",
+            "book stay": "",
+            "book day": "",
+            "book people": ""
+          },
+          "restaurant": {
+            "food": "",
+            "price range": "",
+            "name": "",
+            "area": "",
+            "book time": "",
+            "book day": "",
+            "book people": ""
+          },
+          "taxi": {
+            "leave at": "",
+            "destination": "",
+            "departure": "",
+            "arrive by": ""
+          },
+          "train": {
+            "leave at": "",
+            "destination": "",
+            "day": "",
+            "arrive by": "",
+            "departure": "",
+            "book people": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great. Thank you and goodbye.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "categorical": [],
+          "non-categorical": [],
+          "binary": [
+            {
+              "intent": "bye",
+              "domain": "general",
+              "slot": "",
+              "value": ""
+            }
+          ]
+        },
+        "db_results": {}
+      }
+    ]
+  }
+]
