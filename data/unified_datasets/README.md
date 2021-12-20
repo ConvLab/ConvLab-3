@@ -6,9 +6,11 @@ We transform different datasets into a unified format under `data/unified_datase
 ```python
 from convlab2 import load_dataset, load_database
 
-dialogues, ontology = load_dataset('multiwoz21')
+dataset, ontology = load_dataset('multiwoz21')
 database = load_database('multiwoz21')
 ```
+
+`dataset` is a dict where the keys are data splits and the values are lists of dialogues. `database` is an instance of `Database` class that has a `query` function. The format of dialogue, ontology, and Database are defined below.
 
 Each dataset contains at least these files:
 

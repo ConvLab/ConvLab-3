@@ -35,7 +35,7 @@ class Database(BaseDatabase):
             'leaveAt': 'leave at'
         }
 
-    def query(self, domain, state, topk, ignore_open=False, soft_contraints=(), fuzzy_match_ratio=60):
+    def query(self, domain: str, state: dict, topk: int, ignore_open=False, soft_contraints=(), fuzzy_match_ratio=60) -> list:
         """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
         # query the db
         if domain == 'taxi':
