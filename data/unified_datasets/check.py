@@ -315,10 +315,8 @@ if __name__ == '__main__':
             if args.preprocess:
                 print('pre-processing')
 
-                os.chdir(name)
                 preprocess = importlib.import_module(f'{name}.preprocess')
                 preprocess.preprocess()
-                os.chdir('..')
 
             data_file = f'{name}/data.zip'
             if not os.path.exists(data_file):

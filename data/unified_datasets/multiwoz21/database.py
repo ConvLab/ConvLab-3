@@ -5,9 +5,10 @@ from fuzzywuzzy import fuzz
 from itertools import chain
 from zipfile import ZipFile
 from copy import deepcopy
+from convlab2.util.unified_datasets_util import BaseDatabase
 
 
-class Database:
+class Database(BaseDatabase):
     def __init__(self):
         """extract data.zip and load the database."""
         archive = ZipFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.zip'))
@@ -34,7 +35,7 @@ class Database:
             'leaveAt': 'leave at'
         }
 
-    def query(self, domain, state, topk, ignore_open=False, soft_contraints=(), fuzzy_match_ratio=60):
+    def query(self, domain: str, state: dict, topk: int, ignore_open=False, soft_contraints=(), fuzzy_match_ratio=60) -> list:
         """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
         # query the db
         if domain == 'taxi':
@@ -102,6 +103,8 @@ class Database:
 
 if __name__ == '__main__':
     db = Database()
+    assert issubclass(Database, BaseDatabase)
+    assert isinstance(db, BaseDatabase)
     res = db.query("train", [['departure', 'cambridge'], ['destination','peterborough'], ['day', 'tuesday'], ['arrive by', '11:15']], topk=3)
     print(res, len(res))
     # print(db.query("hotel", [['price range', 'moderate'], ['stars','4'], ['type', 'guesthouse'], ['internet', 'yes'], ['parking', 'no'], ['area', 'east']]))
