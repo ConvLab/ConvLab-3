@@ -31,7 +31,9 @@ if __name__ == '__main__':
 Datasets that require database interaction should also include the following file:
 - `database.py`: load the database and define the query function:
 ```python
-class Database:
+from convlab2.util.unified_datasets_util import BaseDatabase
+
+class Database(BaseDatabase):
     def __init__(self):
         """extract data.zip and load the database."""
 
