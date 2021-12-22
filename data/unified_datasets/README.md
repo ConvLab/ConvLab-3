@@ -4,9 +4,10 @@
 We transform different datasets into a unified format under `data/unified_datasets` directory. To import a unified datasets:
 
 ```python
-from convlab2 import load_dataset, load_database
+from convlab2.util import load_dataset, load_ontology, load_database
 
-dataset, ontology = load_dataset('multiwoz21')
+dataset = load_dataset('multiwoz21')
+ontology = load_ontology('multiwoz21')
 database = load_database('multiwoz21')
 ```
 
