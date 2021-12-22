@@ -1,6 +1,6 @@
 # Unified data format
 
-## Overview
+## Usage
 We transform different datasets into a unified format under `data/unified_datasets` directory. To import a unified datasets:
 
 ```python
@@ -13,6 +13,18 @@ database = load_database('multiwoz21')
 
 `dataset` is a dict where the keys are data splits and the values are lists of dialogues. `database` is an instance of `Database` class that has a `query` function. The format of dialogue, ontology, and Database are defined below.
 
+We provide a function `load_unified_data` to transform the dialogues into turns as samples. By passing different arguments to `load_unified_data`, we provide functions to load data for different components:
+
+```python
+from convlab2.util import load_unified_data, load_nlu_data, load_dst_data, load_policy_data, load_nlg_data, load_e2e_data
+
+nlu_data = load_nlu_data(dataset, data_split='test', speaker='user')
+dst_data = load_dst_data(dataset, data_split='test', speaker='user', context_window_size=5)
+```
+
+To customize the data loading process, see the definition of `load_unified_data`.
+
+## Unified datasets
 Each dataset contains at least these files:
 
 - `README.md`: dataset description and the **main changes** from original data to processed data. Should include the instruction on how to get the original data and transform them into the unified format.
