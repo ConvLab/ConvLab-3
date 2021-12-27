@@ -167,6 +167,13 @@ def load_e2e_data(dataset, data_split='all', speaker='system', context_window_si
     kwargs.setdefault('dialogue_acts', True)
     return load_unified_data(dataset, **kwargs)
 
+def load_rg_data(dataset, data_split='all', speaker='system', context_window_size=100, **kwargs):
+    kwargs.setdefault('data_split', data_split)
+    kwargs.setdefault('speaker', speaker)
+    kwargs.setdefault('use_context', True)
+    kwargs.setdefault('context_window_size', context_window_size)
+    kwargs.setdefault('utterance', True)
+    return load_unified_data(dataset, **kwargs)
 
 if __name__ == "__main__":
     dataset = load_dataset('multiwoz21')
