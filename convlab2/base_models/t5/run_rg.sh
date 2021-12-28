@@ -18,6 +18,8 @@ gradient_accumulation_steps=1
 lr=1e-3
 num_train_epochs=5
 
+python create_data.py --tasks ${task_name} --datasets ${dataset_name} --save_dir "data"
+
 python -m torch.distributed.launch \
     --nproc_per_node ${n_gpus} run_seq2seq.py \
     --task_name ${task_name} \
