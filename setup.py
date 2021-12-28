@@ -42,6 +42,7 @@ setup(
         'torch>=1.6',
         'transformers>=4.0',
         'datasets>=1.8',
+        'seqeval',
         'spacy',
         'allennlp',
         'simplejson',
