@@ -604,10 +604,10 @@ def main():
                 )
                 predictions = [pred.strip() for pred in predictions]
                 output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.json")
-                with open(output_prediction_file, "w") as writer:
+                with open(output_prediction_file, "w", encoding='utf-8') as writer:
                     for sample, pred in zip(raw_datasets["test"], predictions):
                         sample["predictions"] = pred
-                        writer.write(json.dumps(sample)+'\n')
+                        writer.write(json.dumps(sample, ensure_ascii=False)+'\n')
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": data_args.task_name}
     if data_args.dataset_name is not None:

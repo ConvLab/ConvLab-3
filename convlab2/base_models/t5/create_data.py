@@ -16,10 +16,10 @@ def create_rg_data(dataset, data_dir):
         for sample in tqdm(data_by_split[data_split], desc=f'{data_split} sample', leave=False):
             context = ' '.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['context']])
             response = f"{sample['speaker']}: {sample['utterance']}"
-            data.append(json.dumps({'context': context, 'response': response})+'\n')
+            data.append(json.dumps({'context': context, 'response': response}, ensure_ascii=False)+'\n')
 
         file_name = os.path.join(data_dir, f"{data_split}.json")
-        with open(file_name, "w") as f:
+        with open(file_name, "w", encoding='utf-8') as f:
             f.writelines(data)
 
 if __name__ == '__main__':
