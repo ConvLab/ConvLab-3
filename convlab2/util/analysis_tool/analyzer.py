@@ -25,7 +25,8 @@ class Analyzer:
         if evaluator is None:
             self.sess = None
         else:
-            self.sess = BiSession(sys_agent=sys_agent, user_agent=self.user_agent, kb_query=None, evaluator=evaluator)
+            self.sess = BiSession(
+                sys_agent=sys_agent, user_agent=self.user_agent, kb_query=None, evaluator=evaluator)
         return self.sess
 
     def sample_dialog(self, sys_agent):
@@ -36,7 +37,8 @@ class Analyzer:
         pprint(sess.evaluator.goal)
         print('-'*50)
         for i in range(40):
-            sys_response, user_response, session_over, reward = sess.next_turn(sys_response)
+            sys_response, user_response, session_over, reward = sess.next_turn(
+                sys_response)
             print('user:', user_response)
             # print('user in da:', sess.user_agent.get_in_da())
             # print('user out da:', sess.user_agent.get_out_da())
@@ -50,7 +52,8 @@ class Analyzer:
         print('task success:', sess.evaluator.task_success())
         print('book rate:', sess.evaluator.book_rate())
         print('inform precision/recall/f1:', sess.evaluator.inform_F1())
-        print(f"percentage of domains that satisfies the database constraints: {sess.evaluator.final_goal_analyze()}")
+        print(
+            f"percentage of domains that satisfies the database constraints: {sess.evaluator.final_goal_analyze()}")
         print('-' * 50)
         print('final goal:')
         pprint(sess.evaluator.goal)
@@ -59,7 +62,7 @@ class Analyzer:
     def comprehensive_analyze(self, sys_agent, model_name, total_dialog=100):
         sess = self.build_sess(sys_agent)
 
-        goal_seeds = [random.randint(1,100000) for _ in range(total_dialog)]
+        goal_seeds = [random.randint(1, 100000) for _ in range(total_dialog)]
         precision = []
         recall = []
         f1 = []
@@ -68,6 +71,7 @@ class Analyzer:
         complete_num = 0
         turn_num = 0
         turn_suc_num = 0
+
         num_domains = 0
         num_domains_satisfying_constraints = 0
         num_dialogs_satisfying_constraints = 0
@@ -85,9 +89,12 @@ class Analyzer:
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
         f = open(os.path.join(output_dir, 'res.txt'), 'w')
+
         flog = open(os.path.join(output_dir, 'log.txt'), 'w')
 
         for j in tqdm(range(total_dialog), desc="dialogue"):
+            print('='*64, file=flog)
+            print('Dialogue ID:', j, file=flog)
             sys_response = '' if self.user_agent.nlu else []
             random.seed(goal_seeds[0])
             np.random.seed(goal_seeds[0])
@@ -111,13 +118,18 @@ class Analyzer:
             for i in range(40):
                 sys_response, user_response, session_over, reward = sess.next_turn(
                     sys_response)
-                print('user in', sess.user_agent.get_in_da(),file=flog)
-                print('user out', sess.user_agent.get_out_da(),file=flog)
+
+                print('-'*16, file=flog)
+                print('Turn Number:', i, file=flog)
+                # print('user in', sess.user_agent.get_in_da(),file=flog)
+                # print('user out', sess.user_agent.get_out_da(),file=flog)
                 #
                 # print('sys in', sess.sys_agent.get_in_da(),file=flog)
                 # print('sys out', sess.sys_agent.get_out_da(),file=flog)
-                print('user:', user_response,file=flog)
-                print('sys:', sys_response,file=flog)
+                print('User:', user_response, file=flog)
+                print('System:', sys_response, file=flog)
+                print('DST state:', sess.sys_agent.state_return()
+                      ['dst_state'], file=flog)
 
                 step += 2
 
@@ -136,7 +148,8 @@ class Analyzer:
                             if da1 != da2 and da1 is not None and da2 is not None and (da1, da2) not in failed_da_usr:
                                 failed_da_usr.append((da1, da2))
 
-                last_sys_da = sess.sys_agent.get_out_da() if hasattr(sess.sys_agent, "get_out_da") else None
+                last_sys_da = sess.sys_agent.get_out_da() if hasattr(
+                    sess.sys_agent, "get_out_da") else None
                 usr_da_list.append(sess.user_agent.get_out_da())
 
                 if session_over:
@@ -146,6 +159,12 @@ class Analyzer:
             task_complete = sess.user_agent.policy.policy.goal.task_complete()
             book_rate = sess.evaluator.book_rate()
             stats = sess.evaluator.inform_F1()
+
+            if task_success:
+                print('Dialogue succesfully completed!', file=flog)
+            else:
+                print('Dialogue NOT completed succesfully!', file=flog)
+
             percentage = sess.evaluator.final_goal_analyze()
             if task_success:
                 suc_num += 1
@@ -158,9 +177,11 @@ class Analyzer:
                 f1.append(stats[2])
             if book_rate is not None:
                 match.append(book_rate)
+
             if len(sess.evaluator.goal) > 0:
                 num_domains += len(sess.evaluator.goal)
-                num_domains_satisfying_constraints += len(sess.evaluator.goal) * percentage
+                num_domains_satisfying_constraints += len(
+                    sess.evaluator.goal) * percentage
             num_dialogs_satisfying_constraints += (percentage == 1)
             if (j+1) % 100 == 0:
                 logger.info("model name %s", model_name)
@@ -169,10 +190,13 @@ class Analyzer:
                 logger.info('task complete: %.3f', complete_num/(j+1))
                 logger.info('task success: %.3f', suc_num/(j+1))
                 logger.info('book rate: %.3f', np.mean(match))
-                logger.info('inform precision/recall/f1: %.3f %.3f %.3f', np.mean(precision), np.mean(recall), np.mean(f1))
-                logging.info("percentage of domains that satisfy the database constraints: %.3f" % \
+                logger.info('inform precision/recall/f1: %.3f %.3f %.3f',
+                            np.mean(precision), np.mean(recall), np.mean(f1))
+
+                logging.info("percentage of domains that satisfy the database constraints: %.3f" %
                              (1 if num_domains == 0 else (num_domains_satisfying_constraints / num_domains)))
-                logging.info("percentage of dialogs that satisfy the database constraints: %.3f" % (num_dialogs_satisfying_constraints / (j + 1)))
+                logging.info("percentage of dialogs that satisfy the database constraints: %.3f" % (
+                    num_dialogs_satisfying_constraints / (j + 1)))
             domain_set = []
             for da in sess.evaluator.usr_da_array:
                 if da.split('-')[0] != 'general' and da.split('-')[0] not in domain_set:
@@ -209,11 +233,13 @@ class Analyzer:
         print('average book rate:', np.mean(match))
         print("average turn (succ):", tmp)
         print("average turn (all):", turn_num / total_dialog)
-        print("percentage of domains that satisfy the database constraints: %.3f" % \
+        print("percentage of domains that satisfy the database constraints: %.3f" %
               (1 if num_domains == 0 else (num_domains_satisfying_constraints / num_domains)))
-        print("percentage of dialogs that satisfy the database constraints: %.3f" % (num_dialogs_satisfying_constraints / total_dialog))
+        print("percentage of dialogs that satisfy the database constraints: %.3f" % (
+            num_dialogs_satisfying_constraints / total_dialog))
         print("=" * 100)
-        print("complete number of dialogs/tot:", complete_num / total_dialog, file=f)
+        print("complete number of dialogs/tot:",
+              complete_num / total_dialog, file=f)
         print("success number of dialogs/tot:", suc_num / total_dialog, file=f)
         print("average precision:", np.mean(precision), file=f)
         print("average recall:", np.mean(recall), file=f)
@@ -221,12 +247,19 @@ class Analyzer:
         print('average book rate:', np.mean(match), file=f)
         print("average turn (succ):", tmp, file=f)
         print("average turn (all):", turn_num / total_dialog, file=f)
-        print("percentage of domains that satisfy the database constraints: %.3f" % \
+        print("percentage of domains that satisfy the database constraints: %.3f" %
               (1 if num_domains == 0 else (num_domains_satisfying_constraints / num_domains)), file=f)
-        print("percentage of dialogs that satisfy the database constraints: %.3f" % (num_dialogs_satisfying_constraints / total_dialog), file=f)
+        print("percentage of dialogs that satisfy the database constraints: %.3f" % (
+            num_dialogs_satisfying_constraints / total_dialog), file=f)
+        try:
+            print("percentage of inform violations: %.3f" % (
+                sys_agent.policy.fail_info_penalty/float(sys_agent.policy.num_generated_response)), file=f)
+        except:
+            pass
         f.close()
 
-        reporter.report(complete_num/total_dialog, suc_num/total_dialog, np.mean(precision), np.mean(recall), np.mean(f1), tmp, turn_num / total_dialog)
+        reporter.report(complete_num/total_dialog, suc_num/total_dialog, np.mean(
+            precision), np.mean(recall), np.mean(f1), tmp, turn_num / total_dialog)
 
         return complete_num/total_dialog, suc_num/total_dialog, np.mean(precision), np.mean(recall), np.mean(f1), np.mean(match), turn_num / total_dialog
 
@@ -244,7 +277,8 @@ class Analyzer:
             np.random.seed(seed)
             torch.manual_seed(seed)
             # print(model_name[i], total_dialog)
-            complete, suc, pre, rec, f1, match, turn = self.comprehensive_analyze(agent_list[i], model_name[i], total_dialog)
+            complete, suc, pre, rec, f1, match, turn = self.comprehensive_analyze(
+                agent_list[i], model_name[i], total_dialog)
             y0.append(complete)
             y1.append(suc)
             y2.append(pre)
@@ -261,11 +295,11 @@ class Analyzer:
 
         plt.figure(figsize=(12, 7), dpi=300)
 
-        font1 = {'weight': 'normal','size' : 20}
+        font1 = {'weight': 'normal', 'size': 20}
 
-        font2 = {'weight': 'bold','size' : 22}
+        font2 = {'weight': 'bold', 'size': 22}
 
-        font3 = {'weight': 'bold','size' : 35}
+        font3 = {'weight': 'bold', 'size': 35}
         plt.tick_params(axis='y', labelsize=20)
         plt.tick_params(axis='x', labelsize=22)
         plt.ylabel('score', font2)
@@ -274,7 +308,8 @@ class Analyzer:
         plt.title('Comparison of different systems', font3, pad=16)
 
         plt.bar(x1, y0, width=0.1, align='center', label='Task complete')
-        plt.bar(x2, y1, width=0.1, align='center', tick_label=model_name, label='Success rate')
+        plt.bar(x2, y1, width=0.1, align='center',
+                tick_label=model_name, label='Success rate')
         plt.bar(x3, y4, width=0.1, align='center', label='Inform F1')
         plt.bar(x4, y5, width=0.1, align='center', label='Book rate')
         plt.legend(loc=2, prop=font1)

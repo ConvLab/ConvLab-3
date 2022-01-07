@@ -3,8 +3,10 @@
 Created on Sun Jul 14 16:14:07 2019
 @author: truthless
 """
-import sys, os
+
+import sys, os, logging, random
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from convlab2.dialog_agent.session import BiSession
 import numpy as np
 import torch
 from torch import multiprocessing as mp
@@ -25,6 +27,90 @@ try:
     mp = mp.get_context('spawn')
 except RuntimeError:
     pass
+
+
+def evaluate(dataset_name, load_path=None, calculate_reward=False, policy_sys=None):
+    seed = 20190827
+    random.seed(seed)
+    np.random.seed(seed)
+
+    if dataset_name == 'MultiWOZ':
+        dst_sys = RuleDST()
+
+        from convlab2.policy.mel import MEL
+        if policy_sys is None:
+            if load_path:
+                policy_sys = MEL(False)
+                policy_sys.load(load_path)
+            else:
+                policy_sys = MEL.from_pretrained
+
+        dst_usr = None
+
+        policy_usr = RulePolicy(character='usr')
+        simulator = PipelineAgent(None, None, policy_usr, None, 'user')
+
+        env = Environment(None, simulator, None, dst_sys)
+
+        agent_sys = PipelineAgent(None, dst_sys, policy_sys, None, 'sys')
+
+        evaluator = MultiWozEvaluator()
+        sess = BiSession(agent_sys, simulator, None, evaluator)
+
+        task_success = {'All': []}
+        for seed in range(100):
+            random.seed(seed)
+            np.random.seed(seed)
+            sess.init_session()
+            sys_response = []
+            #logging.info('-' * 50)
+            #logging.info(f'seed {seed}')
+            for i in range(40):
+                sys_response, user_response, session_over, reward = sess.next_turn(sys_response)
+                if session_over is True:
+                    task_succ = sess.evaluator.task_success()
+                    #logging.info(f'task success: {task_succ}')
+                    #logging.info(f'book rate: {sess.evaluator.book_rate()}')
+                    #logging.info(f'inform precision/recall/f1: {sess.evaluator.inform_F1()}')
+                    #logging.info('-' * 50)
+                    break
+            else:
+                task_succ = 0
+
+            for key in sess.evaluator.goal:
+                if key not in task_success:
+                    task_success[key] = []
+                else:
+                    task_success[key].append(task_succ)
+            task_success['All'].append(task_succ)
+
+        for key in task_success:
+            logging.info(
+                f'{key} {len(task_success[key])} {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}')
+
+        if calculate_reward:
+            reward_tot = []
+            for seed in range(200):
+                s = env.reset()
+                reward = []
+                value = []
+                mask = []
+                for t in range(40):
+                    s_vec = torch.Tensor(policy_sys.vector.state_vectorize(s))
+                    a = policy_sys.predict(s)
+
+                    # interact with env
+                    next_s, r, done = env.step(a)
+                    logging.info(r)
+                    reward.append(r)
+                    if done:  # one due to counting from 0, the one for the last turn
+                        break
+                logging.info(f'{seed} reward: {np.mean(reward)}')
+                reward_tot.append(np.mean(reward))
+            logging.info(f'total avg reward: {np.mean(reward_tot)}')
+    else:
+        raise Exception("currently supported dataset: MultiWOZ")
+
 
 def sampler(pid, queue, evt, env, policy, batchsz):
     """
@@ -179,3 +265,4 @@ if __name__ == '__main__':
 
     for i in range(args.epoch):
         update(env, policy_sys, args.batchsz, i, args.process_num)
+        evaluate('MultiWOZ', policy_sys=policy_sys)

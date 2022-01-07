@@ -31,7 +31,7 @@ class PG(Policy):
         self.gamma = cfg['gamma']
         self.is_train = is_train
         if is_train:
-            init_logging_handler(cfg['log_dir'])
+            init_logging_handler(cfg['log_dir'], logging_mode=logging.INFO)
 
         if dataset == 'Multiwoz':
             voc_file = os.path.join(root_dir, 'data/multiwoz/sys_da_voc.txt')
@@ -53,7 +53,7 @@ class PG(Policy):
         """
         s_vec = torch.Tensor(self.vector.state_vectorize(state))
         a = self.policy.select_action(s_vec.to(device=DEVICE), self.is_train).cpu()
-        action = self.vector.action_devectorize(a.numpy())
+        action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
 
         return action
@@ -126,6 +126,7 @@ class PG(Policy):
 
                 # backprop
                 surrogate.backward()
+
                 for p in self.policy.parameters():
                     p.grad[p.grad != p.grad] = 0.0
                 # gradient clipping, for stability

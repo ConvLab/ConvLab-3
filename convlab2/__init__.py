@@ -1,5 +1,5 @@
-import os
 
+import os
 from convlab2.nlu import NLU
 from convlab2.dst import DST
 from convlab2.policy import Policy

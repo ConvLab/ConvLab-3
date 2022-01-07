@@ -5,16 +5,16 @@ from convlab2.nlu.jointBERT.multiwoz import BERTNLU
 # available DST models
 from convlab2.dst.rule.multiwoz import RuleDST
 # from convlab2.dst.mdbt.multiwoz import MDBT
-# from convlab2.dst.sumbt.multiwoz import SUMBT
+from convlab2.dst.sumbt.multiwoz import SUMBT
 # from convlab2.dst.trade.multiwoz import TRADE
 # from convlab2.dst.comer.multiwoz import COMER
 # available Policy models
 from convlab2.policy.rule.multiwoz import RulePolicy
 # from convlab2.policy.ppo.multiwoz import PPOPolicy
 # from convlab2.policy.pg.multiwoz import PGPolicy
-# from convlab2.policy.mle.multiwoz import MLEPolicy
+from convlab2.policy.mle.multiwoz import MLEPolicy
 # from convlab2.policy.gdpl.multiwoz import GDPLPolicy
-# from convlab2.policy.vhus.multiwoz import UserPolicyVHUS
+from convlab2.policy.vhus.multiwoz import UserPolicyVHUS
 # from convlab2.policy.mdrg.multiwoz import MDRGWordPolicy
 # from convlab2.policy.hdsa.multiwoz import HDSA
 # from convlab2.policy.larl.multiwoz import LaRL
@@ -27,6 +27,8 @@ from convlab2.nlg.sclstm.multiwoz import SCLSTM
 from convlab2.dialog_agent import PipelineAgent, BiSession
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab2.util.analysis_tool.analyzer import Analyzer
+from convlab2.policy.tus.multiwoz import action
+from convlab2.policy.tus.multiwoz import transformer
 from pprint import pprint
 import random
 import numpy as np
@@ -47,27 +49,38 @@ def test_end2end():
     sys_dst = RuleDST()
     # rule policy
     sys_policy = RulePolicy()
+    # sys_policy = MLEPolicy()
+    # sys_policy = RulePolicy()
     # template NLG
     sys_nlg = TemplateNLG(is_user=False)
     # assemble
-    sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
+    sys_agent = PipelineAgent(
+        sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
 
     # BERT nlu trained on sys utterance
-    user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json',
-                       model_file='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip')
+    user_nlu = BERTNLU(mode='usr')
+    # user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json',
+    #                    model_file='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip')
     # not use dst
-    user_dst = None
+    user_dst = RuleDST()
+    # user_dst = None
     # rule policy
-    user_policy = RulePolicy(character='usr')
+    # user_policy = RulePolicy(character='usr')
+    user_policy = transformer.UserPolicy()
+    # user_policy = UserPolicyVHUS()
     # template NLG
     user_nlg = TemplateNLG(is_user=True)
     # assemble
-    user_agent = PipelineAgent(user_nlu, user_dst, user_policy, user_nlg, name='user')
+    user_agent = PipelineAgent(
+        user_nlu, user_dst, user_policy, user_nlg, name='user')
 
     analyzer = Analyzer(user_agent=user_agent, dataset='multiwoz')
 
     set_seed(20200202)
-    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name='end2end', total_dialog=100)
+
+    analyzer.comprehensive_analyze(
+        sys_agent=sys_agent, model_name='end2end', total_dialog=100)
+
 
 if __name__ == '__main__':
     test_end2end()

@@ -21,7 +21,7 @@ tar -xvf scgpt.tar.gz
 Then
 
 ``` python
-python train.py --output_dir=$output_dir$ --model_type=scgpt --model_name_or_path=gpt2 --do_train --do_eval --eval_data_file=$test_file$ --overwrite_cache --use_tokenize --train_data_file=$train_file$ --overwrite_output_dir
+python train.py --output_dir=trained_output --model_type=gpt2 --model_name_or_path=scgpt --do_train --do_eval --eval_data_file=multiwoz/data/test_sys.txt --overwrite_cache --use_tokenize --train_data_file=multiwoz/data/train_sys.txt --overwrite_output_dir
 ```
 
 ## Use

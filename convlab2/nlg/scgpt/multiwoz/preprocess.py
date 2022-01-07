@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Sep 14 11:38:53 2020
-
 @author: truthless
 """
 
@@ -89,16 +88,23 @@ def write_file(name, data):
             sess = data[ID]
             sess_domains = init_domain()
             for turn in sess:
+                # TODO: set option to process usr/sys
                 if not turn['usr_da']:
                     continue
                 turn['usr_da'] = eval(str(turn['usr_da']).replace('Bus','Train'))
                 da_seq = dict2seq(dict2dict(turn['usr_da'])).replace('&', 'and')
                 domains = set([key.split('-')[0] for key in turn['usr_da'].keys()])
+                if not turn['sys_da']:
+                    continue
+                turn['sys_da'] = eval(str(turn['sys_da']).replace('Bus','Train'))
+                da_seq = dict2seq(dict2dict(turn['sys_da'])).replace('&', 'and')
+                domains = set([key.split('-')[0] for key in turn['sys_da'].keys()])
                 for domain in domains:
                     if domain not in ['general', 'Booking'] and not sess_domains[domain]:
                         da_seq = da_seq.replace(domain.lower(), domain.lower()+' *', 1)
                         sess_domains[domain] = True
                 da_uttr = turn['usr'].replace(' bus ', ' train ').replace('&', 'and')
+                da_uttr = turn['sys'].replace(' bus ', ' train ').replace('&', 'and')
                 f.write(f'{da_seq} & {da_uttr}\n')
 
 if not os.path.exists(os.path.join(cur_dir,'data')):

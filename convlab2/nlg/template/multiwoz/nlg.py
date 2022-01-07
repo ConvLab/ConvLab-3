@@ -3,7 +3,13 @@ import random
 import os
 from pprint import pprint
 import collections
+import logging
+
+import numpy as np
+
 from convlab2.nlg import NLG
+from convlab2.nlg.template.multiwoz.noise_functions import delete_random_token, random_token_permutation, spelling_noise
+from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 
 
 def lower_keys(x):
@@ -13,6 +19,7 @@ def lower_keys(x):
         return {k.lower(): lower_keys(v) for k, v in x.items()}
     else:
         return x
+
 
 def read_json(filename):
     with open(filename, 'r') as f:
@@ -33,7 +40,7 @@ Slot2word = {
     'Type': 'type',
     'Price': 'price range',
     'Stay': 'stay',
-    'Phone': 'phone',
+    'Phone': 'phone number',
     'Post': 'postcode',
     'Day': 'day',
     'Name': 'name',
@@ -51,10 +58,12 @@ Slot2word = {
     # 'TrainID': 'TrainID'
 }
 
-slot2word = dict((k.lower(), v.lower()) for k,v in Slot2word.items())
+slot2word = dict((k.lower(), v.lower()) for k, v in Slot2word.items())
+
 
 class TemplateNLG(NLG):
-    def __init__(self, is_user, mode="manual"):
+
+    def __init__(self, is_user, mode="manual", label_noise=0.0, text_noise=0.0, seed=0):
         """
         Args:
             is_user:
@@ -71,18 +80,49 @@ class TemplateNLG(NLG):
         super().__init__()
         self.is_user = is_user
         self.mode = mode
+        self.label_noise = label_noise
+        self.text_noise = text_noise
+        if not is_user:
+            self.label_noise, self.text_noise = 0.0, 0.0
+
+        print("NLG seed " + str(seed))
+        logging.info(f'Building {"user" if is_user else "system"} template NLG module using {mode} templates.')
+        if self.label_noise > 0.0 or self.text_noise > 0.0:
+            self.seed = seed
+            np.random.seed(seed)
+            random.seed(seed)
+            logging.info(f'Template NLG will generate {self.label_noise * 100}% noise in values and {self.text_noise * 100}% random text noise.')
+
+        self.load_templates()
+
+    def load_templates(self):
         template_dir = os.path.dirname(os.path.abspath(__file__))
-        self.auto_user_template = read_json(os.path.join(template_dir, 'auto_user_template_nlg.json'))
-        self.auto_system_template = read_json(os.path.join(template_dir, 'auto_system_template_nlg.json'))
-        self.manual_user_template = read_json(os.path.join(template_dir, 'manual_user_template_nlg.json'))
-        self.manual_system_template = read_json(os.path.join(template_dir, 'manual_system_template_nlg.json'))
+        if self.is_user:
+            if 'manual' in self.mode:
+                self.manual_user_template = read_json(os.path.join(
+                    template_dir, 'manual_user_template_nlg.json'))
+            if 'auto' in self.mode:
+                self.auto_user_template = read_json(os.path.join(
+                    template_dir, 'auto_user_template_nlg.json'))
+        else:
+            if 'manual' in self.mode:
+                self.manual_system_template = read_json(os.path.join(
+                    template_dir, 'manual_system_template_nlg.json'))
+            if 'auto' in self.mode:
+                self.auto_system_template = read_json(os.path.join(template_dir, 'auto_system_template_nlg.json'))
+        logging.info('NLG templates loaded.')
+        
+        if self.label_noise > 0.0 and self.is_user:
+            self.label_map = read_json(os.path.join(template_dir, 'label_maps.json'))
+            logging.info('NLG value noise label map loaded.')
 
     def sorted_dialog_act(self, dialog_acts):
         new_action_group = {}
         for item in dialog_acts:
             intent, domain, slot, value = item
             if domain not in new_action_group:
-                new_action_group[domain] = {'nooffer': [], 'inform-name': [], 'inform-other': [], 'request': [], 'other': []}
+                new_action_group[domain] = {
+                    'nooffer': [], 'inform-name': [], 'inform-other': [], 'request': [], 'other': []}
             if intent == 'NoOffer':
                 new_action_group[domain]['nooffer'].append(item)
             elif intent == 'Inform' and slot == 'Name':
@@ -103,6 +143,19 @@ class TemplateNLG(NLG):
                 new_action = new_action_group[domain][k] + new_action
         return new_action
 
+    def noisy_dialog_acts(self, dialog_acts):
+        if self.label_noise > 0.0:
+            noisy_acts = []
+            for intent, domain, slot, value in dialog_acts:
+                if intent == 'Inform':
+                    if value in self.label_map:
+                        if np.random.uniform() < self.label_noise:
+                            value = self.label_map[value]
+                            value = np.random.choice(value)
+                noisy_acts.append([intent, domain, slot, value])
+            return noisy_acts
+        return dialog_acts
+
     def generate(self, dialog_acts):
         """NLG for Multiwoz dataset
 
@@ -111,6 +164,8 @@ class TemplateNLG(NLG):
         Returns:
             generated sentence
         """
+        dialog_acts = self.noisy_dialog_acts(
+            dialog_acts) if self.is_user else dialog_acts
         dialog_acts = self.sorted_dialog_act(dialog_acts)
         action = collections.OrderedDict()
         for intent, domain, slot, value in dialog_acts:
@@ -151,7 +206,8 @@ class TemplateNLG(NLG):
                 return res
 
             else:
-                raise Exception("Invalid mode! available mode: auto, manual, auto_manual")
+                raise Exception(
+                    "Invalid mode! available mode: auto, manual, auto_manual")
         except Exception as e:
             print('Error in processing:')
             pprint(dialog_acts)
@@ -159,10 +215,31 @@ class TemplateNLG(NLG):
 
     def _postprocess(self, sen):
         sen_strip = sen.strip()
-        sen = ''.join([val.capitalize() if i == 0 else val for i, val in enumerate(sen_strip)])
+        sen = ''.join([val.capitalize() if i == 0 else val for i,
+                       val in enumerate(sen_strip)])
         if len(sen) > 0 and sen[-1] != '?' and sen[-1] != '.':
             sen += '.'
         sen += ' '
+        return sen
+
+    def _add_random_noise(self, sen):
+        if self.text_noise > 0.0:
+            end = sen[-3:]
+            sen = sen[:-3]
+            sen = random_token_permutation(
+                sen, probability=self.text_noise / 2)
+            sen = delete_random_token(sen, probability=self.text_noise)
+            sen += end
+        return sen
+
+    def _add_random_noise(self, sen):
+        if self.text_noise > 0.0:
+            end = sen[-3:]
+            sen = sen[:-3]
+            sen = spelling_noise(sen, prob=self.text_noise / 2)
+            # sen = random_token_permutation(sen, probability=self.text_noise / 4)
+            sen = delete_random_token(sen, probability=self.text_noise / 2)
+            sen += end
         return sen
 
     def _manual_generate(self, dialog_acts, template):
@@ -184,26 +261,28 @@ class TemplateNLG(NLG):
                         else:
                             sentence += ' , ' + value
                     sentence += ' {} ? '.format(slot2word[slot])
-                    sentences += sentence
+                    sentences += self._add_random_noise(sentence)
             elif 'request' == intent[1]:
                 for slot, value in slot_value_pairs:
                     if dialog_act not in template or slot not in template[dialog_act]:
-                        sentence = 'What is the {} of {} ? '.format(slot.lower(), dialog_act.split('-')[0].lower())
-                        sentences += sentence
+                        sentence = 'What is the {} of {} ? '.format(
+                            slot.lower(), dialog_act.split('-')[0].lower())
+                        sentences += self._add_random_noise(sentence)
                     else:
                         sentence = random.choice(template[dialog_act][slot])
                         sentence = self._postprocess(sentence)
-                        sentences += sentence
+                        sentences += self._add_random_noise(sentence)
             elif 'general' == intent[0] and dialog_act in template:
                 sentence = random.choice(template[dialog_act]['none'])
                 sentence = self._postprocess(sentence)
-                sentences += sentence
+                sentences += self._add_random_noise(sentence)
             else:
                 for slot, value in slot_value_pairs:
                     if isinstance(value, str):
                         value_lower = value.lower()
                     if value in ["do nt care", "do n't care", "dontcare"]:
-                        sentence = 'I don\'t care about the {} of the {}'.format(slot, dialog_act.split('-')[0])
+                        sentence = 'I don\'t care about the {} of the {}'.format(
+                            slot, dialog_act.split('-')[0])
                     elif self.is_user and dialog_act.split('-')[1] == 'inform' and slot == 'choice' and value_lower == 'any':
                         # user have no preference, any choice is ok
                         sentence = random.choice([
@@ -215,7 +294,8 @@ class TemplateNLG(NLG):
                         sentence = random.choice([
                             "it just needs to be {} .".format(value),
                             "Oh , I really need something {} .".format(value),
-                            "I would prefer something that is {} .".format(value),
+                            "I would prefer something that is {} .".format(
+                                value),
                             "it needs to be {} .".format(value)
                         ])
                     elif slot in ['internet', 'parking'] and value_lower == 'no':
@@ -225,7 +305,18 @@ class TemplateNLG(NLG):
                         ])
                     elif dialog_act in template and slot in template[dialog_act]:
                         sentence = random.choice(template[dialog_act][slot])
-                        sentence = sentence.replace('#{}-{}#'.format(dialog_act.upper(), slot.upper()), str(value))
+                        if 'not available' in value.lower():
+                            domain_ = dialog_act.split('-', 1)[0]
+                            slot_ = slot2word.get(slot, None)
+                            slot_ = REF_SYS_DA.get(domain_, {}).get(
+                                slot.title(), None) if not slot_ else slot_
+                            if slot_:
+                                sentence = f"Sorry, I do not know the {slot_.lower()} of the {domain_.lower()}."
+                            else:
+                                sentence = "Sorry, I do not have that information."
+                        else:
+                            sentence = sentence.replace(
+                                '#{}-{}#'.format(dialog_act.upper(), slot.upper()), str(value))
                     elif slot == 'notbook':
                         sentence = random.choice([
                             "I do not need to book. ",
@@ -233,11 +324,20 @@ class TemplateNLG(NLG):
                         ])
                     else:
                         if slot in slot2word:
-                            sentence = 'The {} is {} . '.format(slot2word[slot], str(value))
+                            if 'not available' in value.lower():
+                                domain_ = dialog_act.split('-', 1)[0]
+                                slot_ = slot2word[slot]
+                                if slot_:
+                                    sentence = f"Sorry, I do not know the {slot_.lower()} of the {domain_.lower()}."
+                                else:
+                                    sentence = "Sorry, I do not have that information."
+                            else:
+                                sentence = 'The {} is {} . '.format(
+                                    slot2word[slot], str(value))
                         else:
                             sentence = ''
                     sentence = self._postprocess(sentence)
-                    sentences += sentence
+                    sentences += self._add_random_noise(sentence)
         return sentences.strip()
 
     def _auto_generate(self, dialog_acts, template):
@@ -254,7 +354,8 @@ class TemplateNLG(NLG):
                 else:
                     for s, v in sorted(slot_value_pairs, key=lambda x: x[0]):
                         if v != 'none':
-                            sentence = sentence.replace('#{}-{}#'.format(dialog_act.upper(), s.upper()), v, 1)
+                            sentence = sentence.replace(
+                                '#{}-{}#'.format(dialog_act.upper(), s.upper()), v, 1)
                     sentence = self._postprocess(sentence)
                     sentences += sentence
             else:
@@ -264,7 +365,8 @@ class TemplateNLG(NLG):
 
 def example():
     # dialog act
-    dialog_acts = [['Inform', 'Hotel', 'Area', 'east'],['Inform', 'Hotel', 'Internet', 'no'], ['welcome', 'general', 'none', 'none']]
+    dialog_acts = [['Inform', 'Hotel', 'Area', 'east'], [
+        'Inform', 'Hotel', 'Internet', 'no'], ['welcome', 'general', 'none', 'none']]
     #dialog_acts = [['Inform', 'Restaurant', 'NotBook', 'none']]
     print(dialog_acts)
 

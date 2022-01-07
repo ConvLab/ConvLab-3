@@ -5,6 +5,7 @@ from convlab2.dialog_agent.agent import Agent
 
 
 class Session(ABC):
+
     """Base dialog session controller, which manages the agents to conduct a complete dialog session.
     """
 
@@ -22,7 +23,7 @@ class Session(ABC):
     @abstractmethod
     def next_response(self, observation):
         """Generated the next response.
-        
+
         Args:
             observation (str or dict): The agent observation of next agent.
         Returns:
@@ -82,14 +83,18 @@ class BiSession(Session):
         """The user and system agent response in turn."""
         if self.__turn_indicator % 2 == 0:
             next_agent = self.user_agent
+            agent = "user"
         else:
             next_agent = self.sys_agent
+            agent = "sys"
         self.__turn_indicator += 1
+        # print(agent + " " + str(self.__turn_indicator))
         return next_agent
 
     def next_response(self, observation):
         next_agent = self.next_agent()
         response = next_agent.response(observation)
+        # print(response)
         return response
 
     def next_turn(self, last_observation):
@@ -97,7 +102,7 @@ class BiSession(Session):
 
         The variable type of responses can be either 1) str or 2) dialog act, depends on the dialog mode settings of the
         two agents which are supposed to be the same.
-        
+
         Args:
             last_observation:
                 Last agent response.
@@ -116,8 +121,9 @@ class BiSession(Session):
         """
         user_response = self.next_response(last_observation)
         if self.evaluator:
-            self.evaluator.add_sys_da(self.user_agent.get_in_da())
+            self.evaluator.add_sys_da(self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
             self.evaluator.add_usr_da(self.user_agent.get_out_da())
+
         session_over = self.user_agent.is_terminated()
         if hasattr(self.sys_agent, 'dst'):
             self.sys_agent.dst.state['terminated'] = session_over
@@ -130,7 +136,6 @@ class BiSession(Session):
         sys_response = self.next_response(user_response)
         self.dialog_history.append([self.user_agent.name, user_response])
         self.dialog_history.append([self.sys_agent.name, sys_response])
-
         return sys_response, user_response, session_over, reward
 
     def train_policy(self):
@@ -193,6 +198,7 @@ class DealornotSession(Session):
         for agent in [self.alice, self.bob]:
             choice = agent.choose()
             choices.append(choice)
+
         agree, rewards = self.alice.domain.score_choices(choices, ctxs)
         return agree, rewards
 

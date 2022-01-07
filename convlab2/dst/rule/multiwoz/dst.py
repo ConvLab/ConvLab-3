@@ -31,6 +31,7 @@ class RuleDST(DST):
         :param user_act:
         :return:
         """
+        #print("dst", user_act)
         for intent, domain, slot, value in user_act:
             domain = domain.lower()
             intent = intent.lower()
@@ -43,7 +44,8 @@ class RuleDST(DST):
                 try:
                     assert domain in self.state['belief_state']
                 except:
-                    raise Exception('Error: domain <{}> not in new belief state'.format(domain))
+                    raise Exception(
+                        'Error: domain <{}> not in new belief state'.format(domain))
                 domain_dic = self.state['belief_state'][domain]
                 assert 'semi' in domain_dic
                 assert 'book' in domain_dic
@@ -53,13 +55,15 @@ class RuleDST(DST):
                 elif k in domain_dic['book']:
                     self.state['belief_state'][domain]['book'][k] = value
                 elif k.lower() in domain_dic['book']:
-                    self.state['belief_state'][domain]['book'][k.lower()] = value
+                    self.state['belief_state'][domain]['book'][k.lower()
+                                                               ] = value
                 elif k == 'trainID' and domain == 'train':
                     self.state['belief_state'][domain]['book'][k] = normalize_value(self.value_dict, domain, k, value)
                 elif k != 'none':
                     # raise Exception('unknown slot name <{}> of domain <{}>'.format(k, domain))
                     with open('unknown_slot.log', 'a+') as f:
-                        f.write('unknown slot name <{}> of domain <{}>\n'.format(k, domain))
+                        f.write(
+                            'unknown slot name <{}> of domain <{}>\n'.format(k, domain))
             elif intent == 'request':
                 k = REF_SYS_DA[domain.capitalize()].get(slot, slot)
                 if domain not in self.state['request_state']:

@@ -31,6 +31,8 @@ from pprint import pprint
 import random
 import numpy as np
 import torch
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+
 
 
 def set_seed(r_seed):
@@ -39,7 +41,7 @@ def set_seed(r_seed):
     torch.manual_seed(r_seed)
 
 
-def test_end2end():
+def test_end2end(seed=20200202, n_dialogues=1000):
     # go to README.md of each model for more information
     # BERT nlu
     sys_nlu = BERTNLU()
@@ -66,8 +68,16 @@ def test_end2end():
 
     analyzer = Analyzer(user_agent=user_agent, dataset='multiwoz')
 
-    set_seed(20200202)
-    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name='BERTNLU-RuleDST-RulePolicy-TemplateNLG', total_dialog=1000)
+    set_seed(seed)
+    name=f'BERTNLU-RuleDST-RulePolicy-TemplateNLG-Seed{seed}'
+    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=name, total_dialog=n_dialogues)
+
 
 if __name__ == '__main__':
-    test_end2end()
+    # Get arguments
+    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--seed', help='Seed', default=20200202, type=int)
+    parser.add_argument('--n_dialogues', help='Number of eval dialogues', default=1000, type=int)
+    args = parser.parse_args()
+
+    test_end2end(seed=args.seed, n_dialogues=args.n_dialogues)

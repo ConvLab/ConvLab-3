@@ -18,3 +18,7 @@ class Policy(Module):
                 else when the policy outputs utterance directly, the type is str.
         """
         return []
+
+    def update_memory(self, utterance_list, state_list, action_list, reward_list):
+        pass
+

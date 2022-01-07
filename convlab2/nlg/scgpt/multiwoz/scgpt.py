@@ -34,6 +34,7 @@ class SCGPT(NLG):
         self.top_k = 50
         self.top_p = 0.9
         self.seed = 42
+        self.is_user = is_user
         self.stop_token = '<|endoftext|>'
     
         self.device = torch.device("cuda" if torch.cuda.is_available() and use_cuda else "cpu")
@@ -51,7 +52,9 @@ class SCGPT(NLG):
             self.length = self.model.config.max_position_embeddings  # No generation bigger than model size 
         elif self.length < 0:
             self.length = self.MAX_LENGTH  # avoid infinite loop
-
+        
+        self.init_session()
+    
     def init_session(self):
         self.sess_domains = {'Attraction':False,
             'Hospital':False,
@@ -59,9 +62,15 @@ class SCGPT(NLG):
             'Police':False,
             'Restaurant':False,
             'Taxi':False,
-            'Train':False}
+            'Train':False,}
+        if not self.is_user:
+            self.sess_domains['Booking'] = False
                 
     def generate(self, meta):
+
+        #some actions in testing data is none
+        if not meta:
+            return 'No user action'
 
         raw_text = tuple2seq(meta)
         domains = set([item[1] for item in meta])

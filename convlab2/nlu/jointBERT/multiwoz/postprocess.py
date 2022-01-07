@@ -83,6 +83,7 @@ def recover_intent(dataloader, intent_logits, tag_logits, tag_mask_tensor, ori_w
     for i, tag in enumerate(tags):
         if new2ori[i] >= len(recover_tags):
             recover_tags.append(tag)
+    ori_word_seq = ori_word_seq[:len(recover_tags)]
     tag_intent = tag2triples(ori_word_seq, recover_tags)
     intents += tag_intent
     return intents
