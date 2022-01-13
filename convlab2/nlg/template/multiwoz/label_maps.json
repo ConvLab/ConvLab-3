@@ -1,0 +1,798 @@
+{
+  "guesthouse": [
+    "guest house",
+    "guest houses"
+  ],
+  "hotel": [
+    "hotels"
+  ],
+  "centre": [
+    "center",
+    "downtown"
+  ],
+  "north": [
+    "northern",
+    "northside",
+    "northend"
+  ],
+  "east": [
+    "eastern",
+    "eastside",
+    "eastend"
+  ],
+  "west": [
+    "western",
+    "westside",
+    "westend"
+  ],
+  "south": [
+    "southern",
+    "southside",
+    "southend"
+  ],
+  "cheap": [
+    "inexpensive",
+    "lower price",
+    "lower range",
+    "cheaply",
+    "cheaper",
+    "cheapest",
+    "very affordable"
+  ],
+  "moderate": [
+    "moderately",
+    "reasonable",
+    "reasonably",
+    "affordable",
+    "mid range",
+    "mid-range",
+    "priced moderately",
+    "decently priced",
+    "mid price",
+    "mid-price",
+    "mid priced",
+    "mid-priced",
+    "middle price",
+    "medium price",
+    "medium priced",
+    "not too expensive",
+    "not too cheap"
+  ],
+  "expensive": [
+    "high end",
+    "high-end",
+    "high class",
+    "high-class",
+    "high scale",
+    "high-scale",
+    "high price",
+    "high priced",
+    "higher price",
+    "fancy",
+    "upscale",
+    "nice",
+    "expensively",
+    "luxury"
+  ],
+  "0": [
+    "zero"
+  ],
+  "1": [
+    "one",
+    "just me",
+    "for me",
+    "myself",
+    "alone",
+    "me"
+  ],
+  "2": [
+    "two"
+  ],
+  "3": [
+    "three"
+  ],
+  "4": [
+    "four"
+  ],
+  "5": [
+    "five"
+  ],
+  "6": [
+    "six"
+  ],
+  "7": [
+    "seven"
+  ],
+  "8": [
+    "eight"
+  ],
+  "9": [
+    "nine"
+  ],
+  "10": [
+    "ten"
+  ],
+  "11": [
+    "eleven"
+  ],
+  "12": [
+    "twelve"
+  ],
+  "architecture": [
+    "architectural",
+    "architecturally",
+    "architect"
+  ],
+  "boat": [
+    "boating",
+    "boats",
+    "camboats"
+  ],
+  "camboats": [
+    "boating",
+    "boat",
+    "boats"
+  ],
+  "cinema": [
+    "cinemas",
+    "movie",
+    "films",
+    "film"
+  ],
+  "college": [
+    "colleges"
+  ],
+  "concerthall": [
+    "concert hall",
+    "concert halls",
+    "concerthalls",
+    "concerts",
+    "concert"
+  ],
+  "entertainment": [
+    "entertaining"
+  ],
+  "gastropub": [
+    "gastropubs"
+  ],
+  "mutliple sports": [
+    "multiple sport",
+    "multiple sports",
+    "multi sport",
+    "multi sports",
+    "sports",
+    "sporting"
+  ],
+  "museum": [
+    "museums",
+    "gallery",
+    "galleries"
+  ],
+  "nightclub": [
+    "night clubs",
+    "night club",
+    "nightclubs",
+    "club",
+    "clubs"
+  ],
+  "park": [
+    "parks"
+  ],
+  "swimmingpool": [
+    "swimming pool",
+    "swimming",
+    "pool",
+    "pools",
+    "swimmingpool",
+    "water",
+    "swim"
+  ],
+  "theatre": [
+    "theater",
+    "theatres",
+    "theaters"
+  ],
+  "abbey pool and astroturf pitch": [
+    "abbey pool and astroturf",
+    "abbey pool"
+  ],
+  "adc theatre": [
+    "adc theater",
+    "adc"
+  ],
+  "addenbrookes hospital": [
+    "addenbrooke's hospital"
+  ],
+  "cafe jello gallery": [
+    "cafe jello"
+  ],
+  "cambridge and county folk museum": [
+    "cambridge and country folk museum",
+    "county folk museum"
+  ],
+  "cambridge arts theatre": [
+    "cambridge arts theater"
+  ],
+  "cambridge book and print gallery": [
+    "book and print gallery"
+  ],
+  "cambridge contemporary art": [
+    "cambridge contemporary art museum",
+    "contemporary art museum"
+  ],
+  "the cambridge corn exchange": [
+    "cambridge corn exchange"
+  ],
+  "cambridge museum of technology": [
+    "museum of technology"
+  ],
+  "the cambridge punter": [
+    "cambridge punter",
+    "cambridge punters"
+  ],
+  "cambridge university botanic gardens": [
+    "cambridge university botanical gardens",
+    "cambridge university botanical garden",
+    "cambridge university botanic garden",
+    "cambridge botanic gardens",
+    "cambridge botanical gardens",
+    "cambridge botanic garden",
+    "cambridge botanical garden",
+    "botanic gardens",
+    "botanical gardens",
+    "botanic garden",
+    "botanical garden"
+  ],
+  "cherry hinton hall and grounds": [
+    "cherry hinton hall"
+  ],
+  "cherry hinton water play": [
+    "cherry hinton water play park"
+  ],
+  "cineworld cinema": [
+    "cineworld"
+  ],
+  "clare hall": [
+    "clair hall"
+  ],
+  "the fez club": [
+    "fez club"
+  ],
+  "jesus green outdoor pool": [
+    "jesus green"
+  ],
+  "kings hedges learner pool": [
+    "king's hedges learner pool",
+    "king hedges learner pool"
+  ],
+  "mumford theatre": [
+    "mumford theater"
+  ],
+  "museum of archaelogy and anthropology": [
+    "museum of archaeology and anthropology",
+    "museum of archaelogy",
+    "museum of archaeology"
+  ],
+  "riverboat georgina": [
+    "riverboat"
+  ],
+  "saint barnabas press gallery": [
+    "saint barbabas"
+  ],
+  "scott polar museum": [
+    "scott polar"
+  ],
+  "scudamores punting co": [
+    "scudamore's punting co",
+    "scudamores punting",
+    "scudamore's punting",
+    "scudamores",
+    "scudamore's",
+    "scudamore"
+  ],
+  "soul tree nightclub": [
+    "soul tree night club",
+    "soul tree",
+    "soultree"
+  ],
+  "the man on the moon": [
+    "man on the moon"
+  ],
+  "the junction": [
+    "junction theatre",
+    "junction theater"
+  ],
+  "old schools": [
+    "old school"
+  ],
+  "vue cinema": [
+    "vue"
+  ],
+  "wandlebury country park": [
+    "the wandlebury"
+  ],
+  "whipple museum of the history of science": [
+    "whipple museum",
+    "history of science museum"
+  ],
+  "restaurant alimentum": [
+    "alimentum"
+  ],
+  "bedouin": [
+    "the bedouin"
+  ],
+  "bloomsbury restaurant": [
+    "bloomsbury"
+  ],
+  "caffe uno": [
+    "cafe uno",
+    "caffee uno"
+  ],
+  "cambridge lodge restaurant": [
+    "cambridge lodge"
+  ],
+  "chiquito restaurant bar": [
+    "chiquito restaurant",
+    "chiquito"
+  ],
+  "city stop restaurant": [
+    "city stop"
+  ],
+  "clowns cafe": [
+    "clown's cafe"
+  ],
+  "the cow pizza kitchen and bar": [
+    "cow pizza kitchen and bar",
+    "cow pizza"
+  ],
+  "darrys cookhouse and wine shop": [
+    "darry's cookhouse and wine shop",
+    "darry's cookhouse",
+    "darrys cookhouse"
+  ],
+  "de luca cucina and bar": [
+    "de luca cucina and bar riverside brasserie",
+    "luca cucina and bar",
+    "de luca cucina",
+    "luca cucina"
+  ],
+  "da vinci pizzeria": [
+    "da vinci pizza",
+    "da vinci"
+  ],
+  "don pasquale pizzeria": [
+    "don pasquale pizza",
+    "don pasquale",
+    "pasquale pizzeria",
+    "pasquale pizza"
+  ],
+  "efes restaurant": [
+    "efes"
+  ],
+  "fitzbillies restaurant": [
+    "fitzbillies"
+  ],
+  "frankie and bennys": [
+    "frankie and benny's"
+  ],
+  "funky fun house": [
+    "funky"
+  ],
+  "the gardenia": [
+    "gardenia"
+  ],
+  "grafton hotel restaurant": [
+    "the grafton hotel",
+    "grafton hotel"
+  ],
+  "hotel du vin and bistro": [
+    "hotel du vin",
+    "du vin"
+  ],
+  "kohinoor": [
+    "the kohinoor"
+  ],
+  "lan hong house": [
+    "lan hong",
+    "ian hong house",
+    "ian hong"
+  ],
+  "lovell lodge": [
+    "lovell",
+    "the lovell lodge"
+  ],
+  "mahal of cambridge": [
+    "mahal"
+  ],
+  "maharajah tandoori restaurant": [
+    "maharajah tandoori",
+    "the maharajah tandoor"
+  ],
+  "meze bar restaurant": [
+    "the meze bar",
+    "meze bar"
+  ],
+  "michaelhouse cafe": [
+    "michael house cafe"
+  ],
+  "midsummer house restaurant": [
+    "midsummer house"
+  ],
+  "the missing sock": [
+    "missing sock"
+  ],
+  "nandos": [
+    "nando's city centre",
+    "nando's city center",
+    "nandos city centre",
+    "nandos city center",
+    "nando's"
+  ],
+  "nandos city centre": [
+    "nando's city centre",
+    "nando's city center",
+    "nandos city center",
+    "nando's",
+    "nandos"
+  ],
+  "the oak bistro": [
+    "oak bistro"
+  ],
+  "restaurant one seven": [
+    "one seven"
+  ],
+  "the river bar steakhouse and grill": [
+    "river bar steakhouse and grill",
+    "the river bar steakhouse",
+    "river bar steakhouse"
+  ],
+  "pipasha restaurant": [
+    "pipasha"
+  ],
+  "pizza hut city centre": [
+    "pizza hut city center"
+  ],
+  "pizza hut fen ditton": [
+    "pizza hut fenditton",
+    "pizza express fen ditton"
+  ],
+  "restaurant two two": [
+    "two two",
+    "restaurant 22"
+  ],
+  "saffron brasserie": [
+    "saffron"
+  ],
+  "saint johns chop house": [
+    "saint john's chop house",
+    "st john's chop house",
+    "st johns chop house"
+  ],
+  "sesame restaurant and bar": [
+    "sesame restaurant",
+    "sesame"
+  ],
+  "shanghai family restaurant": [
+    "shanghai"
+  ],
+  "sitar tandoori": [
+    "sitar"
+  ],
+  "the slug and lettuce": [
+    "slug and lettuce"
+  ],
+  "saint johns chop house": [
+    "st johns chop house",
+    "st john's chop house",
+    "saint johns chop house"
+  ],
+  "stazione restaurant and coffee bar": [
+    "stazione restaurant",
+    "stazione"
+  ],
+  "thanh binh": [
+    "thanh",
+    "binh"
+  ],
+  "the hotpot": [
+    "the hotspot",
+    "hotpot",
+    "hotspot"
+  ],
+  "the lucky star": [
+    "lucky star"
+  ],
+  "peking restaurant": [
+    "the peking restaurant"
+  ],
+  "the varsity restaurant": [
+    "varsity restaurant",
+    "the varsity",
+    "varsity"
+  ],
+  "zizzi cambridge": [
+    "zizzi"
+  ],
+  "asian oriental": [
+    "asian",
+    "oriental"
+  ],
+  "australian": [
+    "australasian"
+  ],
+  "barbeque": [
+    "barbecue",
+    "bbq"
+  ],
+  "corsica": [
+    "corsican"
+  ],
+  "indian": [
+    "tandoori"
+  ],
+  "italian": [
+    "pizza",
+    "pizzeria"
+  ],
+  "japanese": [
+    "sushi"
+  ],
+  "latin american": [
+    "latin-american",
+    "latin"
+  ],
+  "malaysian": [
+    "malay"
+  ],
+  "middle eastern": [
+    "middle-eastern"
+  ],
+  "modern american": [
+    "american modern",
+    "american"
+  ],
+  "modern european": [
+    "european modern",
+    "european"
+  ],
+  "north american": [
+    "north-american",
+    "american"
+  ],
+  "portuguese": [
+    "portugese"
+  ],
+  "seafood": [
+    "sea food"
+  ],
+  "singaporean": [
+    "singapore"
+  ],
+  "steakhouse": [
+    "steak house",
+    "steak"
+  ],
+  "the americas": [
+    "american",
+    "americas"
+  ],
+  "a and b guest house": [
+    "a & b guest house",
+    "a and b",
+    "a & b"
+  ],
+  "acorn guest house": [
+    "the acorn guest house",
+    "acorn"
+  ],
+  "alexander bed and breakfast": [
+    "alexander"
+  ],
+  "allenbell": [
+    "the allenbell"
+  ],
+  "alpha-milton guest house": [
+    "the alpha-milton",
+    "alpha-milton"
+  ],
+  "arbury lodge guesthouse": [
+    "arbury lodge guest house",
+    "arbury lodge",
+    "arbury"
+  ],
+  "archway house": [
+    "archway"
+  ],
+  "ashley hotel": [
+    "the ashley hotel",
+    "ashley"
+  ],
+  "aylesbray lodge guest house": [
+    "aylesbray lodge",
+    "aylesbray",
+    "alesbray lodge guest house",
+    "alyesbray lodge hotel"
+  ],
+  "bridge guest house": [
+    "bridge house"
+  ],
+  "the cambridge belfry": [
+    "cambridge belfry",
+    "belfry hotel",
+    "belfry"
+  ],
+  "carolina bed and breakfast": [
+    "carolina"
+  ],
+  "city centre north b and b": [
+    "city centre north bed and breakfast",
+    "city centre north",
+    "north b and b"
+  ],
+  "el shaddai": [
+    "el shaddia guest house",
+    "el shaddai guest house",
+    "el shaddia"
+  ],
+  "express by holiday inn cambridge": [
+    "express by holiday inn",
+    "holiday inn cambridge",
+    "holiday inn"
+  ],
+  "finches bed and breakfast": [
+    "finches"
+  ],
+  "gonville hotel": [
+    "gonville"
+  ],
+  "hamilton lodge": [
+    "the hamilton lodge",
+    "hamilton"
+  ],
+  "hobsons house": [
+    "hobson's house",
+    "hobson's"
+  ],
+  "huntingdon marriott hotel": [
+    "huntington marriott hotel",
+    "huntington marriot hotel",
+    "huntingdon marriot hotel",
+    "huntington marriott",
+    "huntingdon marriott",
+    "huntington marriot",
+    "huntingdon marriot",
+    "huntington",
+    "huntingdon",
+    "marriott hotel",
+    "marriott"
+  ],
+  "kirkwood house": [
+    "kirkwood"
+  ],
+  "the lensfield hotel": [
+    "lensfield hotel",
+    "lensfield"
+  ],
+  "leverton house": [
+    "leverton"
+  ],
+  "rosa's bed and breakfast": [
+    "rosas bed and breakfast",
+    "rosa's",
+    "rosas"
+  ],
+  "university arms hotel": [
+    "university arms"
+  ],
+  "warkworth house": [
+    "warkworth hotel",
+    "warkworth"
+  ],
+  "worth house": [
+    "the worth house",
+    "warkworth house",
+    "warkworth"
+  ],
+  "birmingham new street": [
+    "birmingham new street train station"
+  ],
+  "birmingham new street train station": [
+    "birmingham new street"
+  ],
+  "bishops stortford": [
+    "bishops stortford train station"
+  ],
+  "bishops stortford train station": [
+    "bishops stortford"
+  ],
+  "broxbourne": [
+    "broxbourne train station"
+  ],
+  "broxbourne train station": [
+    "broxbourne"
+  ],
+  "cambridge": [
+    "cambridge train station"
+  ],
+  "cambridge train station": [
+    "cambridge"
+  ],
+  "ely": [
+    "ely train station"
+  ],
+  "ely train station": [
+    "ely"
+  ],
+  "kings lynn": [
+    "king's lynn",
+    "king's lynn train station",
+    "kings lynn train station"
+  ],
+  "kings lynn train station": [
+    "kings lynn",
+    "king's lynn",
+    "king's lynn train station"
+  ],
+  "leicester": [
+    "leicester train station"
+  ],
+  "leicester train station": [
+    "leicester"
+  ],
+  "london kings cross": [
+    "kings cross",
+    "king's cross",
+    "london king's cross",
+    "kings cross train station",
+    "king's cross train station",
+    "london king's cross train station",
+    "london kings cross train station"
+  ],
+  "london kings cross train station": [
+    "kings cross",
+    "king's cross",
+    "london king's cross",
+    "london kings cross",
+    "kings cross train station",
+    "king's cross train station",
+    "london king's cross train station"
+  ],
+  "london liverpool street": [
+    "london liverpool",
+    "liverpool street",
+    "london liverpool train station",
+    "liverpool street train station",
+    "london liverpool street train station"
+  ],
+  "london liverpool street train station": [
+    "london liverpool",
+    "liverpool street",
+    "london liverpool street",
+    "london liverpool train station",
+    "liverpool street train station"
+  ],
+  "norwich": [
+    "norwich train station"
+  ],
+  "norwich train station": [
+    "norwich"
+  ],
+  "peterborough": [
+    "peterborough train station"
+  ],
+  "peterborough train station": [
+    "peterborough"
+  ],
+  "stansted airport": [
+    "stansted airport train station"
+  ],
+  "stansted airport train station": [
+    "stansted airport"
+  ],
+  "stevenage": [
+    "stevenage train station"
+  ],
+  "stevenage train station": [
+    "stevenage"
+  ]
+}
