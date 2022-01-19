@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import os
 import zipfile
+from copy import deepcopy
 
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from convlab2.nlg.scgpt.utils import tuple2seq
@@ -10,23 +11,31 @@ from convlab2.nlg.nlg import NLG
 from convlab2.util.file_util import cached_path
 
 MAX_LENGTH = int(10000)  # Hardcoded max length to avoid infinite loop
-DEFAULT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
-DEFAULT_ARCHIVE_FILE = os.path.join(DEFAULT_DIRECTORY, "nlg-gpt-multiwoz.zip")
 
 class SCGPT(NLG):
     
-    def __init__(self,
-                 archive_file=DEFAULT_ARCHIVE_FILE,
-                 use_cuda=True,
-                 is_user=False,
-                 model_file='https://convlab.blob.core.windows.net/convlab-2/nlg-gpt-multiwoz.zip'):
+    def __init__(self, model_file=None,
+                 use_cuda=True, is_user=False):
+        # If no filename is mentioned then set to default
+        if not model_file:
+            if is_user:
+                model_file = 'https://convlab.blob.core.windows.net/convlab-2/nlg-gpt-multiwoz.zip'
+            else:
+                model_file = 'https://zenodo.org/record/5767426/files/neo_scgpt_system.zip'
+
+        # Load from file/url
         model_dir = os.path.dirname(os.path.abspath(__file__))
-        if not os.path.isfile(archive_file):
-            archive_file = cached_path(model_file)
-            archive = zipfile.ZipFile(archive_file, 'r')
+        if not os.path.isfile(model_file):
+            model_file = cached_path(model_file)
+        if not os.path.isdir(model_file):
+            archive = zipfile.ZipFile(model_file, 'r')
             archive.extractall(model_dir)
-        
-        self.model_name_or_path = os.path.join(model_dir, 'multiwoz')
+            # Get model directory
+            model_file = archive.filelist[0].filename.replace('/', '')
+            self.model_name_or_path = os.path.join(model_dir, model_file)
+        else:
+            self.model_name_or_path = model_file
+            
         self.length = 50
         self.num_samples = 5
         self.temperature = 1.0
@@ -63,8 +72,9 @@ class SCGPT(NLG):
             'Restaurant':False,
             'Taxi':False,
             'Train':False,}
-        if not self.is_user:
-            self.sess_domains['Booking'] = False
+        self.cur_domain = None
+        # if not self.is_user:
+        #     self.sess_domains['Booking'] = False
                 
     def generate(self, meta):
 
@@ -72,10 +82,23 @@ class SCGPT(NLG):
         if not meta:
             return 'No user action'
 
+        meta = deepcopy(meta)
+        for list_ in meta:
+            domain = list_[1]
+            if domain not in ('general', 'Booking'):
+                self.cur_domain = domain
+        for i, list_ in enumerate(meta):
+            list_ = list(list_)
+            if list_[1] == 'Booking':
+                if self.cur_domain is not None:
+                    list_[1] = self.cur_domain
+                    meta[i] = list_
+                else:
+                    print('`cur_domain` is None, but there is `Booking` in dialog action.')
         raw_text = tuple2seq(meta)
         domains = set([item[1] for item in meta])
         for domain in domains:
-            if domain != 'general' and not self.sess_domains[domain]:
+            if domain not in ('general', 'Booking') and not self.sess_domains[domain]:
                 raw_text = raw_text.replace(domain.lower(), domain.lower()+ ' *', 1)
                 self.sess_domains[domain] = True
         context_tokens = self.tokenizer.encode(raw_text, add_special_tokens=False)
