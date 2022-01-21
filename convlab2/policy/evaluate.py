@@ -1,37 +1,44 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-import torch
-import random
-from torch import multiprocessing as mp
-from convlab2.dialog_agent.agent import PipelineAgent
-from convlab2.dialog_agent.session import BiSession
-from convlab2.dialog_agent.env import Environment
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.policy.rlmodule import Memory, Transition
-from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
-from pprint import pprint
+#from torch import multiprocessing as mp
+#from convlab2.policy.rule.multiwoz import RulePolicy
+#from convlab2.policy.rlmodule import Memory, Transition
+#from convlab2.policy.tus.multiwoz.TUS import UserPolicy
+import argparse
+import datetime
 import json
-import matplotlib.pyplot as plt
-import sys
 import logging
 import os
-import datetime
-import argparse
+import random
+
+import numpy as np
+import torch
+from convlab2.dialog_agent.agent import PipelineAgent
+from convlab2.dialog_agent.session import BiSession
+from convlab2.dst.rule.multiwoz import RuleDST
+from convlab2.dst.rule.multiwoz.usr_dst import UserRuleDST
+from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
+#from convlab2.policy.tus.multiwoz.TUS import UserPolicy
+from convlab2.policy.rlmodule import Memory
+from convlab2.policy.rule.multiwoz import RulePolicy
+from torch import multiprocessing as mp
+
 
 def init_logging(log_dir_path, path_suffix=None):
     if not os.path.exists(log_dir_path):
         os.makedirs(log_dir_path)
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     if path_suffix:
-        log_file_path = os.path.join(log_dir_path, f"{current_time}_{path_suffix}.log")
+        log_file_path = os.path.join(
+            log_dir_path, f"{current_time}_{path_suffix}.log")
     else:
-        log_file_path = os.path.join(log_dir_path, "{}.log".format(current_time))
-
+        log_file_path = os.path.join(
+            log_dir_path, "{}.log".format(current_time))
+    print("LOG DIR PATH:", log_dir_path)
     stderr_handler = logging.StreamHandler()
     file_handler = logging.FileHandler(log_file_path)
-    format_str = "%(levelname)s - %(filename)s - %(funcName)s - %(lineno)d - %(message)s"
-    logging.basicConfig(level=logging.DEBUG, handlers=[stderr_handler, file_handler], format=format_str)
+    format_str = "%(message)s"
+    logging.basicConfig(level=logging.DEBUG, handlers=[
+                        stderr_handler, file_handler], format=format_str)
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -81,7 +88,8 @@ def sampler(pid, queue, evt, env, policy, batchsz):
             next_s_vec = torch.Tensor(policy.vector.state_vectorize(next_s))
 
             # save to queue
-            buff.push(s_vec.numpy(), policy.vector.action_vectorize(a), r, next_s_vec.numpy(), mask)
+            buff.push(s_vec.numpy(), policy.vector.action_vectorize(
+                a), r, next_s_vec.numpy(), mask)
 
             # update per step
             s = next_s
@@ -105,10 +113,10 @@ def sample(env, policy, batchsz, process_num):
     """
     Given batchsz number of task, the batchsz will be splited equally to each processes
     and when processes return, it merge all data and return
-	:param env:
-	:param policy:
+        :param env:
+        :param policy:
     :param batchsz:
-	:param process_num:
+        :param process_num:
     :return: batch
     """
 
@@ -147,123 +155,167 @@ def sample(env, policy, batchsz, process_num):
 
     return buff.get_batch()
 
-def evaluate(dataset_name, model_name, load_path, calculate_reward=True):
+
+def evaluate(args, dataset_name, model_name, load_path, calculate_reward=True, verbose=False):
     seed = 20190827
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
 
-    if dataset_name == 'MultiWOZ':
-        dst_sys = RuleDST()
-        
-        if model_name == "PPO":
-            from convlab2.policy.ppo import PPO
-            if load_path:
-                policy_sys = PPO(False)
-                policy_sys.load(load_path)
-            else:
-                policy_sys = PPO.from_pretrained()
-        elif model_name == "PG":
-            from convlab2.policy.pg import PG
-            if load_path:
-                policy_sys = PG(False)
-                policy_sys.load(load_path)
-            else:
-                policy_sys = PG.from_pretrained()
-        elif model_name == "MLE":
-            from convlab2.policy.mle.multiwoz import MLE
-            if load_path:
-                policy_sys = MLE()
-                policy_sys.load(load_path)
-            else:
-                policy_sys = MLE.from_pretrained()
-        elif model_name == "GDPL":
-            from convlab2.policy.gdpl import GDPL
-            if load_path:
-                policy_sys = GDPL(False)
-                policy_sys.load(load_path)
-            else:
-                policy_sys = GDPL.from_pretrained()
-            
+    dst_sys = RuleDST()
+
+    if model_name == "PPO":
+        from convlab2.policy.ppo import PPO
+        if load_path:
+            policy_sys = PPO(False)
+            policy_sys.load(load_path)
+        else:
+            policy_sys = PPO.from_pretrained()
+    elif model_name == "RULE":
+        # from convlab2.policy.rule.multiwoz import RulePolicy
+        policy_sys = RulePolicy()
+    elif model_name == "PG":
+        from convlab2.policy.pg import PG
+        if load_path:
+            policy_sys = PG(False)
+            policy_sys.load(load_path)
+        else:
+            policy_sys = PG.from_pretrained()
+    elif model_name == "MLE":
+        from convlab2.policy.mle.multiwoz import MLE
+        if load_path:
+            policy_sys = MLE()
+            policy_sys.load(load_path)
+        else:
+            policy_sys = MLE.from_pretrained()
+    elif model_name == "GDPL":
+        from convlab2.policy.gdpl import GDPL
+        if load_path:
+            policy_sys = GDPL(False)
+            policy_sys.load(load_path)
+        else:
+            policy_sys = GDPL.from_pretrained()
+    user_type = args.user.lower()
+    if user_type == "tus":
+        dst_usr = UserRuleDST()
+        user_config = json.load(open(args.user_config))
+        policy_usr = UserPolicy(user_config)
+
+    elif user_type == "rule":
         dst_usr = None
-
         policy_usr = RulePolicy(character='usr')
-        simulator = PipelineAgent(None, None, policy_usr, None, 'user')
 
-        env = Environment(None, simulator, None, dst_sys)
+    elif user_type == "vhus":
+        from convlab2.policy.vhus.multiwoz import UserPolicyVHUS
+        dst_usr = None
+        policy_usr = UserPolicyVHUS(
+            load_from_zip=True, model_file="/home/linh/convlab-2/vhus_simulator_multiwoz.zip")
 
-        agent_sys = PipelineAgent(None, dst_sys, policy_sys, None, 'sys')
+    simulator = PipelineAgent(None, dst_usr, policy_usr, None, 'user')
+    agent_sys = PipelineAgent(None, dst_sys, policy_sys, None, 'sys')
 
-        evaluator = MultiWozEvaluator()
-        sess = BiSession(agent_sys, simulator, None, evaluator)
+    evaluator = MultiWozEvaluator()
+    sess = BiSession(agent_sys, simulator, None, evaluator)
 
-        task_success = {'All': []}
-        for seed in range(100):
-            random.seed(seed)
-            np.random.seed(seed)
-            torch.manual_seed(seed)
-            sess.init_session()
-            sys_response = []
-            logging.info('-'*50)
-            logging.info(f'seed {seed}')
-            for i in range(40):
-                sys_response, user_response, session_over, reward = sess.next_turn(sys_response)
-                if session_over is True:
-                    task_succ = sess.evaluator.task_success()
-                    logging.info(f'task success: {task_succ}')
-                    logging.info(f'book rate: {sess.evaluator.book_rate()}')
-                    logging.info(f'inform precision/recall/f1: {sess.evaluator.inform_F1()}')
-                    logging.info(f"percentage of domains that satisfies the database constraints: {sess.evaluator.final_goal_analyze()}")
-                    logging.info('-'*50)
-                    break
-            else: 
-                task_succ = 0
-    
-            for key in sess.evaluator.goal: 
-                if key not in task_success: 
-                    task_success[key] = []
-                task_success[key].append(task_succ)
-            task_success['All'].append(task_succ)
-        
-        for key in task_success: 
-            logging.info(f'{key} {len(task_success[key])} {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}')
+    action_dict = {}
 
-        if calculate_reward:
-            reward_tot = []
-            for seed in range(100):
-                s = env.reset()
-                reward = []
-                value = []
-                mask = []
-                for t in range(40):
-                    s_vec = torch.Tensor(policy_sys.vector.state_vectorize(s))
-                    a = policy_sys.predict(s)
+    task_success = {'All_user_sim': [], 'All_evaluator': [], 'All_evaluator_strict': [], 'total_return': []}
+    for seed in range(1000, 1400):
+        random.seed(seed)
+        np.random.seed(seed)
+        sess.init_session()
+        sys_response = []
+        actions = 0.0
+        total_return = 0.0
+        turns = 0
+        task_succ = 0
+        task_succ_strict = 0
+        logging.info(f"\n Seed: {seed}")
+        if verbose:
+            logging.info("NEW EPISODE!!!!" + "-" * 80)
+            logging.info(f"GOAL: {sess.evaluator.goal}")
+            logging.info("\n")
+        for i in range(40):
+            sys_response, user_response, session_over, reward = sess.next_turn(
+                sys_response)
 
-                    # interact with env
-                    next_s, r, done = env.step(a)
-                    logging.info(r)
-                    reward.append(r)
-                    if done: # one due to counting from 0, the one for the last turn
-                        break
-                logging.info(f'{seed} reward: {np.mean(reward)}')
-                reward_tot.append(np.mean(reward))
-            logging.info(f'total avg reward: {np.mean(reward_tot)}')
-    else:
-        raise Exception("currently supported dataset: MultiWOZ")
-    
+            if verbose:
+                logging.info(f"USER RESPONSE: {user_response}")
+                logging.info(f"SYS RESPONSE: {sys_response}")
+
+            actions += len(sys_response)
+            length = len(sys_response)
+            if length in action_dict:
+                if sys_response not in action_dict[length]:
+                    action_dict[length].append(sys_response)
+            else:
+                action_dict[length] = []
+                action_dict[length].append(sys_response)
+
+            # logging.info(f"Actions in turn: {len(sys_response)}")
+            turns += 1
+            if user_type == "vhus":
+                total_return += reward
+            else:
+                total_return += simulator.policy.policy.get_reward()
+
+            if session_over is True:
+                task_succ = sess.evaluator.task_success()
+                task_succ = sess.evaluator.success
+                task_succ_strict = sess.evaluator.success_strict
+                break
+        if user_type != "vhus":
+            logging.info(
+                f"Complete: {int(simulator.policy.policy.goal.task_complete())}")
+        logging.info(f"Success: {task_succ}")
+        logging.info(f"Success strict: {task_succ_strict}")
+        logging.info(f"Return: {total_return}")
+        logging.info(f"Average actions: {actions / turns}")
+
+        if user_type == "vhus":
+            task_success['All_user_sim'].append(
+                int(simulator.policy.goal.task_complete()))
+        else:
+            task_success['All_user_sim'].append(
+                int(simulator.policy.policy.goal.task_complete()))
+
+        task_success['All_evaluator'].append(task_succ)
+        task_success['All_evaluator_strict'].append(task_succ_strict)
+        task_success['total_return'].append(total_return)
+
+    # logging.info(f"Entropy: {np.mean(policy_sys.entropy_list)}")
+
+    for key in task_success:
+        logging.info(
+            f'{key} {len(task_success[key])} {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}')
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", type=str, default="MultiWOZ", help="name of dataset")
-    parser.add_argument("--model_name", type=str, default="PPO", help="name of model")
-    parser.add_argument("--load_path", type=str, default='', help="path of model")
-    parser.add_argument("--log_path_suffix", type=str, default="", help="suffix of path of log file")
-    parser.add_argument("--log_dir_path", type=str, default="log", help="path of log directory")
+    parser.add_argument("--dataset_name", type=str,
+                        default="MultiWOZ", help="name of dataset")
+    parser.add_argument("--model_name", type=str,
+                        default="PPO", help="name of model")
+    parser.add_argument("--load_path", type=str,
+                        default='', help="path of model")
+    parser.add_argument("--log_path_suffix", type=str,
+                        default="", help="suffix of path of log file")
+    parser.add_argument("--log_dir_path", type=str,
+                        default="log", help="path of log directory")
+    parser.add_argument("--user_config", type=str,
+                        default="convlab2/policy/tus/multiwoz/exp/default.json")
+    parser.add_argument("--user_mode", type=str, default="")
+    parser.add_argument("--user", type=str, default="rule")
+    parser.add_argument("--verbose", action='store_true', help="whether to output utterances")
+
     args = parser.parse_args()
 
-    init_logging(log_dir_path=args.log_dir_path, path_suffix=args.log_path_suffix)
+    init_logging(log_dir_path=args.log_dir_path,
+                 path_suffix=args.log_path_suffix)
     evaluate(
+        args=args,
         dataset_name=args.dataset_name,
         model_name=args.model_name,
         load_path=args.load_path,
-        calculate_reward=True
+        verbose=args.verbose
     )

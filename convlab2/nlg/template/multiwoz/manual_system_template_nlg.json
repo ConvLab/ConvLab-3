@@ -1362,6 +1362,11 @@
             "Did you need any further assistance today ?"
         ]
     },
+    "general-reqinfo": {
+        "none": [
+            "Could you please provide me with more information ."
+        ]
+    },
     "general-welcome": {
         "none": [
             "you are welcome",

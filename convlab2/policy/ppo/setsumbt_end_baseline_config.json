@@ -1,0 +1,73 @@
+{
+	"model": {
+		"load_path": "supervised",
+		"pretrained_load_path": "",
+		"use_pretrained_initialisation": false,
+		"batchsz": 1000,
+		"seed": 0,
+		"epoch": 0,
+		"eval_frequency": 5,
+		"process_num": 4,
+		"num_eval_dialogues": 5,
+		"sys_semantic_to_usr": false
+	},
+	"vectorizer_sys": {
+		"uncertainty_vector_mul": {
+			"class_path": "convlab2.policy.vector.vector_multiwoz_uncertainty.MultiWozVector",
+			"ini_params": {
+				"use_masking": false,
+				"manually_add_entity_names": false,
+				"seed": 0
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"setsumbt-mul": {
+			"class_path": "convlab2.dst.setsumbt.multiwoz.Tracker.SetSUMBTTracker",
+			"ini_params": {
+				"model_path": "https://zenodo.org/record/5497808/files/setsumbt_end.zip",
+				"get_confidence_scores": true,
+				"return_mutual_info": false,
+				"return_entropy": true
+			}
+		}
+	},
+	"sys_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab2.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": false
+			}
+		}
+	},
+	"nlu_usr": {
+		"BERTNLU": {
+			"class_path": "convlab2.nlu.jointBERT.multiwoz.BERTNLU",
+			"ini_params": {
+				"mode": "sys",
+				"config_file": "multiwoz_sys_context.json",
+				"model_file": "https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip"
+			}
+		}
+	},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab2.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab2.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": true,
+				"label_noise": 0.0,
+				"text_noise": 0.0
+			}
+		}
+	}
+}

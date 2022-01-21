@@ -74,6 +74,6 @@ REF_SYS_DA = {
         'Time': "duration", 'none': None, 'Ticket': 'price',
     },
     'Police': {
-        'Addr': "address", 'Post': "postcode", 'Phone': "phone"
+        'Addr': "address", 'Post': "postcode", 'Phone': "phone", "Name": "name"
     },
 }

@@ -65,6 +65,7 @@ class ActPolicyDataloader(ModuleDataloader):
         kwargs.setdefault('dialog_act', True)
         kwargs.setdefault('terminated', True)
         kwargs.setdefault('context_dialog_act', True)
+        kwargs.setdefault('goal', True)
         kwargs.setdefault('context_window_size', 2)
         return self.dataset_dataloader.load_data(*args, **kwargs)
 

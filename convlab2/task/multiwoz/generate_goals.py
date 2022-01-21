@@ -12,7 +12,8 @@ from pprint import pprint
 
 
 def extract_slot_combination_from_goal(goal):
-    domains = ['attraction', 'hotel', 'restaurant', 'police', 'hospital', 'taxi', 'train']
+    domains = ['attraction', 'hotel', 'restaurant',
+               'police', 'hospital', 'taxi', 'train']
     serialized_goal = []
     for domain in goal:
         if domain in domains:
@@ -25,26 +26,32 @@ def extract_slot_combination_from_goal(goal):
                     #     for slot in content:
                     #         serialized_goal.append("{}-{}-{}".format(domain, scope, slot))
                     for slot in content:
-                        serialized_goal.append("{}-{}-{}".format(domain, scope, slot))
+                        serialized_goal.append(
+                            "{}-{}-{}".format(domain, scope, slot))
     return sorted(serialized_goal)
 
 
 def test_generate_overlap(total_num=1000, seed=42, output_file='goal.json'):
-    train_data = read_zipped_json('../../../data/multiwoz/train.json.zip', 'train.json')
+    train_data = read_zipped_json(
+        '../../../data/multiwoz/train.json.zip', 'train.json')
     train_serialized_goals = []
     for d in train_data:
-        train_serialized_goals.append(extract_slot_combination_from_goal(train_data[d]['goal']))
+        train_serialized_goals.append(
+            extract_slot_combination_from_goal(train_data[d]['goal']))
 
-    test_data = read_zipped_json('../../../data/multiwoz/test.json.zip', 'test.json')
+    test_data = read_zipped_json(
+        '../../../data/multiwoz/test.json.zip', 'test.json')
     test_serialized_goals = []
     for d in test_data:
-        test_serialized_goals.append(extract_slot_combination_from_goal(test_data[d]['goal']))
+        test_serialized_goals.append(
+            extract_slot_combination_from_goal(test_data[d]['goal']))
 
     overlap = 0
     for serialized_goal in test_serialized_goals:
         if serialized_goal in train_serialized_goals:
             overlap += 1
-    print(len(train_serialized_goals), len(test_serialized_goals), overlap) # 8434 1000 430
+    print(len(train_serialized_goals), len(
+        test_serialized_goals), overlap)  # 8434 1000 430
 
     random.seed(seed)
     np.random.seed(seed)
@@ -80,7 +87,8 @@ def test_generate_overlap(total_num=1000, seed=42, output_file='goal.json'):
     for serialized_goal in serialized_goals:
         if serialized_goal in train_serialized_goals:
             overlap += 1
-    print(len(train_serialized_goals), len(serialized_goals), overlap) # 8434 1000 199
+    print(len(train_serialized_goals), len(
+        serialized_goals), overlap)  # 8434 1000 199
 
 
 def generate(total_num=1000, seed=42, output_file='goal.json'):
@@ -110,9 +118,9 @@ def generate(total_num=1000, seed=42, output_file='goal.json'):
             "timestamp": str(datetime.datetime.now()),
             "ID": len(goals)
         })
-    print('avg domains:', np.mean(avg_domains)) # avg domains: 1.846
+    print('avg domains:', np.mean(avg_domains))  # avg domains: 1.846
     json.dump(goals, open(output_file, 'w'), indent=4)
 
 
 if __name__ == '__main__':
-    generate(output_file='goal20200629.json')
+    generate(output_file='tmp.json')

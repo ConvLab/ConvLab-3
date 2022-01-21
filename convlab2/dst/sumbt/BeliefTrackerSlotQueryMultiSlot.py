@@ -4,7 +4,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from torch.nn import CrossEntropyLoss
-
 from transformers import BertModel
 from transformers import BertPreTrainedModel
 
@@ -17,6 +16,7 @@ class BertForUtteranceEncoding(BertPreTrainedModel):
         self.bert = BertModel(config)
 
     def forward(self, input_ids, token_type_ids, attention_mask, output_all_encoded_layers=False):
+
         return self.bert(input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids, encoder_hidden_states=output_all_encoded_layers)
 
 

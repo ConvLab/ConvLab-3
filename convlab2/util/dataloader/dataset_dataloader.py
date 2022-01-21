@@ -9,6 +9,8 @@ import zipfile
 from pprint import pprint
 from convlab2.util.file_util import read_zipped_json
 
+belief_domains = ['attraction', 'restaurant', 'train', 'hotel', 'taxi', 'hospital', 'police']
+
 
 class DatasetDataloader(ABC):
     def __init__(self):
@@ -49,6 +51,7 @@ class MultiWOZDataloader(DatasetDataloader):
                   terminated=False,
                   goal=False
                   ):
+
         if data_dir is None:
             data_dir = os.path.join(DATA_ROOT, 'multiwoz' + ('_zh' if self.zh else ''))
 
@@ -64,6 +67,7 @@ class MultiWOZDataloader(DatasetDataloader):
         info_list = list(filter(eval, ['utterance', 'dialog_act', 'context', 'context_dialog_act', 'belief_state',
                                        'last_opponent_utterance', 'last_self_utterance', 'session_id', 'span_info',
                                        'terminated', 'goal']))
+
         self.data = {'train': {}, 'val': {}, 'test': {}, 'role': role, 'human_val': {}}
         if data_key == 'all':
             data_key_list = ['train', 'val', 'test']
@@ -77,6 +81,7 @@ class MultiWOZDataloader(DatasetDataloader):
             for sess_id, sess in data.items():
                 cur_context = []
                 cur_context_dialog_act = []
+                entity_booked_dict = dict((domain, False) for domain in belief_domains)
                 for i, turn in enumerate(sess['log']):
                     text = turn['text']
                     da = da2tuples(turn['dialog_act'])
@@ -97,7 +102,8 @@ class MultiWOZDataloader(DatasetDataloader):
                     if context_dialog_act:
                         self.data[data_key]['context_dialog_act'].append(cur_context_dialog_act[-context_window_size:])
                     if belief_state:
-                        self.data[data_key]['belief_state'].append(turn['metadata'])
+                        entity_booked_dict, fixed_bs = self.fix_entity_booked_info(entity_booked_dict, turn['metadata'])
+                        self.data[data_key]['belief_state'].append(fixed_bs)
                     if last_opponent_utterance:
                         self.data[data_key]['last_opponent_utterance'].append(
                             cur_context[-1] if len(cur_context) >= 1 else '')
@@ -119,6 +125,14 @@ class MultiWOZDataloader(DatasetDataloader):
             self.data['ontology'] = json.load(open(ontology_path))
 
         return self.data
+
+    def fix_entity_booked_info(self, entity_booked_dict, belief_state):
+
+        for domain in entity_booked_dict:
+            if not entity_booked_dict[domain] and belief_state[domain]['book']['booked']:
+                entity_booked_dict[domain] = True
+                belief_state[domain]['book']['booked'] = []
+        return entity_booked_dict, belief_state
 
 
 class CamrestDataloader(DatasetDataloader):
@@ -205,6 +219,7 @@ class CamrestDataloader(DatasetDataloader):
 
 
 class CrossWOZDataloader(DatasetDataloader):
+
     def __init__(self, en=False):
         super(CrossWOZDataloader, self).__init__()
         self.en = en
@@ -229,6 +244,7 @@ class CrossWOZDataloader(DatasetDataloader):
                   final_goal=False,
                   task_description=False
                   ):
+
         if data_dir is None:
             data_dir = os.path.join(DATA_ROOT, 'crosswoz' + ('_en' if self.en else ''))
 
@@ -243,6 +259,7 @@ class CrossWOZDataloader(DatasetDataloader):
                                        'user_state', 'sys_state', 'sys_state_init',
                                        'last_opponent_utterance', 'last_self_utterance', 'session_id',
                                        'terminated', 'goal', 'final_goal', 'task_description']))
+
         self.data = {'train': {}, 'val': {}, 'test': {}, 'role': role, 'human_val': {}}
         if data_key == 'all':
             data_key_list = ['train', 'val', 'test']

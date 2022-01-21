@@ -48,6 +48,7 @@ def write_file(name, data, role='usr'):
                     if domain not in ['general', 'Booking'] and not sess_domains[domain]:
                         da_seq = da_seq.replace(domain.lower(), domain.lower()+' *', 1)
                         sess_domains[domain] = True
+
                 if role == 'usr':
                     da_uttr = turn['usr'].replace(' bus ', ' train ').replace('&', 'and')
                 elif role == 'sys':

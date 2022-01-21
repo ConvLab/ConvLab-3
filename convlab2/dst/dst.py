@@ -1,7 +1,7 @@
 """Dialog State Tracker Interface"""
+
 import copy
 from abc import abstractmethod
-
 from convlab2.util.module import Module
 
 

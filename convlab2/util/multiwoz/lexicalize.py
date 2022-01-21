@@ -9,7 +9,7 @@ def delexicalize_da(da, requestable):
         if intent in requestable:
             v = '?'
         else:
-            if slot=='none':
+            if slot == 'none':
                 v = 'none'
             else:
                 k = '-'.join([intent, domain, slot])
@@ -56,11 +56,14 @@ def lexicalize_da(meta, entities, state, requestable, cur_domain=None):
                 else:
                     continue
             for pair in v:
+                # Extra else 'none' ensures that if info not available value is returned at none
                 if not booking:
                     if pair[0] in REF_SYS_DA[domain]:
                         slot = REF_SYS_DA[domain][pair[0]]
                         if slot in state[domain.lower()]['semi']:
                             pair[1] = state[domain.lower()]['semi'][slot]
+                        else:
+                            pair[1] = 'none'
                     else:
                         pair[1] = 'none'
                 else:
@@ -68,6 +71,8 @@ def lexicalize_da(meta, entities, state, requestable, cur_domain=None):
                         slot = REF_SYS_DA['Booking'][pair[0]]
                         if slot in state[domain.lower()]['book']:
                             pair[1] = state[domain.lower()]['book'][slot]
+                        else:
+                            pair[1] = 'none'
                     else:
                         pair[1] = 'none'
         else:
@@ -82,12 +87,30 @@ def lexicalize_da(meta, entities, state, requestable, cur_domain=None):
                 elif pair[0].lower() == 'choice':
                     pair[1] = str(len(entities[domain]))
                 else:
+                    # Here we added code to search for slot value in book and semi part of belief state
+                    # if not available for the entity. Eg book day.
                     n = int(pair[1]) - 1
-                    if len(entities[domain]) > n and pair[0] in REF_SYS_DA[domain] and REF_SYS_DA[domain][pair[0]] in \
-                            entities[domain][n]:
-                        pair[1] = entities[domain][n][REF_SYS_DA[domain][pair[0]]]
+                    if len(entities[domain]) > n:
+                        slot = REF_SYS_DA[domain].get(pair[0], pair[0].lower())
+                        if slot in entities[domain][n]:
+                            pair[1] = entities[domain][n][slot]
+                        elif slot in state[domain.lower()]['book']:
+                            pair[1] = state[domain.lower()]['book'][slot]
+                        elif slot in state[domain.lower()]['semi']:
+                            pair[1] = state[domain.lower()]['semi'][slot]
+                        else:
+                            pair[1] = 'not available'
+                        pair[1] = pair[1] if pair[1] else 'not available'
+                    elif pair[0] in REF_SYS_DA[domain]:
+                        slot = REF_SYS_DA[domain].get(pair[0], pair[0].lower())
+                        if slot in state[domain.lower()]['semi']:
+                            pair[1] = state[domain.lower()]['semi'][slot]
+                        else:
+                            pair[1] = 'none'
+                        pair[1] = pair[1] if pair[1] else 'none'
                     else:
                         pair[1] = 'none'
+
     tuples = []
     for domain_intent, svs in meta.items():
         for slot, value in svs:

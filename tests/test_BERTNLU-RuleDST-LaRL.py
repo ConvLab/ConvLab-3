@@ -31,6 +31,7 @@ from pprint import pprint
 import random
 import numpy as np
 import torch
+import pdb
 
 
 def set_seed(r_seed):
@@ -46,6 +47,7 @@ def test_end2end():
     # simple rule DST
     sys_dst = RuleDST()
     # rule policy
+    pdb.set_trace()
     sys_policy = LaRL()
     # template NLG
     sys_nlg = None

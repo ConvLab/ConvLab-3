@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import re
 import numpy as np
 from copy import deepcopy
@@ -30,12 +31,14 @@ mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'na
            'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
            'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
 
+
 time_re = re.compile(r'^(([01]\d|2[0-4]):([0-5]\d)|24:00)$')
-NUL_VALUE = ["", "dont care", 'not mentioned', "don't care", "dontcare", "do n't care"]
+NUL_VALUE = ["", "dont care", 'not mentioned',
+             "don't care", "dontcare", "do n't care"]
 
 
 class MultiWozEvaluator(Evaluator):
-    def __init__(self):
+    def __init__(self, check_book_constraints=True, check_domain_success=False):
         self.sys_da_array = []
         self.usr_da_array = []
         self.goal = {}
@@ -43,6 +46,12 @@ class MultiWozEvaluator(Evaluator):
         self.booked = {}
         self.database = Database()
         self.dbs = self.database.dbs
+        self.check_book_constraints = check_book_constraints
+        self.check_domain_success = check_domain_success
+        self.success = 0
+        self.success_strict = 0
+        self.successful_domains = []
+        logging.info(f"We check booking constraints: {self.check_book_constraints}")
 
     def _init_dict(self):
         dic = {}
@@ -82,8 +91,9 @@ class MultiWozEvaluator(Evaluator):
         self.goal = goal
         self.cur_domain = ''
         self.booked = self._init_dict_booked()
+        self.booked_states = self._init_dict_booked()
 
-    def add_sys_da(self, da_turn):
+    def add_sys_da(self, da_turn, belief_state):
         """add sys_da into array
 
         args:
@@ -102,12 +112,15 @@ class MultiWozEvaluator(Evaluator):
             if da == 'booking-book-ref' and self.cur_domain in ['hotel', 'restaurant', 'train']:
                 if not self.booked[self.cur_domain] and re.match(r'^\d{8}$', value) and \
                         len(self.dbs[self.cur_domain]) > int(value):
-                    self.booked[self.cur_domain] = self.dbs[self.cur_domain][int(value)].copy()
+                    self.booked[self.cur_domain] = self.dbs[self.cur_domain][int(
+                        value)].copy()
                     self.booked[self.cur_domain]['Ref'] = value
+                    self.booked_states[self.cur_domain] = belief_state[self.cur_domain]
             elif da == 'train-offerbooked-ref' or da == 'train-inform-ref':
                 if not self.booked['train'] and re.match(r'^\d{8}$', value) and len(self.dbs['train']) > int(value):
                     self.booked['train'] = self.dbs['train'][int(value)].copy()
                     self.booked['train']['Ref'] = value
+                    self.booked_states[self.cur_domain] = belief_state[self.cur_domain]
             elif da == 'taxi-inform-car':
                 if not self.booked['taxi']:
                     self.booked['taxi'] = 'booked'
@@ -130,7 +143,7 @@ class MultiWozEvaluator(Evaluator):
 
     def _book_rate_goal(self, goal, booked_entity, domains=None):
         """
-        judge if the selected entity meets the constraint
+        judge if the selected entity meets the informable constraint
         """
         if domains is None:
             domains = belief_domains
@@ -153,15 +166,18 @@ class MultiWozEvaluator(Evaluator):
                         tot -= 1
                     elif k == 'leaveAt':
                         try:
-                            v_constraint = int(v.split(':')[0]) * 100 + int(v.split(':')[1])
-                            v_select = int(entity['leaveAt'].split(':')[0]) * 100 + int(entity['leaveAt'].split(':')[1])
+                            v_constraint = int(
+                                v.split(':')[0]) * 100 + int(v.split(':')[1])
+                            v_select = int(entity['leaveAt'].split(
+                                ':')[0]) * 100 + int(entity['leaveAt'].split(':')[1])
                             if v_constraint <= v_select:
                                 match += 1
                         except (ValueError, IndexError):
                             match += 1
                     elif k == 'arriveBy':
                         try:
-                            v_constraint = int(v.split(':')[0]) * 100 + int(v.split(':')[1])
+                            v_constraint = int(
+                                v.split(':')[0]) * 100 + int(v.split(':')[1])
                             v_select = int(entity['arriveBy'].split(':')[0]) * 100 + int(
                                 entity['arriveBy'].split(':')[1])
                             if v_constraint >= v_select:
@@ -171,6 +187,46 @@ class MultiWozEvaluator(Evaluator):
                     else:
                         if v.strip() == entity[k].strip():
                             match += 1
+                if tot != 0:
+                    score.append(match / tot)
+        return score
+
+    def _book_goal_constraints(self, goal, booked_states, domains=None):
+        """
+        judge if the selected entity meets the booking constraint
+        """
+        if domains is None:
+            domains = belief_domains
+        score = []
+        for domain in domains:
+            if domain == "taxi":
+                # taxi has no booking constraints
+                continue
+            if 'book' in goal[domain] and goal[domain]['book']:
+                tot = len(goal[domain]['book'].keys())
+                if tot == 0:
+                    continue
+                state = booked_states[domain]
+                if state is None:
+                    # nothing has been booked but should have been
+                    score.append(0)
+                    continue
+                if len(state['book']) < 2:
+                    # state does not track any booking constraints -> trivially satisfied
+                    score.append(1)
+                    continue
+
+                match = 0
+                for slot, value in goal[domain]['book'].items():
+                    try:
+                        value_predicted = state['book'].get(slot, "")
+                        if value == value_predicted:
+                            match += 1
+                    except Exception as e:
+                        print("Tracker probably does not track that slot.", e)
+                        # if tracker does not track it, it trivially matches since policy has no chance otherwise
+                        match += 1
+
                 if tot != 0:
                     score.append(match / tot)
         return score
@@ -266,6 +322,24 @@ class MultiWozEvaluator(Evaluator):
         else:
             return score
 
+    def book_rate_constrains(self, ref2goal=True, aggregate=True):
+        if ref2goal:
+            goal = self._expand(self.goal)
+        else:
+            goal = self._init_dict()
+            for domain in belief_domains:
+                if domain in self.goal and 'book' in self.goal[domain]:
+                    goal[domain]['book'] = self.goal[domain]['book']
+            for da in self.usr_da_array:
+                d, i, s, v = da.split('-', 3)
+                if i in ['inform', 'recommend', 'offerbook', 'offerbooked'] and s in mapping[d]:
+                    goal[d]['info'][mapping[d][s]] = v
+        score = self._book_goal_constraints(goal, self.booked_states)
+        if aggregate:
+            return np.mean(score) if score else None
+        else:
+            return score
+
     def inform_F1(self, ref2goal=True, aggregate=True):
         if ref2goal:
             goal = self._expand(self.goal)
@@ -297,15 +371,20 @@ class MultiWozEvaluator(Evaluator):
         judge if all the domains are successfully completed
         """
         book_sess = self.book_rate(ref2goal)
+        book_constraint_sess = self.book_rate_constrains(ref2goal)
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
         # book rate == 1 & inform recall == 1
-        if ((book_sess == 1 and inform_sess[1] == 1) \
-            or (book_sess == 1 and inform_sess[1] is None) \
+        if ((book_sess == 1 and inform_sess[1] == 1)
+            or (book_sess == 1 and inform_sess[1] is None)
             or (book_sess is None and inform_sess[1] == 1)) \
                 and goal_sess == 1:
-            return 1
+            self.success = 1
+            self.success_strict = 1 if (book_constraint_sess == 1 or book_constraint_sess is None) else 0
+            return self.success if not self.check_book_constraints else self.success_strict
         else:
+            self.success = 0
+            self.success_strict = 0
             return 0
 
     def domain_reqt_inform_analyze(self, domain, ref2goal=True):
@@ -359,6 +438,9 @@ class MultiWozEvaluator(Evaluator):
         book_rate = self._book_rate_goal(goal, self.booked, [domain])
         book_rate = np.mean(book_rate) if book_rate else None
 
+        book_constraints = self._book_goal_constraints(goal, self.booked_states, [domain])
+        book_constraints = np.mean(book_constraints) if book_constraints else None
+
         inform = self._inform_F1_goal(goal, self.sys_da_array, [domain])
         try:
             inform_rec = inform[0] / (inform[0] + inform[2])
@@ -368,7 +450,9 @@ class MultiWozEvaluator(Evaluator):
         if (book_rate == 1 and inform_rec == 1) \
                 or (book_rate == 1 and inform_rec is None) \
                 or (book_rate is None and inform_rec == 1):
-            return 1
+            domain_success = 1
+            domain_success_strict = 1 if (book_constraints == 1 or book_constraints is None) else 0
+            return domain_success if not self.check_book_constraints else domain_success_strict
         else:
             return 0
 
@@ -387,7 +471,8 @@ class MultiWozEvaluator(Evaluator):
                 constraints += info_constraints
             else:
                 info_constraints = []
-            query_result = self.database.query(domain, info_constraints, soft_contraints=reqt_constraints)
+            query_result = self.database.query(
+                domain, info_constraints, soft_contraints=reqt_constraints)
             if not query_result:
                 mismatch += 1
                 continue
@@ -414,11 +499,22 @@ class MultiWozEvaluator(Evaluator):
         else:
             return match / (match + mismatch)
 
-    def get_reward(self):
-        if self.task_success():
-            reward = 40
-        elif self.cur_domain and self.domain_success(self.cur_domain):
-            reward = 5
+    def get_reward(self, terminated=False):
+
+        if terminated:
+            # once dialogue ended check task success
+            if self.task_success():
+                reward = 80
+            else:
+                reward = -40
         else:
             reward = -1
+
+            if self.check_domain_success and not self.task_success():
+                if self.cur_domain and self.domain_success(self.cur_domain) and \
+                        self.cur_domain not in self.successful_domains:
+                    # if domain is in successful_domains, the domain_success reward has been already given
+                    reward += 5
+                    self.successful_domains.append(self.cur_domain)
+
         return reward

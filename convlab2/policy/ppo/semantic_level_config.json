@@ -1,0 +1,48 @@
+{
+	"model": {
+		"load_path": "convlab2/policy/mle/multiwoz/experiment_2021-12-15-11-12-07/save/supervised",
+		"use_pretrained_initialisation": true,
+		"pretrained_load_path": "",
+		"batchsz": 1000,
+		"seed": 0,
+		"epoch": 200,
+		"eval_frequency": 5,
+		"process_num": 4,
+		"use_masking": false,
+		"use_state_entropy": false,
+		"manually_add_entity_names": false,
+		"use_state_mutual_info": false,
+		"use_confidence_scores": false,
+		"sys_semantic_to_usr": false,
+		"num_eval_dialogues": 500
+	},
+	"vectorizer_sys": {
+		"uncertainty_vector_mul": {
+			"class_path": "convlab2.policy.vector.vector_multiwoz.MultiWozVector",
+			"ini_params": {
+				"use_masking": false,
+				"manually_add_entity_names": false,
+				"seed": 0
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"RuleDST": {
+			"class_path": "convlab2.dst.rule.multiwoz.dst.RuleDST",
+			"ini_params": {}
+		}
+	},
+	"sys_nlg": {},
+	"nlu_usr": {},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab2.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {}
+}
