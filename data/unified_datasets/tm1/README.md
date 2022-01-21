@@ -1,6 +1,6 @@
 # Dataset Card for Taskmaster-1
 
-- **Repository:** https://github.com/google-research-datasets/Taskmaster
+- **Repository:** https://github.com/google-research-datasets/Taskmaster/tree/master/TM-1-2019
 - **Paper:** https://arxiv.org/pdf/1909.05358.pdf
 - **Leaderboard:** None
 - **Who transforms the dataset:** Qi Zhu(zhuq96 at gmail dot com)
