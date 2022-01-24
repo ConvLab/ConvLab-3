@@ -1244,12 +1244,20 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "accept",
+              "intent": "inform",
               "domain": "auto_repair",
               "slot": "reason.appt",
-              "value": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+              "value": "tune up and have them check my brakes",
               "start": 21,
-              "end": 121
+              "end": 58
+            },
+            {
+              "intent": "inform",
+              "domain": "auto_repair",
+              "slot": "reason.appt",
+              "value": "grinding noise when I press the brakes",
+              "start": 82,
+              "end": 120
             }
           ]
         },
@@ -1259,7 +1267,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1292,7 +1300,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1325,7 +1333,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1358,7 +1366,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1400,7 +1408,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1433,7 +1441,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1466,7 +1474,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+            "reason.appt": "grinding noise when I press the brakes",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -1508,8 +1516,8 @@
               "intent": "accept",
               "domain": "auto_repair",
               "slot": "reason.appt",
-              "value": "your brakes checked and to obtain a tune up",
-              "start": 98,
+              "value": "brakes checked and to obtain a tune up",
+              "start": 103,
               "end": 141
             }
           ]
@@ -1531,7 +1539,7 @@
             "name.customer": "",
             "date.appt": "",
             "time.appt": "",
-            "reason.appt": "your brakes checked and to obtain a tune up",
+            "reason.appt": "brakes checked and to obtain a tune up",
             "name.vehicle": "Toyota Corolla",
             "year.vehicle": "2015",
             "location.store": "O'Fallon, IL. on Hwy 50"
@@ -2188,10 +2196,10 @@
             {
               "intent": "inform",
               "domain": "pizza_ordering",
-              "slot": "type.topping",
-              "value": "Buffalo Chicken Ranch,",
+              "slot": "name.pizza",
+              "value": "Buffalo Chicken Ranch",
               "start": 72,
-              "end": 94
+              "end": 93
             }
           ]
         },
@@ -2220,7 +2228,7 @@
             "name.store": "Domino's",
             "name.pizza": "Philly Cheesesteak",
             "size.pizza": "large",
-            "type.topping": "Buffalo Chicken Ranch,",
+            "type.topping": "",
             "type.crust": "",
             "preference": "",
             "location.store": ""
@@ -3775,8 +3783,8 @@
               "intent": "inform",
               "domain": "uber_lyft",
               "slot": "location.to",
-              "value": "the north end",
-              "start": 34,
+              "value": "north end",
+              "start": 38,
               "end": 47
             }
           ]
@@ -3784,7 +3792,7 @@
         "state": {
           "uber_lyft": {
             "location.from": "south boston",
-            "location.to": "the north end",
+            "location.to": "north end",
             "type.ride": "",
             "num.people": "",
             "price.estimate": "",
@@ -3803,11 +3811,11 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "accept",
+              "intent": "inform",
               "domain": "uber_lyft",
               "slot": "location.from",
-              "value": "in the south end",
-              "start": 14,
+              "value": "south end",
+              "start": 21,
               "end": 30
             }
           ]
@@ -3835,7 +3843,7 @@
         "state": {
           "uber_lyft": {
             "location.from": "boston chops.",
-            "location.to": "the north end",
+            "location.to": "north end",
             "type.ride": "",
             "num.people": "",
             "price.estimate": "",
@@ -3908,9 +3916,9 @@
               "intent": "inform",
               "domain": "uber_lyft",
               "slot": "type.ride",
-              "value": "personal ride",
+              "value": "personal",
               "start": 14,
-              "end": 27
+              "end": 22
             },
             {
               "intent": "inform",
@@ -5013,11 +5021,19 @@
               "end": 30
             },
             {
-              "intent": "inform",
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "name.movie",
+              "value": "Alita: Battle Angel",
+              "start": 42,
+              "end": 61
+            },
+            {
+              "intent": "accept",
               "domain": "movie_ticket",
               "slot": "name.theater",
-              "value": "Alita: Battle Angel at Regal Cinemas Fox Tower 10",
-              "start": 42,
+              "value": "Regal Cinemas Fox Tower 10",
+              "start": 65,
               "end": 91
             }
           ]
@@ -5045,7 +5061,7 @@
         "state": {
           "movie_ticket": {
             "name.movie": "Alita: Battle Angel",
-            "name.theater": "Alita: Battle Angel at Regal Cinemas Fox Tower 10",
+            "name.theater": "Regal Cinemas Fox Tower 10",
             "num.tickets": "Two",
             "time.start": "8:00 pm",
             "location.theater": "Let's see it there",
@@ -5086,7 +5102,7 @@
         "state": {
           "movie_ticket": {
             "name.movie": "Alita: Battle Angel",
-            "name.theater": "Alita: Battle Angel at Regal Cinemas Fox Tower 10",
+            "name.theater": "Regal Cinemas Fox Tower 10",
             "num.tickets": "Two",
             "time.start": "8:00 pm",
             "location.theater": "Let's see it there",
@@ -5120,7 +5136,7 @@
         "state": {
           "movie_ticket": {
             "name.movie": "Alita: Battle Angel",
-            "name.theater": "Alita: Battle Angel at Regal Cinemas Fox Tower 10",
+            "name.theater": "Regal Cinemas Fox Tower 10",
             "num.tickets": "Two",
             "time.start": "8:00 pm",
             "location.theater": "Let's see it there",
@@ -5161,7 +5177,7 @@
         "state": {
           "movie_ticket": {
             "name.movie": "Alita: Battle Angel",
-            "name.theater": "Alita: Battle Angel at Regal Cinemas Fox Tower 10",
+            "name.theater": "Regal Cinemas Fox Tower 10",
             "num.tickets": "Two",
             "time.start": "8:00 pm",
             "location.theater": "Let's see it there",

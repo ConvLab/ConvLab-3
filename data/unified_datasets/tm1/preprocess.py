@@ -238,8 +238,10 @@ def preprocess():
                 in_span = [0] * len(turn['utterance'])
 
                 if 'segments' in uttr:
-                    for segment in uttr['segments']:
-                        # skip overlapped span
+                    # sort the span according to the length
+                    segments = sorted(uttr['segments'], key=lambda x: len(x['text']))
+                    for segment in segments:
+                        # skip overlapped spans, keep the shortest one
                         if sum(in_span[segment['start_index']: segment['end_index']]) > 0:
                             continue
                         else:
@@ -272,6 +274,8 @@ def preprocess():
                                 'end': segment['end_index']
                             })
 
+                turn['dialogue_acts']['non-categorical'] = sorted(turn['dialogue_acts']['non-categorical'], key=lambda x: x['start'])
+
                 for da in turn['dialogue_acts']['binary']:
                     da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
                     if da_tuple not in ontology['binary_dialogue_acts']:
@@ -300,8 +304,8 @@ def preprocess():
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
-    # rmtree(original_data_dir)
-    # rmtree(new_data_dir)
+    rmtree(original_data_dir)
+    rmtree(new_data_dir)
     return dialogues, ontology
 
 if __name__ == '__main__':

@@ -16,9 +16,9 @@ The original dataset consists of 13,215 task-based dialogs, including 5,507 spok
   - Remove dialogs that are empty or only contain one speaker.
   - Split woz-dialogs into train/validation/test randomly (8:1:1). The split of self-dialogs is followed the original dataset.
   - Merge continuous turns by the same speaker (ignore repeated turns).
-  - Annotate `dialogue acts` according to the original segment annotations. Add `intent` annotation (inform/accept/reject). The type of `dialogue act` is set to `non-categorical` if the original segment annotation includes a specified `slot`. Otherwise, the type is set to `binary` (and the `slot` and `value` are empty) since it means general reference to a transaction, e.g. "OK your pizza has been ordered".
+  - Annotate `dialogue acts` according to the original segment annotations. Add `intent` annotation (inform/accept/reject). The type of `dialogue act` is set to `non-categorical` if the original segment annotation includes a specified `slot`. Otherwise, the type is set to `binary` (and the `slot` and `value` are empty) since it means general reference to a transaction, e.g. "OK your pizza has been ordered". If there are multiple spans overlapping, we only keep the shortest one, since we found that this simple strategy can reduce the noise in annotation.
   - Add `intent` and `slot` descriptions.
-  - Add `state` by accumulate dialog acts except those whose intents are **reject**.
+  - Add `state` by accumulate `non-categorical dialogue acts` in the order that they appear, except those whose intents are **reject**.
   - Keep the first annotation since each conversation was annotated by two workers.
 - **Annotations:**
   - dialogue acts, state.
