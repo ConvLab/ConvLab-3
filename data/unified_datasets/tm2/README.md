@@ -16,8 +16,8 @@ The Taskmaster-2 dataset consists of 17,289 dialogs in the seven domains. Unlike
   - Remove dialogs that are empty or only contain one speaker.
   - Split each domain dialogs into train/validation/test randomly (8:1:1).
   - Merge continuous turns by the same speaker (ignore repeated turns).
-  - Annotate `dialogue acts` according to the original segment annotations. Add `intent` annotation (inform/accept/reject). The type of `dialogue act` is set to `non-categorical` if the original segment annotation includes a specified `slot`. Otherwise, the type is set to `binary` (and the `slot` and `value` are empty) since it means general reference to a transaction, e.g. "OK your pizza has been ordered". If there are multiple spans overlapping, we only keep the shortest one, since we found that this simple strategy can reduce the noise in annotation.
-  - Add `intent` and `slot` descriptions.
+  - Annotate `dialogue acts` according to the original segment annotations. Add `intent` annotation (`==inform`). The type of `dialogue act` is set to `non-categorical` if the `slot` is not in `anno2slot` in `preprocess.py`). Otherwise, the type is set to `binary` (and the `value` is empty). If there are multiple spans overlapping, we only keep the shortest one, since we found that this simple strategy can reduce the noise in annotation.
+  - Add `domain`, `intent`, and `slot` descriptions.
   - Add `state` by accumulate `non-categorical dialogue acts` in the order that they appear.
   - Keep the first annotation since each conversation was annotated by two workers.
 - **Annotations:**

@@ -241,11 +241,6 @@ def preprocess():
                     # sort the span according to the length
                     segments = sorted(uttr['segments'], key=lambda x: len(x['text']))
                     for segment in segments:
-                        # skip overlapped spans, keep the shortest one
-                        if sum(in_span[segment['start_index']: segment['end_index']]) > 0:
-                            continue
-                        else:
-                            in_span[segment['start_index']: segment['end_index']] = [1]*(segment['end_index']-segment['start_index'])
                         # Each conversation was annotated by two workers.
                         # only keep the first annotation for the span
                         item = segment['annotations'][0]
@@ -265,6 +260,11 @@ def preprocess():
                             })
                         else:
                             assert turn['utterance'][segment['start_index']:segment['end_index']] == segment['text']
+                            # skip overlapped spans, keep the shortest one
+                            if sum(in_span[segment['start_index']: segment['end_index']]) > 0:
+                                continue
+                            else:
+                                in_span[segment['start_index']: segment['end_index']] = [1]*(segment['end_index']-segment['start_index'])
                             turn['dialogue_acts']['non-categorical'].append({
                                 'intent': intent,
                                 'domain': domain,
@@ -276,10 +276,13 @@ def preprocess():
 
                 turn['dialogue_acts']['non-categorical'] = sorted(turn['dialogue_acts']['non-categorical'], key=lambda x: x['start'])
 
+                bdas = set()
                 for da in turn['dialogue_acts']['binary']:
                     da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
+                    bdas.add(da_tuple)
                     if da_tuple not in ontology['binary_dialogue_acts']:
                         ontology['binary_dialogue_acts'].add(da_tuple)
+                turn['dialogue_acts']['binary'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(bdas)]
 
                 for da in turn['dialogue_acts']['non-categorical']:
                     slot, value = da['slot'], da['value']

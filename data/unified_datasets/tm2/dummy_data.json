@@ -1732,14 +1732,6 @@
             {
               "intent": "inform",
               "domain": "flights",
-              "slot": "other_description",
-              "value": "the shortest layover",
-              "start": 58,
-              "end": 78
-            },
-            {
-              "intent": "inform",
-              "domain": "flights",
               "slot": "stops",
               "value": "layover",
               "start": 71,
@@ -1775,7 +1767,7 @@
             "num.pax": "one",
             "luggage": "",
             "total_fare": "",
-            "other_description": "the shortest layover",
+            "other_description": "",
             "from": "",
             "to": "",
             "airline": "United Airlines",
