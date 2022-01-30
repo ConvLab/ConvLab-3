@@ -1,0 +1,5204 @@
+[
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-0",
+    "original_id": "dlg-3369f6e3-6c81-4902-8259-138ffd830952",
+    "domains": [
+      "movie_ticket"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi. A friend and I would like to see the movie Us tonight. Can you help us get the tickets?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.movie",
+              "value": "Us",
+              "start": 47,
+              "end": 49
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "",
+            "num.tickets": "",
+            "time.start": "",
+            "location.theater": "",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Oh, I heard that's good. Of course I can help. Where would you like to see the movie?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm in Studio City in LA, so somewhere close to there would be good.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Studio City in LA",
+              "start": 7,
+              "end": 24
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "",
+            "num.tickets": "",
+            "time.start": "",
+            "location.theater": "Studio City in LA",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "OK, there are a number of theaters nearby. Did you have a time in mind?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How about 7 o'clock this evening?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "7 o'clock",
+              "start": 10,
+              "end": 19
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "",
+            "num.tickets": "",
+            "time.start": "7 o'clock",
+            "location.theater": "Studio City in LA",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "It looks like the movie is showing on both standard and IMAX theaters. Do you have a preference?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "standard",
+              "start": 43,
+              "end": 51
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "IMAX",
+              "start": 56,
+              "end": 60
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "IMAX would be cool.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "IMAX",
+              "start": 0,
+              "end": 4
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "",
+            "num.tickets": "",
+            "time.start": "7 o'clock",
+            "location.theater": "Studio City in LA",
+            "price.ticket": "",
+            "type.screening": "IMAX",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great. And you said you wanted two tickets, right?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "num.tickets",
+              "value": "two",
+              "start": 31,
+              "end": 34
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yep.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "",
+            "num.tickets": "two",
+            "time.start": "7 o'clock",
+            "location.theater": "Studio City in LA",
+            "price.ticket": "",
+            "type.screening": "IMAX",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The AMC Cinema at the Universal CityWalk is playing Us in IMAX, but the next showing time is at 8 PM. Is that ok?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "AMC Cinema",
+              "start": 4,
+              "end": 14
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Universal CityWalk",
+              "start": 22,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.movie",
+              "value": "Us",
+              "start": 52,
+              "end": 54
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "IMAX",
+              "start": 58,
+              "end": 62
+            },
+            {
+              "intent": "reject",
+              "domain": "movie_ticket",
+              "slot": "num.tickets",
+              "value": "8 PM",
+              "start": 96,
+              "end": 100
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Hm, I'd rather go earlier. What about the ArcLight theater in Sherman Oaks?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "ArcLight",
+              "start": 42,
+              "end": 50
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Sherman Oaks",
+              "start": 62,
+              "end": 74
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "ArcLight",
+            "num.tickets": "two",
+            "time.start": "7 o'clock",
+            "location.theater": "Sherman Oaks",
+            "price.ticket": "",
+            "type.screening": "IMAX",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The ArcLight is showing the movie at 7:15 PM, but it's on a standard screen, not IMAX. Is that ok?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "ArcLight",
+              "start": 4,
+              "end": 12
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "7:15 PM",
+              "start": 37,
+              "end": 44
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "standard",
+              "start": 60,
+              "end": 68
+            },
+            {
+              "intent": "reject",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "IMAX",
+              "start": 81,
+              "end": 85
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yeah, that will be fine, I guess. How much is it for two tickets?",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "num.tickets",
+              "value": "two",
+              "start": 53,
+              "end": 56
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "ArcLight",
+            "num.tickets": "two",
+            "time.start": "7:15 PM",
+            "location.theater": "Sherman Oaks",
+            "price.ticket": "",
+            "type.screening": "standard",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Tickets are $17 each, so it would be about $34 plus tax.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "price.ticket",
+              "value": "$17",
+              "start": 12,
+              "end": 15
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "price.ticket",
+              "value": "$34",
+              "start": 43,
+              "end": 46
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Hm, that's a little pricey. Any other theaters?",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "ArcLight",
+            "num.tickets": "two",
+            "time.start": "7:15 PM",
+            "location.theater": "Sherman Oaks",
+            "price.ticket": "$34",
+            "type.screening": "standard",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The AMC 6 in Burbank is also showing the movie at that time, and tickets are $15 each.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "AMC 6",
+              "start": 4,
+              "end": 9
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Burbank",
+              "start": 13,
+              "end": 20
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "price.ticket",
+              "value": "$15",
+              "start": 77,
+              "end": 80
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I guess the price isn't much different. Let's go with the ArcLight at 7:15 pm.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "ArcLight",
+              "start": 58,
+              "end": 66
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "7:15 pm",
+              "start": 70,
+              "end": 77
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "ArcLight",
+            "num.tickets": "two",
+            "time.start": "7:15 pm",
+            "location.theater": "Burbank",
+            "price.ticket": "$15",
+            "type.screening": "standard",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "OK, to confirm: two tickets to see Us at the ArcLight Theater in Sherman Oaks at 7:15 pm. The price will be $34 plus tax.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "num.tickets",
+              "value": "two",
+              "start": 16,
+              "end": 19
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "name.movie",
+              "value": "Us",
+              "start": 35,
+              "end": 37
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "ArcLight Theater",
+              "start": 45,
+              "end": 61
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Sherman Oaks",
+              "start": 65,
+              "end": 77
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "7:15 pm",
+              "start": 81,
+              "end": 88
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "price.ticket",
+              "value": "$34",
+              "start": 108,
+              "end": 111
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That all sounds right.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "ArcLight Theater",
+            "num.tickets": "two",
+            "time.start": "7:15 pm",
+            "location.theater": "Sherman Oaks",
+            "price.ticket": "$34",
+            "type.screening": "standard",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great! I'll text the tickets to your phone so you'll be ready to go this evening.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you very much.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Us",
+            "name.theater": "ArcLight Theater",
+            "num.tickets": "two",
+            "time.start": "7:15 pm",
+            "location.theater": "Sherman Oaks",
+            "price.ticket": "$34",
+            "type.screening": "standard",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-1",
+    "original_id": "dlg-336c8165-068e-4b4b-803d-18ef0676f668",
+    "domains": [
+      "restaurant_reservation"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi, I'm looking for a place that sells spicy wet hotdogs, can you think of any?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You might enjoy Spicy Wet Hotdogs LLC.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Spicy Wet Hotdogs LLC",
+              "start": 16,
+              "end": 37
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds really good, can you make me a reservation?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Certainly, when would you like a reservation?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I have a party of 50 who want a really sloppy dog on Saturday at noon.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "50",
+              "start": 18,
+              "end": 20
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "50",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Saturday at noon is no good, I'm sorry.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "Saturday at noon",
+              "start": 0,
+              "end": 16
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Oh okay, is there another restauraunt nearby?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "50",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yeah, you might enjoy Bob's Blender Burgers - they blend up hamburgers and sell them as milkshakes!",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Bob's Blender Burgers",
+              "start": 22,
+              "end": 43
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Wow that sounds delicious! ",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Bob's Blender Burgers",
+            "name.reservation": "",
+            "num.guests": "50",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I know, right?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'll make a reservation for 50 at the blended burger joint on Saturday.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "50",
+              "start": 28,
+              "end": 30
+            },
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "blended burger",
+              "start": 38,
+              "end": 52
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "blended burger",
+            "name.reservation": "",
+            "num.guests": "50",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great, your reservation is made.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you so much!",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "blended burger",
+            "name.reservation": "",
+            "num.guests": "50",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "No problem, anything else I can do for you?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yeah - can you actually make sure that our table is by the play-place?",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "type.seating",
+              "value": "our table is by the play-place",
+              "start": 39,
+              "end": 69
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "blended burger",
+            "name.reservation": "",
+            "num.guests": "50",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "our table is by the play-place",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yeah, will there be children joining you?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes! Fourty of them.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "Fourty of them",
+              "start": 5,
+              "end": 19
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "blended burger",
+            "name.reservation": "",
+            "num.guests": "Fourty of them",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "our table is by the play-place",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Alright, we've got you the table with the play-place.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "type.seating",
+              "value": "table with the play-place",
+              "start": 27,
+              "end": 52
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you so much, have a good one!",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "blended burger",
+            "name.reservation": "",
+            "num.guests": "Fourty of them",
+            "time.reservation": "Saturday at noon",
+            "type.seating": "table with the play-place",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You too!",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-2",
+    "original_id": "dlg-3370fcc4-8914-434d-994d-9e741c0707b2",
+    "domains": [
+      "auto_repair"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hello Pam, I need you to make an appointment for me to get some repairs done on my vehicle.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "",
+            "name.vehicle": "",
+            "year.vehicle": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay. Where would you like me to schedule the appointment?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "There's a shop called Intelligent Auto Solutions",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "auto_repair",
+              "slot": "name.store",
+              "value": "Intelligent Auto Solutions",
+              "start": 22,
+              "end": 48
+            }
+          ]
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "",
+            "name.vehicle": "",
+            "year.vehicle": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Where's that located?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "It' located in O'Fallon, IL. on Hwy 50.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "auto_repair",
+              "slot": "location.store",
+              "value": "O'Fallon, IL. on Hwy 50",
+              "start": 15,
+              "end": 38
+            }
+          ]
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "",
+            "name.vehicle": "",
+            "year.vehicle": "",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, so give me some information about what's going on with your vehicle?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well, it's my 2015 Toyota Corolla that's giving me problems.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "auto_repair",
+              "slot": "year.vehicle",
+              "value": "2015",
+              "start": 14,
+              "end": 18
+            },
+            {
+              "intent": "inform",
+              "domain": "auto_repair",
+              "slot": "name.vehicle",
+              "value": "Toyota Corolla",
+              "start": 19,
+              "end": 33
+            }
+          ]
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What type of problems?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well, I would like a tune up and have them check my brakes. I believe I hear some grinding noise when I press the brakes.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "auto_repair",
+              "slot": "reason.appt",
+              "value": "tune up and have them check my brakes",
+              "start": 21,
+              "end": 58
+            },
+            {
+              "intent": "inform",
+              "domain": "auto_repair",
+              "slot": "reason.appt",
+              "value": "grinding noise when I press the brakes",
+              "start": 82,
+              "end": 120
+            }
+          ]
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, I will call them and let them know.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Could you tell me when would you like to take it in.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I really would like the fist available appointment. ",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, I will call and let you know the outcome",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Intelligent Auto Solutions",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, I think that will be asking me your personal infomation.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, my name is Jim Wright, address is 222 W. Main Belleville",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "auto_repair",
+              "slot": "name.store",
+              "value": "Jim Wright",
+              "start": 17,
+              "end": 27
+            }
+          ]
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Jim Wright",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, what about your telephone number.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Give them my cell phone number, which is 222-333-4576",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Jim Wright",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, I think I have all of the information needed.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks Pam.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Jim Wright",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "grinding noise when I press the brakes",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome. I am calling them now to make an appointment for your 2015 Toyota Corolla to have your brakes checked and to obtain a tune up.",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "accept",
+              "domain": "auto_repair",
+              "slot": "",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "auto_repair",
+              "slot": "year.vehicle",
+              "value": "2015",
+              "start": 70,
+              "end": 74
+            },
+            {
+              "intent": "accept",
+              "domain": "auto_repair",
+              "slot": "name.vehicle",
+              "value": "Toyota Corolla",
+              "start": 75,
+              "end": 89
+            },
+            {
+              "intent": "accept",
+              "domain": "auto_repair",
+              "slot": "reason.appt",
+              "value": "brakes checked and to obtain a tune up",
+              "start": 103,
+              "end": 141
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes and make sure they know that it's urgent.",
+        "utt_idx": 22,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "auto_repair": {
+            "name.store": "Jim Wright",
+            "name.customer": "",
+            "date.appt": "",
+            "time.appt": "",
+            "reason.appt": "brakes checked and to obtain a tune up",
+            "name.vehicle": "Toyota Corolla",
+            "year.vehicle": "2015",
+            "location.store": "O'Fallon, IL. on Hwy 50"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Will do. Have a great day.",
+        "utt_idx": 23,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-3",
+    "original_id": "dlg-33769877-7168-4b1d-b056-9f2df7b7ede3",
+    "domains": [
+      "coffee_ordering"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi there, I'd like you to order me a coffee from starbucks please.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "",
+            "name.drink": "",
+            "size.drink": "",
+            "num.drink": "",
+            "type.milk": "",
+            "preference": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok which store would you like me to order from?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "The one on Ashland ave..",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "coffee_ordering",
+              "slot": "location.store",
+              "value": "Ashland ave.",
+              "start": 11,
+              "end": 23
+            }
+          ]
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "",
+            "size.drink": "",
+            "num.drink": "",
+            "type.milk": "",
+            "preference": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok and what kind of coffee drink do you want?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'll take the Caffè Latte please.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "coffee_ordering",
+              "slot": "name.drink",
+              "value": "Caffè Latte",
+              "start": 14,
+              "end": 25
+            }
+          ]
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "",
+            "num.drink": "",
+            "type.milk": "",
+            "preference": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok and what size?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "The largest one, venti think its called.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "coffee_ordering",
+              "slot": "size.drink",
+              "value": "largest one",
+              "start": 4,
+              "end": 15
+            },
+            {
+              "intent": "accept",
+              "domain": "coffee_ordering",
+              "slot": "size.drink",
+              "value": "venti",
+              "start": 17,
+              "end": 22
+            }
+          ]
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "",
+            "preference": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great what milk do you want with it?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like whole milk.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "coffee_ordering",
+              "slot": "type.milk",
+              "value": "whole milk.",
+              "start": 13,
+              "end": 24
+            }
+          ]
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "whole milk.",
+            "preference": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok well it looks like the whole milk actually is not available.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "coffee_ordering",
+              "slot": "type.milk",
+              "value": "whole milk",
+              "start": 26,
+              "end": 36
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well that sucks what is?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "whole milk.",
+            "preference": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Almond, cocunut, soy and 2 percent milk",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "coffee_ordering",
+              "slot": "type.milk",
+              "value": "Almond",
+              "start": 0,
+              "end": 6
+            },
+            {
+              "intent": "inform",
+              "domain": "coffee_ordering",
+              "slot": "type.milk",
+              "value": "cocunut",
+              "start": 8,
+              "end": 15
+            },
+            {
+              "intent": "inform",
+              "domain": "coffee_ordering",
+              "slot": "type.milk",
+              "value": "soy",
+              "start": 17,
+              "end": 20
+            },
+            {
+              "intent": "inform",
+              "domain": "coffee_ordering",
+              "slot": "preference",
+              "value": "2 percent milk",
+              "start": 25,
+              "end": 39
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I guess I'll take the almond milk then.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "coffee_ordering",
+              "slot": "type.milk",
+              "value": "almond milk",
+              "start": 22,
+              "end": 33
+            }
+          ]
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "almond milk",
+            "preference": "2 percent milk"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great well I'll order it right now if that's all.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yep thats it thanks.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "almond milk",
+            "preference": "2 percent milk"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok its ordered, and will be ready at the starbucks shortly.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "accept",
+              "domain": "coffee_ordering",
+              "slot": "",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yeah just got it thanks again.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "almond milk",
+            "preference": "2 percent milk"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Oh and the receipt will be sent to you're phone via text message.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Ah ok well thanks, bye.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "coffee_ordering": {
+            "location.store": "Ashland ave.",
+            "name.drink": "Caffè Latte",
+            "size.drink": "venti",
+            "num.drink": "",
+            "type.milk": "almond milk",
+            "preference": "2 percent milk"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "No problem , bye.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-4",
+    "original_id": "dlg-33796d43-da7a-41df-98e1-6d47c5f8f20e",
+    "domains": [
+      "pizza_ordering"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hey, can I get a pizza from Domino's?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.store",
+              "value": "Domino's",
+              "start": 28,
+              "end": 36
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "",
+            "size.pizza": "",
+            "type.topping": "",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Sure, what kind would you like?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What are the specials they have right now?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "",
+            "size.pizza": "",
+            "type.topping": "",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are family and party combos currently on offer",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No, I just want a large pizza",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "size.pizza",
+              "value": "large",
+              "start": 18,
+              "end": 23
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "They have any large specialty pizza for 10.99",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "size.pizza",
+              "value": "large",
+              "start": 14,
+              "end": 19
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "specialty pizza",
+              "start": 20,
+              "end": 35
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What are their specialty pizzas?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "specialty pizza",
+            "size.pizza": "large",
+            "type.topping": "",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Well, there is the Extravagazza, Meatzza, Philly Cheesesteak, Hawaiian, Buffalo Chicken Ranch, and more. Would you like to hear more?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Extravagazza",
+              "start": 19,
+              "end": 31
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Meatzza",
+              "start": 33,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Philly Cheesesteak",
+              "start": 42,
+              "end": 60
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Hawaiian",
+              "start": 62,
+              "end": 70
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Buffalo Chicken Ranch",
+              "start": 72,
+              "end": 93
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is on the Philly Cheesesteak?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Philly Cheesesteak",
+              "start": 15,
+              "end": 33
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "Philly Cheesesteak",
+            "size.pizza": "large",
+            "type.topping": "",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Domino's describes it as thinly sliced beef, melted cheese whiz, onions, green pepper, and mozzarella.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "name.store",
+              "value": "Domino's",
+              "start": 0,
+              "end": 8
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "thinly sliced beef,",
+              "start": 25,
+              "end": 44
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "preference",
+              "value": "melted cheese whiz",
+              "start": 45,
+              "end": 63
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "onions",
+              "start": 65,
+              "end": 71
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "green pepper",
+              "start": 73,
+              "end": 85
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "mozzarella",
+              "start": 91,
+              "end": 101
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds great, I will get that.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "Philly Cheesesteak",
+            "size.pizza": "large",
+            "type.topping": "mozzarella",
+            "type.crust": "",
+            "preference": "melted cheese whiz",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Would you like me to place the order now or later?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "A little later, at 7oclock tonight?",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "Philly Cheesesteak",
+            "size.pizza": "large",
+            "type.topping": "mozzarella",
+            "type.crust": "",
+            "preference": "melted cheese whiz",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, will this be for pick up or delivery?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'll pick it up.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "Domino's",
+            "name.pizza": "Philly Cheesesteak",
+            "size.pizza": "large",
+            "type.topping": "mozzarella",
+            "type.crust": "",
+            "preference": "melted cheese whiz",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Are you okay with using the credit card linked to you domino's rewards?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "name.store",
+              "value": "domino's",
+              "start": 54,
+              "end": 62
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes that will be fine?",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "domino's",
+            "name.pizza": "Philly Cheesesteak",
+            "size.pizza": "large",
+            "type.topping": "mozzarella",
+            "type.crust": "",
+            "preference": "melted cheese whiz",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Anything you want beyond the pizza?",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Nope, just that",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "domino's",
+            "name.pizza": "Philly Cheesesteak",
+            "size.pizza": "large",
+            "type.topping": "mozzarella",
+            "type.crust": "",
+            "preference": "melted cheese whiz",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great, I will order a Philly Cheesteak pizza large at 7ocklock tonight for pickup",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "name.pizza",
+              "value": "Philly Cheesteak pizza",
+              "start": 22,
+              "end": 44
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "size.pizza",
+              "value": "large",
+              "start": 45,
+              "end": 50
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "domino's",
+            "name.pizza": "Philly Cheesteak pizza",
+            "size.pizza": "large",
+            "type.topping": "mozzarella",
+            "type.crust": "",
+            "preference": "melted cheese whiz",
+            "location.store": ""
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-5",
+    "original_id": "dlg-3388f38a-7ebd-4d73-9700-a34cea212f5a",
+    "domains": [
+      "pizza_ordering"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I would like a large pizza",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "size.pizza",
+              "value": "large",
+              "start": 15,
+              "end": 20
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "ok, one large pizza, which toppings would you like on your pizza?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "large",
+              "start": 8,
+              "end": 13
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Sausage and onion please",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "Sausage",
+              "start": 0,
+              "end": 7
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "onion",
+              "start": 12,
+              "end": 17
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "onion",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Im sorry but we are currently out of onions, would you like to choose another topping, such as black olives or mushrooms?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "onions",
+              "start": 37,
+              "end": 43
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "black olives",
+              "start": 95,
+              "end": 107
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "mushrooms",
+              "start": 111,
+              "end": 120
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Mushrooms please",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "Mushrooms",
+              "start": 0,
+              "end": 9
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "Mushrooms",
+            "type.crust": "",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "one large pizza with sausage and mushrooms, would you like that with hand tossed crust or deep dish?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "size.pizza",
+              "value": "large",
+              "start": 4,
+              "end": 9
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "sausage",
+              "start": 21,
+              "end": 28
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "mushrooms",
+              "start": 33,
+              "end": 42
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.crust",
+              "value": "hand tossed crust",
+              "start": 69,
+              "end": 86
+            },
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.crust",
+              "value": "deep dish",
+              "start": 90,
+              "end": 99
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Deep dish",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "type.crust",
+              "value": "Deep dish",
+              "start": 0,
+              "end": 9
+            }
+          ]
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "Deep dish",
+            "preference": "",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "ok, and would you like to add extra cheese?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "pizza_ordering",
+              "slot": "preference",
+              "value": "extra cheese",
+              "start": 30,
+              "end": 42
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "yes please",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "Deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "would you like to add a side of hot wings to compliment the order?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No thank you",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "Deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "will that complete your order?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "Deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "so one large deep dish pizza with extra cheese, sausage and mushrooms, is that correct?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "size.pizza",
+              "value": "large",
+              "start": 7,
+              "end": 12
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.crust",
+              "value": "deep dish",
+              "start": 13,
+              "end": 22
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "preference",
+              "value": "extra cheese",
+              "start": 34,
+              "end": 46
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "sausage",
+              "start": 48,
+              "end": 55
+            },
+            {
+              "intent": "accept",
+              "domain": "pizza_ordering",
+              "slot": "type.topping",
+              "value": "mushrooms",
+              "start": 60,
+              "end": 69
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Is your account information accurate?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Thank you, your pizza order is complete and the pizzas will be ready for pickup in about 25 minutes.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Perfect, can I get a receipt?",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "your receipt will be sent to your mobile device via text message.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you, goodbye",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "pizza_ordering": {
+            "name.store": "",
+            "name.pizza": "",
+            "size.pizza": "large",
+            "type.topping": "mushrooms",
+            "type.crust": "deep dish",
+            "preference": "extra cheese",
+            "location.store": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "your welcome, have a wonderful night",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-6",
+    "original_id": "dlg-338edd6c-5fbe-4498-bce1-b7360bac2160",
+    "domains": [
+      "restaurant_reservation"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Google, I want to eat out tonight.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, what are you in the mood for?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Ethiopian food.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, how much would you prefer to spend per person?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Um, maybe fifteen dollars?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are 2 highly rated Ethiopian restaurants within ten miles in that price range. Would you like to hear them?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Sure.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Jackie's Bistro on 59th St. in Williamstown is open until 10pm and has an average rating of three and a half stars on Yelp . Would you like to book a table?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Jackie's Bistro",
+              "start": 0,
+              "end": 15
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "59th St. in Williamstown",
+              "start": 19,
+              "end": 43
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jackie's Bistro",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "59th St. in Williamstown"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Would you like to hear another?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jackie's Bistro",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "59th St. in Williamstown"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Tom's Cuisine on Main St in Williamstown is open until 9pm and has an average rating of 3.2 stars on Yelp. Would you like to book a table?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Tom's Cuisine",
+              "start": 0,
+              "end": 13
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "Main St in Williamstown",
+              "start": 17,
+              "end": 40
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Tom's Cuisine",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "Main St in Williamstown"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Would you like to continue searching?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Tom's Cuisine",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "Main St in Williamstown"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There is one other Ethiopian restaurant in that price range within 25 miles.  Would you like to hear it?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "within 25 miles",
+              "start": 60,
+              "end": 75
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Tom's Cuisine",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Jake's Place is open until 10pm today and has an average rating of 4 stars on Yelp. Would you like to book a table?",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Jake's Place",
+              "start": 0,
+              "end": 12
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jake's Place",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What time?",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "8pm tonight.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "8pm",
+              "start": 0,
+              "end": 3
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jake's Place",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "8pm",
+            "type.seating": "",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "For how many people?",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Ten.",
+        "utt_idx": 22,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "Ten",
+              "start": 0,
+              "end": 3
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jake's Place",
+            "name.reservation": "",
+            "num.guests": "Ten",
+            "time.reservation": "8pm",
+            "type.seating": "",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I'm sorry, Jake's Place does not have a table for ten at 8pm tonight. Would you like to hear available times for a party of ten?",
+        "utt_idx": 23,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Jake's Place",
+              "start": 11,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "ten",
+              "start": 50,
+              "end": 53
+            },
+            {
+              "intent": "reject",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "8pm",
+              "start": 57,
+              "end": 60
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 24,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jake's Place",
+            "name.reservation": "",
+            "num.guests": "ten",
+            "time.reservation": "8pm",
+            "type.seating": "",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Jake's Place has tables for ten available at the following times tonight: 5, 5:30, 6, 6:30, and 7 pm. What time would you like?",
+        "utt_idx": 25,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Jake's Place",
+              "start": 0,
+              "end": 12
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "ten",
+              "start": 28,
+              "end": 31
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "5",
+              "start": 74,
+              "end": 75
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "5:30",
+              "start": 77,
+              "end": 81
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "6",
+              "start": 83,
+              "end": 84
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "6:30",
+              "start": 86,
+              "end": 90
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "7 pm",
+              "start": 96,
+              "end": 100
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "7:30 pm, please.",
+        "utt_idx": 26,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "7:30 pm",
+              "start": 0,
+              "end": 7
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jake's Place",
+            "name.reservation": "",
+            "num.guests": "ten",
+            "time.reservation": "7:30 pm",
+            "type.seating": "",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay. I've booked a 7:30 pm reservation for a party of ten at Jake's Place tonight. Would you like to book another table?",
+        "utt_idx": 27,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "7:30 pm",
+              "start": 20,
+              "end": 27
+            },
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "ten",
+              "start": 55,
+              "end": 58
+            },
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Jake's Place",
+              "start": 62,
+              "end": 74
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "type.seating",
+              "value": "table",
+              "start": 115,
+              "end": 120
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No.",
+        "utt_idx": 28,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Jake's Place",
+            "name.reservation": "",
+            "num.guests": "ten",
+            "time.reservation": "7:30 pm",
+            "type.seating": "table",
+            "location.restaurant": "within 25 miles"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay.",
+        "utt_idx": 29,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-7",
+    "original_id": "dlg-3392e3ff-40b6-4004-a2ec-63ec0d557dfc",
+    "domains": [
+      "uber_lyft"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I need a lyft ride.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "",
+            "location.to": "",
+            "type.ride": "",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Where do you want to go to and from?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I need to go from south boston to the north end.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "location.from",
+              "value": "south boston",
+              "start": 18,
+              "end": 30
+            },
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "location.to",
+              "value": "north end",
+              "start": 38,
+              "end": 47
+            }
+          ]
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "south boston",
+            "location.to": "north end",
+            "type.ride": "",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "where exactly in the south end are you at.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "location.from",
+              "value": "south end",
+              "start": 21,
+              "end": 30
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "boston chops.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "uber_lyft",
+              "slot": "location.from",
+              "value": "boston chops.",
+              "start": 0,
+              "end": 13
+            }
+          ]
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end",
+            "type.ride": "",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "where in the north end do you want to go to?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "location.to",
+              "value": "north end",
+              "start": 13,
+              "end": 22
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "north end garage.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "uber_lyft",
+              "slot": "location.to",
+              "value": "north end garage",
+              "start": 0,
+              "end": 16
+            }
+          ]
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you want a personal ride or shared?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "personal",
+              "start": 14,
+              "end": 22
+            },
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "shared",
+              "start": 31,
+              "end": 37
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "personal please.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "personal",
+              "start": 0,
+              "end": 8
+            }
+          ]
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "personal",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What type of features? XL, high-end, black?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "XL",
+              "start": 23,
+              "end": 25
+            },
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "high-end",
+              "start": 27,
+              "end": 35
+            },
+            {
+              "intent": "inform",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "black",
+              "start": 37,
+              "end": 42
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Just a regular lyft personal ride.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "uber_lyft",
+              "slot": "type.ride",
+              "value": "regular lyft personal ride",
+              "start": 7,
+              "end": 33
+            }
+          ]
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Got it. Let me input that data for you.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How much will it cost.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "It is showing $8-10.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "uber_lyft",
+              "slot": "price.estimate",
+              "value": "$8-10",
+              "start": 14,
+              "end": 19
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How long will it take.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "$8-10",
+            "duration.estimate": "",
+            "time.pickup": "",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "It will take 10 minutes to get to you.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "uber_lyft",
+              "slot": "time.pickup",
+              "value": "10 minutes",
+              "start": 13,
+              "end": 23
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Seems awfully long.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "$8-10",
+            "duration.estimate": "",
+            "time.pickup": "10 minutes",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yah. Looks like things are slow tonight. Do you want me to book it. ",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, book it.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "$8-10",
+            "duration.estimate": "",
+            "time.pickup": "10 minutes",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Alright it is booked. It will show up on your phone. Ride is on its way. You can status it on your phone.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Do i need to tip them.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "$8-10",
+            "duration.estimate": "",
+            "time.pickup": "10 minutes",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Well that is up to you but it is already paid for.",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks.",
+        "utt_idx": 22,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "uber_lyft": {
+            "location.from": "boston chops.",
+            "location.to": "north end garage",
+            "type.ride": "regular lyft personal ride",
+            "num.people": "",
+            "price.estimate": "$8-10",
+            "duration.estimate": "",
+            "time.pickup": "10 minutes",
+            "time.dropoff": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Your welcome.",
+        "utt_idx": 23,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-8",
+    "original_id": "dlg-3393df32-6c63-4569-b0f6-3e2f8e19852e",
+    "domains": [
+      "restaurant_reservation"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I want to book a restaurant for dinner.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Sure, what kind of restaurant are you thinking of.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Maybe Thai or Indonesian food. ",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, any place in mind?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm thinking about going to Thai Market or Awang Kitchen in New York City.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Thai Market",
+              "start": 28,
+              "end": 39
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Awang Kitchen",
+              "start": 43,
+              "end": 56
+            },
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "New York City",
+              "start": 60,
+              "end": 73
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Awang Kitchen",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "New York City"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Which one do you prefer?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well, I was wondering, which place has better reviews and more space. I also want the restaurant that's closest to my office which is on 40th Street and 5th Avenue in New York.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "closest to my office",
+              "start": 104,
+              "end": 124
+            },
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "40th Street and 5th Avenue in New York",
+              "start": 137,
+              "end": 175
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Awang Kitchen",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "40th Street and 5th Avenue in New York"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, Thai Market is closer to your office. It is also larger than Awang Kitchen and it has a 4.6 rating on Google.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Thai Market",
+              "start": 6,
+              "end": 17
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "location.restaurant",
+              "value": "closer to your office",
+              "start": 21,
+              "end": 42
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Awang Kitchen",
+              "start": 67,
+              "end": 80
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Does it have spicy food?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Awang Kitchen",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "closer to your office"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yes, it has many spicy options on the menu, such as the Drunken Noodles. ",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, great, I think I will go to Thai Market. Can you make a reservation?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "name.restaurant",
+              "value": "Thai Market",
+              "start": 34,
+              "end": 45
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Thai Market",
+            "name.reservation": "",
+            "num.guests": "",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "closer to your office"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "For what time and date?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "For 7 pm on March 1, 2019, for 2 people.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "7 pm on March 1, 2019",
+              "start": 4,
+              "end": 25
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "2 people",
+              "start": 31,
+              "end": 39
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Thai Market",
+            "name.reservation": "",
+            "num.guests": "2 people",
+            "time.reservation": "",
+            "type.seating": "",
+            "location.restaurant": "closer to your office"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, I just checked for you, unfortunately they are booked for this time.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, then for 8 pm on March 1, 2019 for 2 people.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "time.reservation",
+              "value": "8 pm on March 1, 2019",
+              "start": 15,
+              "end": 36
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "2 people",
+              "start": 41,
+              "end": 49
+            }
+          ]
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Thai Market",
+            "name.reservation": "",
+            "num.guests": "2 people",
+            "time.reservation": "8 pm on March 1, 2019",
+            "type.seating": "",
+            "location.restaurant": "closer to your office"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, there is an opening. I made a reservation for a table for 2 on that date. Since the weather is chilly, I assume you want to eat indoors.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "num.guests",
+              "value": "2",
+              "start": 64,
+              "end": 65
+            },
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "type.seating",
+              "value": "indoors",
+              "start": 134,
+              "end": 141
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, that is correct, thank you.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Thai Market",
+            "name.reservation": "",
+            "num.guests": "2",
+            "time.reservation": "8 pm on March 1, 2019",
+            "type.seating": "indoors",
+            "location.restaurant": "closer to your office"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, the reservation is confirmed. ",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "accept",
+              "domain": "restaurant_reservation",
+              "slot": "",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, great, thanks so much, have a nice day.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant_reservation": {
+            "name.restaurant": "Thai Market",
+            "name.reservation": "",
+            "num.guests": "2",
+            "time.reservation": "8 pm on March 1, 2019",
+            "type.seating": "indoors",
+            "location.restaurant": "closer to your office"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You too, have a nice day. ",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm1",
+    "data_split": "train",
+    "dialogue_id": "tm1-train-9",
+    "original_id": "dlg-339dfcb2-714f-4b53-95ff-8aa1bf43d12a",
+    "domains": [
+      "movie_ticket"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I'd like to get tickets for Alita: Battle Angel",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.movie",
+              "value": "Alita: Battle Angel",
+              "start": 28,
+              "end": 47
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "",
+            "num.tickets": "",
+            "time.start": "",
+            "location.theater": "",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What is your location?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm in Portland, Oregon",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Portland, Oregon",
+              "start": 7,
+              "end": 23
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "",
+            "num.tickets": "",
+            "time.start": "",
+            "location.theater": "Portland, Oregon",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "How many tickets would you like to buy?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Two tickets should work",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "num.tickets",
+              "value": "Two",
+              "start": 0,
+              "end": 3
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "",
+            "num.tickets": "Two",
+            "time.start": "",
+            "location.theater": "Portland, Oregon",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What time would you like to see the movie?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like to see it around 6:30 pm",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "6:30 pm",
+              "start": 26,
+              "end": 33
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "",
+            "num.tickets": "Two",
+            "time.start": "6:30 pm",
+            "location.theater": "Portland, Oregon",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Let me check that for you",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Ok",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "",
+            "num.tickets": "Two",
+            "time.start": "6:30 pm",
+            "location.theater": "Portland, Oregon",
+            "price.ticket": "",
+            "type.screening": "",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "It seems like there aren't any showtimes then, but there's one at 8:00 pm at Regal Lloyd Center 10 & Imax",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "It seems like there aren't any showtimes then",
+              "start": 0,
+              "end": 45
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "time.start",
+              "value": "8:00 pm",
+              "start": 66,
+              "end": 73
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "Regal Lloyd Center 10 & Imax",
+              "start": 77,
+              "end": 105
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Is 3D available at that theater?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "3D",
+              "start": 3,
+              "end": 5
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "Regal Lloyd Center 10 & Imax",
+            "num.tickets": "Two",
+            "time.start": "8:00 pm",
+            "location.theater": "Portland, Oregon",
+            "price.ticket": "",
+            "type.screening": "3D",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "No, it isn't, but there's a 3D showing of Alita: Battle Angel at Regal Cinemas Fox Tower 10",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "reject",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "No, it isn't",
+              "start": 0,
+              "end": 12
+            },
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "type.screening",
+              "value": "3D",
+              "start": 28,
+              "end": 30
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "name.movie",
+              "value": "Alita: Battle Angel",
+              "start": 42,
+              "end": 61
+            },
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "name.theater",
+              "value": "Regal Cinemas Fox Tower 10",
+              "start": 65,
+              "end": 91
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Let's see it there",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "location.theater",
+              "value": "Let's see it there",
+              "start": 0,
+              "end": 18
+            }
+          ]
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "Regal Cinemas Fox Tower 10",
+            "num.tickets": "Two",
+            "time.start": "8:00 pm",
+            "location.theater": "Let's see it there",
+            "price.ticket": "",
+            "type.screening": "3D",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "So you would like to order tickets?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "movie_ticket",
+              "slot": "",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "Regal Cinemas Fox Tower 10",
+            "num.tickets": "Two",
+            "time.start": "8:00 pm",
+            "location.theater": "Let's see it there",
+            "price.ticket": "",
+            "type.screening": "3D",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, placing your order",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "Regal Cinemas Fox Tower 10",
+            "num.tickets": "Two",
+            "time.start": "8:00 pm",
+            "location.theater": "Let's see it there",
+            "price.ticket": "",
+            "type.screening": "3D",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Your ticket order has been placed and your receipt has been sent to your mobile device",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "accept",
+              "domain": "movie_ticket",
+              "slot": "",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie_ticket": {
+            "name.movie": "Alita: Battle Angel",
+            "name.theater": "Regal Cinemas Fox Tower 10",
+            "num.tickets": "Two",
+            "time.start": "8:00 pm",
+            "location.theater": "Let's see it there",
+            "price.ticket": "",
+            "type.screening": "3D",
+            "time.end": "",
+            "time.duration": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Have a good day!",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  }
+]

@@ -18,6 +18,7 @@ MultiWOZ 2.1 fixed the noise in state annotations and dialogue utterances. It al
   - Normalize slot name and value. See `normalize_domain_slot_value` function in `preprocess.py`.
   - Correct some non-categorical slots' values and provide character level span annotation.
   - Concatenate multiple values in user goal & state using `|`.
+  - Add `booked` information in system turns from original belief states.
 - **Annotations:**
   - user goal, dialogue acts, state.
 
