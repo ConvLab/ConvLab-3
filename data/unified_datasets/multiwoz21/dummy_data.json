@@ -111,7 +111,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -210,7 +217,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -317,7 +331,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -405,7 +426,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [
+            {
+              "name": "the cambridge belfry",
+              "reference": "7GAWK763"
+            }
+          ],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -482,7 +515,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [
+            {
+              "name": "the cambridge belfry",
+              "reference": "7GAWK763"
+            }
+          ],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   },
@@ -602,7 +647,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -689,7 +741,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -759,7 +818,14 @@
           "non-categorical": [],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -836,7 +902,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -912,7 +985,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   },
@@ -1053,7 +1133,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -1132,7 +1219,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -1234,7 +1328,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -1315,7 +1416,19 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR4977",
+              "reference": "A9NHSO9Y"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -1400,7 +1513,19 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR4977",
+              "reference": "A9NHSO9Y"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -1470,7 +1595,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR4977",
+              "reference": "A9NHSO9Y"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -1566,7 +1703,24 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [
+            {
+              "name": "the cambridge belfry",
+              "reference": "5NAWGJDC"
+            }
+          ],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR4977",
+              "reference": "A9NHSO9Y"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -1643,7 +1797,24 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [
+            {
+              "name": "the cambridge belfry",
+              "reference": "5NAWGJDC"
+            }
+          ],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR4977",
+              "reference": "A9NHSO9Y"
+            }
+          ]
+        }
       }
     ]
   },
@@ -1740,7 +1911,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -1847,7 +2025,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -1924,7 +2109,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -1994,7 +2186,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   },
@@ -2124,7 +2323,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2222,7 +2428,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2326,7 +2539,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2419,7 +2639,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2536,7 +2763,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2633,7 +2867,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2729,7 +2970,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -2833,7 +3081,19 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR5626",
+              "reference": "7ZCVR4Q3"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -2910,7 +3170,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR5626",
+              "reference": "7ZCVR4Q3"
+            }
+          ]
+        }
       }
     ]
   },
@@ -3039,7 +3311,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3135,7 +3414,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3229,7 +3515,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3377,7 +3670,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3469,7 +3769,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3577,7 +3884,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3647,7 +3961,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3724,7 +4045,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3811,7 +4139,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3905,7 +4240,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [
+            {
+              "name": "acorn guest house",
+              "reference": "04CSEO7Q"
+            }
+          ],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -3982,7 +4329,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [
+            {
+              "name": "acorn guest house",
+              "reference": "04CSEO7Q"
+            }
+          ],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   },
@@ -4112,7 +4471,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4206,7 +4572,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4292,7 +4665,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4393,7 +4773,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4531,7 +4918,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4637,7 +5031,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4720,7 +5121,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   },
@@ -4821,7 +5229,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4900,7 +5315,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -4977,7 +5399,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   },
@@ -5127,7 +5556,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -5231,7 +5667,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -5339,7 +5782,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -5474,7 +5924,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR1879",
+              "reference": "XU1QLHVW"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -5609,7 +6071,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR1879",
+              "reference": "XU1QLHVW"
+            }
+          ]
+        }
       },
       {
         "speaker": "user",
@@ -5692,7 +6166,19 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": [
+            {
+              "trainID": "TR1879",
+              "reference": "XU1QLHVW"
+            }
+          ]
+        }
       }
     ]
   },
@@ -5800,7 +6286,14 @@
           ],
           "binary": []
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       },
       {
         "speaker": "user",
@@ -5889,7 +6382,14 @@
             }
           ]
         },
-        "db_results": {}
+        "db_results": {},
+        "booked": {
+          "taxi": [],
+          "restaurant": [],
+          "hotel": [],
+          "attraction": [],
+          "train": []
+        }
       }
     ]
   }
