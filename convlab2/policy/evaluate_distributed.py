@@ -2,6 +2,7 @@
 
 import random
 import sys
+import torch
 from pprint import pprint
 
 import matplotlib.pyplot as plt
@@ -25,6 +26,8 @@ def sampler(pid, queue, evt, sess, seed_range):
     buff = Memory_evaluator()
 
     for seed in seed_range:
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
         random.seed(seed)
         np.random.seed(seed)
         sess.init_session()
