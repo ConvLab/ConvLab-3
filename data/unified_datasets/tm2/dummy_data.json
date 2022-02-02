@@ -1,0 +1,6797 @@
+[
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-0",
+    "original_id": "dlg-00100680-00e0-40fe-8321-6d81b21bfc4f",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hello. I'd like to find a round trip commercial airline flight from San Francisco to Denver.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "round trip",
+              "start": 26,
+              "end": 36
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "San Francisco",
+              "start": 68,
+              "end": 81
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Denver",
+              "start": 85,
+              "end": 91
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Hello, how can I help you? San Francisco to Denver, got it.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "San Francisco",
+              "start": 27,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Denver",
+              "start": 44,
+              "end": 50
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "You're really on top of things. I like that.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "So what days are you looking to fly? Hey, what else can you say?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm looking to fly out sometime today, the earliest time today, and I'll be returning in 4 days. So, I would like to fly out sometime tonight and fly back in the evening in 4 days. From I'm looking to go to Denver. I'm flying out of San Francisco.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "today",
+              "start": 57,
+              "end": 62
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "4 days",
+              "start": 89,
+              "end": 95
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "in the evening",
+              "start": 155,
+              "end": 169
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "4 days",
+              "start": 173,
+              "end": 179
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Denver",
+              "start": 207,
+              "end": 213
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "San Francisco",
+              "start": 233,
+              "end": 246
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "in the evening",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "That sounds good, where you looking to go? That's right okay we have prices starting at $337.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "$337",
+              "start": 88,
+              "end": 92
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds very good. I just have two preferences. I want a nonstop flight. And I'd like to get an aisle seat.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "nonstop",
+              "start": 61,
+              "end": 68
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seat_location",
+              "value": "aisle seat",
+              "start": 100,
+              "end": 110
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "in the evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, Non-Stop and if I heard you correctly did you say you wanted to leave as early as possible and also Nile C.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "Non-Stop",
+              "start": 6,
+              "end": 14
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "in the evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "Non-Stop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, you got it so it looks like United Airlines leaves at 9:20 p.m. that is nonstop the flight duration is 2 hours and 28 minutes and is priced at $337.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "United",
+              "start": 34,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "9:20 p.m.",
+              "start": 60,
+              "end": 69
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "nonstop",
+              "start": 78,
+              "end": 85
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "duration is 2 hours and 28 minutes",
+              "start": 97,
+              "end": 131
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$337",
+              "start": 149,
+              "end": 153
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds very good.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "in the evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "duration is 2 hours and 28 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United",
+            "flight_number": "",
+            "date": "",
+            "from.time": "9:20 p.m.",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$337"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Perfect.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "And what time will I be I would like an evening flight on the return flight in 4 days. Does that include the return flight?",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "evening",
+              "start": 40,
+              "end": 47
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "4 days",
+              "start": 79,
+              "end": 85
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "duration is 2 hours and 28 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United",
+            "flight_number": "",
+            "date": "",
+            "from.time": "9:20 p.m.",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$337"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "How does 5:30 a.m. work?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "5:30 a.m.",
+              "start": 9,
+              "end": 18
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well, the evening works better.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "evening",
+              "start": 10,
+              "end": 17
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "duration is 2 hours and 28 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United",
+            "flight_number": "",
+            "date": "",
+            "from.time": "5:30 a.m.",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$337"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, got it. 6:55 p.m.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That works. That's very good.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "duration is 2 hours and 28 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United",
+            "flight_number": "",
+            "date": "",
+            "from.time": "5:30 a.m.",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$337"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Alright, perfect so that is United Airlines as well.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "United",
+              "start": 28,
+              "end": 34
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Excellent. Thank you so much, assistant.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "duration is 2 hours and 28 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United",
+            "flight_number": "",
+            "date": "",
+            "from.time": "5:30 a.m.",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$337"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Pleasure all mine. Enjoy your trip to Denver, have a great night. Your welcome.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I think I'm all set. Thank you so much.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Denver",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "4 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "aisle seat",
+            "stops": "nonstop",
+            "price_range": "$337",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "duration is 2 hours and 28 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United",
+            "flight_number": "",
+            "date": "",
+            "from.time": "5:30 a.m.",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$337"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-1",
+    "original_id": "dlg-005d7a68-35ec-4ed0-a0ab-715a499b48b7",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi assistant, need help finding a flight from Houston to London.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Houston",
+              "start": 46,
+              "end": 53
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "London",
+              "start": 57,
+              "end": 63
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "London",
+            "destination2": "",
+            "origin": "Houston",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, you got it.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Need to fly out on July 2nd in the afternoon.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "July 2nd",
+              "start": 19,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "in the afternoon",
+              "start": 28,
+              "end": 44
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "London",
+            "destination2": "",
+            "origin": "Houston",
+            "date.depart_origin": "July 2nd",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "in the afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "And when would you like to come back?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I need to fly back July 7th. I need something cheap.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "July 7th",
+              "start": 19,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "cheap",
+              "start": 46,
+              "end": 51
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "London",
+            "destination2": "",
+            "origin": "Houston",
+            "date.depart_origin": "July 2nd",
+            "date.depart_intermediate": "",
+            "date.return": "July 7th",
+            "time_of_day": "in the afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheap",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, the cheapest flight currently is $3,200.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "the cheapest flight",
+              "start": 6,
+              "end": 25
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "total_fare",
+              "value": "$3,200",
+              "start": 39,
+              "end": 45
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Let's go ahead and book that.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "London",
+            "destination2": "",
+            "origin": "Houston",
+            "date.depart_origin": "July 2nd",
+            "date.depart_intermediate": "",
+            "date.return": "July 7th",
+            "time_of_day": "in the afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "the cheapest flight",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "$3,200",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "All right you're all set, is that it?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "flight_booked",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's it. Thank you.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "London",
+            "destination2": "",
+            "origin": "Houston",
+            "date.depart_origin": "July 2nd",
+            "date.depart_intermediate": "",
+            "date.return": "July 7th",
+            "time_of_day": "in the afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "the cheapest flight",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "$3,200",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "My pleasure, take care, enjoy your flight. Have a great night.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Bye.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "London",
+            "destination2": "",
+            "origin": "Houston",
+            "date.depart_origin": "July 2nd",
+            "date.depart_intermediate": "",
+            "date.return": "July 7th",
+            "time_of_day": "in the afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "the cheapest flight",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "$3,200",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-2",
+    "original_id": "dlg-006d8337-fc53-4aac-8895-b2f0caa14baa",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Hi. How can I help you?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Hello. I need to take a trip to Albany, New York.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Albany, New York",
+              "start": 32,
+              "end": 48
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany, New York",
+            "destination2": "",
+            "origin": "",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay. I see that you're in Seattle right now. Is that where you want to fly out from to Albany?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Seattle",
+              "start": 27,
+              "end": 34
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Albany",
+              "start": 88,
+              "end": 94
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Correct.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What dates do you want to travel?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like to leave this Friday and return exactly in one week.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "this Friday",
+              "start": 18,
+              "end": 29
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "exactly in one week",
+              "start": 41,
+              "end": 60
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "exactly in one week",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you want to return on next Thursday or Friday?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "next Thursday",
+              "start": 25,
+              "end": 38
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "Friday",
+              "start": 42,
+              "end": 48
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Friday morning.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "Friday",
+              "start": 0,
+              "end": 6
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "morning",
+              "start": 7,
+              "end": 14
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "Friday",
+            "time_of_day": "morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, I will find a return flight on 19th morning.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "19th",
+              "start": 37,
+              "end": 41
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "morning",
+              "start": 42,
+              "end": 49
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you. United Airlines, preferable.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "United Airlines",
+              "start": 11,
+              "end": 26
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "How many tickets do you need?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Just one, direct flight, no layovers, please.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "num.pax",
+              "value": "one",
+              "start": 5,
+              "end": 8
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "direct flight",
+              "start": 10,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "no layovers",
+              "start": 25,
+              "end": 36
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "no layovers",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you have a preference for class?",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "First.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "First",
+              "start": 0,
+              "end": 5
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "First",
+            "seat_location": "",
+            "stops": "no layovers",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are no direct flights. Do you want to check in business?",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "direct flights",
+              "start": 13,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "business",
+              "start": 53,
+              "end": 61
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, please. It'll be great.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "business",
+            "seat_location": "",
+            "stops": "direct flights",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are no direct flights in any class. I will look for the shortest layover for you.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "direct flights",
+              "start": 13,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "layover",
+              "start": 71,
+              "end": 78
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "business",
+            "seat_location": "",
+            "stops": "layover",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Is there anything else you want me to look for?",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'll definitely need Wi-Fi on the flight, please. I'd like morning flights.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "Wi-Fi",
+              "start": 21,
+              "end": 26
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "morning",
+              "start": 59,
+              "end": 66
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "business",
+            "seat_location": "",
+            "stops": "layover",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "Wi-Fi",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, is that it?",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "business",
+            "seat_location": "",
+            "stops": "layover",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "Wi-Fi",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I found you a 6 am flight with United Airlines. The cost of the ticket is $1,430. It has Wi-Fi, first class and has one stop for an hour and a half. The total flight time is 7 hours and 24 minutes. How does that sound?",
+        "utt_idx": 22,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "6 am",
+              "start": 14,
+              "end": 18
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "United Airlines",
+              "start": 31,
+              "end": 46
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$1,430",
+              "start": 74,
+              "end": 80
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "Wi-Fi",
+              "start": 89,
+              "end": 94
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "first class",
+              "start": 96,
+              "end": 107
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "one stop",
+              "start": 116,
+              "end": 124
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "hour and a half",
+              "start": 132,
+              "end": 147
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "7 hours and 24 minutes",
+              "start": 174,
+              "end": 196
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That is beautiful. I think I'm going to go ahead and take that. And you'll book that for me?",
+        "utt_idx": 23,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "first class",
+            "seat_location": "",
+            "stops": "one stop",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "7 hours and 24 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "6 am",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,430"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I can. Do you want to know the return flight details first?",
+        "utt_idx": 24,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, please.",
+        "utt_idx": 25,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "first class",
+            "seat_location": "",
+            "stops": "one stop",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "7 hours and 24 minutes",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "6 am",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,430"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The return flight leaves at 10:20 am has one stop for 15 minutes and arrives back in Seattle at 3:36 pm. How does that work for you?",
+        "utt_idx": 26,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "10:20 am",
+              "start": 28,
+              "end": 36
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "one stop",
+              "start": 41,
+              "end": 49
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "15 minutes",
+              "start": 54,
+              "end": 64
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to",
+              "value": "Seattle",
+              "start": 85,
+              "end": 92
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to.time",
+              "value": "3:36 pm",
+              "start": 96,
+              "end": 103
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's perfect. Thank you.",
+        "utt_idx": 27,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "first class",
+            "seat_location": "",
+            "stops": "one stop",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "15 minutes",
+            "from": "",
+            "to": "Seattle",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "10:20 am",
+            "to.time": "3:36 pm",
+            "stops.location": "",
+            "fare": "$1,430"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Great. You're welcome. It's booked.",
+        "utt_idx": 28,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "flight_booked",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "And you'll send me the details to my email?",
+        "utt_idx": 29,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "first class",
+            "seat_location": "",
+            "stops": "one stop",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "15 minutes",
+            "from": "",
+            "to": "Seattle",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "10:20 am",
+            "to.time": "3:36 pm",
+            "stops.location": "",
+            "fare": "$1,430"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I will do that. It is done. Thank you.",
+        "utt_idx": 30,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "You're welcome. Thank you so much.",
+        "utt_idx": 31,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Albany",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "this Friday",
+            "date.depart_intermediate": "",
+            "date.return": "19th",
+            "time_of_day": "morning",
+            "seating_class": "first class",
+            "seat_location": "",
+            "stops": "one stop",
+            "price_range": "",
+            "num.pax": "one",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "15 minutes",
+            "from": "",
+            "to": "Seattle",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "10:20 am",
+            "to.time": "3:36 pm",
+            "stops.location": "",
+            "fare": "$1,430"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Have a good flight.",
+        "utt_idx": 32,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-3",
+    "original_id": "dlg-00754a9a-1b01-465d-adb9-5215a32d174d",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Hi, how can I help you?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I like to make a round-trip from Miami to Madrid.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "round-trip",
+              "start": 17,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Miami",
+              "start": 33,
+              "end": 38
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Madrid",
+              "start": 42,
+              "end": 48
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Miami to where?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Miami",
+              "start": 0,
+              "end": 5
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "M a d r i d.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "M a d r i d",
+              "start": 0,
+              "end": 11
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "M a d r i d",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Oh, Madrid. When?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Madrid",
+              "start": 4,
+              "end": 10
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like to leave today evening and return in 5 days.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "today",
+              "start": 18,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "evening",
+              "start": 24,
+              "end": 31
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "in 5 days",
+              "start": 43,
+              "end": 52
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I have a 7:10 p.m, 7:45 p.m, 9 p.m.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:10 p.m",
+              "start": 9,
+              "end": 17
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:45 p.m",
+              "start": 19,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "9 p.m",
+              "start": 29,
+              "end": 34
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How about the 7:00 p.m?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:00 p.m",
+              "start": 14,
+              "end": 22
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:00 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The return flights are at 12 p.m, 4:05 p.m, 11:35 p.m.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "12 p.m",
+              "start": 26,
+              "end": 32
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "4:05 p.m",
+              "start": 34,
+              "end": 42
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "11:35 p.m",
+              "start": 44,
+              "end": 53
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Let's do the 4:05 p.m return on the flight. That would be nice.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "4:05 p.m",
+              "start": 13,
+              "end": 21
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "4:05 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Got it, the flight has been booked. The itinerary has been sent to your email.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Is that a Non-Stop?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "Non-Stop",
+              "start": 10,
+              "end": 18
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "Non-Stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "4:05 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yes.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "And also, I'd like that to have a window seat with that, please.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seat_location",
+              "value": "window seat",
+              "start": 34,
+              "end": 45
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "window seat",
+            "stops": "Non-Stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "4:05 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, Flight has been booked.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "flight_booked",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, can you send me the information to my email?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "window seat",
+            "stops": "Non-Stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "4:05 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yes.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, thank you.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Madrid",
+            "destination2": "",
+            "origin": "Miami",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 5 days",
+            "time_of_day": "evening",
+            "seating_class": "",
+            "seat_location": "window seat",
+            "stops": "Non-Stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "4:05 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-4",
+    "original_id": "dlg-009c3fa1-6f6e-48dd-84c8-c52dbde6a4ae",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Hello user.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Hi, I would like to book a round trip commercial airline flight from Los Angeles to Boston.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "round trip",
+              "start": 27,
+              "end": 37
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Los Angeles",
+              "start": 69,
+              "end": 80
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Boston",
+              "start": 84,
+              "end": 90
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, can you give me some specifications?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, I would like to be today for the departure, and return in four days from now?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "today",
+              "start": 24,
+              "end": 29
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "four days from now",
+              "start": 63,
+              "end": 81
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "four days from now",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What seating class do you prefer?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "The cheapest economy class.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "cheapest",
+              "start": 4,
+              "end": 12
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "economy",
+              "start": 13,
+              "end": 20
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "four days from now",
+            "time_of_day": "",
+            "seating_class": "economy",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Did you want to leave in the morning or afternoon flight?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "morning",
+              "start": 29,
+              "end": 36
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "afternoon",
+              "start": 40,
+              "end": 49
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Earliest possible in the morning.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "Earliest possible in the morning",
+              "start": 0,
+              "end": 32
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "four days from now",
+            "time_of_day": "Earliest possible in the morning",
+            "seating_class": "economy",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you prefer non-stop or layover?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "non-stop",
+              "start": 14,
+              "end": 22
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "layover",
+              "start": 26,
+              "end": 33
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Non-stop.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "Non-stop",
+              "start": 0,
+              "end": 8
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "four days from now",
+            "time_of_day": "Earliest possible in the morning",
+            "seating_class": "economy",
+            "seat_location": "",
+            "stops": "Non-stop",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, one moment, hold. I found a flight for you is United Airlines that departs at 10:47 p.m and arrives at 7:14 a.m.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "United Airlines",
+              "start": 50,
+              "end": 65
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "10:47 p.m",
+              "start": 82,
+              "end": 91
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to.time",
+              "value": "7:14 a.m",
+              "start": 107,
+              "end": 115
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, perfect.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "four days from now",
+            "time_of_day": "Earliest possible in the morning",
+            "seating_class": "economy",
+            "seat_location": "",
+            "stops": "Non-stop",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "10:47 p.m",
+            "to.time": "7:14 a.m",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The total price is $555. You are all set.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$555",
+              "start": 19,
+              "end": 23
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you very much.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Boston",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "four days from now",
+            "time_of_day": "Earliest possible in the morning",
+            "seating_class": "economy",
+            "seat_location": "",
+            "stops": "Non-stop",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "United Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "10:47 p.m",
+            "to.time": "7:14 a.m",
+            "stops.location": "",
+            "fare": "$555"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-5",
+    "original_id": "dlg-00e32998-0b0f-47f1-a4f0-2ce90f1718d0",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi. I'm looking for a round-trip commercial airline flight. I got to get to a funeral. I'm going from San Francisco to Chicago.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "round-trip",
+              "start": 22,
+              "end": 32
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "San Francisco",
+              "start": 102,
+              "end": 115
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Chicago",
+              "start": 119,
+              "end": 126
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, sorry to hear about the loss.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well, thank you. It's very kind. I need to leave today, and I want to get back in 3 days. And optimally, I would leave in the morning for both the departure and the return.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "today",
+              "start": 49,
+              "end": 54
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "in 3 days",
+              "start": 79,
+              "end": 88
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "in the morning",
+              "start": 119,
+              "end": 133
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, so let me see what we get.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I'm assuming you want to leave as early as possible Right.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yeah. Right.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, for leaving as early as possible you could leave in two hours at 7:52 p.m. Is that too early?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "two hours at 7:52 p.m",
+              "start": 58,
+              "end": 79
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Is that the cheapest?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "cheapest",
+              "start": 12,
+              "end": 20
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "two hours at 7:52 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "That is the cheapest at $1,474.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "cheapest",
+              "start": 12,
+              "end": 20
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$1,474",
+              "start": 24,
+              "end": 30
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "And does that have Wi-Fi?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "Wi-Fi",
+              "start": 19,
+              "end": 24
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "Wi-Fi",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "two hours at 7:52 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,474"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yes. That does have Wi-Fi.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "Wi-Fi",
+              "start": 20,
+              "end": 25
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Alright, that's perfect. What time does that leave, and what time does the return flight leave?",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "Wi-Fi",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "two hours at 7:52 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,474"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "It come with extended seating and full meals as well.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "extended seating and full meals",
+              "start": 13,
+              "end": 44
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, sounds good.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "extended seating and full meals",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "two hours at 7:52 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,474"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The return flight will come back at 6 p.m.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "6 p.m",
+              "start": 36,
+              "end": 41
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What time does it leave from Chicago?",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from",
+              "value": "Chicago",
+              "start": 29,
+              "end": 36
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "extended seating and full meals",
+            "from": "Chicago",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "6 p.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,474"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The plane leaves in Chicago at 7 a.m. for San Francisco.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from",
+              "value": "Chicago",
+              "start": 20,
+              "end": 27
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7 a.m",
+              "start": 31,
+              "end": 36
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to",
+              "value": "San Francisco",
+              "start": 42,
+              "end": 55
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay. No, that's perfect.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "extended seating and full meals",
+            "from": "Chicago",
+            "to": "San Francisco",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7 a.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,474"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, great then you are all set.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round-trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "San Francisco",
+            "date.depart_origin": "today",
+            "date.depart_intermediate": "",
+            "date.return": "in 3 days",
+            "time_of_day": "in the morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "extended seating and full meals",
+            "from": "Chicago",
+            "to": "San Francisco",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7 a.m",
+            "to.time": "",
+            "stops.location": "",
+            "fare": "$1,474"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Have a great night.",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-6",
+    "original_id": "dlg-011f951c-2231-4dca-a55b-4ef97e599e7e",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Hello. How can I help you?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm looking for a flight to JFK.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "JFK",
+              "start": 28,
+              "end": 31
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay and where are you traveling from?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Seattle, Washington.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Seattle, Washington",
+              "start": 0,
+              "end": 19
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay and then what are the dates you are leaving?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I want to fly out on March 1st and return on March 7th.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "March 1st",
+              "start": 21,
+              "end": 30
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "March 7th",
+              "start": 45,
+              "end": 54
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay and what time do you prefer to leave?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "If there's a morning flight, that would be best.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "morning",
+              "start": 13,
+              "end": 20
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay great and any seat class?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Coach is fine.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "Coach",
+              "start": 0,
+              "end": 5
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "Coach",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay perfect! let me look for a flight for you.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Sure. Thank you.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "Coach",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "This will just be a second.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Sure.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "Coach",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Hello, the flight for $355 round trip and it leaves at 7:45 a.m. and you arrive at 4:07 p.m. nonstop.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "total_fare",
+              "value": "$355",
+              "start": 22,
+              "end": 26
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "round trip",
+              "start": 27,
+              "end": 37
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:45 a.m.",
+              "start": 55,
+              "end": 64
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to.time",
+              "value": "4:07 p.m.",
+              "start": 83,
+              "end": 92
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "nonstop",
+              "start": 93,
+              "end": 100
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Alright. That sounds good.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "Coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "$355",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:45 a.m.",
+            "to.time": "4:07 p.m.",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Perfect! did you want me to book this flight?",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Sure.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "Coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "$355",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:45 a.m.",
+            "to.time": "4:07 p.m.",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, great booked!",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "flight_booked",
+              "value": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you. I appreciate it.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "JFK",
+            "destination2": "",
+            "origin": "Seattle, Washington",
+            "date.depart_origin": "March 1st",
+            "date.depart_intermediate": "",
+            "date.return": "March 7th",
+            "time_of_day": "morning",
+            "seating_class": "Coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "$355",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:45 a.m.",
+            "to.time": "4:07 p.m.",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome. Enjoy your flight. Goodbye. Goodbye.",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-7",
+    "original_id": "dlg-019cbf4f-e4f4-40e5-b37d-e0d25be5d76a",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi, I need to book a flight ticket from Los Angels to Las Vegas on April 1st and I will be coming back on April 3rd.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Los Angels",
+              "start": 40,
+              "end": 50
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Las Vegas",
+              "start": 54,
+              "end": 63
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "April 1st",
+              "start": 67,
+              "end": 76
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "April 3rd",
+              "start": 106,
+              "end": 115
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angels",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "April 3rd",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Hello. I can help you book a flight.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great. I need to go to Las Vegas on April 1st.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Las Vegas",
+              "start": 23,
+              "end": 32
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "April 1st",
+              "start": 36,
+              "end": 45
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angels",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "April 3rd",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, So you want to go from Los Angeles to Las Vegas on April 1st and return on April 3rd. Is that correct?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Los Angeles",
+              "start": 29,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Las Vegas",
+              "start": 44,
+              "end": 53
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "April 1st",
+              "start": 57,
+              "end": 66
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "return on April 3rd",
+              "start": 71,
+              "end": 90
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That is correct.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "How many tickets do you need?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Two tickets. And I'd like to have a nonstop flight.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "num.pax",
+              "value": "Two",
+              "start": 0,
+              "end": 3
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "nonstop",
+              "start": 36,
+              "end": 43
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "Two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What are your other preferences for the flight?",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like to travel in the evening and I prefer coach class.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "coach",
+              "start": 51,
+              "end": 56
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "Two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, Got it. Anything else?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That should do it.",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "Two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Hold on just a second. Hold on just a second. I found tickets that cost $79 and will be leaving at 7:50 PM and arrive at 8:53 PM This is Spirit Airlines and it is a nonstop flight.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$79",
+              "start": 72,
+              "end": 75
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:50 PM",
+              "start": 99,
+              "end": 106
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to.time",
+              "value": "8:53 PM",
+              "start": 121,
+              "end": 128
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "Spirit Airlines",
+              "start": 137,
+              "end": 152
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "nonstop",
+              "start": 165,
+              "end": 172
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds perfect.",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "Two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "Spirit Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:50 PM",
+            "to.time": "8:53 PM",
+            "stops.location": "",
+            "fare": "$79"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, Is it for two adults?",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "num.pax",
+              "value": "two",
+              "start": 16,
+              "end": 19
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "Spirit Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:50 PM",
+            "to.time": "8:53 PM",
+            "stops.location": "",
+            "fare": "$79"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The total ticket price is $157. Shall I book this for you now?",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$157",
+              "start": 26,
+              "end": 30
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, please.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "Spirit Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:50 PM",
+            "to.time": "8:53 PM",
+            "stops.location": "",
+            "fare": "$157"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Aright. The return trip will be leaving at 7:58 PM. Enjoy your flight.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:58 PM",
+              "start": 43,
+              "end": 50
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "All right, Thank you. Goodbye.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "Las Vegas",
+            "destination2": "",
+            "origin": "Los Angeles",
+            "date.depart_origin": "April 1st",
+            "date.depart_intermediate": "",
+            "date.return": "return on April 3rd",
+            "time_of_day": "",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "nonstop",
+            "price_range": "",
+            "num.pax": "two",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "Spirit Airlines",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:58 PM",
+            "to.time": "8:53 PM",
+            "stops.location": "",
+            "fare": "$157"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Bye, See you later.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-8",
+    "original_id": "dlg-01c15d77-d5ee-45f7-b149-386d4e04d26a",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Hello.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Hi. How can I help you? I'm looking to find a round trip commercial airline flight from Seattle to Chicago. I want to leave on September 13th and depart and return in 3 days, afternoon would be a good time of the day.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "round trip",
+              "start": 46,
+              "end": 56
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "Seattle",
+              "start": 88,
+              "end": 95
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "Chicago",
+              "start": 99,
+              "end": 106
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "September 13th",
+              "start": 127,
+              "end": 141
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.return",
+              "value": "return in 3 days",
+              "start": 157,
+              "end": 173
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "afternoon",
+              "start": 175,
+              "end": 184
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "September 13th",
+            "date.depart_intermediate": "",
+            "date.return": "return in 3 days",
+            "time_of_day": "afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, what seating class do you prefer?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like to get cheapest seat. And I'd like to get be able to watch a movie during the flight.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "cheapest seat",
+              "start": 16,
+              "end": 29
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "September 13th",
+            "date.depart_intermediate": "",
+            "date.return": "return in 3 days",
+            "time_of_day": "afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "cheapest seat",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you prefer non stop or layover?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "non stop",
+              "start": 14,
+              "end": 22
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "layover",
+              "start": 26,
+              "end": 33
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Non-stop.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "Non-stop",
+              "start": 0,
+              "end": 8
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "September 13th",
+            "date.depart_intermediate": "",
+            "date.return": "return in 3 days",
+            "time_of_day": "afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "Non-stop",
+            "price_range": "cheapest seat",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Hold. One moment. I found a flight at Delta Airline departs at 5:12 PM, arrives at 11:11 PM. Your return flight departs at 2:10 PM, arrives at 4:30 PM.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "Delta Airline",
+              "start": 38,
+              "end": 51
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "5:12 PM",
+              "start": 63,
+              "end": 70
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "11:11 PM",
+              "start": 83,
+              "end": 91
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "2:10 PM",
+              "start": 123,
+              "end": 130
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to.time",
+              "value": "4:30 PM",
+              "start": 143,
+              "end": 150
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'll choose that flight. That sounds good. Thank you.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "round trip",
+            "destination1": "Chicago",
+            "destination2": "",
+            "origin": "Seattle",
+            "date.depart_origin": "September 13th",
+            "date.depart_intermediate": "",
+            "date.return": "return in 3 days",
+            "time_of_day": "afternoon",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "Non-stop",
+            "price_range": "cheapest seat",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "Delta Airline",
+            "flight_number": "",
+            "date": "",
+            "from.time": "2:10 PM",
+            "to.time": "4:30 PM",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm2",
+    "data_split": "train",
+    "dialogue_id": "tm2-train-9",
+    "original_id": "dlg-01d9b972-93b3-4e89-9eee-a460fa64d241",
+    "domains": [
+      "flights"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Hi, how can I help you?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Hey, can you help me find a flight?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "",
+            "destination2": "",
+            "origin": "",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I can do that for you.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Help me find a flight to San Francisco.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "destination1",
+              "value": "San Francisco",
+              "start": 25,
+              "end": 38
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, from which airport in New York?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "New York",
+              "start": 28,
+              "end": 36
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "JFK.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "origin",
+              "value": "JFK",
+              "start": 0,
+              "end": 3
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What else can you tell me?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'll be leaving April the 14th.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "date.depart_origin",
+              "value": "April the 14th",
+              "start": 16,
+              "end": 30
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like to leave in the morning before 10:00 A.M.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "in the morning",
+              "start": 18,
+              "end": 32
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "time_of_day",
+              "value": "before 10:00 A.M",
+              "start": 33,
+              "end": 49
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Before what time?",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'm looking for a dine for tonight.",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Sure, what else?",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I'd like a non-stop flight.",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "non-stop",
+              "start": 11,
+              "end": 19
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Sure thing.",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "And I'd like to sit in coach.",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "seating_class",
+              "value": "coach",
+              "start": 23,
+              "end": 28
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "And a flight with WiFi would be good.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "other_description",
+              "value": "WiFi",
+              "start": 18,
+              "end": 22
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's all.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Alright, up to how much for a non-stop flight?",
+        "utt_idx": 20,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "non-stop",
+              "start": 30,
+              "end": 38
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "$900.",
+        "utt_idx": 21,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "price_range",
+              "value": "$900",
+              "start": 0,
+              "end": 4
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "$900",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "",
+            "flight_number": "",
+            "date": "",
+            "from.time": "",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are flights with Delta, Virgin America, Jet blue and America. There are 3 times to fly with Delta 7 A.M, 8:10 A.M or 9:30 A.M.",
+        "utt_idx": 22,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "Delta",
+              "start": 23,
+              "end": 28
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "Virgin America",
+              "start": 30,
+              "end": 44
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "Jet blue",
+              "start": 46,
+              "end": 54
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "America",
+              "start": 59,
+              "end": 66
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "Delta",
+              "start": 98,
+              "end": 103
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7 A.M",
+              "start": 104,
+              "end": 109
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "8:10 A.M",
+              "start": 111,
+              "end": 119
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "9:30 A.M",
+              "start": 123,
+              "end": 131
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How about 7:00 A.M?",
+        "utt_idx": 23,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "from.time",
+              "value": "7:00 A.M",
+              "start": 10,
+              "end": 18
+            }
+          ]
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "$900",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "Delta",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:00 A.M",
+            "to.time": "",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You will arrive in at 10:40 A.M.",
+        "utt_idx": 24,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "to.time",
+              "value": "10:40 A.M",
+              "start": 22,
+              "end": 31
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, that works for me.",
+        "utt_idx": 25,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "$900",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "Delta",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:00 A.M",
+            "to.time": "10:40 A.M",
+            "stops.location": "",
+            "fare": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Total for this one way non-stop flight with delta is $209.",
+        "utt_idx": 26,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "type",
+              "value": "one way",
+              "start": 15,
+              "end": 22
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "stops",
+              "value": "non-stop",
+              "start": 23,
+              "end": 31
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "airline",
+              "value": "delta",
+              "start": 44,
+              "end": 49
+            },
+            {
+              "intent": "inform",
+              "domain": "flights",
+              "slot": "fare",
+              "value": "$209",
+              "start": 53,
+              "end": 57
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Okay, perfect.",
+        "utt_idx": 27,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "one way",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "$900",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "delta",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:00 A.M",
+            "to.time": "10:40 A.M",
+            "stops.location": "",
+            "fare": "$209"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I'll send you the details.",
+        "utt_idx": 28,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you.",
+        "utt_idx": 29,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "flights": {
+            "type": "one way",
+            "destination1": "San Francisco",
+            "destination2": "",
+            "origin": "JFK",
+            "date.depart_origin": "April the 14th",
+            "date.depart_intermediate": "",
+            "date.return": "",
+            "time_of_day": "before 10:00 A.M",
+            "seating_class": "coach",
+            "seat_location": "",
+            "stops": "non-stop",
+            "price_range": "$900",
+            "num.pax": "",
+            "luggage": "",
+            "total_fare": "",
+            "other_description": "WiFi",
+            "from": "",
+            "to": "",
+            "airline": "delta",
+            "flight_number": "",
+            "date": "",
+            "from.time": "7:00 A.M",
+            "to.time": "10:40 A.M",
+            "stops.location": "",
+            "fare": "$209"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Goodbye.",
+        "utt_idx": 30,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  }
+]

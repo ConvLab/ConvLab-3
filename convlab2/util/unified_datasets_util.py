@@ -85,12 +85,14 @@ def load_unified_data(
     context_window_size=0, 
     terminated=False, 
     goal=False, 
-    active_domains=False
+    active_domains=False,
+    split_to_turn=True
 ):
     data_splits = dataset.keys() if data_split == 'all' else [data_split]
     assert speaker in ['user', 'system', 'all']
     assert not use_context or context_window_size > 0
     info_list = list(filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results']))
+    info_list += ['utt_idx']
     data_by_split = {}
     for data_split in data_splits:
         data_by_split[data_split] = []
@@ -102,11 +104,11 @@ def load_unified_data(
                     if ele in turn:
                         sample[ele] = turn[ele]
                 
-                if use_context:
+                if use_context or not split_to_turn:
                     sample_copy = deepcopy(sample)
                     context.append(sample_copy)
 
-                if speaker == turn['speaker'] or speaker == 'all':
+                if split_to_turn and speaker in [turn['speaker'], 'all']:
                     if use_context:
                         sample['context'] = context[-context_window_size-1:-1]
                     if goal:
@@ -116,6 +118,9 @@ def load_unified_data(
                     if terminated:
                         sample['terminated'] = turn['utt_idx'] == len(dialogue['turns']) - 1
                     data_by_split[data_split].append(sample)
+            if not split_to_turn:
+                dialogue['turns'] = context
+                data_by_split[data_split].append(dialogue)
     return data_by_split
 
 def load_nlu_data(dataset, data_split='all', speaker='user', use_context=False, context_window_size=0, **kwargs):
@@ -167,6 +172,13 @@ def load_e2e_data(dataset, data_split='all', speaker='system', context_window_si
     kwargs.setdefault('dialogue_acts', True)
     return load_unified_data(dataset, **kwargs)
 
+def load_rg_data(dataset, data_split='all', speaker='system', context_window_size=100, **kwargs):
+    kwargs.setdefault('data_split', data_split)
+    kwargs.setdefault('speaker', speaker)
+    kwargs.setdefault('use_context', True)
+    kwargs.setdefault('context_window_size', context_window_size)
+    kwargs.setdefault('utterance', True)
+    return load_unified_data(dataset, **kwargs)
 
 if __name__ == "__main__":
     dataset = load_dataset('multiwoz21')

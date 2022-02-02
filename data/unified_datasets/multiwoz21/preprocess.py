@@ -860,17 +860,23 @@ def preprocess():
                 # add empty db_results
                 turn_state = turn['metadata']
                 cur_state = copy.deepcopy(init_ontology['state'])
+                booked = {}
                 for domain in turn_state:
                     if domain not in cur_state:
                         continue
                     for subdomain in ['semi', 'book']:
                         for slot, value in turn_state[domain][subdomain].items():
-                            if slot in ['booked', 'ticket']:
+                            if slot == 'ticket':
+                                continue
+                            elif slot == 'booked':
+                                assert domain in init_ontology['domains']
+                                booked[domain] = value
                                 continue
                             _, slot, value = normalize_domain_slot_value(domain, slot, value)
                             cur_state[domain][slot] = value
                 dialogue['turns'][-2]['state'] = cur_state
                 dialogue['turns'][-1]['db_results'] = {}
+                dialogue['turns'][-1]['booked'] = booked
         dialogues_by_split[split].append(dialogue)
     # pprint(cnt_domain_slot.most_common())
     dialogues = []

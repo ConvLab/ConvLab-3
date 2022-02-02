@@ -135,7 +135,6 @@ def preprocess():
                 'binary_dialogue_acts': set(),
                 'state': {}}
     splits = ['train', 'validation', 'test']
-    dialogues = []
     dataset_name = 'sgd'
     for data_split in splits:
         data_dir = os.path.join(original_data_dir, data_split if data_split != 'validation' else 'dev')

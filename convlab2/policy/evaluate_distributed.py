@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+import torch
 import sys
 import torch
 from pprint import pprint
@@ -72,9 +73,9 @@ def sampler(pid, queue, evt, sess, seed_range):
 
             if session_over is True:
                 success = sess.evaluator.task_success()
+                complete = sess.evaluator.complete
                 success = sess.evaluator.success
                 success_strict = sess.evaluator.success_strict
-                complete = sess.user_agent.policy.policy.goal.task_complete()
                 break
 
         total_return_success = 80 if success_strict else -40

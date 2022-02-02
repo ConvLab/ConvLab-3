@@ -48,6 +48,7 @@ class MultiWozEvaluator(Evaluator):
         self.dbs = self.database.dbs
         self.check_book_constraints = check_book_constraints
         self.check_domain_success = check_domain_success
+        self.complete = 0
         self.success = 0
         self.success_strict = 0
         self.successful_domains = []
@@ -340,6 +341,23 @@ class MultiWozEvaluator(Evaluator):
         else:
             return score
 
+    def check_booking_done(self, ref2goal=True):
+        if ref2goal:
+            goal = self._expand(self.goal)
+        else:
+            goal = self._init_dict()
+            for domain in belief_domains:
+                if domain in self.goal and 'book' in self.goal[domain]:
+                    goal[domain]['book'] = self.goal[domain]['book']
+
+        # check for every domain where booking is required whether a booking has been made
+        for domain in goal:
+            if goal[domain]['book']:
+                if not self.booked[domain]:
+                    return False
+
+        return True
+
     def inform_F1(self, ref2goal=True, aggregate=True):
         if ref2goal:
             goal = self._expand(self.goal)
@@ -370,6 +388,7 @@ class MultiWozEvaluator(Evaluator):
         """
         judge if all the domains are successfully completed
         """
+        booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
         book_constraint_sess = self.book_rate_constrains(ref2goal)
         inform_sess = self.inform_F1(ref2goal)
@@ -379,10 +398,12 @@ class MultiWozEvaluator(Evaluator):
             or (book_sess == 1 and inform_sess[1] is None)
             or (book_sess is None and inform_sess[1] == 1)) \
                 and goal_sess == 1:
+            self.complete = 1
             self.success = 1
             self.success_strict = 1 if (book_constraint_sess == 1 or book_constraint_sess is None) else 0
             return self.success if not self.check_book_constraints else self.success_strict
         else:
+            self.complete = 1 if booking_done and (inform_sess[1] == 1 or inform_sess[1] is None) else 0
             self.success = 0
             self.success_strict = 0
             return 0
