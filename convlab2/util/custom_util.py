@@ -305,10 +305,12 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
 
             if session_over is True:
                 task_succ = sess.evaluator.task_success()
+                complete = sess.evaluator.complete
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
                 break
         else:
+            complete = 0
             task_succ = 0
             task_succ_strict = 0
 
@@ -318,8 +320,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
             else:
                 task_success[key].append(task_succ_strict)
 
-        task_success['All_user_sim'].append(
-            int(sess.user_agent.policy.policy.goal.task_complete()))
+        task_success['All_user_sim'].append(complete)
         task_success['All_evaluator'].append(task_succ)
         task_success['All_evaluator_strict'].append(task_succ_strict)
         total_return = 80 if task_succ_strict else -40
