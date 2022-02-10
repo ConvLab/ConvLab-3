@@ -93,6 +93,7 @@ class MultiWozEvaluator(Evaluator):
         self.cur_domain = ''
         self.booked = self._init_dict_booked()
         self.booked_states = self._init_dict_booked()
+        self.successful_domains = []
 
     def add_sys_da(self, da_turn, belief_state):
         """add sys_da into array
