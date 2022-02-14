@@ -523,7 +523,6 @@ init_ontology = {
             "description": "inform the user that there is no result satisfies user requirements"
         }
     },
-    "binary_dialogue_acts": set(), # from data
     "state": {
         "attraction": {
             "type": "",
@@ -565,6 +564,11 @@ init_ontology = {
             "departure": "",
             "book people": ""
         }
+    },
+    "dialogue_acts": {
+        "categorical": set(),
+        "non-categorical": set(),
+        "binary": set()
     }
 }
 
@@ -636,7 +640,7 @@ def normalize_domain_slot_value(domain, slot, value):
 
 def convert_da(da_dict, utt, sent_tokenizer, word_tokenizer):
     '''
-    convert multiwoz dialogue acts to required format and update ontology
+    convert multiwoz dialogue acts to required format
     :param da_dict: dict[(intent, domain, slot, value)] = [word_start, word_end]
     :param utt: user or system utt
     '''
@@ -659,7 +663,6 @@ def convert_da(da_dict, utt, sent_tokenizer, word_tokenizer):
     for (intent, domain, slot, value), span in da_dict.items():
         if intent == 'request' or slot == '' or value == '':
             # binary dialog acts
-            init_ontology['binary_dialogue_acts'].add((intent, domain, slot, value,))
             converted_da['binary'].append({
                 'intent': intent,
                 'domain': domain,
@@ -846,7 +849,7 @@ def preprocess():
                 assert (intent, domain, slot, value,) in da_dict
                 da_dict[(intent, domain, slot, value,)] = [start_word, end_word]
 
-            dialogue_acts = convert_da(da_dict, utt, sent_tokenizer, word_tokenizer) # will also update ontology
+            dialogue_acts = convert_da(da_dict, utt, sent_tokenizer, word_tokenizer)
 
             dialogue['turns'].append({
                 'speaker': speaker,
@@ -854,6 +857,16 @@ def preprocess():
                 'utt_idx': turn_id,
                 'dialogue_acts': dialogue_acts,
             })
+
+            # add to dialogue_acts dictionary in the ontology
+            for da_type in dialogue_acts:
+                das = dialogue_acts[da_type]
+                for da in das:
+                    intent, domain, slot, value = da['intent'], da['domain'], da['slot'], da['value']
+                    if da_type == 'binary':
+                        init_ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot, value))
+                    else:
+                        init_ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot))
 
             if speaker == 'system':
                 # add state to last user turn
@@ -882,10 +895,14 @@ def preprocess():
     dialogues = []
     for split in splits:
         dialogues += dialogues_by_split[split]
-    init_ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(init_ontology['binary_dialogue_acts'])]
+    for da_type in init_ontology['dialogue_acts']:
+        if da_type == 'binary':
+            init_ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3],'value':da[4]}) for da in sorted(init_ontology["dialogue_acts"][da_type])]
+        else:
+            init_ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3]}) for da in sorted(init_ontology["dialogue_acts"][da_type])]
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(init_ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')

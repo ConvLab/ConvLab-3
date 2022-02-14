@@ -79,8 +79,10 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
 - `intents`: (*dict*) descriptions for intents.
   - `$intent_name`: (*dict*)
     - `description`: (*str*) description for this intent.
-- `binary_dialogue_acts`: (*list* of *dict*) binary dialogue act is a more detailed intent where the value is not extracted from dialogues, e.g. request the address of a hotel.
-  - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. domain, slot, and value may be empty.
+- `dialogue_acts`: (*dict*) dialogue act dictionaries extracted from the data, separated by their types. Each dialogue act is a *str* converted by a *dict* like `"{'speaker': 'system', 'intent': 'inform', 'domain': 'attraction', 'slot': 'area'}"` that includes speaker, intent, domain, slot (and value for binary dialogue acts).
+  - `categorical`: (*list* of *str*) dictionary for categorical dialogue acts.
+  - `non-categorical`: (*list* of *str*) dictionary for non-categorical dialogue acts.
+  - `binary`: (*list* of *str*) dictionary for binary dialogue acts that are more detailed intents where the values are not extracted from dialogues, e.g. request the address of a hotel.
 - `state`: (*dict*) dialogue state of all domains.
   - `$domain_name`: (*dict*)
     - `$slot_name: ""`: slot with empty value. Note that the slot set are the subset of the slot set in Part 1 definition.
