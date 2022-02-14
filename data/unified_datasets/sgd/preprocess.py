@@ -132,8 +132,12 @@ def preprocess():
     dialogues = []
     ontology = {'domains': {},
                 'intents': get_intent(),
-                'binary_dialogue_acts': set(),
-                'state': {}}
+                'state': {},
+                'dialogue_acts': {
+                    "categorical": set(),
+                    "non-categorical": set(),
+                    "binary": set()
+                }}
     splits = ['train', 'validation', 'test']
     dataset_name = 'sgd'
     for data_split in splits:
@@ -332,17 +336,26 @@ def preprocess():
                                 turn['service_call'][domain] = frame['service_call']
                                 turn['db_results'][domain] = frame['service_results']
 
-                        for da in turn['dialogue_acts']['binary']:
-                            da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
-                            if da_tuple not in ontology['binary_dialogue_acts']:
-                                ontology['binary_dialogue_acts'].add(da_tuple)
+                        # add to dialogue_acts dictionary in the ontology
+                        for da_type in turn['dialogue_acts']:
+                            das = turn['dialogue_acts'][da_type]
+                            for da in das:
+                                intent, domain, slot, value = da['intent'], da['domain'], da['slot'], da['value']
+                                if da_type == 'binary':
+                                    ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot, value))
+                                else:
+                                    ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot))
                         dialogue['turns'].append(turn)
                     dialogues.append(dialogue)
     
-    ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(ontology['binary_dialogue_acts'])]
+    for da_type in ontology['dialogue_acts']:
+        if da_type == 'binary':
+            ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3],'value':da[4]}) for da in sorted(ontology["dialogue_acts"][da_type])]
+        else:
+            ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3]}) for da in sorted(ontology["dialogue_acts"][da_type])]
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
