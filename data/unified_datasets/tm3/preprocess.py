@@ -100,8 +100,12 @@ def preprocess():
                 'intents': {
                     'inform': {'description': 'inform the value of a slot or general information.'}
                 },
-                'binary_dialogue_acts': set(),
-                'state': {}}
+                'state': {},
+                'dialogue_acts': {
+                    "categorical": set(),
+                    "non-categorical": set(),
+                    "binary": set()
+                }}
     global descriptions
     global anno2slot
     ori_ontology = json.load(open(os.path.join(original_data_dir, "TM-3-2020/ontology/entities.json")))
@@ -122,7 +126,8 @@ def preprocess():
     dataset = 'tm3'
     splits = ['train', 'validation', 'test']
     dialogues_by_split = {split:[] for split in splits}
-    for data_file in tqdm(glob.glob(os.path.join(original_data_dir, f"TM-3-2020/data/*.json")), desc='processing taskmaster-{}'.format(domain)):
+    data_files = sorted(glob.glob(os.path.join(original_data_dir, f"TM-3-2020/data/*.json")))
+    for data_file in tqdm(data_files, desc='processing taskmaster-{}'.format(domain)):
         data = json.load(open(data_file))
         # random split, train:validation:test = 8:1:1
         random.seed(42)
@@ -216,9 +221,16 @@ def preprocess():
                 for da in turn['dialogue_acts']['binary']:
                     da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
                     bdas.add(da_tuple)
-                    if da_tuple not in ontology['binary_dialogue_acts']:
-                        ontology['binary_dialogue_acts'].add(da_tuple)
                 turn['dialogue_acts']['binary'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(bdas)]
+                # add to dialogue_acts dictionary in the ontology
+                for da_type in turn['dialogue_acts']:
+                    das = turn['dialogue_acts'][da_type]
+                    for da in das:
+                        intent, domain, slot, value = da['intent'], da['domain'], da['slot'], da['value']
+                        if da_type == 'binary':
+                            ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot, value))
+                        else:
+                            ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot))
 
                 for da in turn['dialogue_acts']['non-categorical']:
                     slot, value = da['slot'], da['value']
@@ -237,7 +249,11 @@ def preprocess():
                 dialogue['turns'].append(turn)
             dialogues_by_split[data_split].append(dialogue)
 
-    ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(ontology['binary_dialogue_acts'])]
+    for da_type in ontology['dialogue_acts']:
+        if da_type == 'binary':
+            ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3],'value':da[4]}) for da in sorted(ontology["dialogue_acts"][da_type])]
+        else:
+            ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3]}) for da in sorted(ontology["dialogue_acts"][da_type])]
     dialogues = dialogues_by_split['train']+dialogues_by_split['validation']+dialogues_by_split['test']
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
