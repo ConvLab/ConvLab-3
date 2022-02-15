@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import random
+from convlab2.policy.vector.vector_multiwoz import MultiWozVector
 
 import numpy as np
 import torch
@@ -167,7 +168,7 @@ def evaluate(args, dataset_name, model_name, load_path, calculate_reward=True, v
     if model_name == "PPO":
         from convlab2.policy.ppo import PPO
         if load_path:
-            policy_sys = PPO(False)
+            policy_sys = PPO(False, vectorizer=MultiWozVector())
             policy_sys.load(load_path)
         else:
             policy_sys = PPO.from_pretrained()

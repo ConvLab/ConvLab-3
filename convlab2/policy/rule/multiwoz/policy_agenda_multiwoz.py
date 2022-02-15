@@ -486,8 +486,7 @@ class Agenda(object):
                 continue
 
             slot_vals = sys_action[diaact]
-            #TODO: use string "book" instead of "booking"
-            if 'booking' in diaact:
+            if 'book' in diaact:
                 if self.update_booking(diaact, slot_vals, goal):
                     return
             elif 'general' in diaact:
@@ -503,8 +502,7 @@ class Agenda(object):
                     if slot == 'name':
                         self._remove_item(diaact.split(
                             '-')[0]+'-inform', 'choice')
-            # TODO: use string "book" instead of "booking"
-            if 'booking' in diaact and self.cur_domain:
+            if 'book' in diaact and self.cur_domain:
                 g_book = self._get_goal_infos(self.cur_domain, goal)[-2]
                 if len(g_book) == 0:
                     self._push_item(self.cur_domain +
@@ -535,15 +533,12 @@ class Agenda(object):
         :param goal:        Goal
         :return:            True:user want to close the session. False:session is continue
         """
-        #TODO: Use domain of diaact.split instead of current domain
-        _, intent = diaact.split('-')
-        domain = self.cur_domain
+        domain, intent = diaact.split('-')
         self.domains['update_booking'] = domain
         isover = False
         if domain not in goal.domains:
             isover = False
 
-        #TODO: Remove inform
         elif intent in ['book', 'inform']:
             isover = self._handle_inform(domain, intent, slot_vals, goal)
 
@@ -686,8 +681,7 @@ class Agenda(object):
                 self._push_item(domain + '-inform', slot, g_book[slot])
                 info_right = False
 
-        #TODO: Only use "book"
-        if intent in ['book', 'offerbooked'] and info_right:
+        if intent in ['book'] and info_right:
             # booked ok
             if 'booked' in goal.domain_goals[domain]:
                 goal.domain_goals[domain]['booked'] = DEF_VAL_BOOKED

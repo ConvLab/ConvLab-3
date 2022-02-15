@@ -111,21 +111,18 @@ class MultiWozEvaluator(Evaluator):
             value = str(value)
             self.sys_da_array.append(da + '-' + value)
 
-            if da == 'booking-book-ref' and self.cur_domain in ['hotel', 'restaurant', 'train']:
-                if not self.booked[self.cur_domain] and re.match(r'^\d{8}$', value) and \
-                        len(self.dbs[self.cur_domain]) > int(value):
-                    self.booked[self.cur_domain] = self.dbs[self.cur_domain][int(
-                        value)].copy()
-                    self.booked[self.cur_domain]['Ref'] = value
-                    self.booked_states[self.cur_domain] = belief_state[self.cur_domain]
-            elif da == 'train-offerbooked-ref' or da == 'train-inform-ref':
-                if not self.booked['train'] and re.match(r'^\d{8}$', value) and len(self.dbs['train']) > int(value):
-                    self.booked['train'] = self.dbs['train'][int(value)].copy()
-                    self.booked['train']['Ref'] = value
-                    self.booked_states[self.cur_domain] = belief_state[self.cur_domain]
-            elif da == 'taxi-inform-car':
-                if not self.booked['taxi']:
-                    self.booked['taxi'] = 'booked'
+            # new booking actions make life easier
+            if intent.lower() == "book":
+                # taxi has no DB queries
+                if domain.lower() == "taxi":
+                    if not self.booked['taxi']:
+                        self.booked['taxi'] = 'booked'
+                else:
+                    if not self.booked[domain] and re.match(r'^\d{8}$', value) and \
+                            len(self.dbs[domain]) > int(value):
+                        self.booked[domain] = self.dbs[domain][int(value)].copy()
+                        self.booked[domain]['Ref'] = value
+                        self.booked_states[domain] = belief_state[domain]
 
     def add_usr_da(self, da_turn):
         """add usr_da into array
