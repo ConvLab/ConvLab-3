@@ -3,6 +3,7 @@ Dataloader base class. Every dataset should inherit this class and implement its
 """
 from abc import ABC, abstractmethod
 import os
+from zipfile import ZipFile
 import json
 import sys
 import zipfile
@@ -69,57 +70,57 @@ class MultiWOZDataloader(DatasetDataloader):
                                        'terminated', 'goal']))
 
         self.data = {'train': {}, 'val': {}, 'test': {}, 'role': role, 'human_val': {}}
-        if data_key == 'all':
-            data_key_list = ['train', 'val', 'test']
-        else:
-            data_key_list = [data_key]
-        for data_key in data_key_list:
-            data = read_zipped_json(os.path.join(data_dir, '{}.json.zip'.format(data_key)), '{}.json'.format(data_key))
-            print('loaded {}, size {}'.format(data_key, len(data)))
+
+        archive = ZipFile(os.path.join(data_dir, 'data.zip'))
+        archive.extractall()
+        data = json.load(open(os.path.join(data_dir, 'data/data.json')))
+
+        for k in ['train', 'test', 'val']:
             for x in info_list:
-                self.data[data_key][x] = []
-            for sess_id, sess in data.items():
-                cur_context = []
-                cur_context_dialog_act = []
-                entity_booked_dict = dict((domain, False) for domain in belief_domains)
-                for i, turn in enumerate(sess['log']):
-                    text = turn['text']
-                    da = da2tuples(turn['dialog_act'])
-                    if role == 'sys' and i % 2 == 0:
-                        cur_context.append(text)
-                        cur_context_dialog_act.append(da)
-                        continue
-                    elif role == 'usr' and i % 2 == 1:
-                        cur_context.append(text)
-                        cur_context_dialog_act.append(da)
-                        continue
-                    if utterance:
-                        self.data[data_key]['utterance'].append(text)
-                    if dialog_act:
-                        self.data[data_key]['dialog_act'].append(da)
-                    if context:
-                        self.data[data_key]['context'].append(cur_context[-context_window_size:])
-                    if context_dialog_act:
-                        self.data[data_key]['context_dialog_act'].append(cur_context_dialog_act[-context_window_size:])
-                    if belief_state:
-                        entity_booked_dict, fixed_bs = self.fix_entity_booked_info(entity_booked_dict, turn['metadata'])
-                        self.data[data_key]['belief_state'].append(fixed_bs)
-                    if last_opponent_utterance:
-                        self.data[data_key]['last_opponent_utterance'].append(
-                            cur_context[-1] if len(cur_context) >= 1 else '')
-                    if last_self_utterance:
-                        self.data[data_key]['last_self_utterance'].append(
-                            cur_context[-2] if len(cur_context) >= 2 else '')
-                    if session_id:
-                        self.data[data_key]['session_id'].append(sess_id)
-                    if span_info:
-                        self.data[data_key]['span_info'].append(turn['span_info'])
-                    if terminated:
-                        self.data[data_key]['terminated'].append(i + 2 >= len(sess['log']))
-                    if goal:
-                        self.data[data_key]['goal'].append(sess['goal'])
+                self.data[k][x] = []
+        for sess_id, sess in data.items():
+            data_key = sess['split']
+            cur_context = []
+            cur_context_dialog_act = []
+            entity_booked_dict = dict((domain, False) for domain in belief_domains)
+            for i, turn in enumerate(sess['log']):
+                text = turn['text']
+                da = da2tuples(turn.get('dialog_act', {}))
+                if role == 'sys' and i % 2 == 0:
                     cur_context.append(text)
                     cur_context_dialog_act.append(da)
+                    continue
+                elif role == 'usr' and i % 2 == 1:
+                    cur_context.append(text)
+                    cur_context_dialog_act.append(da)
+                    continue
+                if utterance:
+                    self.data[data_key]['utterance'].append(text)
+                if dialog_act:
+                    self.data[data_key]['dialog_act'].append(da)
+                if context:
+                    self.data[data_key]['context'].append(cur_context[-context_window_size:])
+                if context_dialog_act:
+                    self.data[data_key]['context_dialog_act'].append(cur_context_dialog_act[-context_window_size:])
+                if belief_state:
+                    entity_booked_dict, fixed_bs = self.fix_entity_booked_info(entity_booked_dict, turn['metadata'])
+                    self.data[data_key]['belief_state'].append(fixed_bs)
+                if last_opponent_utterance:
+                    self.data[data_key]['last_opponent_utterance'].append(
+                        cur_context[-1] if len(cur_context) >= 1 else '')
+                if last_self_utterance:
+                    self.data[data_key]['last_self_utterance'].append(
+                        cur_context[-2] if len(cur_context) >= 2 else '')
+                if session_id:
+                    self.data[data_key]['session_id'].append(sess_id)
+                if span_info:
+                    self.data[data_key]['span_info'].append(turn['span_info'])
+                if terminated:
+                    self.data[data_key]['terminated'].append(i + 2 >= len(sess['log']))
+                if goal:
+                    self.data[data_key]['goal'].append(sess['goal'])
+                cur_context.append(text)
+                cur_context_dialog_act.append(da)
         if ontology:
             ontology_path = os.path.join(data_dir, 'ontology.json')
             self.data['ontology'] = json.load(open(ontology_path))

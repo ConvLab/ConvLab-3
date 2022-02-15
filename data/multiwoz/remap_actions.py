@@ -217,7 +217,7 @@ def preprocess():
 
     for ori_dialog_id, ori_dialog in tqdm(original_data.items()):
         if ori_dialog_id in val_list:
-            split = 'validation'
+            split = 'val'
         elif ori_dialog_id in test_list:
             split = 'test'
         else:
