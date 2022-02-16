@@ -79,10 +79,10 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
 - `intents`: (*dict*) descriptions for intents.
   - `$intent_name`: (*dict*)
     - `description`: (*str*) description for this intent.
-- `dialogue_acts`: (*dict*) dialogue act dictionaries extracted from the data, separated by their types. Each dialogue act is a *str* converted by a *dict* like `"{'speaker': 'system', 'intent': 'inform', 'domain': 'attraction', 'slot': 'area'}"` that includes speaker, intent, domain, slot (and value for binary dialogue acts).
+- `dialogue_acts`: (*dict*) dialogue act dictionaries extracted from the data, separated by their types. Each dialogue act is a *str* converted by a *dict* like `"{'user': True, 'system': True, 'intent': 'inform', 'domain': 'attraction', 'slot': 'area'}"` that includes intent, domain, slot, and whether the speakers use this dialogue act.
   - `categorical`: (*list* of *str*) dictionary for categorical dialogue acts.
   - `non-categorical`: (*list* of *str*) dictionary for non-categorical dialogue acts.
-  - `binary`: (*list* of *str*) dictionary for binary dialogue acts that are more detailed intents where the values are not extracted from dialogues, e.g. request the address of a hotel.
+  - `binary`: (*list* of *str*) dictionary for binary dialogue acts that are more detailed intents without values, e.g. request the address of a hotel.  Note that the `slot` in a binary dialogue act may not be an actual slot that presents in `ontology['domains'][domain]['slots']`.
 - `state`: (*dict*) dialogue state of all domains.
   - `$domain_name`: (*dict*)
     - `$slot_name: ""`: slot with empty value. Note that the slot set are the subset of the slot set in Part 1 definition.
@@ -109,7 +109,7 @@ We first introduce the unified format of `ontology` and `dialogues`. To transfor
     - `non-categorical` (*list* of *dict*, could be empty) for non-categorical slots.
       - `{"intent": (str), "domain": (str), "slot": (str), "value": (str), "start": (int), "end": (int)}`. `start` and `end` are character indexes for the value span in the utterance and can be absent.
     - `binary` (*list* of *dict*, could be empty) for binary dialogue acts in ontology.
-      - `{"intent": (str), "domain": (str), "slot": (str), "value": (str)}`. Possible dialogue acts are listed in the `ontology['binary_dialogue_acts']`.
+      - `{"intent": (str), "domain": (str), "slot": (str)}`. Binary dialogue acts are more detailed intents without values, e.g. request the address of a hotel.
   - `state`: (*dict*, user side, could be empty) dialogue state of involved domains. full state is shown in `ontology['state']`.
     - `$domain_name`: (*dict*) contains all slots in this domain.
       - `$slot_name`: (*str*) value for this slot.

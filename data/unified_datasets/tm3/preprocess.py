@@ -102,9 +102,9 @@ def preprocess():
                 },
                 'state': {},
                 'dialogue_acts': {
-                    "categorical": set(),
-                    "non-categorical": set(),
-                    "binary": set()
+                    "categorical": {},
+                    "non-categorical": {},
+                    "binary": {}
                 }}
     global descriptions
     global anno2slot
@@ -197,7 +197,6 @@ def preprocess():
                                 'intent': intent,
                                 'domain': domain,
                                 'slot': slot,
-                                'value': ''
                             })
                             continue
                         assert turn['utterance'][segment['start_index']:segment['end_index']] == segment['text']
@@ -219,18 +218,15 @@ def preprocess():
                 
                 bdas = set()
                 for da in turn['dialogue_acts']['binary']:
-                    da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
+                    da_tuple = (da['intent'], da['domain'], da['slot'],)
                     bdas.add(da_tuple)
-                turn['dialogue_acts']['binary'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(bdas)]
+                turn['dialogue_acts']['binary'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2]} for bda in sorted(bdas)]
                 # add to dialogue_acts dictionary in the ontology
                 for da_type in turn['dialogue_acts']:
                     das = turn['dialogue_acts'][da_type]
                     for da in das:
-                        intent, domain, slot, value = da['intent'], da['domain'], da['slot'], da['value']
-                        if da_type == 'binary':
-                            ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot, value))
-                        else:
-                            ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot))
+                        ontology["dialogue_acts"][da_type].setdefault((da['intent'], da['domain'], da['slot']), {})
+                        ontology["dialogue_acts"][da_type][(da['intent'], da['domain'], da['slot'])][speaker] = True
 
                 for da in turn['dialogue_acts']['non-categorical']:
                     slot, value = da['slot'], da['value']
@@ -250,14 +246,11 @@ def preprocess():
             dialogues_by_split[data_split].append(dialogue)
 
     for da_type in ontology['dialogue_acts']:
-        if da_type == 'binary':
-            ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3],'value':da[4]}) for da in sorted(ontology["dialogue_acts"][da_type])]
-        else:
-            ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3]}) for da in sorted(ontology["dialogue_acts"][da_type])]
+        ontology["dialogue_acts"][da_type] = sorted([str({'user': speakers.get('user', False), 'system': speakers.get('system', False), 'intent':da[0],'domain':da[1], 'slot':da[2]}) for da, speakers in ontology["dialogue_acts"][da_type].items()])
     dialogues = dialogues_by_split['train']+dialogues_by_split['validation']+dialogues_by_split['test']
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')

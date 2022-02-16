@@ -27,21 +27,18 @@ def check_ontology(ontology):
             intent name: {
                 "description": intent description
             }
-        },
-        "binary_dialogue_acts": {
-            [
-                {
-                    "intent": intent name,
-                    "domain": domain name,
-                    "slot": slot name,
-                    "value": some value
-                }
-            ]
         }
         "state": {
             domain name: {
                 slot name: ""
             }
+        },
+        "dialogue_acts": {
+            "categorical": [
+                "{'user': True/False, 'system': True/False, 'intent': intent, 'domain': domain, 'slot': slot}",
+            ],
+            "non-categorical": {},
+            "binary": {}
         }
     }
     """
@@ -76,6 +73,13 @@ def check_ontology(ontology):
         for slot_name, value in domain.items():
             assert slot_name in ontology['domains'][domain_name]['slots']
             assert value == "", "should set value in state to \"\""
+
+    ontology['da_dict'] = {}
+    for da_type in ontology['dialogue_acts']:
+        ontology['da_dict'][da_type] = {}
+        for da_str in ontology['dialogue_acts'][da_type]:
+            da = eval(da_str)
+            ontology["da_dict"][da_type][(da['intent'], da['domain'], da['slot'])] = {'user': da['user'], 'system': da['system']}
 
     # print('description existence:', descriptions, '\n')
     for description, value in descriptions.items():
@@ -207,12 +211,10 @@ def check_dialogues(name, dialogues, ontology):
                         stat[split][f'non-cat slot span(dialogue act)'][0] += 1
 
             for da_type in dialogue_acts:
-                if da_type == 'binary':
-                    for da in dialogue_acts[da_type]:
-                        assert str({'speaker': turn['speaker'], 'intent': da['intent'], 'domain': da['domain'], 'slot': da['slot'], 'value': da['value']}) in ontology['dialogue_acts'][da_type]
-                else:
-                    for da in dialogue_acts[da_type]:
-                        assert str({'speaker': turn['speaker'], 'intent': da['intent'], 'domain': da['domain'], 'slot': da['slot']}) in ontology['dialogue_acts'][da_type]
+                for da in dialogue_acts[da_type]:
+                    assert ontology['da_dict'][da_type][(da['intent'], da['domain'], da['slot'])][turn['speaker']] == True
+                    if da_type == 'binary':
+                        assert 'value' not in da, f'{dialogue_id}:{turn_id}\tbinary dialogue act should not have value'
 
             if turn['speaker'] == 'user':
                 assert 'db_results' not in turn

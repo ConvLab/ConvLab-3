@@ -1490,8 +1490,7 @@
             {
               "intent": "accept",
               "domain": "auto_repair",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1914,8 +1913,7 @@
             {
               "intent": "accept",
               "domain": "coffee_ordering",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4677,8 +4675,7 @@
             {
               "intent": "accept",
               "domain": "restaurant_reservation",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5081,8 +5078,7 @@
             {
               "intent": "inform",
               "domain": "movie_ticket",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5156,8 +5152,7 @@
             {
               "intent": "accept",
               "domain": "movie_ticket",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
