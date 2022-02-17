@@ -1,8 +1,47 @@
 
+slot_name_map = {
+    'addr': "address",
+    'post': "postcode",
+    'pricerange': "price range",
+    'arrive': "arrive by",
+    'arriveby': "arrive by",
+    'leave': "leave at",
+    'leaveat': "leave at",
+    'depart': "departure",
+    'dest': "destination",
+    'fee': "entrance fee",
+    'open': 'open hours',
+    'car': "type",
+    'car type': "type",
+    'ticket': 'price',
+    'trainid': 'train id',
+    'id': 'train id',
+    'people': 'book people',
+    'stay': 'book stay',
+    'none': '',
+    'attraction': {
+        'price': 'entrance fee'
+    },
+    'hospital': {},
+    'hotel': {
+        'day': 'book day', 'price': "price range"
+    },
+    'restaurant': {
+        'day': 'book day', 'time': 'book time', 'price': "price range"
+    },
+    'taxi': {},
+    'train': {
+        'day': 'day', 'time': "duration"
+    },
+    'police': {},
+    'booking': {}
+}
+
 
 class BookingActRemapper:
 
-    def __init__(self):
+    def __init__(self, ontology):
+        self.ontology = ontology
         self.reset()
 
     def reset(self):
@@ -47,12 +86,12 @@ class BookingActRemapper:
             remapped_acts, error_local = remap_acts(flattened_acts, self.current_domains_user,
                                                     booked_domain_current, keyword_domains_user,
                                                     keyword_domains_system, self.current_domains_system,
-                                                    next_user_domains)
+                                                    next_user_domains, self.ontology)
 
             remapped_spans, _ = remap_acts(flattened_spans, self.current_domains_user,
                                                booked_domain_current, keyword_domains_user,
                                                keyword_domains_system, self.current_domains_system,
-                                               next_user_domains)
+                                               next_user_domains, self.ontology)
 
             deflattened_remapped_acts = deflat_acts(remapped_acts)
             deflattened_remapped_spans = deflat_span_acts(remapped_spans)
@@ -154,7 +193,7 @@ def deflat_span_acts(flattened_acts):
 
 
 def remap_acts(flattened_acts, current_domains, booked_domain=None, keyword_domains_user=None,
-               keyword_domains_system=None, current_domain_system=None, next_user_domain=None):
+               keyword_domains_system=None, current_domain_system=None, next_user_domain=None, ontology=None):
 
     # We now look for all cases that can happen: Booking domain, Booking within a domain or taxi-inform-car for booking
     error = 0
@@ -177,17 +216,24 @@ def remap_acts(flattened_acts, current_domains, booked_domain=None, keyword_doma
             domain, intent, slot, value = act
             if f"{domain}-{intent}-{slot}" == "Booking-Book-Ref":
                 # We need to remap that booking act now
-                assert len(current_domains) == 1, "Can not resolve booking-book act because there are more current domains"
-                remapped_acts.append((current_domains[0], "Book", "none", "none"))
-                remapped_acts.append((current_domains[0], "Inform", "Ref", value))
+                potential_domain = current_domains[0]
+                remapped_acts.append((potential_domain, "Book", "none", "none"))
+                if ontology_check(potential_domain, slot, ontology):
+                    remapped_acts.append((potential_domain, "Inform", "Ref", value))
             elif domain == "Booking" and intent == "Book" and slot != "Ref":
                 # the book intent is here actually an inform intent according to the data
-                remapped_acts.append((current_domains[0], "Inform", slot, value))
+                potential_domain = current_domains[0]
+                if ontology_check(potential_domain, slot, ontology):
+                    remapped_acts.append((potential_domain, "Inform", slot, value))
             elif domain == "Booking" and intent == "Inform":
                 # the inform intent is here actually a request intent according to the data
-                remapped_acts.append((current_domains[0], "OfferBook", slot, value))
+                potential_domain = current_domains[0]
+                if ontology_check(potential_domain, slot, ontology):
+                    remapped_acts.append((potential_domain, "OfferBook", slot, value))
             elif domain == "Booking" and intent in ["NoBook", "Request"]:
-                remapped_acts.append((current_domains[0], intent, slot, value))
+                potential_domain = current_domains[0]
+                if ontology_check(potential_domain, slot, ontology):
+                    remapped_acts.append((potential_domain, intent, slot, value))
             elif f"{domain}-{intent}-{slot}" == "Taxi-Inform-Car":
                 # taxi-inform-car actually triggers the booking and informs on a car
                 remapped_acts.append((domain, "Book", "none", "none"))
@@ -206,3 +252,15 @@ def remap_acts(flattened_acts, current_domains, booked_domain=None, keyword_doma
             error += 1
 
     return remapped_acts, error
+
+
+def ontology_check(domain_, slot_, init_ontology):
+
+    domain = domain_.lower()
+    slot = slot_.lower()
+    if slot not in init_ontology['domains'][domain]['slots']:
+        if slot in slot_name_map:
+            slot = slot_name_map[slot]
+        elif slot in slot_name_map[domain]:
+            slot = slot_name_map[domain][slot]
+    return slot in init_ontology['domains'][domain]['slots']

@@ -766,7 +766,7 @@ def preprocess():
     dialogues_by_split = {split:[] for split in splits}
     sent_tokenizer = PunktSentenceTokenizer()
     word_tokenizer = TreebankWordTokenizer()
-    booking_remapper = BookingActRemapper()
+    booking_remapper = BookingActRemapper(init_ontology)
     for ori_dialog_id, ori_dialog in tqdm(original_data.items()):
         if ori_dialog_id in val_list:
             split = 'validation'
@@ -840,24 +840,18 @@ def preprocess():
                 domain, intent = Domain_Intent.lower().split('-')
                 assert intent in init_ontology['intents'], f'{ori_dialog_id}:{turn_id}:da\t{intent} not in ontology'
                 for Slot, value in das[Domain_Intent]:
-                    try:
-                        domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
-                        if domain not in cur_domains:
-                            # update original cur_domains
-                            cur_domains.append(domain)
-                        da_dict[(intent, domain, slot, value,)] = []
-                    except:
-                        pass
+                    domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
+                    if domain not in cur_domains:
+                        # update original cur_domains
+                        cur_domains.append(domain)
+                    da_dict[(intent, domain, slot, value,)] = []
 
             for span in spans:
-                try:
-                    Domain_Intent, Slot, value, start_word, end_word = span
-                    domain, intent = Domain_Intent.lower().split('-')
-                    domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
-                    assert (intent, domain, slot, value,) in da_dict
-                    da_dict[(intent, domain, slot, value,)] = [start_word, end_word]
-                except:
-                    pass
+                Domain_Intent, Slot, value, start_word, end_word = span
+                domain, intent = Domain_Intent.lower().split('-')
+                domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
+                assert (intent, domain, slot, value,) in da_dict
+                da_dict[(intent, domain, slot, value,)] = [start_word, end_word]
 
             dialogue_acts = convert_da(da_dict, utt, sent_tokenizer, word_tokenizer) # will also update ontology
 
