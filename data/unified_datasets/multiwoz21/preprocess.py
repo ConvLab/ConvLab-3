@@ -833,7 +833,6 @@ def preprocess():
 
             if speaker == 'system':
                 das, spans = booking_remapper.remap(turn_id, ori_dialog['log'])
-            print(ori_dialog['log'][turn_id])
 
             da_dict = {}
             # transform DA
@@ -841,18 +840,24 @@ def preprocess():
                 domain, intent = Domain_Intent.lower().split('-')
                 assert intent in init_ontology['intents'], f'{ori_dialog_id}:{turn_id}:da\t{intent} not in ontology'
                 for Slot, value in das[Domain_Intent]:
-                    domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
-                    if domain not in cur_domains:
-                        # update original cur_domains
-                        cur_domains.append(domain)
-                    da_dict[(intent, domain, slot, value,)] = []
+                    try:
+                        domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
+                        if domain not in cur_domains:
+                            # update original cur_domains
+                            cur_domains.append(domain)
+                        da_dict[(intent, domain, slot, value,)] = []
+                    except:
+                        pass
 
             for span in spans:
-                Domain_Intent, Slot, value, start_word, end_word = span
-                domain, intent = Domain_Intent.lower().split('-')
-                domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
-                assert (intent, domain, slot, value,) in da_dict
-                da_dict[(intent, domain, slot, value,)] = [start_word, end_word]
+                try:
+                    Domain_Intent, Slot, value, start_word, end_word = span
+                    domain, intent = Domain_Intent.lower().split('-')
+                    domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
+                    assert (intent, domain, slot, value,) in da_dict
+                    da_dict[(intent, domain, slot, value,)] = [start_word, end_word]
+                except:
+                    pass
 
             dialogue_acts = convert_da(da_dict, utt, sent_tokenizer, word_tokenizer) # will also update ontology
 

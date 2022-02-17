@@ -12,6 +12,7 @@ class BookingActRemapper:
 
     def retrieve_current_domain_from_user(self, turn_id, ori_dialog):
         prev_user_turn = ori_dialog[turn_id - 1]
+
         dialog_acts = prev_user_turn.get('dialog_act', [])
         keyword_domains_user = get_keyword_domains(prev_user_turn)
         current_domains_temp = get_current_domains_from_act(dialog_acts)
@@ -27,19 +28,19 @@ class BookingActRemapper:
         keyword_domains_system = get_keyword_domains(system_turn)
         current_domains_temp = get_current_domains_from_act(dialog_acts)
         self.current_domains_system = current_domains_temp if current_domains_temp else self.current_domains_system
-        self.booked_domains, booked_domain_current = check_domain_booked(system_turn, self.booked_domains)
+        booked_domain_current = self.check_domain_booked(system_turn)
 
         return keyword_domains_system, booked_domain_current
 
     def remap(self, turn_id, ori_dialog):
 
+        keyword_domains_user, next_user_domains = self.retrieve_current_domain_from_user(turn_id, ori_dialog)
+        keyword_domains_system, booked_domain_current = self.retrieve_current_domain_from_system(turn_id, ori_dialog)
+
         # only need to remap if there is a dialog action labelled
         dialog_acts = ori_dialog[turn_id].get('dialog_act', [])
         spans = ori_dialog[turn_id].get('span_info', [])
-        if ori_dialog[turn_id].get('dialog_act', []):
-
-            keyword_domains_user, next_user_domains = self.retrieve_current_domain_from_user(turn_id, ori_dialog)
-            keyword_domains_system, booked_domain_current = self.retrieve_current_domain_from_system(turn_id, ori_dialog)
+        if dialog_acts:
 
             flattened_acts = flatten_acts(dialog_acts)
             flattened_spans = flatten_span_acts(spans)
@@ -59,6 +60,15 @@ class BookingActRemapper:
             return deflattened_remapped_acts, deflattened_remapped_spans
         else:
             return dialog_acts, spans
+
+    def check_domain_booked(self, turn):
+
+        booked_domain_current = None
+        for domain in turn['metadata']:
+            if turn['metadata'][domain]["book"]["booked"] and domain not in self.booked_domains:
+                booked_domain_current = domain.capitalize()
+                self.booked_domains.append(domain)
+        return booked_domain_current
 
 
 def get_keyword_domains(turn):
@@ -86,22 +96,12 @@ def get_current_domains_from_act(dialog_acts):
 def get_next_user_act_domains(ori_dialog, turn_id):
     domains = []
     try:
-        next_user_act = ori_dialog['log'][turn_id + 1]['dialog_act']
+        next_user_act = ori_dialog[turn_id + 1]['dialog_act']
         domains = get_current_domains_from_act(next_user_act)
     except:
         # will fail if system act is the last act of the dialogue
         pass
     return domains
-
-
-def check_domain_booked(turn, booked_domains):
-
-    booked_domain_current = None
-    for domain in turn['metadata']:
-        if turn['metadata'][domain]["book"]["booked"] and domain not in booked_domains:
-            booked_domain_current = domain.capitalize()
-            booked_domains.append(domain)
-    return booked_domains, booked_domain_current
 
 
 def flatten_acts(dialog_acts):
