@@ -19,7 +19,8 @@ def read_zipped_json(zip_path, filepath):
 
 
 def dump_json(content, filepath):
-    json.dump(content, open(filepath, 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(content, open(filepath, 'w', encoding='utf-8'),
+              indent=2, ensure_ascii=False)
 
 
 def write_zipped_json(zip_path, filepath):

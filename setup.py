@@ -14,6 +14,7 @@ class LibTest(TestCommand):
         ret = os.system("pytest --cov=ConvLab-3 tests/ --cov-report term-missing")
         sys.exit(ret >> 8)
 
+
 setup(
     name='ConvLab',
     version='3.0.0',
@@ -63,8 +64,8 @@ setup(
             "pytest-dependency",
             "pytest-mock",
             "requests-mock",
-            "pytest>=3.6.0",
-            "pytest-cov==2.4.0",
+            "pytest",
+            "pytest-cov",
             "checksumdir",
             "bs4",
             "lxml",

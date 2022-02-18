@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
+# -*- coding: gbk -*-
 """
-Evaluate DST models on specified dataset
-Usage: python evaluate.py [MultiWOZ|CrossWOZ|MultiWOZ-zh|CrossWOZ-en] [TRADE|mdbt|sumbt] [val|test|human_val]
+Evaluate NLU models on specified dataset
+Usage: python evaluate.py [MultiWOZ|CrossWOZ] [TRADE|mdbt|sumbt|rule]
 """
+
+from convlab2.dst.sumbt.crosswoz_en.sumbt import crosswoz_en_slot_list
+from convlab2.dst.sumbt.multiwoz_zh.sumbt import multiwoz_zh_slot_list
 import random
 import numpy
 import torch
@@ -34,9 +37,6 @@ crosswoz_slot_list = [
     "酒店-酒店设施-室内游泳池", "酒店-酒店设施-早餐服务免费", "酒店-酒店设施-公共区域提供wifi", "酒店-酒店设施-室外游泳池"
 ]
 
-from convlab2.dst.sumbt.multiwoz_zh.sumbt import multiwoz_zh_slot_list
-from convlab2.dst.sumbt.crosswoz_en.sumbt import crosswoz_en_slot_list
-
 
 def format_history(context):
     history = []
@@ -50,6 +50,7 @@ def sentseg(sent):
     sent = ' '.join(sent.split())
     tmp = " ".join(jieba.cut(sent))
     return ' '.join(tmp.split())
+
 
 def reformat_state(state):
     if 'belief_state' in state:
@@ -73,10 +74,12 @@ def reformat_state(state):
                 else:
                     val = domain_data[slot]
                     if val is not None and val not in ['', 'not mentioned', '未提及', '未提到', '没有提到']:
-                        new_state.append(domain+'_book' + '-' + slot + '-' + val)
+                        new_state.append(domain+'_book' +
+                                         '-' + slot + '-' + val)
     # lower
     new_state = [item.lower() for item in new_state]
     return new_state
+
 
 def reformat_state_crosswoz(state):
     if 'belief_state' in state:
@@ -86,17 +89,20 @@ def reformat_state_crosswoz(state):
     for domain in state.keys():
         domain_data = state[domain]
         for slot in domain_data.keys():
-            if slot == 'selectedResults': continue
+            if slot == 'selectedResults':
+                continue
             val = domain_data[slot]
             if slot == 'Hotel Facilities' and val not in ['', 'none']:
                 for facility in val.split(','):
-                    new_state.append(domain + '-' + f'Hotel Facilities - {facility}' + 'yes')
+                    new_state.append(
+                        domain + '-' + f'Hotel Facilities - {facility}' + 'yes')
             else:
                 if val is not None and val not in ['', 'none']:
                     # print(domain, slot, val)
                     new_state.append(domain + '-' + slot + '-' + val)
 
     return new_state
+
 
 def compute_acc(gold, pred, slot_temp):
     # TODO: not mentioned in gold
@@ -116,6 +122,7 @@ def compute_acc(gold, pred, slot_temp):
     ACC = ACC / float(ACC_TOTAL)
     return ACC
 
+
 def compute_prf(gold, pred):
     TP, FP, FN = 0, 0, 0
     if len(gold) != 0:
@@ -130,13 +137,15 @@ def compute_prf(gold, pred):
                 FP += 1
         precision = TP / float(TP + FP) if (TP + FP) != 0 else 0
         recall = TP / float(TP + FN) if (TP + FN) != 0 else 0
-        F1 = 2 * precision * recall / float(precision + recall) if (precision + recall) != 0 else 0
+        F1 = 2 * precision * recall / \
+            float(precision + recall) if (precision + recall) != 0 else 0
     else:
         if len(pred) == 0:
             precision, recall, F1, count = 1, 1, 1, 1
         else:
             precision, recall, F1, count = 0, 0, 0, 1
     return F1, recall, precision, count
+
 
 def evaluate_metrics(all_prediction, from_which, slot_temp):
     total, turn_acc, joint_acc, F1_pred, F1_count = 0, 0, 0, 0, 0
@@ -148,11 +157,13 @@ def evaluate_metrics(all_prediction, from_which, slot_temp):
             total += 1
 
             # Compute prediction slot accuracy
-            temp_acc = compute_acc(set(cv["turn_belief"]), set(cv[from_which]), slot_temp)
+            temp_acc = compute_acc(
+                set(cv["turn_belief"]), set(cv[from_which]), slot_temp)
             turn_acc += temp_acc
 
             # Compute prediction joint F1 score
-            temp_f1, temp_r, temp_p, count = compute_prf(set(cv["turn_belief"]), set(cv[from_which]))
+            temp_f1, temp_r, temp_p, count = compute_prf(
+                set(cv["turn_belief"]), set(cv[from_which]))
             F1_pred += temp_f1
             F1_count += count
 
@@ -160,6 +171,7 @@ def evaluate_metrics(all_prediction, from_which, slot_temp):
     turn_acc_score = turn_acc / float(total) if total != 0 else 0
     F1_score = F1_pred / float(F1_count) if F1_count != 0 else 0
     return joint_acc_score, F1_score, turn_acc_score
+
 
 if __name__ == '__main__':
     seed = 2020
@@ -175,7 +187,7 @@ if __name__ == '__main__':
         print("\t val=[val|test|human_val]")
         sys.exit()
 
-    ## init phase
+    # init phase
     dataset_name = sys.argv[1]
     model_name = sys.argv[2]
     data_key = sys.argv[3]
@@ -200,10 +212,11 @@ if __name__ == '__main__':
             else:
                 raise Exception("Available models: TRADE/mdbt/sumbt")
 
-        ## load data
+        # load data
         from convlab2.util.dataloader.module_dataloader import AgentDSTDataloader
         from convlab2.util.dataloader.dataset_dataloader import MultiWOZDataloader
-        dataloader = AgentDSTDataloader(dataset_dataloader=MultiWOZDataloader(dataset_name.endswith('zh')))
+        dataloader = AgentDSTDataloader(
+            dataset_dataloader=MultiWOZDataloader(dataset_name.endswith('zh')))
         data = dataloader.load_data(data_key=data_key)[data_key]
         context, golden_truth = data['context'], data['belief_state']
         all_predictions = {}
@@ -238,8 +251,10 @@ if __name__ == '__main__':
         if len(curr_sess) > 0:
             all_predictions[session_count] = copy.deepcopy(curr_sess)
 
-        slot_list = multiwoz_zh_slot_list if dataset_name.endswith('zh') else multiwoz_slot_list
-        joint_acc_score_ptr, F1_score_ptr, turn_acc_score_ptr = evaluate_metrics(all_predictions, "pred_bs_ptr", slot_list)
+        slot_list = multiwoz_zh_slot_list if dataset_name.endswith(
+            'zh') else multiwoz_slot_list
+        joint_acc_score_ptr, F1_score_ptr, turn_acc_score_ptr = evaluate_metrics(
+            all_predictions, "pred_bs_ptr", slot_list)
         evaluation_metrics = {"Joint Acc": joint_acc_score_ptr, "Turn Acc": turn_acc_score_ptr,
                               "Joint F1": F1_score_ptr}
         print(evaluation_metrics)
@@ -268,7 +283,8 @@ if __name__ == '__main__':
         from convlab2.util.dataloader.module_dataloader import CrossWOZAgentDSTDataloader
         from convlab2.util.dataloader.dataset_dataloader import CrossWOZDataloader
 
-        dataloader = CrossWOZAgentDSTDataloader(dataset_dataloader=CrossWOZDataloader(en))
+        dataloader = CrossWOZAgentDSTDataloader(
+            dataset_dataloader=CrossWOZDataloader(en))
         data = dataloader.load_data(data_key=data_key)[data_key]
         context, golden_truth = data['context'], data['sys_state_init']
         all_predictions = {}
@@ -300,13 +316,15 @@ if __name__ == '__main__':
                 for domain in y.keys():
                     domain_data = y[domain]
                     for slot in domain_data.keys():
-                        if slot == 'selectedResults': continue
+                        if slot == 'selectedResults':
+                            continue
                         val = domain_data[slot]
                         if val is not None and val != '':
                             val = sentseg(val)
                             domain_data[slot] = val
             model.init_session()
-            model.state['history'] = format_history([item if en else sentseg(item) for item in context[i]])
+            model.state['history'] = format_history(
+                [item if en else sentseg(item) for item in context[i]])
             pred = model.update(x[-1] if len(x) > 0 else '')
             curr_sess[turn_count] = {
                 'turn_belief': reformat_state_crosswoz(y),

@@ -1,8 +1,5 @@
-FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends  software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
+FROM python:3.6-slim AS compile-image
+
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends python3.7 python3-pip build-essential libssl-dev libffi-dev python3.7-dev
 

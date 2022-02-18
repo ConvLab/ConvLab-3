@@ -43,7 +43,8 @@ class SCLSTM(NLG):
                  archive_file=DEFAULT_ARCHIVE_FILE, 
                  use_cuda=False,
                  is_user=False,
-                 model_file='https://convlab.blob.core.windows.net/convlab-2/nlg_sclstm_multiwoz.zip'):
+                 model_file='https://convlab.blob.core.windows.net/convlab-2/nlg_sclstm_multiwoz.zip',
+                 unk_suppress=False):
 
         if not os.path.isfile(archive_file):
             if not model_file:
@@ -74,6 +75,9 @@ class SCLSTM(NLG):
         self.model.eval()
         if use_cuda:
             self.model.cuda()
+        
+        if unk_suppress:
+            self.model.dec.unk_suppress = unk_suppress
 
     def generate_delex(self, meta):
         for k, v in meta.items():

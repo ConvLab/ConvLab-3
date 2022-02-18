@@ -16,6 +16,7 @@ class DecoderDeep(nn.Module):
 		self.n_layer = n_layer
 		self.dropout = dropout
 		self.USE_CUDA = use_cuda
+		self.unk_suppress = False
 
 		print('Using sclstm as decoder with module list!')
 		assert d_size != None
@@ -272,9 +273,16 @@ class DecoderDeep(nn.Module):
 						dis, cur_hid, cur_cell, cur_dt = self.rnn_step(last_word_dis, last_hid, last_cell, last_dt, gen=True)
 
 						dis = dis.squeeze(0) # (bs=1, output_size) => (output_size)
+
+						if self.unk_suppress:
+							unk_idx = dataset.word2index['UNK_token']
+							dis[unk_idx] = 0
+							#manually change the UNK_token probability to 0, topk takes the preceding one
+
 						dis = torch.log( F.softmax(dis, dim=0) )  #+ sum(beam['logProb'])) / math.pow(1+len(beam['logProb']), alpha)
 						logProb, vocab_idx = dis.data.topk(beam_size) # size: (beam_size)
 						# iter over candidate beams for each history
+
 						for cand_idx in range(beam_size):
 							cand_word = dataset.index2word[vocab_idx[cand_idx].item()]
 							cand_beam = {'history': [], 'logProb': [], 'lastStates': {}}

@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 import torch
 from torch import optim
+import random
 import numpy as np
 import logging
 import os
 import json
 from convlab2.policy.policy import Policy
 from convlab2.policy.rlmodule import MultiDiscretePolicy, Value
-from convlab2.util.train_util import init_logging_handler
-from convlab2.policy.vector.vector_multiwoz import MultiWozVector
-from convlab2.util.file_util import cached_path
-import zipfile
+from convlab2.util.custom_util import model_downloader
 import sys
 
-root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+root_dir = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.append(root_dir)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -21,11 +20,13 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class PPO(Policy):
 
-    def __init__(self, is_train=False, dataset='Multiwoz'):
+    def __init__(self, is_train=False, dataset='Multiwoz', seed=0, vectorizer=None):
 
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
             cfg = json.load(f)
-        self.save_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), cfg['save_dir'])
+        self.save_dir = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), cfg['save_dir'])
+        self.cfg = cfg
         self.save_per_epoch = cfg['save_per_epoch']
         self.update_round = cfg['update_round']
         self.optim_batchsz = cfg['batchsz']
@@ -33,21 +34,36 @@ class PPO(Policy):
         self.epsilon = cfg['epsilon']
         self.tau = cfg['tau']
         self.is_train = is_train
-        if is_train:
-            init_logging_handler(os.path.join(os.path.dirname(os.path.abspath(__file__)), cfg['log_dir']))
+        self.info_dict = {}
+        self.vector = vectorizer
+        assert self.vector is not None
+
+        logging.info('PPO seed ' + str(seed))
+        self.set_seed(seed)
 
         # construct policy and value network
         if dataset == 'Multiwoz':
-            voc_file = os.path.join(root_dir, 'data/multiwoz/sys_da_voc.txt')
-            voc_opp_file = os.path.join(root_dir, 'data/multiwoz/usr_da_voc.txt')
-            self.vector = MultiWozVector(voc_file, voc_opp_file)
-            self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'], self.vector.da_dim).to(device=DEVICE)
+            self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'],
+                                              self.vector.da_dim, seed).to(device=DEVICE)
+            logging.info(f"ACTION DIM OF PPO: {self.vector.da_dim}")
+            logging.info(f"STATE DIM OF PPO: {self.vector.state_dim}")
 
-        self.value = Value(self.vector.state_dim, cfg['hv_dim']).to(device=DEVICE)
+        self.value = Value(self.vector.state_dim,
+                           cfg['hv_dim']).to(device=DEVICE)
         if is_train:
-            self.policy_optim = optim.RMSprop(self.policy.parameters(), lr=cfg['policy_lr'])
-            self.value_optim = optim.Adam(self.value.parameters(), lr=cfg['value_lr'])
-        
+            self.policy_optim = optim.RMSprop(
+                self.policy.parameters(), lr=cfg['policy_lr'])
+            self.value_optim = optim.Adam(
+                self.value.parameters(), lr=cfg['value_lr'])
+
+    def set_seed(self, seed):
+        np.random.seed(seed)
+        torch.random.manual_seed(seed)
+        random.seed(seed)
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+
     def predict(self, state):
         """
         Predict an system action given state.
@@ -56,10 +72,27 @@ class PPO(Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-        s_vec = torch.Tensor(self.vector.state_vectorize(state))
-        a = self.policy.select_action(s_vec.to(device=DEVICE), False).cpu()
-        action = self.vector.action_devectorize(a.numpy())
+
+        s, action_mask = self.vector.state_vectorize(state)
+        s_vec = torch.Tensor(s)
+        mask_vec = torch.Tensor(action_mask)
+        a = self.policy.select_action(
+            s_vec.to(device=DEVICE), False, action_mask=mask_vec.to(device=DEVICE)).cpu()
+
+        a_counter = 0
+        while a.sum() == 0:
+            a_counter += 1
+            a = self.policy.select_action(
+                s_vec.to(device=DEVICE), True, action_mask=mask_vec.to(device=DEVICE)).cpu()
+            if a_counter == 5:
+                break
+        # print('True :')
+        # print(a)
+        action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
+        self.info_dict["action_used"] = action
+        # for key in state.keys():
+        #     print("Key : {} , Value : {}".format(key,state[key]))
         return action
 
     def init_session(self):
@@ -67,7 +100,7 @@ class PPO(Policy):
         Restore after one session
         """
         pass
-    
+
     def est_adv(self, r, v, mask):
         """
         we save a trajectory in continuous space and it reaches the ending of current trajectory when mask=0.
@@ -111,45 +144,47 @@ class PPO(Policy):
         A_sa = (A_sa - A_sa.mean()) / A_sa.std()
 
         return A_sa, v_target
-    
-    def update(self, epoch, batchsz, s, a, r, mask):
+
+    def update(self, epoch, batchsz, s, a, r, mask, action_mask, only_critic=False):
         # get estimated V(s) and PI_old(s, a)
         # actually, PI_old(s, a) can be saved when interacting with env, so as to save the time of one forward elapsed
         # v: [b, 1] => [b]
         v = self.value(s).squeeze(-1).detach()
-        log_pi_old_sa = self.policy.get_log_prob(s, a).detach()
-        
+        log_pi_old_sa = self.policy.get_log_prob(s, a, action_mask).detach()
+
         # estimate advantage and v_target according to GAE and Bellman Equation
         A_sa, v_target = self.est_adv(r, v, mask)
-        
+
         for i in range(self.update_round):
 
             # 1. shuffle current batch
             perm = torch.randperm(batchsz)
             # shuffle the variable for mutliple optimize
-            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf = v_target[perm], A_sa[perm], s[perm], a[perm], \
-                                                                           log_pi_old_sa[perm]
+            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf, action_mask_shuf = \
+                v_target[perm], A_sa[perm], s[perm], a[perm], log_pi_old_sa[perm], action_mask[perm]
 
             # 2. get mini-batch for optimizing
             optim_chunk_num = int(np.ceil(batchsz / self.optim_batchsz))
             # chunk the optim_batch for total batch
-            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf = torch.chunk(v_target_shuf, optim_chunk_num), \
-                                                                           torch.chunk(A_sa_shuf, optim_chunk_num), \
-                                                                           torch.chunk(s_shuf, optim_chunk_num), \
-                                                                           torch.chunk(a_shuf, optim_chunk_num), \
-                                                                           torch.chunk(log_pi_old_sa_shuf,
-                                                                                       optim_chunk_num)
+            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf, action_mask_shuf = torch.chunk(v_target_shuf, optim_chunk_num), \
+                torch.chunk(A_sa_shuf, optim_chunk_num), \
+                torch.chunk(s_shuf, optim_chunk_num), \
+                torch.chunk(a_shuf, optim_chunk_num), \
+                torch.chunk(log_pi_old_sa_shuf,
+                            optim_chunk_num), \
+                torch.chunk(action_mask_shuf, optim_chunk_num)
             # 3. iterate all mini-batch to optimize
             policy_loss, value_loss = 0., 0.
-            for v_target_b, A_sa_b, s_b, a_b, log_pi_old_sa_b in zip(v_target_shuf, A_sa_shuf, s_shuf, a_shuf,
-                                                                     log_pi_old_sa_shuf):
+            for v_target_b, A_sa_b, s_b, a_b, log_pi_old_sa_b, action_mask_b in zip(v_target_shuf, A_sa_shuf, s_shuf, a_shuf,
+                                                                                    log_pi_old_sa_shuf, action_mask_shuf):
+
                 # print('optim:', batchsz, v_target_b.size(), A_sa_b.size(), s_b.size(), a_b.size(), log_pi_old_sa_b.size())
                 # 1. update value network
                 self.value_optim.zero_grad()
                 v_b = self.value(s_b).squeeze(-1)
                 loss = (v_b - v_target_b).pow(2).mean()
                 value_loss += loss.item()
-                
+
                 # backprop
                 loss.backward()
                 # nn.utils.clip_grad_norm(self.value.parameters(), 4)
@@ -158,7 +193,8 @@ class PPO(Policy):
                 # 2. update policy network by clipping
                 self.policy_optim.zero_grad()
                 # [b, 1]
-                log_pi_sa = self.policy.get_log_prob(s_b, a_b)
+                log_pi_sa = self.policy.get_log_prob(s_b, a_b, action_mask_b)
+
                 # ratio = exp(log_Pi(a|s) - log_Pi_old(a|s)) = Pi(a|s) / Pi_old(a|s)
                 # we use log_pi for stability of numerical operation
                 # [b, 1] => [b]
@@ -169,7 +205,8 @@ class PPO(Policy):
                 # clamp in case of the inf ratio, which causes the gradient to be nan
                 ratio = torch.clamp(ratio, 0, 10)
                 surrogate1 = ratio * A_sa_b
-                surrogate2 = torch.clamp(ratio, 1 - self.epsilon, 1 + self.epsilon) * A_sa_b
+                surrogate2 = torch.clamp(
+                    ratio, 1 - self.epsilon, 1 + self.epsilon) * A_sa_b
                 # this is element-wise comparing.
                 # we add negative symbol to convert gradient ascent to gradient descent
                 surrogate = - torch.min(surrogate1, surrogate2).mean()
@@ -184,26 +221,30 @@ class PPO(Policy):
                 # gradient clipping, for stability
                 torch.nn.utils.clip_grad_norm(self.policy.parameters(), 10)
                 # self.lock.acquire() # retain lock to update weights
-                self.policy_optim.step()
+                if not only_critic:
+                    self.policy_optim.step()
+
                 # self.lock.release() # release lock
-            
+
             value_loss /= optim_chunk_num
             policy_loss /= optim_chunk_num
-            logging.debug('<<dialog policy ppo>> epoch {}, iteration {}, value, loss {}'.format(epoch, i, value_loss))
-            logging.debug('<<dialog policy ppo>> epoch {}, iteration {}, policy, loss {}'.format(epoch, i, policy_loss))
+            # print("valueloss " + str(value_loss))
+            # print("policyloss" + str(policy_loss))
+            # if (epoch + 1) % self.save_per_epoch == 0:
+            # self.save(self.save_dir, epoch)
 
-        if (epoch+1) % self.save_per_epoch == 0:
-            self.save(self.save_dir, epoch)
-    
-    def save(self, directory, epoch):
+    def save(self, directory, addition="", best_complete_rate=False, best_success_rate=False):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        torch.save(self.value.state_dict(), directory + '/' + str(epoch) + '_ppo.val.mdl')
-        torch.save(self.policy.state_dict(), directory + '/' + str(epoch) + '_ppo.pol.mdl')
+        torch.save(self.value.state_dict(), directory +
+                   f'/{addition}_ppo.val.mdl')
+        torch.save(self.policy.state_dict(), directory +
+                   f'/{addition}_ppo.pol.mdl')
 
-        logging.info('<<dialog policy>> epoch {}: saved network to mdl'.format(epoch))
-    
+        logging.info(f"Saved policy and critic.")
+
+    # Function to load model object weights from binary files
     def load(self, filename):
         value_mdl_candidates = [
             filename + '.val.mdl',
@@ -216,7 +257,7 @@ class PPO(Policy):
                 self.value.load_state_dict(torch.load(value_mdl, map_location=DEVICE))
                 logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(value_mdl))
                 break
-        
+
         policy_mdl_candidates = [
             filename + '.pol.mdl',
             filename + '_ppo.pol.mdl',
@@ -229,36 +270,45 @@ class PPO(Policy):
                 logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
                 break
 
-    def load_from_pretrained(self, archive_file, model_file, filename):
-        if not os.path.isfile(archive_file):
-            if not model_file:
-                raise Exception("No model for PPO Policy is specified!")
-            archive_file = cached_path(model_file)
-        model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'save')
-        if not os.path.exists(model_dir):
-            os.mkdir(model_dir)
-        if not os.path.exists(os.path.join(model_dir, 'best_ppo.pol.mdl')):
-            archive = zipfile.ZipFile(archive_file, 'r')
-            archive.extractall(model_dir)
+    # Load model from model_path(URL)
+    def load_from_pretrained(self, model_path=""):
 
-        policy_mdl = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename + '_ppo.pol.mdl')
-        if os.path.exists(policy_mdl):
-            self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
-            logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
+        model_path = model_path if model_path != "" else \
+            "https://zenodo.org/record/5783185/files/supervised_MLP.zip"
 
-        value_mdl = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename + '_ppo.val.mdl')
-        if os.path.exists(value_mdl):
-            self.value.load_state_dict(torch.load(value_mdl, map_location=DEVICE))
-            logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(value_mdl))
+        # Get download directory
+        download_path = os.path.dirname(os.path.abspath(__file__))
+        download_path = os.path.join(download_path, 'pretrained_models')
+        # Downloadable model path format http://.../ppo_model_name.zip
+        filename = model_path.split('/')[-1].replace('.zip', '')
+        filename = os.path.join(download_path, filename, 'save', 'supervised')
+        # Check if model file exists
+        exists = [os.path.exists(filename + '.pol.mdl'),
+                  os.path.exists(filename + '_ppo.pol.mdl'),
+                  os.path.exists(os.path.join(filename, 'best_ppo.pol.mdl'))]
+        exists = True in exists
+
+        if not exists:
+            if not os.path.exists(download_path):
+                os.mkdir(download_path)
+            model_downloader(download_path, model_path)
+
+        # Once downloaded use the load function to load from binaries
+        self.load(filename)
+
+    @staticmethod
+    def load_vectoriser(name):
+        if name == 'base':
+            from convlab2.policy.vector.vector_multiwoz import MultiWozVector
+            return MultiWozVector()
 
     @classmethod
     def from_pretrained(cls,
-                        archive_file="",
-                        model_file="https://convlab.blob.core.windows.net/convlab-2/ppo_policy_multiwoz.zip",
+                        model_file="",
                         is_train=False,
-                        dataset='Multiwoz'):
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
-            cfg = json.load(f)
-        model = cls(is_train=is_train, dataset=dataset)
-        model.load_from_pretrained(archive_file, model_file, cfg['load'])
+                        dataset='Multiwoz',
+                        vectoriser='base'):
+        vector = cls.load_vectoriser(vectoriser)
+        model = cls(is_train=is_train, dataset=dataset, vectorizer=vector)
+        model.load_from_pretrained(model_file)
         return model

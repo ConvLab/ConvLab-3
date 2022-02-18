@@ -6,7 +6,7 @@ from convlab2.nlu.jointBERT.multiwoz import BERTNLU
 # available DST models
 # from convlab2.dst.rule.multiwoz import RuleDST
 # from convlab2.dst.mdbt.multiwoz import MDBT
-from convlab2.dst.sumbt.multiwoz import SUMBT
+from convlab2.dst.setsumbt.multiwoz.Tracker import SUMBTTracker
 # from convlab2.dst.trade.multiwoz import TRADE
 # from convlab2.dst.comer.multiwoz import COMER
 # available Policy models
@@ -32,6 +32,7 @@ from pprint import pprint
 import random
 import numpy as np
 import torch
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
 
 def set_seed(r_seed):
@@ -40,12 +41,14 @@ def set_seed(r_seed):
     torch.manual_seed(r_seed)
 
 
-def test_end2end():
+def test_end2end(seed=20200202, n_dialogues=1000):
     # go to README.md of each model for more information
     # BERT nlu
     sys_nlu = None
     # simple rule DST
-    sys_dst = SUMBT()
+    sys_dst = SUMBTTracker(model_type='bert',
+                        model_path='/gpfs/project/niekerk/results/nbt/convlab_sumbt',
+                        nlu_path='/gpfs/project/niekerk/data/bert_multiwoz_all_context.zip')
     # rule policy
     sys_policy = RulePolicy()
     # template NLG
@@ -55,7 +58,7 @@ def test_end2end():
 
     # BERT nlu trained on sys utterance
     user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json',
-                       model_file='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip')
+                       model_file='/gpfs/project/niekerk/data/bert_multiwoz_sys_context.zip')
     # not use dst
     user_dst = None
     # rule policy
@@ -67,8 +70,15 @@ def test_end2end():
 
     analyzer = Analyzer(user_agent=user_agent, dataset='multiwoz')
 
-    set_seed(20200202)
-    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name='SUMBT-RulePolicy-TemplateNLG', total_dialog=1000)
+    set_seed(seed)
+    name=f'SUMBT-RulePolicy-TemplateNLG-Seed{seed}'
+    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=name, total_dialog=n_dialogues)
 
 if __name__ == '__main__':
-    test_end2end()
+    # Get arguments
+    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--seed', help='Seed', default=20200202, type=int)
+    parser.add_argument('--n_dialogues', help='Number of eval dialogues', default=1000, type=int)
+    args = parser.parse_args()
+
+    test_end2end(seed=args.seed, n_dialogues=args.n_dialogues)

@@ -59,7 +59,7 @@ class Attention(nn.Module):
             # (batch_size, 1, max_ctx_len, dec_cell_size)
             tiled_attn = mapped_attn.unsqueeze(1)
             # (batch_size, output_seq_len, max_ctx_len, dec_cell_size)
-            fc1 = F.tanh(tiled_output+tiled_attn)
+            fc1 = th.tanh(tiled_output+tiled_attn)
             # (batch_size, otuput_seq_len, max_ctx_len)
             attn = self.query_w(fc1).squeeze(-1)
         else:
@@ -78,7 +78,7 @@ class Attention(nn.Module):
         if self.linear_out is None:
             return combined, attn
         else:
-            output = F.tanh(
+            output = th.tanh(
                 self.linear_out(combined.view(-1, self.dec_cell_size+self.ctx_cell_size))).view(
                 batch_size, -1, self.dec_cell_size)  # (batch_size, output_seq_len, dec_cell_size)
             return output, attn

@@ -23,7 +23,7 @@ class MLE_Trainer_Abstract():
         self.multi_entropy_loss = nn.MultiLabelSoftMarginLoss()
         
     def policy_loop(self, data):
-        s, target_a = to_device(data)
+        s, target_a, m = to_device(data)
         a_weights = self.policy(s)
         
         loss_a = self.multi_entropy_loss(a_weights, target_a)
@@ -92,8 +92,8 @@ class MLE_Trainer_Abstract():
             return TP, FP, FN
     
         a_TP, a_FP, a_FN = 0, 0, 0
-        for i, data in enumerate(self.data_test):
-            s, target_a = to_device(data)
+        for i, data in enumerate(self.data_valid):
+            s, target_a, m = to_device(data)
             a_weights = self.policy(s)
             a = a_weights.ge(0)
             TP, FP, FN = f1(a, target_a)
@@ -104,7 +104,7 @@ class MLE_Trainer_Abstract():
         prec = a_TP / (a_TP + a_FP)
         rec = a_TP / (a_TP + a_FN)
         F1 = 2 * prec * rec / (prec + rec)
-        print(a_TP, a_FP, a_FN, F1)
+        print(prec, rec, F1)
 
     def save(self, directory, epoch):
         if not os.path.exists(directory):

@@ -202,6 +202,8 @@ class SUMBTTracker(DST):
 
     def update(self, user_act=None):
         """Update the dialogue state with the generated tokens from TRADE"""
+        if not user_act:
+            user_act = ""
         if not isinstance(user_act, str):
             raise Exception(
                 'Expected user_act is str but found {}'.format(type(user_act))
@@ -702,14 +704,18 @@ class SUMBTTracker(DST):
         ids = []
         lens = []
         context_len = len(context)
-        if context[0][0] != 'sys':
-            context = [['sys', '']] + context
+        if context[0][0] != 'usr':
+           context = [['usr', '']] + context
         for i in range(0, context_len, 2):
             # utt_user = ''
             # utt_sys = ''
             # for evaluation
             utt_sys = context[i][1]
-            utt_user = context[i + 1][1]
+            if context_len < 2:
+                utt_user = " "
+            else:
+                # print(context_len)
+                utt_user = context[i + 1][1]
 
             tokens_user = [x if x != '#' else '[SEP]' for x in self.tokenizer.tokenize(utt_user)]
             tokens_sys = [x if x != '#' else '[SEP]' for x in self.tokenizer.tokenize(utt_sys)]
@@ -810,4 +816,3 @@ parser.add_argument('--test', action='store_true')
 
 if __name__ == '__main__':
     test_update()
-

@@ -8,6 +8,7 @@ from tqdm import tqdm
 from collections import Counter
 from pprint import pprint
 from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
+from data.unified_datasets.multiwoz21.booking_remapper import BookingActRemapper
 
 ontology = {
     "domains": { # descriptions are adapted from multiwoz22, but is_categorical may be different
@@ -768,6 +769,7 @@ def preprocess():
     dialogues_by_split = {split:[] for split in splits}
     sent_tokenizer = PunktSentenceTokenizer()
     word_tokenizer = TreebankWordTokenizer()
+    booking_remapper = BookingActRemapper(init_ontology)
     for ori_dialog_id, ori_dialog in tqdm(original_data.items()):
         if ori_dialog_id in val_list:
             split = 'validation'
@@ -814,6 +816,7 @@ def preprocess():
             'turns': []
         }
 
+        booking_remapper.reset()
         for turn_id, turn in enumerate(ori_dialog['log']):
             # correct some grammar errors in the text, mainly following `tokenization.md` in MultiWOZ_2.1
             text = turn['text']
@@ -828,8 +831,12 @@ def preprocess():
             utt = text
             speaker = 'user' if turn_id % 2 == 0 else 'system'
 
-            das = turn.get('dialog_act', [])    
+            das = turn.get('dialog_act', [])
             spans = turn.get('span_info', [])
+
+            if speaker == 'system':
+                das, spans = booking_remapper.remap(turn_id, ori_dialog['log'])
+
             da_dict = {}
             # transform DA
             for Domain_Intent in das:

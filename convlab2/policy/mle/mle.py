@@ -23,8 +23,10 @@ class MLEAbstract(Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-        s_vec = torch.Tensor(self.vector.state_vectorize(state))
-        a = self.policy.select_action(s_vec.to(device=DEVICE), False).cpu()
+        s_vec, m = self.vector.state_vectorize(state)
+        s_vec = torch.Tensor(s_vec)
+        m = torch.from_numpy(m).to(DEVICE)
+        a = self.policy.select_action(s_vec.to(device=DEVICE), action_mask=m).cpu()
         action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
         return action
@@ -43,6 +45,7 @@ class MLEAbstract(Policy):
         model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'save')
         if not os.path.exists(model_dir):
             os.mkdir(model_dir)
+
         if not os.path.exists(os.path.join(model_dir, 'best_mle.pol.mdl')):
             archive = zipfile.ZipFile(archive_file, 'r')
             archive.extractall(model_dir)

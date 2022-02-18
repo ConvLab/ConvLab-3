@@ -14,7 +14,7 @@ class Evaluator(object):
         """
         raise NotImplementedError
 
-    def add_sys_da(self, da_turn):
+    def add_sys_da(self, da_turn, belief_state):
         """add sys_da into array.
 
         args:

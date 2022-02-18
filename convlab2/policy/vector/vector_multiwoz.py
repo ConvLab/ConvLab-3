@@ -1,90 +1,52 @@
 # -*- coding: utf-8 -*-
+import sys
 import os
-import json
 import numpy as np
-from convlab2.policy.vec import Vector
-from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da, deflat_da, lexicalize_da
+from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from convlab2.util.multiwoz.state import default_state
-from convlab2.util.multiwoz.dbquery import Database
+from .vector_base import MultiWozVectorBase
 
 DEFAULT_INTENT_FILEPATH = os.path.join(
-                            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
-                            'data/multiwoz/trackable_intent.json'
-                        )
+    os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))))),
+    'data/multiwoz/trackable_intent.json'
+)
 
-class MultiWozVector(Vector):
 
-    def __init__(self, voc_file, voc_opp_file, character='sys',
+SLOT_MAP = {'taxi_types': 'car type'}
+
+
+class MultiWozVector(MultiWozVectorBase):
+
+    def __init__(self, voc_file=None, voc_opp_file=None, character='sys',
                  intent_file=DEFAULT_INTENT_FILEPATH,
-                 composite_actions=False,
-                 vocab_size=500):
+                 use_masking=False,
+                 manually_add_entity_names=True,
+                 seed=0):
 
-        self.belief_domains = ['Attraction', 'Restaurant', 'Train', 'Hotel', 'Taxi', 'Hospital', 'Police']
-        self.db_domains = ['Attraction', 'Restaurant', 'Train', 'Hotel']
-        self.composite_actions = composite_actions
-        self.vocab_size = vocab_size
+        super().__init__(voc_file, voc_opp_file, intent_file, character, use_masking, manually_add_entity_names, seed)
 
-        with open(intent_file) as f:
-            intents = json.load(f)
-        self.informable = intents['informable']
-        self.requestable = intents['requestable']
-        self.db = Database()
-
-        with open(voc_file) as f:
-            self.da_voc = f.read().splitlines()
-        with open(voc_opp_file) as f:
-            self.da_voc_opp = f.read().splitlines()
-
-        if self.composite_actions:
-            self.load_composite_actions()
-        self.character = character
-        self.generate_dict()
-        self.cur_domain = None
-
-
-    def load_composite_actions(self):
-        """
-        load the composite actions to self.da_voc
-        """
-        composite_actions_filepath = os.path.join(
-                    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
-                    'data/multiwoz/da_slot_cnt.json')
-        with open(composite_actions_filepath, 'r') as f:
-            composite_actions_stats = json.load(f)
-            for action in composite_actions_stats:
-                if len(action.split(';')) > 1:
-                    # append only composite actions as single actions are already in self.da_voc
-                    self.da_voc.append(action)
-
-                if len(self.da_voc) == self.vocab_size:
-                    break
-
-    def generate_dict(self):
-        """
-        init the dict for mapping state/action into vector
-        """
-        self.act2vec = dict((a, i) for i, a in enumerate(self.da_voc))
-        self.vec2act = dict((v, k) for k, v in self.act2vec.items())
-        self.da_dim = len(self.da_voc)
-        self.opp2vec = dict((a, i) for i, a in enumerate(self.da_voc_opp))
-        self.da_opp_dim = len(self.da_voc_opp)
-
+    def get_state_dim(self):
         self.belief_state_dim = 0
         for domain in self.belief_domains:
             for slot, value in default_state()['belief_state'][domain.lower()]['semi'].items():
                 self.belief_state_dim += 1
 
+            self.belief_state_dim += len(default_state()['belief_state'][domain.lower()]['book']) - 1
+
         self.state_dim = self.da_opp_dim + self.da_dim + self.belief_state_dim + \
-                         len(self.db_domains) + 6 * len(self.db_domains) + 1
+            len(self.db_domains) + 6 * len(self.db_domains) + 1
 
-    def pointer(self, turn):
+    def pointer(self):
         pointer_vector = np.zeros(6 * len(self.db_domains))
+        number_entities_dict = {}
         for domain in self.db_domains:
-            constraint = turn[domain.lower()]['semi'].items()
-            entities = self.db.query(domain.lower(), constraint)
-            pointer_vector = self.one_hot_vector(len(entities), domain, pointer_vector)
+            entities = self.dbquery_domain(domain.lower())
+            number_entities_dict[domain] = len(entities)
+            pointer_vector = self.one_hot_vector(
+                len(entities), domain, pointer_vector)
 
-        return pointer_vector
+        return pointer_vector, number_entities_dict
 
     def one_hot_vector(self, num, domain, vector):
         """Return number of available entities for particular domain."""
@@ -132,22 +94,29 @@ class MultiWozVector(Vector):
                 Dialog state vector
         """
         self.state = state['belief_state']
+        self.confidence_scores = state['belief_state_probs'] if 'belief_state_probs' in state else None
+        domain_active_dict = {}
+        for domain in self.belief_domains:
+            domain_active_dict[domain] = False
 
         # when character is sys, to help query database when da is booking-book
         # update current domain according to user action
         if self.character == 'sys':
             action = state['user_action']
             for intent, domain, slot, value in action:
+                domain_active_dict[domain] = True
                 if domain in self.db_domains:
                     self.cur_domain = domain
 
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
         opp_action = flat_da(opp_action)
+
         opp_act_vec = np.zeros(self.da_opp_dim)
         for da in opp_action:
             if da in self.opp2vec:
-                opp_act_vec[self.opp2vec[da]] = 1.
+                prob = 1.0
+                opp_act_vec[self.opp2vec[da]] = prob
 
         action = state['system_action'] if self.character == 'sys' else state['user_action']
         action = delexicalize_da(action, self.requestable)
@@ -160,81 +129,51 @@ class MultiWozVector(Vector):
         belief_state = np.zeros(self.belief_state_dim)
         i = 0
         for domain in self.belief_domains:
+
             for slot, value in state['belief_state'][domain.lower()]['semi'].items():
-                if value:
+                if value and value != 'not mentioned':
                     belief_state[i] = 1.
                 i += 1
+            for slot, value in state['belief_state'][domain.lower()]['book'].items():
+                if slot == 'booked':
+                    continue
+                if value and value != "not mentioned":
+                    belief_state[i] = 1.
+
+            if 'active_domains' in state:
+                domain_active = state['active_domains'][domain.lower()]
+                domain_active_dict[domain] = domain_active
+                if domain in self.db_domains and domain_active:
+                    self.cur_domain = domain
+            else:
+                if [slot for slot, value in state['belief_state'][domain.lower()]['semi'].items() if value]:
+                    domain_active_dict[domain] = True
 
         book = np.zeros(len(self.db_domains))
         for i, domain in enumerate(self.db_domains):
             if state['belief_state'][domain.lower()]['book']['booked']:
                 book[i] = 1.
 
-        degree = self.pointer(state['belief_state'])
+        degree, number_entities_dict = self.pointer()
 
         final = 1. if state['terminated'] else 0.
 
-        state_vec = np.r_[opp_act_vec, last_act_vec, belief_state, book, degree, final]
+        state_vec = np.r_[opp_act_vec, last_act_vec,
+                          belief_state, book, degree, final]
         assert len(state_vec) == self.state_dim
-        return state_vec
 
+        if self.use_mask is not None:
+            # None covers the case for policies that don't use masking at all, so do not expect an output "state_vec, mask"
+            if self.use_mask:
+                domain_mask = self.compute_domain_mask(domain_active_dict)
+                entity_mask = self.compute_entity_mask(number_entities_dict)
+                general_mask = self.compute_general_mask()
+                mask = domain_mask + entity_mask + general_mask
+                for i in range(self.da_dim):
+                    mask[i] = -int(bool(mask[i])) * sys.maxsize
+            else:
+                mask = np.zeros(self.da_dim)
 
-    def dbquery_domain(self, domain):
-        """
-        query entities of specified domain
-        Args:
-            domain string:
-                domain to query
-        Returns:
-            entities list:
-                list of entities of the specified domain
-        """
-        constraint = self.state[domain.lower()]['semi'].items()
-        return self.db.query(domain.lower(), constraint)
-
-    def action_devectorize(self, action_vec):
-        """
-        recover an action
-        Args:
-            action_vec (np.array):
-                Dialog act vector
-        Returns:
-            action (tuple):
-                Dialog act
-        """
-        act_array = []
-
-        if self.composite_actions:
-            act_idx = np.argmax(action_vec)
-            act_array = self.vec2act[act_idx].split(';')
+            return state_vec, mask
         else:
-            for i, idx in enumerate(action_vec):
-                if idx == 1:
-                    act_array.append(self.vec2act[i])
-        action = deflat_da(act_array)
-        entities = {}
-        for domint in action:
-            domain, intent = domint.split('-')
-            if domain not in entities and domain.lower() not in ['general', 'booking']:
-                entities[domain] = self.dbquery_domain(domain)
-        if self.cur_domain and self.cur_domain not in entities:
-            entities[self.cur_domain] = self.dbquery_domain(self.cur_domain)
-        action = lexicalize_da(action, entities, self.state, self.requestable, self.cur_domain)
-        return action
-
-    def action_vectorize(self, action):
-        action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
-        act_vec = np.zeros(self.da_dim)
-
-        if self.composite_actions:
-            composite_action = ';'.join(action)
-            for act in self.act2vec:
-                if set(action) == set(act.split(';')):
-                    act_vec[self.act2vec[act]] = 1.
-                    break
-        else:
-            for da in action:
-                if da in self.act2vec:
-                    act_vec[self.act2vec[da]] = 1.
-        return act_vec
+            return state_vec
