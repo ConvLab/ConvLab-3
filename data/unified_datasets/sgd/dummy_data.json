@@ -22,8 +22,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -60,8 +59,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -328,8 +326,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             }
           ],
           "categorical": [],
@@ -389,8 +386,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "phone_number",
-              "value": ""
+              "slot": "phone_number"
             }
           ],
           "categorical": [],
@@ -450,8 +446,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -517,8 +512,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -690,14 +684,12 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             },
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -734,8 +726,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "time",
-              "value": ""
+              "slot": "time"
             }
           ],
           "categorical": [],
@@ -845,14 +836,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -891,8 +880,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -944,14 +932,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "serves_alcohol",
-              "value": ""
+              "slot": "serves_alcohol"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             }
           ],
           "categorical": [],
@@ -1019,14 +1005,12 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1063,8 +1047,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1098,8 +1081,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -1136,14 +1118,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "cuisine",
-              "value": ""
+              "slot": "cuisine"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -1289,14 +1269,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "price_range",
-              "value": ""
+              "slot": "price_range"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             }
           ],
           "categorical": [],
@@ -1364,8 +1342,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1431,8 +1408,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1546,8 +1522,7 @@
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1584,8 +1559,7 @@
             {
               "intent": "offer_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             }
           ],
           "categorical": [],
@@ -1603,8 +1577,7 @@
             {
               "intent": "affirm_intent",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1650,8 +1623,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "time",
-              "value": ""
+              "slot": "time"
             }
           ],
           "categorical": [],
@@ -1761,8 +1733,7 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -1843,8 +1814,7 @@
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1881,8 +1851,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -1927,14 +1896,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             }
           ],
           "categorical": [],
@@ -2002,8 +1969,7 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2040,8 +2006,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2059,14 +2024,12 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2103,8 +2066,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2138,8 +2100,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -2176,14 +2137,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "cuisine",
-              "value": ""
+              "slot": "cuisine"
             }
           ],
           "categorical": [],
@@ -2337,8 +2296,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             }
           ],
           "categorical": [],
@@ -2396,14 +2354,12 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             },
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2449,8 +2405,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "time",
-              "value": ""
+              "slot": "time"
             }
           ],
           "categorical": [],
@@ -2568,20 +2523,17 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "serves_alcohol",
-              "value": ""
+              "slot": "serves_alcohol"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "price_range",
-              "value": ""
+              "slot": "price_range"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2621,14 +2573,12 @@
             {
               "intent": "notify_failure",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2673,8 +2623,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             }
           ],
           "categorical": [],
@@ -2772,8 +2721,7 @@
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2810,8 +2758,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2856,14 +2803,12 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2900,8 +2845,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -2935,8 +2879,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -2973,14 +2916,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "cuisine",
-              "value": ""
+              "slot": "cuisine"
             }
           ],
           "categorical": [],
@@ -3134,8 +3075,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3201,8 +3141,7 @@
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3239,8 +3178,7 @@
             {
               "intent": "offer_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             }
           ],
           "categorical": [],
@@ -3258,8 +3196,7 @@
             {
               "intent": "affirm_intent",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -3364,20 +3301,17 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "price_range",
-              "value": ""
+              "slot": "price_range"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "phone_number",
-              "value": ""
+              "slot": "phone_number"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3417,8 +3351,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -3479,8 +3412,7 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3517,8 +3449,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3536,14 +3467,12 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3580,8 +3509,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -3615,8 +3543,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -3653,8 +3580,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -3875,8 +3801,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "phone_number",
-              "value": ""
+              "slot": "phone_number"
             }
           ],
           "categorical": [],
@@ -3936,8 +3861,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4003,8 +3927,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             }
           ],
           "categorical": [],
@@ -4062,8 +3985,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4129,14 +4051,12 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             },
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4242,20 +4162,17 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "serves_alcohol",
-              "value": ""
+              "slot": "serves_alcohol"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4295,8 +4212,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -4354,8 +4270,7 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4392,8 +4307,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4411,14 +4325,12 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4455,8 +4367,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4490,8 +4401,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -4537,8 +4447,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -4674,8 +4583,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4741,8 +4649,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             }
           ],
           "categorical": [
@@ -4817,14 +4724,12 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             },
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -4861,8 +4766,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "time",
-              "value": ""
+              "slot": "time"
             }
           ],
           "categorical": [],
@@ -4980,20 +4884,17 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "serves_alcohol",
-              "value": ""
+              "slot": "serves_alcohol"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "phone_number",
-              "value": ""
+              "slot": "phone_number"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5033,8 +4934,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -5095,14 +4995,12 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5139,8 +5037,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5174,8 +5071,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -5281,8 +5177,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -5480,8 +5375,7 @@
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5518,8 +5412,7 @@
             {
               "intent": "offer_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             }
           ],
           "categorical": [],
@@ -5537,8 +5430,7 @@
             {
               "intent": "affirm_intent",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5584,8 +5476,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "time",
-              "value": ""
+              "slot": "time"
             }
           ],
           "categorical": [],
@@ -5695,20 +5586,17 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5748,8 +5636,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -5810,8 +5697,7 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5848,8 +5734,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5867,14 +5752,12 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5911,8 +5794,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -5946,8 +5828,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -5984,8 +5865,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -6215,8 +6095,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6282,14 +6161,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "phone_number",
-              "value": ""
+              "slot": "phone_number"
             }
           ],
           "categorical": [],
@@ -6358,8 +6235,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6425,14 +6301,12 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             },
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6530,8 +6404,7 @@
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6568,8 +6441,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6614,8 +6486,7 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6652,8 +6523,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6671,14 +6541,12 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6715,8 +6583,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -6750,8 +6617,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [
@@ -6972,14 +6838,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             }
           ],
           "categorical": [],
@@ -7047,8 +6911,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7114,8 +6977,7 @@
             {
               "intent": "request_alts",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7181,8 +7043,7 @@
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7219,8 +7080,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7238,8 +7098,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             }
           ],
           "categorical": [],
@@ -7276,8 +7135,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "time",
-              "value": ""
+              "slot": "time"
             }
           ],
           "categorical": [],
@@ -7387,8 +7245,7 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -7469,8 +7326,7 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7544,8 +7400,7 @@
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7582,8 +7437,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7628,14 +7482,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "street_address",
-              "value": ""
+              "slot": "street_address"
             }
           ],
           "categorical": [],
@@ -7703,14 +7555,12 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7747,8 +7597,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -7782,8 +7631,7 @@
             {
               "intent": "inform_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "FindRestaurants"
+              "slot": "FindRestaurants"
             }
           ],
           "categorical": [],
@@ -7820,8 +7668,7 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "city",
-              "value": ""
+              "slot": "city"
             }
           ],
           "categorical": [],
@@ -7954,14 +7801,12 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "serves_alcohol",
-              "value": ""
+              "slot": "serves_alcohol"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "has_live_music",
-              "value": ""
+              "slot": "has_live_music"
             }
           ],
           "categorical": [],
@@ -8026,8 +7871,7 @@
             {
               "intent": "select",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8064,8 +7908,7 @@
             {
               "intent": "offer_intent",
               "domain": "Restaurants_1",
-              "slot": "intent",
-              "value": "ReserveRestaurant"
+              "slot": "ReserveRestaurant"
             }
           ],
           "categorical": [],
@@ -8083,8 +7926,7 @@
             {
               "intent": "affirm_intent",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -8189,20 +8031,17 @@
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "phone_number",
-              "value": ""
+              "slot": "phone_number"
             },
             {
               "intent": "request",
               "domain": "Restaurants_1",
-              "slot": "price_range",
-              "value": ""
+              "slot": "price_range"
             },
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8242,8 +8081,7 @@
             {
               "intent": "notify_failure",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [
@@ -8334,8 +8172,7 @@
             {
               "intent": "affirm",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8372,8 +8209,7 @@
             {
               "intent": "notify_success",
               "domain": "Restaurants_1",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8418,8 +8254,7 @@
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8456,8 +8291,7 @@
             {
               "intent": "req_more",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8475,14 +8309,12 @@
             {
               "intent": "negate",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "thank_you",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],
@@ -8519,8 +8351,7 @@
             {
               "intent": "goodbye",
               "domain": "",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ],
           "categorical": [],

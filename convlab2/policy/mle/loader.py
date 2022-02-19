@@ -16,10 +16,12 @@ class ActMLEPolicyDataLoader:
         
     def _build_data(self, root_dir, processed_dir):
         self.data = {}
+        print("Initialise DataLoader")
         data_loader = ActPolicyDataloader(dataset_dataloader=MultiWOZDataloader())
+        raw_data_all = data_loader.load_data(data_key='all', role='sys')
         for part in ['train', 'val', 'test']:
             self.data[part] = []
-            raw_data = data_loader.load_data(data_key=part, role='sys')[part]
+            raw_data = raw_data_all[part]
             
             for belief_state, context_dialog_act, terminated, dialog_act, goal in \
                 zip(raw_data['belief_state'], raw_data['context_dialog_act'], raw_data['terminated'],

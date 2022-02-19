@@ -57,7 +57,7 @@ class MultiWozVectorBase(Vector):
 
         if not voc_file or not voc_opp_file:
             voc_file = os.path.join(
-                root_dir, 'data/multiwoz/sys_da_voc.txt')
+                root_dir, 'data/multiwoz/sys_da_voc_remapped.txt')
             voc_opp_file = os.path.join(
                 root_dir, 'data/multiwoz/usr_da_voc.txt')
 

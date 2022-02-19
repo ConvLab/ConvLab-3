@@ -69,7 +69,8 @@ convlab2.egg-info
 
 # configs
 
-
+*experiment*
+*pretrained_models*
 .ipynb_checkpoints
 
 ## dst files

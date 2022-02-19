@@ -106,8 +106,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "area",
-              "value": ""
+              "slot": "area"
             }
           ]
         },
@@ -206,14 +205,12 @@
             {
               "intent": "inform",
               "domain": "booking",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "inform",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             }
           ]
         },
@@ -320,14 +317,12 @@
             {
               "intent": "request",
               "domain": "booking",
-              "slot": "book stay",
-              "value": ""
+              "slot": "book stay"
             },
             {
               "intent": "request",
               "domain": "booking",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -421,8 +416,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -451,8 +445,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -510,8 +503,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -565,8 +557,7 @@
             {
               "intent": "inform",
               "domain": "police",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -667,8 +658,7 @@
             {
               "intent": "request",
               "domain": "police",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             }
           ]
         },
@@ -761,8 +751,7 @@
             {
               "intent": "request",
               "domain": "police",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -838,8 +827,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -897,8 +885,7 @@
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -974,14 +961,12 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -1128,8 +1113,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "departure",
-              "value": ""
+              "slot": "departure"
             }
           ]
         },
@@ -1214,8 +1198,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -1590,8 +1573,7 @@
             {
               "intent": "request",
               "domain": "booking",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -1733,8 +1715,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -1792,8 +1773,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -1931,20 +1911,17 @@
             {
               "intent": "request",
               "domain": "police",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             },
             {
               "intent": "request",
               "domain": "police",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "police",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -2045,8 +2022,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2104,8 +2080,7 @@
             {
               "intent": "greet",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2181,8 +2156,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2312,14 +2286,12 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "price range",
-              "value": ""
+              "slot": "price range"
             },
             {
               "intent": "inform",
               "domain": "hotel",
-              "slot": "internet",
-              "value": ""
+              "slot": "internet"
             }
           ]
         },
@@ -2417,14 +2389,12 @@
             {
               "intent": "inform",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             },
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2534,8 +2504,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "price range",
-              "value": ""
+              "slot": "price range"
             }
           ]
         },
@@ -2628,14 +2597,12 @@
             {
               "intent": "inform",
               "domain": "booking",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "inform",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             }
           ]
         },
@@ -2666,8 +2633,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -2844,26 +2810,22 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "destination",
-              "value": ""
+              "slot": "destination"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "leave at",
-              "value": ""
+              "slot": "leave at"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "arrive by",
-              "value": ""
+              "slot": "arrive by"
             }
           ]
         },
@@ -2965,8 +2927,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -3106,8 +3067,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3165,8 +3125,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3306,8 +3265,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "destination",
-              "value": ""
+              "slot": "destination"
             }
           ]
         },
@@ -3409,8 +3367,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "departure",
-              "value": ""
+              "slot": "departure"
             }
           ]
         },
@@ -3510,8 +3467,7 @@
             {
               "intent": "offerbook",
               "domain": "train",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3560,20 +3516,17 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "arrive by",
-              "value": ""
+              "slot": "arrive by"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "duration",
-              "value": ""
+              "slot": "duration"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "price",
-              "value": ""
+              "slot": "price"
             }
           ]
         },
@@ -3764,8 +3717,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "price range",
-              "value": ""
+              "slot": "price range"
             }
           ]
         },
@@ -3873,14 +3825,12 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "internet",
-              "value": ""
+              "slot": "internet"
             },
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             }
           ]
         },
@@ -3956,8 +3906,7 @@
             {
               "intent": "inform",
               "domain": "booking",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3981,8 +3930,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "ref",
-              "value": ""
+              "slot": "ref"
             }
           ]
         },
@@ -4040,8 +3988,7 @@
             {
               "intent": "request",
               "domain": "booking",
-              "slot": "book stay",
-              "value": ""
+              "slot": "book stay"
             }
           ]
         },
@@ -4134,8 +4081,7 @@
             {
               "intent": "request",
               "domain": "booking",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -4235,8 +4181,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4265,8 +4210,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4324,8 +4268,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4392,8 +4335,7 @@
             {
               "intent": "inform",
               "domain": "attraction",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4460,14 +4402,12 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "area",
-              "value": ""
+              "slot": "area"
             },
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "type",
-              "value": ""
+              "slot": "type"
             }
           ]
         },
@@ -4592,8 +4532,7 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -4660,8 +4599,7 @@
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "food",
-              "value": ""
+              "slot": "food"
             }
           ]
         },
@@ -4762,14 +4700,12 @@
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "food",
-              "value": ""
+              "slot": "food"
             },
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "area",
-              "value": ""
+              "slot": "area"
             }
           ]
         },
@@ -4817,8 +4753,7 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "type",
-              "value": ""
+              "slot": "type"
             }
           ]
         },
@@ -4938,20 +4873,17 @@
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             },
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -5026,8 +4958,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5051,8 +4982,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5110,14 +5040,12 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5165,8 +5093,7 @@
             {
               "intent": "inform",
               "domain": "hospital",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5224,8 +5151,7 @@
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "department",
-              "value": ""
+              "slot": "department"
             }
           ]
         },
@@ -5249,8 +5175,7 @@
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -5335,8 +5260,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5394,8 +5318,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5551,8 +5474,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "leave at",
-              "value": ""
+              "slot": "leave at"
             }
           ]
         },
@@ -5687,14 +5609,12 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "arrive by",
-              "value": ""
+              "slot": "arrive by"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "price",
-              "value": ""
+              "slot": "price"
             }
           ]
         },
@@ -5777,8 +5697,7 @@
             {
               "intent": "offerbook",
               "domain": "train",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5919,8 +5838,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5962,20 +5880,17 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             },
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -6066,8 +5981,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6096,8 +6010,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6155,14 +6068,12 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6306,20 +6217,17 @@
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             },
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -6377,8 +6285,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },

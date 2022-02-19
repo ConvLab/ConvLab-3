@@ -1,7 +1,7 @@
 {
 	"model": {
-		"load_path": "convlab2/policy/mle/multiwoz/experiment_2021-12-15-11-12-07/save/supervised",
-		"use_pretrained_initialisation": true,
+		"load_path": "convlab2/policy/mle/multiwoz/experiment_2022-02-14-18-40-51/save/supervised",
+		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,
 		"seed": 0,

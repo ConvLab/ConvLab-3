@@ -8,8 +8,9 @@ from tqdm import tqdm
 from collections import Counter
 from pprint import pprint
 from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
+from data.unified_datasets.multiwoz21.booking_remapper import BookingActRemapper
 
-init_ontology = {
+ontology = {
     "domains": { # descriptions are adapted from multiwoz22, but is_categorical may be different
         "attraction": {
             "description": "find an attraction",
@@ -566,9 +567,9 @@ init_ontology = {
         }
     },
     "dialogue_acts": {
-        "categorical": set(),
-        "non-categorical": set(),
-        "binary": set()
+        "categorical": {},
+        "non-categorical": {},
+        "binary": {}
     }
 }
 
@@ -618,7 +619,7 @@ digit2word = {
 cnt_domain_slot = Counter()
 
 def normalize_domain_slot_value(domain, slot, value):
-    global init_ontology, slot_name_map
+    global ontology, slot_name_map
     domain = domain.lower()
     slot = slot.lower()
     value = value.strip()
@@ -626,16 +627,16 @@ def normalize_domain_slot_value(domain, slot, value):
         value = 'dontcare'
     if value in ['?', 'none', 'not mentioned']:
         value = ""
-    if domain not in init_ontology['domains']:
+    if domain not in ontology['domains']:
         raise Exception(f'{domain} not in ontology')
-    if slot not in init_ontology['domains'][domain]['slots']:
+    if slot not in ontology['domains'][domain]['slots']:
         if slot in slot_name_map:
             slot = slot_name_map[slot]
         elif slot in slot_name_map[domain]:
             slot = slot_name_map[domain][slot]
         else:
             raise Exception(f'{domain}-{slot} not in ontology')
-    assert slot=='' or slot in init_ontology['domains'][domain]['slots'], f'{(domain, slot, value)} not in ontology'
+    assert slot=='' or slot in ontology['domains'][domain]['slots'], f'{(domain, slot, value)} not in ontology'
     return domain, slot, value
 
 def convert_da(da_dict, utt, sent_tokenizer, word_tokenizer):
@@ -644,7 +645,7 @@ def convert_da(da_dict, utt, sent_tokenizer, word_tokenizer):
     :param da_dict: dict[(intent, domain, slot, value)] = [word_start, word_end]
     :param utt: user or system utt
     '''
-    global init_ontology, digit2word, cnt_domain_slot
+    global ontology, digit2word, cnt_domain_slot
 
     converted_da = {
         'categorical': [],
@@ -663,13 +664,13 @@ def convert_da(da_dict, utt, sent_tokenizer, word_tokenizer):
     for (intent, domain, slot, value), span in da_dict.items():
         if intent == 'request' or slot == '' or value == '':
             # binary dialog acts
+            assert value == ''
             converted_da['binary'].append({
                 'intent': intent,
                 'domain': domain,
-                'slot': slot,
-                'value': value
+                'slot': slot
             })
-        elif init_ontology['domains'][domain]['slots'][slot]['is_categorical']:
+        elif ontology['domains'][domain]['slots'][slot]['is_categorical']:
             # categorical dialog acts
             converted_da['categorical'].append({
                 'intent': intent,
@@ -759,7 +760,7 @@ def preprocess():
             copy2(f'{original_data_dir}/{filename}', new_data_dir)
     
     original_data = json.load(open(f'{original_data_dir}/data.json'))
-    global init_ontology, cnt_domain_slot
+    global ontology, cnt_domain_slot
 
     val_list = set(open(f'{original_data_dir}/valListFile.txt').read().split())
     test_list = set(open(f'{original_data_dir}/testListFile.txt').read().split())
@@ -768,6 +769,7 @@ def preprocess():
     dialogues_by_split = {split:[] for split in splits}
     sent_tokenizer = PunktSentenceTokenizer()
     word_tokenizer = TreebankWordTokenizer()
+    booking_remapper = BookingActRemapper(init_ontology)
     for ori_dialog_id, ori_dialog in tqdm(original_data.items()):
         if ori_dialog_id in val_list:
             split = 'validation'
@@ -785,7 +787,7 @@ def preprocess():
             'request': {}
         }
         for k, v in ori_dialog['goal'].items():
-            if len(v) != 0 and k in init_ontology['domains']:
+            if len(v) != 0 and k in ontology['domains']:
                 cur_domains.append(k)
                 goal['inform'][k] = {}
                 goal['request'][k] = {}
@@ -814,6 +816,7 @@ def preprocess():
             'turns': []
         }
 
+        booking_remapper.reset()
         for turn_id, turn in enumerate(ori_dialog['log']):
             # correct some grammar errors in the text, mainly following `tokenization.md` in MultiWOZ_2.1
             text = turn['text']
@@ -828,13 +831,17 @@ def preprocess():
             utt = text
             speaker = 'user' if turn_id % 2 == 0 else 'system'
 
-            das = turn.get('dialog_act', [])    
+            das = turn.get('dialog_act', [])
             spans = turn.get('span_info', [])
+
+            if speaker == 'system':
+                das, spans = booking_remapper.remap(turn_id, ori_dialog['log'])
+
             da_dict = {}
             # transform DA
             for Domain_Intent in das:
                 domain, intent = Domain_Intent.lower().split('-')
-                assert intent in init_ontology['intents'], f'{ori_dialog_id}:{turn_id}:da\t{intent} not in ontology'
+                assert intent in ontology['intents'], f'{ori_dialog_id}:{turn_id}:da\t{intent} not in ontology'
                 for Slot, value in das[Domain_Intent]:
                     domain, slot, value = normalize_domain_slot_value(domain, Slot, value)
                     if domain not in cur_domains:
@@ -862,17 +869,14 @@ def preprocess():
             for da_type in dialogue_acts:
                 das = dialogue_acts[da_type]
                 for da in das:
-                    intent, domain, slot, value = da['intent'], da['domain'], da['slot'], da['value']
-                    if da_type == 'binary':
-                        init_ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot, value))
-                    else:
-                        init_ontology["dialogue_acts"][da_type].add((speaker, intent, domain, slot))
+                    ontology["dialogue_acts"][da_type].setdefault((da['intent'], da['domain'], da['slot']), {})
+                    ontology["dialogue_acts"][da_type][(da['intent'], da['domain'], da['slot'])][speaker] = True
 
             if speaker == 'system':
                 # add state to last user turn
                 # add empty db_results
                 turn_state = turn['metadata']
-                cur_state = copy.deepcopy(init_ontology['state'])
+                cur_state = copy.deepcopy(ontology['state'])
                 booked = {}
                 for domain in turn_state:
                     if domain not in cur_state:
@@ -882,7 +886,7 @@ def preprocess():
                             if slot == 'ticket':
                                 continue
                             elif slot == 'booked':
-                                assert domain in init_ontology['domains']
+                                assert domain in ontology['domains']
                                 booked[domain] = value
                                 continue
                             _, slot, value = normalize_domain_slot_value(domain, slot, value)
@@ -895,20 +899,17 @@ def preprocess():
     dialogues = []
     for split in splits:
         dialogues += dialogues_by_split[split]
-    for da_type in init_ontology['dialogue_acts']:
-        if da_type == 'binary':
-            init_ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3],'value':da[4]}) for da in sorted(init_ontology["dialogue_acts"][da_type])]
-        else:
-            init_ontology["dialogue_acts"][da_type] = [str({'speaker': da[0], 'intent':da[1],'domain':da[2],'slot':da[3]}) for da in sorted(init_ontology["dialogue_acts"][da_type])]
+    for da_type in ontology['dialogue_acts']:
+        ontology["dialogue_acts"][da_type] = sorted([str({'user': speakers.get('user', False), 'system': speakers.get('system', False), 'intent':da[0],'domain':da[1], 'slot':da[2]}) for da, speakers in ontology["dialogue_acts"][da_type].items()])
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(init_ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
     rmtree(original_data_dir)
     rmtree(new_data_dir)
-    return dialogues, init_ontology
+    return dialogues, ontology
 
 if __name__ == '__main__':
     preprocess()

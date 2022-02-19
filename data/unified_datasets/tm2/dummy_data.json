@@ -1045,8 +1045,7 @@
             {
               "intent": "inform",
               "domain": "flights",
-              "slot": "flight_booked",
-              "value": ""
+              "slot": "flight_booked"
             }
           ],
           "categorical": [],
@@ -2162,8 +2161,7 @@
             {
               "intent": "inform",
               "domain": "flights",
-              "slot": "flight_booked",
-              "value": ""
+              "slot": "flight_booked"
             }
           ],
           "categorical": [],
@@ -2809,8 +2807,7 @@
             {
               "intent": "inform",
               "domain": "flights",
-              "slot": "flight_booked",
-              "value": ""
+              "slot": "flight_booked"
             }
           ],
           "categorical": [],
@@ -4708,8 +4705,7 @@
             {
               "intent": "inform",
               "domain": "flights",
-              "slot": "flight_booked",
-              "value": ""
+              "slot": "flight_booked"
             }
           ],
           "categorical": [],
