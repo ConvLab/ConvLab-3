@@ -6,7 +6,6 @@
     "original_id": "SNG01856.json",
     "domains": [
       "hotel",
-      "booking",
       "general"
     ],
     "goal": {
@@ -204,11 +203,6 @@
           "binary": [
             {
               "intent": "inform",
-              "domain": "booking",
-              "slot": ""
-            },
-            {
-              "intent": "inform",
               "domain": "hotel",
               "slot": "parking"
             }
@@ -307,8 +301,8 @@
           "categorical": [
             {
               "intent": "nobook",
-              "domain": "booking",
-              "slot": "day",
+              "domain": "hotel",
+              "slot": "book day",
               "value": "Tuesday"
             }
           ],
@@ -316,13 +310,13 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
+              "domain": "hotel",
               "slot": "book stay"
             },
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "day"
+              "domain": "hotel",
+              "slot": "book day"
             }
           ]
         },
@@ -404,8 +398,8 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "ref",
               "value": "7GAWK763",
               "start": 46,
@@ -416,6 +410,11 @@
             {
               "intent": "reqmore",
               "domain": "general",
+              "slot": ""
+            },
+            {
+              "intent": "book",
+              "domain": "hotel",
               "slot": ""
             }
           ]
@@ -989,7 +988,6 @@
     "domains": [
       "hotel",
       "train",
-      "booking",
       "general"
     ],
     "goal": {
@@ -1389,7 +1387,7 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "ref",
               "value": "A9NHSO9Y",
@@ -1397,7 +1395,13 @@
               "end": 69
             }
           ],
-          "binary": []
+          "binary": [
+            {
+              "intent": "book",
+              "domain": "train",
+              "slot": ""
+            }
+          ]
         },
         "db_results": {},
         "booked": {
@@ -1572,8 +1576,8 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "day"
+              "domain": "hotel",
+              "slot": "book day"
             }
           ]
         },
@@ -1675,15 +1679,21 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "ref",
               "value": "5NAWGJDC",
               "start": 46,
               "end": 54
             }
           ],
-          "binary": []
+          "binary": [
+            {
+              "intent": "book",
+              "domain": "hotel",
+              "slot": ""
+            }
+          ]
         },
         "db_results": {},
         "booked": {
@@ -2179,8 +2189,7 @@
     "domains": [
       "hotel",
       "train",
-      "general",
-      "booking"
+      "general"
     ],
     "goal": {
       "description": "You are looking for information in Cambridge. You are looking for a <span class='emphasis'>place to stay</span>. The hotel should be in the <span class='emphasis'>east</span> and <span class='emphasis'>doesn't need to include internet</span>. The hotel should <span class='emphasis'>include free parking</span> and should be in the type of <span class='emphasis'>guesthouse</span>. If there is no such hotel, how about one that has <span class='emphasis'>free wifi</span>. Make sure you get <span class='emphasis'>address</span>. You are also looking for a <span class='emphasis'>train</span>. The train should leave on <span class='emphasis'>wednesday</span> and should <span class='emphasis'>arrive by 11:30</span>. The train should go to <span class='emphasis'>cambridge</span> and should depart from <span class='emphasis'>ely</span>. Once you find the train you want to make a booking for <span class='emphasis'>8 people</span>. Make sure you get the <span class='emphasis'>reference number</span>",
@@ -2594,11 +2603,6 @@
             }
           ],
           "binary": [
-            {
-              "intent": "inform",
-              "domain": "booking",
-              "slot": ""
-            },
             {
               "intent": "inform",
               "domain": "hotel",
@@ -3024,7 +3028,7 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "ref",
               "value": "7ZCVR4Q3",
@@ -3032,7 +3036,7 @@
               "end": 106
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "price",
               "value": "35.2 GBP",
@@ -3040,7 +3044,13 @@
               "end": 49
             }
           ],
-          "binary": []
+          "binary": [
+            {
+              "intent": "book",
+              "domain": "train",
+              "slot": ""
+            }
+          ]
         },
         "db_results": {},
         "booked": {
@@ -3153,7 +3163,6 @@
     "domains": [
       "hotel",
       "train",
-      "booking",
       "general"
     ],
     "goal": {
@@ -3902,13 +3911,7 @@
         "dialogue_acts": {
           "categorical": [],
           "non-categorical": [],
-          "binary": [
-            {
-              "intent": "inform",
-              "domain": "booking",
-              "slot": ""
-            }
-          ]
+          "binary": []
         },
         "db_results": {},
         "booked": {
@@ -3987,7 +3990,7 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
+              "domain": "hotel",
               "slot": "book stay"
             }
           ]
@@ -4080,8 +4083,8 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "day"
+              "domain": "hotel",
+              "slot": "book day"
             }
           ]
         },
@@ -4161,16 +4164,16 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "ref",
               "value": "04CSEO7Q",
               "start": 132,
               "end": 140
             },
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "name",
               "value": "Acorn guest house",
               "start": 89,
@@ -4181,6 +4184,11 @@
             {
               "intent": "reqmore",
               "domain": "general",
+              "slot": ""
+            },
+            {
+              "intent": "book",
+              "domain": "hotel",
               "slot": ""
             }
           ]
@@ -5778,7 +5786,7 @@
         "dialogue_acts": {
           "categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "day",
               "value": "Wednesday"
@@ -5786,7 +5794,7 @@
           ],
           "non-categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "ref",
               "value": "xu1qlhvw",
@@ -5794,7 +5802,7 @@
               "end": 111
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "departure",
               "value": "Cambridge",
@@ -5802,7 +5810,7 @@
               "end": 51
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "book people",
               "value": "one",
@@ -5810,7 +5818,7 @@
               "end": 16
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "train id",
               "value": "TR1879",
@@ -5818,7 +5826,7 @@
               "end": 31
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "destination",
               "value": "Peterborough",
@@ -5826,7 +5834,7 @@
               "end": 68
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "leave at",
               "value": "13:06",
@@ -5838,6 +5846,11 @@
             {
               "intent": "reqmore",
               "domain": "general",
+              "slot": ""
+            },
+            {
+              "intent": "book",
+              "domain": "train",
               "slot": ""
             }
           ]

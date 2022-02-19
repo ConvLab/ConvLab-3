@@ -432,49 +432,6 @@ ontology = {
                 }
             }
         },
-        "booking": {
-            "description": "booking for taxi, restaurant, hotel, train, etc.",
-            "slots":{
-                "day": {
-                    "description": "day of the booking",
-                    "is_categorical": True,
-                    "possible_values": [
-                        "monday",
-                        "tuesday",
-                        "wednesday",
-                        "thursday",
-                        "friday",
-                        "saturday",
-                        "sunday"
-                    ]
-                },
-                "time": {
-                    "description": "time of the booking",
-                    "is_categorical": False,
-                    "possible_values": []
-                },
-                "book people": {
-                    "description": "number of people for the booking",
-                    "is_categorical": False,
-                    "possible_values": []
-                },
-                "book stay": {
-                    "description": "length of stay at the hotel",
-                    "is_categorical": False,
-                    "possible_values": []
-                },
-                "name": {
-                    "description": "name of the booked entity",
-                    "is_categorical": False,
-                    "possible_values": []
-                },
-                "ref": {
-                    "description": "reference number of the booking",
-                    "is_categorical": False,
-                    "possible_values": []
-                }
-            }
-        },
         "general":{
             "description": "general domain without slots",
             "slots": {}
@@ -769,7 +726,7 @@ def preprocess():
     dialogues_by_split = {split:[] for split in splits}
     sent_tokenizer = PunktSentenceTokenizer()
     word_tokenizer = TreebankWordTokenizer()
-    booking_remapper = BookingActRemapper(init_ontology)
+    booking_remapper = BookingActRemapper(ontology)
     for ori_dialog_id, ori_dialog in tqdm(original_data.items()):
         if ori_dialog_id in val_list:
             split = 'validation'

@@ -19,6 +19,7 @@ MultiWOZ 2.1 fixed the noise in state annotations and dialogue utterances. It al
   - Correct some non-categorical slots' values and provide character level span annotation.
   - Concatenate multiple values in user goal & state using `|`.
   - Add `booked` information in system turns from original belief states.
+  - Remove `Booking` domain and remap all booking relevant dialog acts to unify the annotation of booking action in different domains, see `booking_remapper.py`.
 - **Annotations:**
   - user goal, dialogue acts, state.
 
@@ -34,14 +35,14 @@ English
 
 | split      |   dialogues |   utterances |   avg_utt |   avg_tokens |   avg_domains |   cat slot match(state) |   cat slot match(goal) |   cat slot match(dialogue act) |   non-cat slot span(dialogue act) |
 |------------|-------------|--------------|-----------|--------------|---------------|-------------------------|------------------------|--------------------------------|-----------------------------------|
-| train      |        8438 |       113556 |     13.46 |        13.23 |          3.39 |                   98.84 |                  99.48 |                          86.39 |                             98.22 |
-| validation |        1000 |        14748 |     14.75 |        13.5  |          3.64 |                   98.84 |                  99.46 |                          86.59 |                             98.17 |
-| test       |        1000 |        14744 |     14.74 |        13.5  |          3.59 |                   99.21 |                  99.32 |                          85.83 |                             98.58 |
-| all        |       10438 |       143048 |     13.7  |        13.28 |          3.44 |                   98.88 |                  99.47 |                          86.36 |                             98.25 |
+| train      |        8438 |       113556 |     13.46 |        13.23 |          2.8  |                   98.84 |                  99.48 |                          86.39 |                             98.22 |
+| validation |        1000 |        14748 |     14.75 |        13.5  |          2.98 |                   98.84 |                  99.46 |                          86.59 |                             98.17 |
+| test       |        1000 |        14744 |     14.74 |        13.5  |          2.93 |                   99.21 |                  99.32 |                          85.83 |                             98.58 |
+| all        |       10438 |       143048 |     13.7  |        13.28 |          2.83 |                   98.88 |                  99.47 |                          86.35 |                             98.25 |
 
-9 domains: ['attraction', 'hotel', 'taxi', 'restaurant', 'train', 'police', 'hospital', 'booking', 'general']
-- **cat slot match**: how many values of categorical slots are in the possible values of ontology.
-- **non-cat slot span**: how many values of non-categorical slots have span annotation.
+8 domains: ['attraction', 'hotel', 'taxi', 'restaurant', 'train', 'police', 'hospital', 'general']
+- **cat slot match**: how many values of categorical slots are in the possible values of ontology in percentage.
+- **non-cat slot span**: how many values of non-categorical slots have span annotation in percentage.
 
 ### Citation
 
