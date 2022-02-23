@@ -15,7 +15,7 @@ def merge(dataset_name, speaker, save_dir, context_window_size, predict_result):
     predict_result = json.load(open(predict_result))
 
     for sample, prediction in zip(data, predict_result):
-        sample['dialogue_acts_prediction'] = prediction['predict']
+        sample['predictions'] = {'dialogue_acts': prediction['predict']}
 
     json.dump(data, open(os.path.join(save_dir, 'predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
 
