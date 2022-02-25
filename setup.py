@@ -46,7 +46,6 @@ setup(
         'datasets>=1.8',
         'seqeval',
         'spacy',
-        'allennlp',
         'simplejson',
         'unidecode',
         'jieba',

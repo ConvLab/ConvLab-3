@@ -9,7 +9,7 @@ from allennlp.training.metrics.metric import Metric
 class DialogActItemF1Measure(Metric):
     """
     """
-    def __init__(self) -> None:
+    def __init__(self, use_unified_datasets) -> None:
         """
         Parameters
         ----------
@@ -18,6 +18,7 @@ class DialogActItemF1Measure(Metric):
         self._true_positives = 0 
         self._false_positives = 0 
         self._false_negatives = 0 
+        self.use_unified_datasets = use_unified_datasets
 
 
     def __call__(self,
@@ -32,17 +33,36 @@ class DialogActItemF1Measure(Metric):
             A tensor of integer class label of shape (batch_size, sequence_length). It must be the same
             shape as the ``predictions`` tensor without the ``num_classes`` dimension.
         """
-        for prediction, gold_label in zip(predictions, gold_labels): 
-            for dat in prediction:
-                for sv in prediction[dat]:
-                    if dat not in gold_label or sv not in gold_label[dat]:
-                        self._false_positives += 1
+        if self.use_unified_datasets:
+            for prediction, gold_label in zip(predictions, gold_labels): 
+                for da_type in ['non-categorical', 'categorical', 'binary']:
+                    if da_type == 'binary':
+                        predicts = [(x['intent'], x['domain'], x['slot']) for x in prediction[da_type]]
+                        labels = [(x['intent'], x['domain'], x['slot']) for x in gold_label[da_type]]
                     else:
-                        self._true_positives += 1
-            for dat in gold_label:
-                for sv in gold_label[dat]:
-                    if dat not in prediction or sv not in prediction[dat]:
-                        self._false_negatives += 1
+                        predicts = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in prediction[da_type]]
+                        labels = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in gold_label[da_type]]
+                    
+                    for ele in predicts:
+                        if ele in labels:
+                            self._true_positives += 1
+                        else:
+                            self._false_positives += 1
+                    for ele in labels:
+                        if ele not in predicts:
+                            self._false_negatives += 1
+        else:
+            for prediction, gold_label in zip(predictions, gold_labels): 
+                for dat in prediction:
+                    for sv in prediction[dat]:
+                        if dat not in gold_label or sv not in gold_label[dat]:
+                            self._false_positives += 1
+                        else:
+                            self._true_positives += 1
+                for dat in gold_label:
+                    for sv in gold_label[dat]:
+                        if dat not in prediction or sv not in prediction[dat]:
+                            self._false_negatives += 1
 
 
     def get_metric(self, reset: bool = False):
