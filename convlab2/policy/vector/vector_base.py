@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import json
 import numpy as np
 import copy
 import logging
+from copy import deepcopy
 from convlab2.policy.vec import Vector
+from convlab2.util.custom_util import flatten_acts
 from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da, deflat_da, lexicalize_da
-from convlab2.util.multiwoz.state import default_state
-from convlab2.util.multiwoz.dbquery import Database
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
+
+from convlab2.util import load_ontology, load_database, load_dataset
 
 DEFAULT_INTENT_FILEPATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(
@@ -24,52 +25,141 @@ sys.path.append(root_dir)
 
 SLOT_MAP = {'taxi_types': 'car type'}
 
+#TODO: The masks depend on multiwoz, deal with that somehow, shall we build a Mask class?
+#TODO: Check the masks with new action strings
+#TODO: Where should i save the action dicts?
+#TODO: Load actions from ontology properly
+#TODO: method AddName is properly not working right anymore
 
-class MultiWozVectorBase(Vector):
 
-    def __init__(self, voc_file=None, voc_opp_file=None,
-                 intent_file=DEFAULT_INTENT_FILEPATH, character='sys',
-                 use_masking=False,
-                 manually_add_entity_names=True,
+class VectorBase(Vector):
+
+    def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
                  seed=0):
 
         super().__init__()
 
         self.set_seed(seed)
-        self.belief_domains = ['Attraction', 'Restaurant',
-                               'Train', 'Hotel', 'Taxi', 'Hospital', 'Police']
-        self.db_domains = ['Attraction', 'Restaurant', 'Train', 'Hotel']
+        self.ontology = load_ontology(dataset_name)
+        try:
+            self.db = load_database(dataset_name)
+            self.db_domains = self.db.domains
+        except:
+            self.db = None
+            self.db_domains = None
+            print("VectorBase: Can not load a database, path is probably not existing.")
+
+        self.dataset_name = dataset_name
         self.max_actionval = {}
-
-        with open(intent_file) as f:
-            intents = json.load(f)
-        self.informable = intents['informable']
-        self.requestable = intents['requestable']
-        self.db = Database()
-
         self.use_mask = use_masking
         self.use_add_name = manually_add_entity_names
         self.reqinfo_filler_action = None
         self.character = character
-
         self.name_history_flag = True
         self.name_action_prev = []
-
-        if not voc_file or not voc_opp_file:
-            voc_file = os.path.join(
-                root_dir, 'data/multiwoz/sys_da_voc_remapped.txt')
-            voc_opp_file = os.path.join(
-                root_dir, 'data/multiwoz/usr_da_voc.txt')
-
-        with open(voc_file) as f:
-            self.da_voc = f.read().splitlines()
-        with open(voc_opp_file) as f:
-            self.da_voc_opp = f.read().splitlines()
-
-        self.generate_dict()
         self.cur_domain = None
+        self.requestable = ['request']
+        self.informable = ['inform', 'recommend']
+
+        self.load_attributes()
         self.get_state_dim()
-        self.state = default_state()
+        print(f"State dimension: {self.state_dim}")
+
+    def load_attributes(self):
+
+        self.domains = list(self.ontology['domains'].keys())
+        self.domains.sort()
+
+        self.state = self.ontology['state']
+        self.belief_domains = list(self.state.keys())
+        self.belief_domains.sort()
+
+        self.load_action_dicts()
+
+    def load_action_dicts(self):
+
+        self.load_actions_from_data()
+        self.generate_dict()
+
+    def load_actions_from_data(self, frequency_threshold=50):
+
+        data_split = load_dataset(self.dataset_name)
+        system_dict = {}
+        user_dict = {}
+        for key in data_split:
+            data = data_split[key]
+            for dialogue in data:
+                for turn in dialogue['turns']:
+                    dialogue_acts = turn['dialogue_acts']
+                    act_list = flatten_acts(dialogue_acts)
+                    delex_acts = delexicalize_da(act_list, self.requestable)
+
+                    if turn['speaker'] == 'system':
+                        for act in delex_acts:
+                            act = "-".join(act)
+                            if act not in system_dict:
+                                system_dict[act] = 1
+                            else:
+                                system_dict[act] += 1
+                    else:
+                        for act in delex_acts:
+                            act = "-".join(act)
+                            if act not in user_dict:
+                                user_dict[act] = 1
+                            else:
+                                user_dict[act] += 1
+
+        for key in deepcopy(system_dict):
+            if system_dict[key] < frequency_threshold:
+                del system_dict[key]
+
+        for key in deepcopy(user_dict):
+            if user_dict[key] < frequency_threshold:
+                del user_dict[key]
+
+        with open("sys_da_voc.txt", "w") as f:
+            system_acts = list(system_dict.keys())
+            system_acts.sort()
+            for act in system_acts:
+                f.write(act + "\n")
+        with open("user_da_voc.txt", "w") as f:
+            user_acts = list(user_dict.keys())
+            user_acts.sort()
+            for act in user_acts:
+                f.write(act + "\n")
+        print("Saved new action dict.")
+
+        self.da_voc = system_acts
+        self.da_voc_opp = user_acts
+
+    def load_actions_from_ontology(self):
+
+        self.da_voc = []
+        self.da_voc_opp = []
+        for act_type in self.ontology['dialogue_acts']:
+            for act in self.ontology['dialogue_acts'][act_type]:
+                system = act['system']
+                user = act['user']
+                if system:
+                    system_acts_with_value = self.add_values_to_act(act['domain'], act['intent'], act['slot'], True)
+                    self.da_voc.extend(system_acts_with_value)
+
+                if user:
+                    user_acts_with_value = self.add_values_to_act(act['domain'], act['intent'], act['slot'], False)
+                    self.da_voc_opp.extend(user_acts_with_value)
+
+    def generate_dict(self):
+        """
+        init the dict for mapping state/action into vector
+        """
+        self.act2vec = dict((a, i) for i, a in enumerate(self.da_voc))
+        self.vec2act = dict((v, k) for k, v in self.act2vec.items())
+        self.da_dim = len(self.da_voc)
+        self.opp2vec = dict((a, i) for i, a in enumerate(self.da_voc_opp))
+        self.da_opp_dim = len(self.da_voc_opp)
+
+        print(f"Dimension of system actions: {self.da_dim}")
+        print(f"Dimension of user actions: {self.da_opp_dim}")
 
     def get_state_dim(self):
         '''
@@ -90,29 +180,36 @@ class MultiWozVectorBase(Vector):
         """
         raise NotImplementedError
 
+    def add_values_to_act(self, domain, intent, slot, system):
+        '''
+        The ontology does not contain information about the value of an act. This method will add the value and
+        is based on how it is created in MultiWOZ. This might need to be changed for other datasets such as SGD.
+        '''
+
+        if intent == 'request':
+            return [f"{domain}-{intent}-{slot}-?"]
+
+        if slot == '':
+            return [f"{domain}-{intent}-none-none"]
+
+        if system:
+            if intent in ['recommend', 'select', 'inform']:
+                return [f"{domain}-{intent}-{slot}-{i}" for i in range(1, 4)]
+            else:
+                return [f"{domain}-{intent}-{slot}-1"]
+        else:
+            return [f"{domain}-{intent}-{slot}-1"]
+
+    def init_domain_active_dict(self):
+        domain_active_dict = {}
+        for domain in self.domains:
+            if domain == 'general':
+                continue
+            domain_active_dict[domain] = False
+        return domain_active_dict
+
     def set_seed(self, seed):
         np.random.seed(seed)
-
-    def generate_dict(self):
-        """
-        init the dict for mapping state/action into vector
-        """
-        self.act2vec = dict((a, i) for i, a in enumerate(self.da_voc))
-        self.vec2act = dict((v, k) for k, v in self.act2vec.items())
-        self.da_dim = len(self.da_voc)
-        self.opp2vec = dict((a, i) for i, a in enumerate(self.da_voc_opp))
-        self.da_opp_dim = len(self.da_voc_opp)
-
-    def retrieve_user_action(self, state):
-
-        action = state['user_action']
-        opp_action = delexicalize_da(action, self.requestable)
-        opp_action = flat_da(opp_action)
-        opp_act_vec = np.zeros(self.da_opp_dim)
-        for da in opp_action:
-            if da in self.opp2vec:
-                opp_act_vec[self.opp2vec[da]] = 1.
-        return opp_act_vec
 
     def compute_domain_mask(self, domain_active_dict):
 
@@ -192,16 +289,14 @@ class MultiWozVectorBase(Vector):
             entities list:
                 list of entities of the specified domain
         """
-        constraint = self.state[domain.lower()]['semi']
-        constraint = {k: i for k, i in constraint.items() if i and i not in [
-            'dontcare', "do n't care", "do not care"]}
-
-        return self.db.query(domain.lower(), constraint.items())
-
-    # Function used to find which user constraint results in no entities being found
+        constraints = [[slot, value] for slot, value in self.state[domain].items() if value] \
+            if domain in self.state else []
+        return self.db.query(domain.lower(), constraints, topk=10)
 
     def find_nooffer_slot(self, domain):
         """
+        Function used to find which user constraint results in no entities being found
+
         query entities of specified domain
         Args:
             domain string:
@@ -371,3 +466,52 @@ class MultiWozVectorBase(Vector):
             self.name_action_prev = copy.deepcopy(name_inform)
 
         return action
+
+    def pointer(self):
+        pointer_vector = np.zeros(6 * len(self.db_domains))
+        number_entities_dict = {}
+        for domain in self.db_domains:
+            entities = self.dbquery_domain(domain.lower())
+            number_entities_dict[domain] = len(entities)
+            pointer_vector = self.one_hot_vector(
+                len(entities), domain, pointer_vector)
+
+        return pointer_vector, number_entities_dict
+
+    def one_hot_vector(self, num, domain, vector):
+        """Return number of available entities for particular domain."""
+        if domain != 'train':
+            idx = self.db_domains.index(domain)
+            if num == 0:
+                vector[idx * 6: idx * 6 + 6] = np.array([1, 0, 0, 0, 0, 0])
+            elif num == 1:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 1, 0, 0, 0, 0])
+            elif num == 2:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 1, 0, 0, 0])
+            elif num == 3:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 0, 1, 0, 0])
+            elif num == 4:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 0, 0, 1, 0])
+            elif num >= 5:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 0, 0, 0, 1])
+        else:
+            idx = self.db_domains.index(domain)
+            if num == 0:
+                vector[idx * 6: idx * 6 + 6] = np.array([1, 0, 0, 0, 0, 0])
+            elif num <= 2:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 1, 0, 0, 0, 0])
+            elif num <= 5:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 1, 0, 0, 0])
+            elif num <= 10:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 0, 1, 0, 0])
+            elif num <= 40:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 0, 0, 1, 0])
+            elif num > 40:
+                vector[idx * 6: idx * 6 + 6] = np.array([0, 0, 0, 0, 0, 1])
+
+        return vector
+
+
+if __name__ == '__main__':
+    vector = VectorBase()
+

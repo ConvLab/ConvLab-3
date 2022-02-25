@@ -299,7 +299,7 @@ class PPO(Policy):
     @staticmethod
     def load_vectoriser(name):
         if name == 'base':
-            from convlab2.policy.vector.vector_multiwoz import MultiWozVector
+            from convlab2.policy.vector.vector_binary import MultiWozVector
             return MultiWozVector()
 
     @classmethod

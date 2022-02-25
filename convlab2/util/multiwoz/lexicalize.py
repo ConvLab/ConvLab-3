@@ -6,6 +6,8 @@ def delexicalize_da(da, requestable):
     delexicalized_da = []
     counter = {}
     for intent, domain, slot, value in da:
+        if slot == "":
+            slot = 'none'
         if intent in requestable:
             v = '?'
         else:

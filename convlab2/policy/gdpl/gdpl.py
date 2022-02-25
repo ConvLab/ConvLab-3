@@ -8,7 +8,7 @@ import json
 from convlab2.policy.policy import Policy
 from convlab2.policy.rlmodule import MultiDiscretePolicy, Value
 from convlab2.util.train_util import init_logging_handler
-from convlab2.policy.vector.vector_multiwoz import MultiWozVector
+from convlab2.policy.vector.vector_binary import VectorBinary
 from convlab2.util.file_util import cached_path
 import zipfile
 import sys
@@ -38,9 +38,7 @@ class GDPL(Policy):
 
         # construct policy and value network
         if dataset == 'Multiwoz':
-            voc_file = os.path.join(root_dir, 'data/multiwoz/sys_da_voc.txt')
-            voc_opp_file = os.path.join(root_dir, 'data/multiwoz/usr_da_voc.txt')
-            self.vector = MultiWozVector(voc_file, voc_opp_file)
+            self.vector = VectorBinary()
             self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'], self.vector.da_dim).to(device=DEVICE)
 
         self.value = Value(self.vector.state_dim, cfg['hv_dim']).to(device=DEVICE)

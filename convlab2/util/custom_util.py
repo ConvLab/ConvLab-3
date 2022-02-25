@@ -54,6 +54,14 @@ def move_finished_training(dir_in, dir_to):
     logging.info("Moved results to finished experiments folder.")
 
 
+def flatten_acts(dialogue_acts):
+    act_list = []
+    for act_type in dialogue_acts:
+        for act in dialogue_acts[act_type]:
+            act_list.append([act['intent'], act['domain'], act['slot'], act.get('value', "")])
+    return act_list
+
+
 def load_config_file(filepath: str = None) -> dict:
     """
     load config setting from json file
@@ -91,7 +99,7 @@ def set_seed(seed):
 
 def init_logging(root_dir, mode):
     current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-    dir_path = os.path.join(root_dir, f'experiment_{current_time}')
+    dir_path = os.path.join(root_dir, f'experiments/experiment_{current_time}')
     # init_logging_nunu(dir_path)
     _, log_save_path = init_logging_nunu(dir_path, mode)
     save_path = os.path.join(dir_path, 'save')

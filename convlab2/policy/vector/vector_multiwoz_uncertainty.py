@@ -6,7 +6,7 @@ import logging
 from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from convlab2.util.multiwoz.state import default_state
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
-from .vector_multiwoz import MultiWozVector as MultiWozVectorBase
+from .vector_binary import VectorBinary as VectorBase
 
 DEFAULT_INTENT_FILEPATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(
@@ -18,7 +18,7 @@ DEFAULT_INTENT_FILEPATH = os.path.join(
 SLOT_MAP = {'taxi_types': 'car type'}
 
 
-class MultiWozVector(MultiWozVectorBase):
+class MultiWozVector(VectorBase):
 
     def __init__(self, voc_file=None, voc_opp_file=None, character='sys',
                  intent_file=DEFAULT_INTENT_FILEPATH,

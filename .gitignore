@@ -86,3 +86,4 @@ test.py
 
 *.egg-info
 pre-trained-models/
+venv
