@@ -28,7 +28,10 @@ We support training MILU on datasets that are in our unified format.
 Takes MultiWOZ 2.1 (unified format) as an example,
 ```bash
 $ python train.py unified_datasets/configs/multiwoz21_user_context3.jsonnet -s serialization_dir
-$ python evaluate.py serialization_dir/model.tar.gz test --cuda-device {CUDA_DEVICE}
+$ python evaluate.py serialization_dir/model.tar.gz test --cuda-device {CUDA_DEVICE} --output_file output/multiwoz21_user/output.json
+
+# to generate output/multiwoz21_user/predictions.json that merges test data and model predictions.
+$ python unified_datasets/merge_predict_res.py -d multiwoz21 -s user -p output/multiwoz21_user/output.json
 ```
 Note that the config file is different from the above. You should set:
 - `"use_unified_datasets": true` in `dataset_reader` and `model`

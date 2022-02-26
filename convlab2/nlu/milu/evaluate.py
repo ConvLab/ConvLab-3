@@ -16,7 +16,7 @@ from allennlp.common.util import prepare_environment
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.iterators import DataIterator
 from allennlp.models.archival import load_archive
-from allennlp.training.util import evaluate
+from convlab2.nlu.milu.util import evaluate
 
 from convlab2.nlu.milu import dataset_reader, model
 
@@ -28,7 +28,7 @@ argparser.add_argument('archive_file', type=str, help='path to an archived train
 
 argparser.add_argument('input_file', type=str, help='path to the file containing the evaluation data')
 
-argparser.add_argument('--output-file', type=str, help='path to output file')
+argparser.add_argument('--output_file', type=str, help='path to output file')
 
 argparser.add_argument('--weights-file',
                         type=str,
@@ -105,7 +105,7 @@ def evaluate_from_args(args: argparse.Namespace) -> Dict[str, Any]:
     iterator = DataIterator.from_params(iterator_params)
     iterator.index_with(model.vocab)
 
-    metrics = evaluate(model, instances, iterator, args.cuda_device, args.batch_weight_key)
+    metrics, predict_results = evaluate(model, instances, iterator, args.cuda_device, args.batch_weight_key)
 
     logger.info("Finished evaluating.")
     logger.info("Metrics:")
@@ -114,8 +114,8 @@ def evaluate_from_args(args: argparse.Namespace) -> Dict[str, Any]:
 
     output_file = args.output_file
     if output_file:
-        with open(output_file, "w") as file:
-            json.dump(metrics, file, indent=4)
+        with open(output_file, "w", encoding='utf-8') as file:
+            json.dump(predict_results, file, indent=2, ensure_ascii=False)
     return metrics
 
 
