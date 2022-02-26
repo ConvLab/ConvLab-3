@@ -57,6 +57,7 @@ class MILU(Model):
                  feedforward: Optional[FeedForward] = None,
                  label_encoding: Optional[str] = None,
                  include_start_end_transitions: bool = True,
+                 use_unified_datasets: bool = False,
                  crf_decoding: bool = False,
                  constrain_crf_decoding: bool = None,
                  focal_loss_gamma: float = None,
@@ -83,6 +84,7 @@ class MILU(Model):
         self.tag_encoder = intent_encoder
         self._feedforward = feedforward
         self._verbose_metrics = verbose_metrics
+        self.use_unified_datasets = use_unified_datasets
         self.rl = False 
  
         if attention:
@@ -164,7 +166,7 @@ class MILU(Model):
             self._f1_metric = SpanBasedF1Measure(vocab,
                                                  tag_namespace=sequence_label_namespace,
                                                  label_encoding=label_encoding)
-        self._dai_f1_metric = DialogActItemF1Measure()
+        self._dai_f1_metric = DialogActItemF1Measure(self.use_unified_datasets)
 
         check_dimensions_match(text_field_embedder.get_output_dim(), encoder.get_input_dim(),
                                "text field embedding dim", "encoder input dim")
@@ -355,29 +357,64 @@ class MILU(Model):
         for i, tags in enumerate(output_dict["tags"]): 
             seq_len = len(output_dict["words"][i])
             spans = bio_tags_to_spans(tags[:seq_len])
-            dialog_act = {}
-            for span in spans:
-                domain_act = span[0].split("+")[0]
-                slot = span[0].split("+")[1]
-                value = " ".join(output_dict["words"][i][span[1][0]:span[1][1]+1])
-                if domain_act not in dialog_act:
-                    dialog_act[domain_act] = [[slot, value]]
-                else:
-                    dialog_act[domain_act].append([slot, value])
-            for intent in output_dict["intents"][i]:
-                if "+" in intent: 
-                    if "*" in intent: 
-                        intent, value = intent.split("*", 1) 
+            if self.use_unified_datasets:
+                dialog_act = {
+                    'categorical': [],
+                    'non-categorical': [],
+                    'binary': []
+                }
+                for span in spans:
+                    intent, domain, slot = span[0].split("+")
+                    value = " ".join(output_dict["words"][i][span[1][0]:span[1][1]+1])
+                    dialog_act['non-categorical'].append({
+                        'intent': intent,
+                        'domain': domain,
+                        'slot': slot,
+                        'value': value
+                    })
+                
+                for intent in output_dict["intents"][i]:
+                    intent = eval(intent)
+                    if len(intent) == 3:
+                        dialog_act['binary'].append({
+                            'intent': intent[0],
+                            'domain': intent[1],
+                            'slot': intent[2]
+                        })
                     else:
-                        value = "?"
-                    domain_act = intent.split("+")[0] 
+                        assert len(intent) == 4
+                        dialog_act['categorical'].append({
+                            'intent': intent[0],
+                            'domain': intent[1],
+                            'slot': intent[2],
+                            'value': intent[3]
+                        })
+                output_dict["dialog_act"].append(dialog_act)
+
+            else:
+                dialog_act = {}
+                for span in spans:
+                    domain_act = span[0].split("+")[0]
+                    slot = span[0].split("+")[1]
+                    value = " ".join(output_dict["words"][i][span[1][0]:span[1][1]+1])
                     if domain_act not in dialog_act:
-                        dialog_act[domain_act] = [[intent.split("+")[1], value]]
+                        dialog_act[domain_act] = [[slot, value]]
                     else:
-                        dialog_act[domain_act].append([intent.split("+")[1], value])
-                else:
-                    dialog_act[intent] = [["none", "none"]]
-            output_dict["dialog_act"].append(dialog_act)
+                        dialog_act[domain_act].append([slot, value])
+                for intent in output_dict["intents"][i]:
+                    if "+" in intent: 
+                        if "*" in intent: 
+                            intent, value = intent.split("*", 1) 
+                        else:
+                            value = "?"
+                        domain_act = intent.split("+")[0] 
+                        if domain_act not in dialog_act:
+                            dialog_act[domain_act] = [[intent.split("+")[1], value]]
+                        else:
+                            dialog_act[domain_act].append([intent.split("+")[1], value])
+                    else:
+                        dialog_act[intent] = [["none", "none"]]
+                output_dict["dialog_act"].append(dialog_act)
 
         return output_dict
 

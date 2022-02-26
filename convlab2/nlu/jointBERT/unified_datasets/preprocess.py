@@ -1,7 +1,7 @@
 import json
 import os
 from collections import Counter
-from convlab2.util import load_dataset, load_ontology, load_nlu_data
+from convlab2.util import load_dataset, load_nlu_data
 from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
 from tqdm import tqdm
 

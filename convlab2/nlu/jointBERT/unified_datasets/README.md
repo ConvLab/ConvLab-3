@@ -36,6 +36,11 @@ $ python test.py --config_path path_to_a_config_file
 
 The result (`output.json`) will be saved under the `output_dir` of the config file.
 
+To generate `predictions.json` that merges test data and model predictions under the same directory of the `output.json`:
+```sh
+$ python merge_predict_res.py -d dataset_name -s {user,system,all} -c CONTEXT_WINDOW_SIZE -p path_to_output.json
+```
+
 #### Predict
 
 See `nlu.py` for usage.
