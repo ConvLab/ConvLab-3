@@ -295,7 +295,7 @@ class VectorBase(Vector):
         """
         constraints = [[slot, value] for slot, value in self.state[domain].items() if value] \
             if domain in self.state else []
-        return self.db.query(domain.lower(), constraints, topk=10)
+        return self.db.query(domain, constraints, topk=10)
 
     def find_nooffer_slot(self, domain):
         """
@@ -309,32 +309,28 @@ class VectorBase(Vector):
             entities list:
                 list of entities of the specified domain
         """
-        constraint = self.state[domain.lower()]['semi']
-        constraint = {k: i for k, i in constraint.items() if i and i not in [
-            'dontcare', "do n't care", "do not care"]}
+        constraints = self.state[domain]
 
         # Leave slots out of constraints to find which slot constraint results in no entities being found
-        for slot in constraint:
-            constraint_ = {k: i for k, i in constraint.items()
-                           if k != slot}.items()
-            entities = self.db.query(domain.lower(), constraint_)
+        for constraint_slot in constraints:
+            state = [[slot, value] for slot, value in constraints.items() if slot != constraint_slot]
+            entities = self.db.query(domain, state, topk=1)
             if entities:
-                return slot
+                return constraint_slot
 
         # If no single slot results in no entities being found try the above with pairs of slots
-        slots = [slot for slot in constraint]
+        slots = [slot for slot in constraints]
         pairs = []
         for i, slot in enumerate(slots):
             for j, slot1 in enumerate(slots):
                 if j > i:
                     pairs.append((slot, slot1))
 
-        for slot, slot1 in pairs:
-            constraint_ = {k: i for k, i in constraint.items(
-            ) if k != slot and k != slot1}.items()
-            entities = self.db.query(domain.lower(), constraint_)
+        for constraint_slots in pairs:
+            state = [[slot, value] for slot, value in constraints.items() if k not in constraint_slots]
+            entities = self.db.query(domain, state, topk=1)
             if entities:
-                return np.random.choice([slot, slot1])
+                return np.random.choice(constraint_slots)
 
         # If no single slots or pairs removed results in success then set slot 'none'
         return 'none'
@@ -381,29 +377,24 @@ class VectorBase(Vector):
         if self.cur_domain and self.cur_domain not in entities:
             entities[self.cur_domain] = self.dbquery_domain(self.cur_domain)
 
-        #TODO: Rewrite find_noffer_slot
+        # From db query find which slot causes no_offer
         nooffer = [domint for domint in action if 'nooffer' in domint]
         for domint in nooffer:
             domain, intent = domint.split('-')
             slot = self.find_nooffer_slot(domain)
-            slot = REF_USR_DA.get(domain, {slot: 'none'}).get(slot, 'none')
-            action[domint] = [[slot, '1']
-                              ] if slot != 'none' else [[slot, 'none']]
+            action[domint] = [[slot, '1']] if slot != 'none' else [[slot, 'none']]
 
+        # Randomly select booking constraint "causing" no_book
         nobook = [domint for domint in action if 'nobook' in domint]
         for domint in nobook:
-            domain = self.cur_domain if self.cur_domain else 'none'
-            if domain.lower() in self.state:
-                slots = self.state[domain.lower()]['book']
-                slots = [slot for slot, i in slots.items()
-                         if i and slot != 'booked']
+            if domain in self.state:
+                slots = self.state[domain]
+                slots = [slot for slot, i in slots.items() if i and 'book' not in slot]
                 slots.append('none')
                 slot = np.random.choice(slots)
-                slot = REF_USR_DA.get(domain, {}).get(slot, 'none')
             else:
                 slot = 'none'
-            action[domint] = [[slot, '1']
-                              ] if slot != 'none' else [[slot, 'none']]
+            action[domint] = [[slot, '1']] if slot != 'none' else [[slot, 'none']]
 
         # When there is a INFORM(1 name) or OFFER(multiple) action then inform the name
         if self.use_add_name:
