@@ -418,8 +418,7 @@ class VectorBase(Vector):
                     logging.debug(action[key])
                 index = idx
 
-        action = lexicalize_da(action, entities, self.state,
-                               self.requestable, self.cur_domain)
+        action = lexicalize_da(action, entities, self.state, self.requestable)
 
         return action
 

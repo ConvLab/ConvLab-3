@@ -38,24 +38,22 @@ class RuleDST(DST):
             if domain not in self.state['belief_state']:
                 continue
             if intent == 'inform':
-                k = REF_SYS_DA[domain.capitalize()].get(slot, slot)
-                if k is None:
+                if slot == 'none':
                     continue
                 domain_dic = self.state['belief_state'][domain]
-                if k in domain_dic:
-                    nvalue = normalize_value(self.value_dict, domain, k, value)
-                    self.state['belief_state'][domain][k] = nvalue
-                elif k != 'none':
+                if slot in domain_dic:
+                    nvalue = normalize_value(self.value_dict, domain, slot, value)
+                    self.state['belief_state'][domain][slot] = nvalue
+                elif slot != 'none':
                     # raise Exception('unknown slot name <{}> of domain <{}>'.format(k, domain))
                     with open('unknown_slot.log', 'a+') as f:
                         f.write(
                             'unknown slot name <{}> of domain <{}>\n'.format(k, domain))
             elif intent == 'request':
-                k = REF_SYS_DA[domain.capitalize()].get(slot, slot)
                 if domain not in self.state['request_state']:
                     self.state['request_state'][domain] = {}
-                if k not in self.state['request_state'][domain]:
-                    self.state['request_state'][domain][k] = 0
+                if slot not in self.state['request_state'][domain]:
+                    self.state['request_state'][domain][slot] = 0
         # self.state['user_action'] = user_act  # should be added outside DST module
         return self.state
 

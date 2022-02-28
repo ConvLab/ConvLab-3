@@ -1,5 +1,4 @@
 from copy import deepcopy
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 
 
 def delexicalize_da(da, requestable):
@@ -39,85 +38,42 @@ def deflat_da(meta):
     return dialog_act
 
 
-def lexicalize_da(meta, entities, state, requestable, cur_domain=None):
+def lexicalize_da(meta, entities, state, requestable):
     meta = deepcopy(meta)
 
     for k, v in meta.items():
         domain, intent = k.split('-')
-        if domain.lower() in ['general']:
+        if domain in ['general']:
             continue
         elif intent in requestable:
             for pair in v:
                 pair[1] = '?'
-        elif intent.lower() in ['nooffer', 'nobook']:
-            booking = False
-            if domain.lower() in ['booking']:
-                if cur_domain and cur_domain in entities:
-                    domain = cur_domain
-                    booking = True
-                else:
-                    continue
-            for pair in v:
-                # Extra else 'none' ensures that if info not available value is returned at none
-                if not booking:
-                    if pair[0] in REF_SYS_DA[domain]:
-                        slot = REF_SYS_DA[domain][pair[0]]
-                        if slot in state[domain.lower()]['semi']:
-                            pair[1] = state[domain.lower()]['semi'][slot]
-                        else:
-                            pair[1] = 'none'
-                    else:
-                        pair[1] = 'none'
-                else:
-                    if pair[0] in REF_SYS_DA['Booking']:
-                        slot = REF_SYS_DA['Booking'][pair[0]]
-                        if slot in state[domain.lower()]['book']:
-                            pair[1] = state[domain.lower()]['book'][slot]
-                        else:
-                            pair[1] = 'none'
-                    else:
-                        pair[1] = 'none'
         else:
-            if intent.lower() == "book":
+            if intent == "book":
+                # this means we booked something. We retrieve reference number here
                 for pair in v:
                     if len(entities[domain]) > 0:
-                        slot = REF_SYS_DA[domain].get('Ref', 'Ref')
-                        if slot in entities[domain][0]:
-                            pair[1] = entities[domain][0][slot]
+                        if 'Ref' in entities[domain][0]:
+                            pair[1] = entities[domain][0]['Ref']
                 continue
 
-            if domain.lower() in ['booking']:
-                if cur_domain and cur_domain in entities:
-                    domain = cur_domain
-                else:
-                    continue
             for pair in v:
                 if pair[1] == 'none':
                     continue
                 elif pair[0].lower() == 'choice':
                     pair[1] = str(len(entities[domain]))
                 else:
-                    # Here we added code to search for slot value in book and semi part of belief state
-                    # if not available for the entity. Eg book day.
+                    # try to retrieve value from the database entity, otherwise from the belief state
+                    slot = pair[0]
                     n = int(pair[1]) - 1
                     if len(entities[domain]) > n:
-                        slot = REF_SYS_DA[domain].get(pair[0], pair[0].lower())
                         if slot in entities[domain][n]:
                             pair[1] = entities[domain][n][slot]
-                        elif slot in state[domain.lower()]['book']:
-                            pair[1] = state[domain.lower()]['book'][slot]
-                        elif slot in state[domain.lower()]['semi']:
-                            pair[1] = state[domain.lower()]['semi'][slot]
-                        else:
-                            pair[1] = 'not available'
+                        elif slot in state[domain]:
+                            pair[1] = state[domain][slot]
                         pair[1] = pair[1] if pair[1] else 'not available'
-                    elif pair[0] in REF_SYS_DA[domain]:
-                        slot = REF_SYS_DA[domain].get(pair[0], pair[0].lower())
-                        if slot in state[domain.lower()]['semi']:
-                            pair[1] = state[domain.lower()]['semi'][slot]
-                        else:
-                            pair[1] = 'none'
-                        pair[1] = pair[1] if pair[1] else 'none'
+                    elif slot in state[domain]:
+                        pair[1] = state[domain][slot] if state[domain][slot] else 'none'
                     else:
                         pair[1] = 'none'
 
