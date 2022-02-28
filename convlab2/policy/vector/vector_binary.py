@@ -43,8 +43,6 @@ class VectorBinary(VectorBase):
             action = state['user_action']
             for intent, domain, slot, value in action:
                 domain_active_dict[domain] = True
-                if domain in self.db_domains:
-                    self.cur_domain = domain
 
         opp_act_vec = self.vectorize_user_act(state)
         last_act_vec = self.vectorize_system_act(state)

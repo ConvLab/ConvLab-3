@@ -43,7 +43,6 @@ class VectorBase(Vector):
         self.character = character
         self.name_history_flag = True
         self.name_action_prev = []
-        self.cur_domain = None
         self.requestable = ['request']
         self.informable = ['inform', 'recommend']
 
@@ -254,12 +253,12 @@ class VectorBase(Vector):
             if intent in ['nobook', 'nooffer'] and slot != 'none':
                 mask_list[i] = 1.0
 
-            if "book" in slot and intent.lower() == 'inform' and not self.state[domain][slot]:
+            if "book" in slot and intent == 'inform' and not self.state[domain][slot]:
                 mask_list[i] = 1.0
 
             if domain == 'taxi':
                 if slot in self.state['taxi']:
-                    if not self.state['taxi'][slot] and intent.lower() == 'inform':
+                    if not self.state['taxi'][slot] and intent == 'inform':
                         mask_list[i] = 1.0
 
         return mask_list
@@ -372,10 +371,8 @@ class VectorBase(Vector):
         entities = {}
         for domint in action:
             domain, intent = domint.split('-')
-            if domain not in entities and domain.lower() not in ['general']:
+            if domain not in entities and domain not in ['general']:
                 entities[domain] = self.dbquery_domain(domain)
-        if self.cur_domain and self.cur_domain not in entities:
-            entities[self.cur_domain] = self.dbquery_domain(self.cur_domain)
 
         # From db query find which slot causes no_offer
         nooffer = [domint for domint in action if 'nooffer' in domint]
@@ -418,28 +415,33 @@ class VectorBase(Vector):
         name_inform = []
         contains_name = False
         # General Inform Condition for Naming
-        cur_inform = str(self.cur_domain) + '-inform'
-        cur_request = str(self.cur_domain) + '-request'
+        domain = [domint.split('-', 1)[0] for domint in action]
+        domain = [d for d in domain if d not in ['general']]
+        domain = domain[0] if domain else 'none'
+        if domain == 'none':
+            raise NameError('Domain not defined')
+        cur_inform = domain + '-inform'
+        cur_request = domain + '-request'
         index = -1
         if cur_inform in action:
-            for [item, idx] in action[cur_inform]:
-                if item == 'name':
+            for [slot, value_id] in action[cur_inform]:
+                if slot == 'name':
                     contains_name = True
-                elif self.cur_domain == 'train' and item == 'id':
+                elif domain == 'train' and slot == 'id':
                     contains_name = True
-                elif self.cur_domain == 'hospital':
+                elif domain == 'hospital':
                     contains_name = True
-                elif item == 'choice' and cur_request in action:
+                elif slot == 'choice' and cur_request in action:
                     contains_name = True
 
-                if index != -1 and index != idx and idx is not None:
+                if index != -1 and index != value_id and value_id is not None:
                     logging.debug(
                         "System is likely refering multiple entities within this turn")
 
-                index = idx
+                index = value_id
 
             if contains_name == False:
-                if self.cur_domain == 'train':
+                if domain == 'train':
                     name_act = ['id', index]
                 else:
                     name_act = ['name', index]
@@ -465,7 +467,7 @@ class VectorBase(Vector):
         pointer_vector = np.zeros(6 * len(self.db_domains))
         number_entities_dict = {}
         for domain in self.db_domains:
-            entities = self.dbquery_domain(domain.lower())
+            entities = self.dbquery_domain(domain)
             number_entities_dict[domain] = len(entities)
             pointer_vector = self.one_hot_vector(
                 len(entities), domain, pointer_vector)

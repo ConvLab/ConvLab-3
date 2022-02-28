@@ -145,8 +145,6 @@ class MultiWozVector(VectorBase):
             action = state['user_action']
             for intent, domain, slot, value in action:
                 domain_active_dict[domain] = True
-                if domain in self.db_domains:
-                    self.cur_domain = domain
 
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
@@ -189,8 +187,6 @@ class MultiWozVector(VectorBase):
             if 'active_domains' in state:
                 domain_active = state['active_domains'][domain.lower()]
                 domain_active_dict[domain] = domain_active
-                if domain in self.db_domains and domain_active:
-                    self.cur_domain = domain
             else:
                 if [slot for slot, value in state['belief_state'][domain.lower()]['semi'].items() if value]:
                     domain_active_dict[domain] = True
