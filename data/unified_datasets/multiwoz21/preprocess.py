@@ -521,6 +521,9 @@ ontology = {
             "arrive by": "",
             "departure": "",
             "book people": ""
+        },
+        "hospital": {
+            "department": ""
         }
     },
     "dialogue_acts": {
