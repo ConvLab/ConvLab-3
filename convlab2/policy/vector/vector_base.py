@@ -4,37 +4,23 @@ import sys
 import numpy as np
 import copy
 import logging
+
 from copy import deepcopy
 from convlab2.policy.vec import Vector
 from convlab2.util.custom_util import flatten_acts
 from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da, deflat_da, lexicalize_da
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
-
 from convlab2.util import load_ontology, load_database, load_dataset
 
-DEFAULT_INTENT_FILEPATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__))))),
-    'data/multiwoz/trackable_intent.json'
-)
 
 root_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.append(root_dir)
 
 
-SLOT_MAP = {'taxi_types': 'car type'}
-
-#TODO: The masks depend on multiwoz, deal with that somehow, shall we build a Mask class?
-#TODO: Check the masks with new action strings
-#TODO: Where should i save the action dicts?
-#TODO: Load actions from ontology properly
-#TODO: method AddName is properly not working right anymore
-
-
 class VectorBase(Vector):
 
-    def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
+    def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=False,
                  seed=0):
 
         super().__init__()
@@ -78,10 +64,27 @@ class VectorBase(Vector):
 
     def load_action_dicts(self):
 
-        self.load_actions_from_data()
+        dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                f'action_dicts/{self.dataset_name}_{type(self).__name__}')
+        if not (os.path.exists(os.path.join(dir_path, "sys_da_voc.txt"))
+                and os.path.exists(os.path.join(dir_path, "user_da_voc.txt"))):
+            print("Load actions from data..")
+            self.load_actions_from_data()
+        else:
+            print("Load actions from file..")
+            with open(os.path.join(dir_path, "sys_da_voc.txt")) as f:
+                self.da_voc = f.read().splitlines()
+            with open(os.path.join(dir_path, "user_da_voc.txt")) as f:
+                self.da_voc_opp = f.read().splitlines()
+
         self.generate_dict()
 
     def load_actions_from_data(self, frequency_threshold=50):
+        """
+        Loads the action sets for user and system using a data set.
+        The frequency_threshold prohibits adding actions that occur fewer times than this threshold in the data
+        (for instance there might be incorrectly labelled actions)
+        """
 
         data_split = load_dataset(self.dataset_name)
         system_dict = {}
@@ -117,27 +120,35 @@ class VectorBase(Vector):
             if user_dict[key] < frequency_threshold:
                 del user_dict[key]
 
-        with open("sys_da_voc.txt", "w") as f:
-            system_acts = list(system_dict.keys())
-            system_acts.sort()
-            for act in system_acts:
-                f.write(act + "\n")
-        with open("user_da_voc.txt", "w") as f:
-            user_acts = list(user_dict.keys())
-            user_acts.sort()
-            for act in user_acts:
-                f.write(act + "\n")
-        print("Saved new action dict.")
+        self.da_voc = list(system_dict.keys())
+        self.da_voc.sort()
+        self.da_voc_opp = list(user_dict.keys())
+        self.da_voc_opp.sort()
 
-        self.da_voc = system_acts
-        self.da_voc_opp = user_acts
+        self.save_acts_to_txt()
+
+    def save_acts_to_txt(self):
+        dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                f'action_dicts/{self.dataset_name}_{type(self).__name__}')
+        os.makedirs(dir_path, exist_ok=True)
+        with open(os.path.join(dir_path, "sys_da_voc.txt"), "w") as f:
+            for act in self.da_voc:
+                f.write(act + "\n")
+        with open(os.path.join(dir_path, "user_da_voc.txt"), "w") as f:
+            for act in self.da_voc_opp:
+                f.write(act + "\n")
 
     def load_actions_from_ontology(self):
+        """
+        Loads the action sets for user and system if an ontology is provided.
+        It is recommended to use load_actions_from_data to guarantee consistency with previous results
+        """
 
         self.da_voc = []
         self.da_voc_opp = []
         for act_type in self.ontology['dialogue_acts']:
             for act in self.ontology['dialogue_acts'][act_type]:
+                act = eval(act)
                 system = act['system']
                 user = act['user']
                 if system:
@@ -147,6 +158,9 @@ class VectorBase(Vector):
                 if user:
                     user_acts_with_value = self.add_values_to_act(act['domain'], act['intent'], act['slot'], False)
                     self.da_voc_opp.extend(user_acts_with_value)
+
+        self.da_voc.sort()
+        self.da_voc_opp.sort()
 
     def generate_dict(self):
         """
@@ -212,7 +226,10 @@ class VectorBase(Vector):
         np.random.seed(seed)
 
     def compute_domain_mask(self, domain_active_dict):
-
+        '''
+        Can not speak about a domain if that domain is not active.
+        A domain is active if the user mentioned it in the current turn or if a slot is filled with a value
+        '''
         mask_list = np.zeros(self.da_dim)
 
         for i in range(self.da_dim):
@@ -232,49 +249,36 @@ class VectorBase(Vector):
             action = self.vec2act[i]
             domain, intent, slot, value = action.split('-')
 
-            # NoBook-SLOT does not make sense because policy can not know which constraint made booking impossible
+            # NoBook/NoOffer-SLOT does not make sense because policy can not know which constraint made offer impossible
             # If one wants to do it, lexicaliser needs to do it
-            if intent.lower() in ['nobook', 'nooffer'] and slot.lower() != 'none':
+            if intent in ['nobook', 'nooffer'] and slot != 'none':
                 mask_list[i] = 1.0
 
-            # see policy/rule/multiwoz/policy_agenda_multiwoz.py: illegal booking slot. Is self.cur_domain correct?
-            if self.cur_domain is not None:
-                if slot.lower() == 'time' and self.cur_domain.lower() not in ['train', 'restaurant']:
-                    if domain.lower() == 'booking':
-                        mask_list[i] = 1.0
+            if "book" in slot and intent.lower() == 'inform' and not self.state[domain][slot]:
+                mask_list[i] = 1.0
 
-                if slot.lower() in self.state[self.cur_domain.lower()]['book']:
-                    if not self.state[self.cur_domain.lower()]['book'][slot.lower()] and intent.lower() == 'inform':
-                        mask_list[i] = 1.0
-
-            if domain.lower() == 'taxi':
-                slot = REF_SYS_DA.get(domain, {}).get(slot, slot.lower())
-                if slot in self.state['taxi']['semi']:
-                    if not self.state['taxi']['semi'][slot] and intent.lower() == 'inform':
+            if domain == 'taxi':
+                if slot in self.state['taxi']:
+                    if not self.state['taxi'][slot] and intent.lower() == 'inform':
                         mask_list[i] = 1.0
 
         return mask_list
 
     def compute_entity_mask(self, number_entities_dict):
+        '''
+        1. If there is no i-th entity in the data base, can not inform/recommend/select on that entity
+        2. If there is an entity available, can not say NoOffer or NoBook
+        '''
         mask_list = np.zeros(self.da_dim)
         for i in range(self.da_dim):
             action = self.vec2act[i]
             domain, intent, slot, value = action.split('-')
             domain_entities = number_entities_dict.get(domain, 1)
 
-            if intent.lower() in ['inform', 'select', 'recommend'] and value != None and value != 'none':
-                if(int(value) > domain_entities):
+            if intent in ['inform', 'select', 'recommend'] and value != None and value != 'none':
+                if int(value) > domain_entities:
                     mask_list[i] = 1.0
-
-            if intent.lower() in ['inform', 'select', 'recommend'] and domain.lower() in ['booking']:
-                if number_entities_dict.get(self.cur_domain, 0) == 0:
-                    mask_list[i] = 1.0
-
-            # mask Booking-NoBook if an entity is available in the current domain
-            if intent.lower() in ['nobook'] and number_entities_dict.get(self.cur_domain, 0) > 0:
-                mask_list[i] = 1.0
-
-            if intent.lower() in ['nooffer'] and number_entities_dict.get(domain, 0) > 0:
+            if intent in ['nooffer', 'nobook'] and number_entities_dict.get(domain, 0) > 0:
                 mask_list[i] = 1.0
 
         return mask_list
@@ -372,12 +376,13 @@ class VectorBase(Vector):
         entities = {}
         for domint in action:
             domain, intent = domint.split('-')
-            if domain not in entities and domain.lower() not in ['general', 'booking']:
+            if domain not in entities and domain.lower() not in ['general']:
                 entities[domain] = self.dbquery_domain(domain)
         if self.cur_domain and self.cur_domain not in entities:
             entities[self.cur_domain] = self.dbquery_domain(self.cur_domain)
 
-        nooffer = [domint for domint in action if 'NoOffer' in domint]
+        #TODO: Rewrite find_noffer_slot
+        nooffer = [domint for domint in action if 'nooffer' in domint]
         for domint in nooffer:
             domain, intent = domint.split('-')
             slot = self.find_nooffer_slot(domain)
@@ -385,7 +390,7 @@ class VectorBase(Vector):
             action[domint] = [[slot, '1']
                               ] if slot != 'none' else [[slot, 'none']]
 
-        nobook = [domint for domint in action if 'NoBook' in domint]
+        nobook = [domint for domint in action if 'nobook' in domint]
         for domint in nobook:
             domain = self.cur_domain if self.cur_domain else 'none'
             if domain.lower() in self.state:
@@ -401,7 +406,6 @@ class VectorBase(Vector):
                               ] if slot != 'none' else [[slot, 'none']]
 
         # When there is a INFORM(1 name) or OFFER(multiple) action then inform the name
-
         if self.use_add_name:
             action = self.add_name(action)
 
@@ -424,18 +428,18 @@ class VectorBase(Vector):
         name_inform = []
         contains_name = False
         # General Inform Condition for Naming
-        cur_inform = str(self.cur_domain) + '-Inform'
-        cur_request = str(self.cur_domain) + '-Request'
+        cur_inform = str(self.cur_domain) + '-inform'
+        cur_request = str(self.cur_domain) + '-request'
         index = -1
         if cur_inform in action:
             for [item, idx] in action[cur_inform]:
-                if item == 'Name':
+                if item == 'name':
                     contains_name = True
-                elif self.cur_domain == 'Train' and item == 'Id':
+                elif self.cur_domain == 'train' and item == 'id':
                     contains_name = True
-                elif self.cur_domain == 'Hospital':
+                elif self.cur_domain == 'hospital':
                     contains_name = True
-                elif item == 'Choice' and cur_request in action:
+                elif item == 'choice' and cur_request in action:
                     contains_name = True
 
                 if index != -1 and index != idx and idx is not None:
@@ -445,10 +449,10 @@ class VectorBase(Vector):
                 index = idx
 
             if contains_name == False:
-                if self.cur_domain == 'Train':
-                    name_act = ['Id', index]
+                if self.cur_domain == 'train':
+                    name_act = ['id', index]
                 else:
-                    name_act = ['Name', index]
+                    name_act = ['name', index]
 
                 tmp = [name_act] + action[cur_inform]
                 name_inform = name_act

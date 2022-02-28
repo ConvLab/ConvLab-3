@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
 import sys
-import os
 import numpy as np
 from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from .vector_base import VectorBase
-
-DEFAULT_INTENT_FILEPATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__))))),
-    'data/multiwoz/trackable_intent.json'
-)
-
-
-SLOT_MAP = {'taxi_types': 'car type'}
 
 
 class VectorBinary(VectorBase):

@@ -37,16 +37,8 @@ class Environment():
         # If system takes booking action add booking info to the 'book-booked' section of the belief state
         if type(action) == list:
             for intent, domain, slot, value in action:
-                if domain.lower() not in ['general', 'booking']:
-                    self.cur_domain = domain
-                dial_act = f'{domain.lower()}-{intent.lower()}-{slot.lower()}'
-                if dial_act == 'booking-book-ref' and self.cur_domain.lower() in ['hotel', 'restaurant', 'train']:
-                    if self.cur_domain:
-                        self.sys_dst.state['belief_state'][self.cur_domain.lower()]['book']['booked'] = [{slot.lower():value}]
-                elif dial_act == 'train-offerbooked-ref' or dial_act == 'train-inform-ref':
-                    self.sys_dst.state['belief_state']['train']['book']['booked'] = [{slot.lower():value}]
-                elif dial_act == 'taxi-inform-car':
-                    self.sys_dst.state['belief_state']['taxi']['book']['booked'] = [{slot.lower():value}]
+                if intent == "book":
+                    self.sys_dst.state['booked'][domain] = [{slot.lower(): value}]
         observation = self.usr.response(model_response)
 
         if self.evaluator:
@@ -58,11 +50,6 @@ class Environment():
         self.sys_dst.state['user_action'] = dialog_act
         state = self.sys_dst.update(dialog_act)
         dialog_act = self.sys_dst.state['user_action']
-
-        if type(dialog_act) == list:
-            for intent, domain, slot, value in dialog_act:
-                if domain.lower() not in ['booking', 'general']:
-                    self.cur_domain = domain
 
         state['history'].append(["sys", model_response])
         state['history'].append(["usr", observation])

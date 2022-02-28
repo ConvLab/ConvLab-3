@@ -57,10 +57,6 @@ class UserPolicyAgendaMultiWoz(Policy):
         """
         self.max_turn = 40
         self.max_initiative = 4
-        self.forbidden_domains = {}
-        self.mandatory_domains = []
-        self.only_single_domains = False
-
         self.goal_generator = GoalGenerator()
 
         self.__turn = 0
@@ -75,24 +71,11 @@ class UserPolicyAgendaMultiWoz(Policy):
         """ Build new Goal and Agenda for next session """
         self.reset_turn()
         if not ini_goal:
-            self.find_valid_goal()
+            self.goal = Goal(self.goal_generator)
         else:
             self.goal = ini_goal
         self.domain_goals = self.goal.domain_goals
         self.agenda = Agenda(self.goal)
-
-    def find_valid_goal(self):
-
-        valid = False
-        while not valid:
-            self.goal = Goal(self.goal_generator)
-            if self.only_single_domains and len(self.goal.domain_goals) > 1:
-                continue
-            if set(self.forbidden_domains) & set(self.goal.domain_goals):
-                continue
-            if not set(self.mandatory_domains).issubset(set(self.goal.domain_goals)):
-                continue
-            valid = True
 
     def predict(self, sys_dialog_act):
         """

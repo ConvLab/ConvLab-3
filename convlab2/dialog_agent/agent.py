@@ -197,7 +197,7 @@ class PipelineAgent(Agent):
                         if domain.lower() not in ['general', 'booking']:
                             self.cur_domain = domain
                         if intent == "book":
-                            self.dst.state['belief_state'][domain.lower()]['book']['booked'] = [{slot.lower(): value}]
+                            self.dst.state['booked'][domain] = [{slot.lower(): value}]
             else:
                 self.dst.state['user_action'] = self.output_action
                 # user dst is also updated by itself
@@ -403,14 +403,8 @@ class DialogueAgent(Agent):
                 for intent, domain, slot, value in self.output_action:
                     if domain.lower() not in ['general', 'booking']:
                         self.cur_domain = domain
-                    dial_act = f'{domain.lower()}-{intent.lower()}-{slot.lower()}'
-                    if dial_act == 'booking-book-ref' and self.cur_domain.lower() in ['hotel', 'restaurant', 'train']:
-                        if self.cur_domain:
-                            self.dst.state['belief_state'][self.cur_domain.lower()]['book']['booked'] = [{slot.lower():value}]
-                    elif dial_act == 'train-offerbooked-ref' or dial_act == 'train-inform-ref':
-                        self.dst.state['belief_state']['train']['book']['booked'] = [{slot.lower():value}]
-                    elif dial_act == 'taxi-inform-car':
-                        self.dst.state['belief_state']['taxi']['book']['booked'] = [{slot.lower():value}]
+                    if intent == "book":
+                        self.dst.state['booked'][domain] = [{slot.lower(): value}]
         self.history.append([self.name, model_response])
 
         self.turn += 1
