@@ -17,12 +17,10 @@ class Environment():
         self.sys_dst = sys_dst
         self.evaluator = evaluator
         self.use_semantic_acts = use_semantic_acts
-        self.cur_domain = None
 
     def reset(self):
         self.usr.init_session()
         self.sys_dst.init_session()
-        self.cur_domain = None
         if self.evaluator:
             self.evaluator.add_goal(self.usr.policy.get_goal())
         s, r, t = self.step([])
@@ -38,7 +36,7 @@ class Environment():
         if type(action) == list:
             for intent, domain, slot, value in action:
                 if intent == "book":
-                    self.sys_dst.state['booked'][domain] = [{slot.lower(): value}]
+                    self.sys_dst.state['booked'][domain] = [{slot: value}]
         observation = self.usr.response(model_response)
 
         if self.evaluator:
