@@ -52,9 +52,10 @@ def lexicalize_da(meta, entities, state, requestable):
             if intent == "book":
                 # this means we booked something. We retrieve reference number here
                 for pair in v:
-                    if len(entities[domain]) > 0:
-                        if 'Ref' in entities[domain][0]:
-                            pair[1] = entities[domain][0]['Ref']
+                    n = int(pair[1]) - 1 if pair[1] != 'none' else 0
+                    if len(entities[domain]) > n:
+                        if 'Ref' in entities[domain][n]:
+                            pair[1] = entities[domain][n]['Ref']
                 continue
 
             for pair in v:

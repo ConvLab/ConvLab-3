@@ -21,7 +21,7 @@ sys.path.append(root_dir)
 class VectorBase(Vector):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=False,
-                 seed=0):
+                 always_inform_booking_reference=True, seed=0):
 
         super().__init__()
 
@@ -39,6 +39,7 @@ class VectorBase(Vector):
         self.max_actionval = {}
         self.use_mask = use_masking
         self.use_add_name = manually_add_entity_names
+        self.always_inform_booking_reference = always_inform_booking_reference
         self.reqinfo_filler_action = None
         self.character = character
         self.name_history_flag = True
@@ -384,14 +385,18 @@ class VectorBase(Vector):
         # Randomly select booking constraint "causing" no_book
         nobook = [domint for domint in action if 'nobook' in domint]
         for domint in nobook:
+            domain, intent = domint.split('-')
             if domain in self.state:
                 slots = self.state[domain]
-                slots = [slot for slot, i in slots.items() if i and 'book' not in slot]
+                slots = [slot for slot, i in slots.items() if i and 'book' in slot]
                 slots.append('none')
                 slot = np.random.choice(slots)
             else:
                 slot = 'none'
             action[domint] = [[slot, '1']] if slot != 'none' else [[slot, 'none']]
+
+        if self.always_inform_booking_reference:
+            action = self.add_booking_reference(action)
 
         # When there is a INFORM(1 name) or OFFER(multiple) action then inform the name
         if self.use_add_name:
@@ -410,56 +415,76 @@ class VectorBase(Vector):
 
         return action
 
+    def add_booking_reference(self, action):
+        new_acts = {}
+        for domint in action:
+            domain, intent = domint.split('-', 1)
+
+            if intent == 'book' and action[domint]:
+                ref_domint = f'{domain}-inform'
+                if ref_domint not in new_acts:
+                    new_acts[ref_domint] = []
+                new_acts[ref_domint].append(['ref', '1'])
+                if domint not in new_acts:
+                    new_acts[domint] = []
+                new_acts[domint].append(['none', '1'])
+            elif domint in new_acts:
+                new_acts[domint] += action[domint]
+            else:
+                new_acts[domint] = action[domint]
+
+        return new_acts
+
     def add_name(self, action):
 
         name_inform = []
-        contains_name = False
         # General Inform Condition for Naming
-        domain = [domint.split('-', 1)[0] for domint in action]
-        domain = [d for d in domain if d not in ['general']]
-        domain = domain[0] if domain else 'none'
-        if domain == 'none':
-            raise NameError('Domain not defined')
-        cur_inform = domain + '-inform'
-        cur_request = domain + '-request'
-        index = -1
-        if cur_inform in action:
-            for [slot, value_id] in action[cur_inform]:
-                if slot == 'name':
-                    contains_name = True
-                elif domain == 'train' and slot == 'id':
-                    contains_name = True
-                elif domain == 'hospital':
-                    contains_name = True
-                elif slot == 'choice' and cur_request in action:
-                    contains_name = True
+        domains = [domint.split('-', 1)[0] for domint in action]
+        domains = list(set([d for d in domains if d not in ['general']]))
+        for domain in domains:
+            contains_name = False
+            if domain == 'none':
+                raise NameError('Domain not defined')
+            cur_inform = domain + '-inform'
+            cur_request = domain + '-request'
+            index = -1
+            if cur_inform in action:
+                for [slot, value_id] in action[cur_inform]:
+                    if slot == 'name':
+                        contains_name = True
+                    elif domain == 'train' and slot == 'id':
+                        contains_name = True
+                    elif domain == 'hospital':
+                        contains_name = True
+                    elif slot == 'choice' and cur_request in action:
+                        contains_name = True
 
-                if index != -1 and index != value_id and value_id is not None:
-                    logging.debug(
-                        "System is likely refering multiple entities within this turn")
+                    if index != -1 and index != value_id and value_id is not None:
+                        logging.debug(
+                            "System is likely refering multiple entities within this turn")
 
-                index = value_id
+                    index = value_id
 
-            if contains_name == False:
-                if domain == 'train':
-                    name_act = ['id', index]
+                if contains_name == False:
+                    if domain == 'train':
+                        name_act = ['id', index]
+                    else:
+                        name_act = ['name', index]
+
+                    tmp = [name_act] + action[cur_inform]
+                    name_inform = name_act
+
+                    if self.name_history_flag:
+                        action[cur_inform] = tmp
+
+            if self.name_action_prev != []:
+                if name_inform == self.name_action_prev:
+                    self.name_history_flag = False
                 else:
-                    name_act = ['name', index]
+                    self.name_history_flag = True
 
-                tmp = [name_act] + action[cur_inform]
-                name_inform = name_act
-
-                if self.name_history_flag:
-                    action[cur_inform] = tmp
-
-        if self.name_action_prev != []:
-            if name_inform == self.name_action_prev:
-                self.name_history_flag = False
-            else:
-                self.name_history_flag = True
-
-        if name_inform != []:
-            self.name_action_prev = copy.deepcopy(name_inform)
+            if name_inform != []:
+                self.name_action_prev = copy.deepcopy(name_inform)
 
         return action
 
