@@ -70,6 +70,8 @@ def lexicalize_da(meta, entities, state, requestable):
                     if len(entities[domain]) > n:
                         if slot in entities[domain][n]:
                             pair[1] = entities[domain][n][slot]
+                        if slot.capitalize() in entities[domain][n]:
+                            pair[1] = entities[domain][n][slot.capitalize()]
                         elif slot in state[domain]:
                             pair[1] = state[domain][slot]
                         pair[1] = pair[1] if pair[1] else 'not available'

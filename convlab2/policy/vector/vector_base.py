@@ -42,8 +42,6 @@ class VectorBase(Vector):
         self.always_inform_booking_reference = always_inform_booking_reference
         self.reqinfo_filler_action = None
         self.character = character
-        self.name_history_flag = True
-        self.name_action_prev = []
         self.requestable = ['request']
         self.informable = ['inform', 'recommend']
 
@@ -55,6 +53,8 @@ class VectorBase(Vector):
 
         self.domains = list(self.ontology['domains'].keys())
         self.domains.sort()
+
+        self.previous_name_actions = {domain: [] for domain in self.domains}
 
         self.state = self.ontology['state']
         self.belief_domains = list(self.state.keys())
@@ -437,7 +437,7 @@ class VectorBase(Vector):
 
     def add_name(self, action):
 
-        name_inform = []
+        name_inform = {domain: [] for domain in self.domains}
         # General Inform Condition for Naming
         domains = [domint.split('-', 1)[0] for domint in action]
         domains = list(set([d for d in domains if d not in ['general']]))
@@ -449,6 +449,7 @@ class VectorBase(Vector):
             cur_request = domain + '-request'
             index = -1
             if cur_inform in action:
+                # Check if current inform within a domain is accompanied by a name inform
                 for [slot, value_id] in action[cur_inform]:
                     if slot == 'name':
                         contains_name = True
@@ -459,32 +460,17 @@ class VectorBase(Vector):
                     elif slot == 'choice' and cur_request in action:
                         contains_name = True
 
-                    if index != -1 and index != value_id and value_id is not None:
-                        logging.debug(
-                            "System is likely refering multiple entities within this turn")
-
-                    index = value_id
-
-                if contains_name == False:
+                if not contains_name:
+                    # Construct name inform act if name is not contained in acts
                     if domain == 'train':
-                        name_act = ['id', index]
+                        name_inform[domain] = ['id', value_id]
                     else:
-                        name_act = ['name', index]
+                        name_inform[domain] = ['name', value_id]
 
-                    tmp = [name_act] + action[cur_inform]
-                    name_inform = name_act
-
-                    if self.name_history_flag:
-                        action[cur_inform] = tmp
-
-            if self.name_action_prev != []:
-                if name_inform == self.name_action_prev:
-                    self.name_history_flag = False
-                else:
-                    self.name_history_flag = True
-
-            if name_inform != []:
-                self.name_action_prev = copy.deepcopy(name_inform)
+                    # If name inform act has not been taken before then add to action set
+                    if name_inform[domain] != self.previous_name_actions[domain]:
+                        action[cur_inform] += [name_inform[domain]]
+                        self.previous_name_actions[domain] = name_inform[domain]
 
         return action
 
