@@ -34,6 +34,7 @@ setup(
                 'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
     install_requires=[
+        'matplotlib',
         'tabulate',
         'python-Levenshtein',
         'requests',
@@ -45,7 +46,6 @@ setup(
         'datasets>=1.8',
         'seqeval',
         'spacy',
-        'allennlp',
         'simplejson',
         'unidecode',
         'jieba',
