@@ -41,6 +41,7 @@ setup(
         'numpy',
         'nltk',
         'scipy',
+        'tensorboard',
         'torch>=1.6',
         'transformers>=4.0',
         'datasets>=1.8',
