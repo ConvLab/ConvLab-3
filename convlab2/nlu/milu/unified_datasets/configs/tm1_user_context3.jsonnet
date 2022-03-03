@@ -11,10 +11,10 @@
         "min_padding_length": 3
       },
     },
-    "context_size": 0,
+    "context_size": 3,
     "agent": "user",
     "use_unified_datasets": true,
-    "dataset_name": "multiwoz21",
+    "dataset_name": "tm1",
     "random_context_size": false
   },
   "train_data_path": "train",

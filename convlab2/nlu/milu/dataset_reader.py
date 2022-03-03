@@ -76,6 +76,8 @@ class MILUDatasetReader(DatasetReader):
 
             for sample in data:
                 utterance = sample['utterance']
+                if len(utterance) == 0:
+                    continue
                 sentences = self._sent_tokenizer.tokenize(utterance)
                 sent_spans = self._sent_tokenizer.span_tokenize(utterance)
                 tokens = [token for sent in sentences for token in self._word_tokenizer.tokenize(sent)]
