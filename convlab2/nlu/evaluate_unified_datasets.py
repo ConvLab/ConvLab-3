@@ -6,8 +6,10 @@ def evaluate(predict_result):
     predict_result = json.load(open(predict_result))
 
     metrics = {x: {'TP':0, 'FP':0, 'FN':0} for x in ['overall', 'binary', 'categorical', 'non-categorical']}
+    acc = []
 
     for sample in predict_result:
+        flag = True
         for da_type in ['binary', 'categorical', 'non-categorical']:
             if da_type == 'binary':
                 predicts = [(x['intent'], x['domain'], x['slot']) for x in sample['predictions']['dialogue_acts'][da_type]]
@@ -26,6 +28,8 @@ def evaluate(predict_result):
                 if ele not in predicts:
                     metrics['overall']['FN'] += 1
                     metrics[da_type]['FN'] += 1
+            flag &= (sorted(predicts)==sorted(labels))
+        acc.append(flag)
     
     for metric in metrics:
         TP = metrics[metric].pop('TP')
@@ -37,6 +41,7 @@ def evaluate(predict_result):
         metrics[metric]['precision'] = precision
         metrics[metric]['recall'] = recall
         metrics[metric]['f1'] = f1
+    metrics['accuracy'] = sum(acc)/len(acc)
 
     return metrics
 
