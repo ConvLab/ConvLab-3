@@ -12,12 +12,29 @@ import os
 import random
 import re
 import logging
-import numpy as np
-import torch
 
 from convlab2.policy.policy import Policy
 from convlab2.task.multiwoz.goal_generator import GoalGenerator
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_USR_DA, REF_SYS_DA
+from data.unified_datasets.multiwoz21.preprocess import normalize_domain_slot_value, reverse_da
+
+
+def unified_format(acts):
+    new_acts = {'categorical': []}
+    for act in acts:
+        intent, domain, slot, value = act
+        new_acts['categorical'].append({"intent": intent, "domain": domain, "slot": slot, "value": value})
+    return new_acts
+
+
+def act_dict_to_flat_tuple(acts):
+    tuples = []
+    for domain_intent, svs in acts.items():
+        for slot, value in svs:
+            domain, intent = domain_intent.split('-')
+            tuples.append([intent, domain, slot, value])
+    return tuples
+
 
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -89,12 +106,16 @@ class UserPolicyAgendaMultiWoz(Policy):
         """
         self.__turn += 2
 
+        sys_dialog_act = unified_format(sys_dialog_act)
+        sys_dialog_act = reverse_da(sys_dialog_act)
+        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
+
         assert isinstance(sys_dialog_act, list)
 
         sys_action = {}
         for intent, domain, slot, value in sys_dialog_act:
-            if slot == 'Choice' and value.strip().lower() in ['0', 'zero']:
-                nooffer_key = '-'.join([domain, 'NoOffer'])
+            if slot == 'choice' and value.strip().lower() in ['0', 'zero']:
+                nooffer_key = '-'.join([domain, 'nooffer'])
                 sys_action.setdefault(nooffer_key, [])
                 sys_action[nooffer_key].append(['none', 'none'])
             else:
@@ -122,8 +143,12 @@ class UserPolicyAgendaMultiWoz(Policy):
 
         tuples = []
         for domain_intent, svs in action.items():
+            domain, intent = domain_intent.lower().split('-')
             for slot, value in svs:
-                domain, intent = domain_intent.split('-')
+                try:
+                    domain, slot, value = normalize_domain_slot_value(domain, slot, value)
+                except:
+                    pass
                 tuples.append([intent, domain, slot, value])
 
         return tuples
@@ -490,7 +515,7 @@ class Agenda(object):
                 if len(g_book) == 0:
                     self._push_item(self.cur_domain +
                                     '-inform', "NotBook", "none")
-            if 'OfferBook' in diaact:
+            if 'offerbook' in diaact:
                 domain = diaact.split('-')[0]
                 g_book = self._get_goal_infos(domain, goal)[-2]
                 if len(g_book) == 0:
@@ -628,7 +653,6 @@ class Agenda(object):
     def _handle_inform(self, domain, intent, slot_vals, goal: Goal):
         g_reqt, g_info, g_fail_info, g_book, g_fail_book = self._get_goal_infos(
             domain, goal)
-
         info_right = True
         for [slot, value] in slot_vals:
             if slot == 'time':

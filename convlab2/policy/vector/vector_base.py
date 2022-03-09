@@ -9,7 +9,6 @@ from copy import deepcopy
 from convlab2.policy.vec import Vector
 from convlab2.util.custom_util import flatten_acts
 from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da, deflat_da, lexicalize_da
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
 from convlab2.util import load_ontology, load_database, load_dataset
 
 
@@ -184,7 +183,7 @@ class VectorBase(Vector):
     def state_vectorize(self, state):
         """vectorize a state
 
-        Args:
+        Args:CTION
             state (tuple):
                 Dialog state
         Returns:
@@ -326,7 +325,7 @@ class VectorBase(Vector):
                     pairs.append((slot, slot1))
 
         for constraint_slots in pairs:
-            state = [[slot, value] for slot, value in constraints.items() if k not in constraint_slots]
+            state = [[slot, value] for slot, value in constraints.items() if slot not in constraint_slots]
             entities = self.db.query(domain, state, topk=1)
             if entities:
                 return np.random.choice(constraint_slots)
@@ -394,8 +393,8 @@ class VectorBase(Vector):
             action[domint] = [[slot, '1']] if slot != 'none' else [[slot, 'none']]
 
         # When there is a INFORM(1 name) or OFFER(multiple) action then inform the name
-        if self.use_add_name:
-            action = self.add_name(action)
+        #if self.use_add_name:
+        #    action = self.add_name(action)
 
         for key in action.keys():
             index = -1

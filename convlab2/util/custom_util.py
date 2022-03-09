@@ -7,6 +7,7 @@ import json
 import zipfile
 import numpy as np
 import torch
+from datasets import load_dataset
 from tensorboardX import SummaryWriter
 from convlab2.util.file_util import cached_path
 from convlab2.policy.evaluate_distributed import evaluate_distributed
@@ -17,10 +18,8 @@ from convlab2.dialog_agent.env import Environment
 from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.policy.rule.multiwoz import RulePolicy
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
+from convlab2.util import load_dataset
 import shutil
-
-from convlab2.util.multiwoz.state import default_state
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
@@ -376,3 +375,42 @@ def model_downloader(download_dir, model_path):
     archive = zipfile.ZipFile(model_path, 'r')
     archive.extractall(download_dir)
     archive.close()
+
+
+def get_goal_distribution(dataset_name='multiwoz21'):
+
+    data_split = load_dataset(dataset_name)
+    domain_combinations = {}
+    for key in data_split:
+        data = data_split[key]
+        for dialogue in data:
+            goal = dialogue['goal']
+            domains = list(set(goal['inform'].keys()) | set(goal['request'].keys()))
+            domains.sort()
+            domains = "-".join(domains)
+
+            if domains not in domain_combinations:
+                domain_combinations[domains] = 1
+            else:
+                domain_combinations[domains] += 1
+
+    single_domain_counter = {}
+    for combi in domain_combinations:
+        for domain in combi.split("-"):
+            if domain not in single_domain_counter:
+                single_domain_counter[domain] = domain_combinations[combi]
+            else:
+                single_domain_counter[domain] += domain_combinations[combi]
+
+    domain_combinations = list(domain_combinations.items())
+    domain_combinations = [list(pair) for pair in domain_combinations]
+    domain_combinations.sort(key=lambda x: x[1], reverse=True)
+    print(domain_combinations)
+    print(single_domain_counter)
+    print("Number of combinations:", sum([value for _, value in domain_combinations]))
+
+
+if __name__ == '__main__':
+    get_goal_distribution()
+
+

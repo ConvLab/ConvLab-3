@@ -1,11 +1,11 @@
 import json
 import os
 
+from copy import deepcopy
 from convlab2.util import load_ontology
 from convlab2.util.multiwoz.state import default_state
 from convlab2.dst.rule.multiwoz.dst_util import normalize_value
 from convlab2.dst.dst import DST
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 
 
 class RuleDST(DST):
@@ -22,7 +22,8 @@ class RuleDST(DST):
         DST.__init__(self)
         self.ontology = load_ontology(dataset_name)
         self.state = default_state()
-        self.state['belief_state'] = self.ontology['state']
+        self.default_belief_state = deepcopy(self.ontology['state'])
+        self.state['belief_state'] = deepcopy(self.default_belief_state)
         path = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
         path = os.path.join(path, 'data/multiwoz/value_dict.json')
@@ -38,17 +39,17 @@ class RuleDST(DST):
             if domain not in self.state['belief_state']:
                 continue
             if intent == 'inform':
-                if slot == 'none':
+                if slot == 'none' or slot == '':
                     continue
                 domain_dic = self.state['belief_state'][domain]
                 if slot in domain_dic:
                     nvalue = normalize_value(self.value_dict, domain, slot, value)
                     self.state['belief_state'][domain][slot] = nvalue
-                elif slot != 'none':
+                elif slot != 'none' or slot != '':
                     # raise Exception('unknown slot name <{}> of domain <{}>'.format(k, domain))
                     with open('unknown_slot.log', 'a+') as f:
                         f.write(
-                            'unknown slot name <{}> of domain <{}>\n'.format(k, domain))
+                            'unknown slot name <{}> of domain <{}>\n'.format(slot, domain))
             elif intent == 'request':
                 if domain not in self.state['request_state']:
                     self.state['request_state'][domain] = {}
@@ -60,8 +61,7 @@ class RuleDST(DST):
     def init_session(self):
         """Initialize ``self.state`` with a default state, which ``convlab2.util.multiwoz.state.default_state`` returns."""
         self.state = default_state()
-        self.state['belief_state'] = self.ontology['state']
-
+        self.state['belief_state'] = deepcopy(self.default_belief_state)
 
 if __name__ == '__main__':
     # from convlab2.dst.rule.multiwoz import RuleDST

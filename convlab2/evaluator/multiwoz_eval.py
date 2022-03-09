@@ -6,7 +6,9 @@ import numpy as np
 from copy import deepcopy
 from pprint import pprint
 from convlab2.evaluator.evaluator import Evaluator
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab2.util.multiwoz.dbquery import Database
+from data.unified_datasets.multiwoz21.preprocess import reverse_da
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -102,6 +104,13 @@ class MultiWozEvaluator(Evaluator):
             da_turn:
                 list[intent, domain, slot, value]
         """
+
+        sys_dialog_act = da_turn
+        sys_dialog_act = unified_format(sys_dialog_act)
+        sys_dialog_act = reverse_da(sys_dialog_act)
+        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
+        da_turn = sys_dialog_act
+
         for intent, domain, slot, value in da_turn:
             dom_int = '-'.join([domain, intent])
             domain = dom_int.split('-')[0].lower()
@@ -191,6 +200,7 @@ class MultiWozEvaluator(Evaluator):
         return score
 
     def _book_goal_constraints(self, goal, booked_states, domains=None):
+        # TODO: This function assumes that the belief state has a "book" key for every domain which is not true anymore
         """
         judge if the selected entity meets the booking constraint
         """
@@ -388,7 +398,8 @@ class MultiWozEvaluator(Evaluator):
         """
         booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
-        book_constraint_sess = self.book_rate_constrains(ref2goal)
+        #book_constraint_sess = self.book_rate_constrains(ref2goal)
+        book_constraint_sess = 1
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
         # book rate == 1 & inform recall == 1
