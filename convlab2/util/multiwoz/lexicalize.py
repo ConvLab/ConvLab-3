@@ -1,5 +1,8 @@
 from copy import deepcopy
 
+from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
+from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
+
 
 def delexicalize_da(da, requestable):
     delexicalized_da = []
@@ -40,7 +43,6 @@ def deflat_da(meta):
 
 def lexicalize_da(meta, entities, state, requestable):
     meta = deepcopy(meta)
-
     for k, v in meta.items():
         domain, intent = k.split('-')
         if domain in ['general']:
@@ -65,13 +67,22 @@ def lexicalize_da(meta, entities, state, requestable):
                     pair[1] = str(len(entities[domain]))
                 else:
                     # try to retrieve value from the database entity, otherwise from the belief state
+                    if domain != 'taxi':
+                        slot_reverse = reverse_da_slot_name_map.get(pair[0], pair[0])
+                    else:
+                        slot_reverse = reverse_da_slot_name_map['taxi'].get(pair[0], pair[0])
+                    slot_old = REF_SYS_DA[domain.capitalize()].get(slot_reverse, pair[0].lower())
                     slot = pair[0]
                     n = int(pair[1]) - 1
                     if len(entities[domain]) > n:
                         if slot in entities[domain][n]:
                             pair[1] = entities[domain][n][slot]
-                        if slot.capitalize() in entities[domain][n]:
+                        elif "".join(slot.split(" ")) in entities[domain][n]:
+                            pair[1] = entities[domain][n]["".join(slot.split(" "))]
+                        elif slot.capitalize() in entities[domain][n]:
                             pair[1] = entities[domain][n][slot.capitalize()]
+                        elif slot_old in entities[domain][n]:
+                            pair[1] = entities[domain][n][slot_old]
                         elif slot in state[domain]:
                             pair[1] = state[domain][slot]
                         pair[1] = pair[1] if pair[1] else 'not available'

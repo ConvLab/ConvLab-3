@@ -168,7 +168,7 @@ def evaluate(args, dataset_name, model_name, load_path, calculate_reward=True, v
     if model_name == "PPO":
         from convlab2.policy.ppo import PPO
         if load_path:
-            policy_sys = PPO(False, vectorizer=VectorBinary())
+            policy_sys = PPO(False, vectorizer=VectorBinary(use_masking=False))
             policy_sys.load(load_path)
         else:
             policy_sys = PPO.from_pretrained()
@@ -220,7 +220,7 @@ def evaluate(args, dataset_name, model_name, load_path, calculate_reward=True, v
 
     action_dict = {}
 
-    task_success = {'All_user_sim': [], 'All_evaluator': [], 'All_evaluator_strict': [], 'total_return': []}
+    task_success = {'Complete': [], 'Success': [], 'Success strict': [], 'total_return': []}
     for seed in range(1000, 1400):
         random.seed(seed)
         np.random.seed(seed)
@@ -231,9 +231,11 @@ def evaluate(args, dataset_name, model_name, load_path, calculate_reward=True, v
         turns = 0
         task_succ = 0
         task_succ_strict = 0
-        logging.info(f"\n Seed: {seed}")
+        complete = 0
+
         if verbose:
             logging.info("NEW EPISODE!!!!" + "-" * 80)
+            logging.info(f"\n Seed: {seed}")
             logging.info(f"GOAL: {sess.evaluator.goal}")
             logging.info("\n")
         for i in range(40):
@@ -255,33 +257,25 @@ def evaluate(args, dataset_name, model_name, load_path, calculate_reward=True, v
 
             # logging.info(f"Actions in turn: {len(sys_response)}")
             turns += 1
-            if user_type == "vhus":
-                total_return += reward
-            else:
-                total_return += simulator.policy.policy.get_reward()
+            total_return += evaluator.get_reward(session_over)
 
-            if session_over is True:
+            if session_over:
                 task_succ = sess.evaluator.task_success()
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
+                complete = sess.evaluator.complete
                 break
-        if user_type != "vhus":
-            logging.info(
-                f"Complete: {int(simulator.policy.policy.goal.task_complete())}")
-        logging.info(f"Success: {task_succ}")
-        logging.info(f"Success strict: {task_succ_strict}")
-        logging.info(f"Return: {total_return}")
-        logging.info(f"Average actions: {actions / turns}")
 
-        if user_type == "vhus":
-            task_success['All_user_sim'].append(
-                int(simulator.policy.goal.task_complete()))
-        else:
-            task_success['All_user_sim'].append(
-                int(simulator.policy.policy.goal.task_complete()))
+        if verbose:
+            logging.info(f"Complete: {complete}")
+            logging.info(f"Success: {task_succ}")
+            logging.info(f"Success strict: {task_succ_strict}")
+            logging.info(f"Return: {total_return}")
+            logging.info(f"Average actions: {actions / turns}")
 
-        task_success['All_evaluator'].append(task_succ)
-        task_success['All_evaluator_strict'].append(task_succ_strict)
+        task_success['Complete'].append(complete)
+        task_success['Success'].append(task_succ)
+        task_success['Success strict'].append(task_succ_strict)
         task_success['total_return'].append(total_return)
 
     # logging.info(f"Entropy: {np.mean(policy_sys.entropy_list)}")

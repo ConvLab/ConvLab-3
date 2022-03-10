@@ -407,7 +407,6 @@ class VectorBase(Vector):
                         "System is likely refering multiple entities within this turn")
                     logging.debug(action[key])
                 index = idx
-
         action = lexicalize_da(action, entities, self.state, self.requestable)
 
         return action

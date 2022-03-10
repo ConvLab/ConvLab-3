@@ -4,7 +4,6 @@ import logging
 import re
 import numpy as np
 from copy import deepcopy
-from pprint import pprint
 from convlab2.evaluator.evaluator import Evaluator
 from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab2.util.multiwoz.dbquery import Database
@@ -131,7 +130,7 @@ class MultiWozEvaluator(Evaluator):
                             len(self.dbs[domain]) > int(value):
                         self.booked[domain] = self.dbs[domain][int(value)].copy()
                         self.booked[domain]['Ref'] = value
-                        self.booked_states[domain] = belief_state[domain]
+                        self.booked_states[domain] = deepcopy(belief_state[domain])
 
     def add_usr_da(self, da_turn):
         """add usr_da into array
@@ -200,7 +199,6 @@ class MultiWozEvaluator(Evaluator):
         return score
 
     def _book_goal_constraints(self, goal, booked_states, domains=None):
-        # TODO: This function assumes that the belief state has a "book" key for every domain which is not true anymore
         """
         judge if the selected entity meets the booking constraint
         """
@@ -220,7 +218,12 @@ class MultiWozEvaluator(Evaluator):
                     # nothing has been booked but should have been
                     score.append(0)
                     continue
-                if len(state['book']) < 2:
+                tracks_booking = False
+                for slot in state:
+                    if "book" in slot:
+                        tracks_booking = True
+                        break
+                if not tracks_booking:
                     # state does not track any booking constraints -> trivially satisfied
                     score.append(1)
                     continue
@@ -228,7 +231,7 @@ class MultiWozEvaluator(Evaluator):
                 match = 0
                 for slot, value in goal[domain]['book'].items():
                     try:
-                        value_predicted = state['book'].get(slot, "")
+                        value_predicted = state.get(f"book {slot}", "")
                         if value == value_predicted:
                             match += 1
                     except Exception as e:
@@ -254,7 +257,6 @@ class MultiWozEvaluator(Evaluator):
         inform_not_reqt = set()
         reqt_not_inform = set()
         bad_inform = set()
-
         for da in sys_history:
             domain, intent, slot, value = da.split('-', 3)
             if intent in ['inform', 'recommend', 'offerbook', 'offerbooked'] and \
@@ -266,7 +268,6 @@ class MultiWozEvaluator(Evaluator):
                 else:
                     bad_inform.add((intent, domain, key))
                     FP += 1
-
         for domain in domains:
             for k in goal[domain]['reqt']:
                 if k in inform_slot[domain]:
@@ -402,6 +403,7 @@ class MultiWozEvaluator(Evaluator):
         book_constraint_sess = 1
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
+        #goal_sess = 1
         # book rate == 1 & inform recall == 1
         if ((book_sess == 1 and inform_sess[1] == 1)
             or (book_sess == 1 and inform_sess[1] is None)

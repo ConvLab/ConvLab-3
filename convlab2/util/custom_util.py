@@ -410,6 +410,23 @@ def get_goal_distribution(dataset_name='multiwoz21'):
     print("Number of combinations:", sum([value for _, value in domain_combinations]))
 
 
+def unified_format(acts):
+    new_acts = {'categorical': []}
+    for act in acts:
+        intent, domain, slot, value = act
+        new_acts['categorical'].append({"intent": intent, "domain": domain, "slot": slot, "value": value})
+
+    return new_acts
+
+
+def act_dict_to_flat_tuple(acts):
+    tuples = []
+    for domain_intent, svs in acts.items():
+        for slot, value in svs:
+            domain, intent = domain_intent.split('-')
+            tuples.append([intent, domain, slot, value])
+
+
 if __name__ == '__main__':
     get_goal_distribution()
 

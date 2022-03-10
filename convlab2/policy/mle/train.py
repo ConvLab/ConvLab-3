@@ -34,6 +34,7 @@ class MLE_Trainer_Abstract():
         self.multi_entropy_loss = nn.MultiLabelSoftMarginLoss()
 
     def policy_loop(self, data):
+
         s, target_a, mask = to_device(data)
         a_weights = self.policy(s)
 
@@ -70,8 +71,10 @@ class MLE_Trainer_Abstract():
                     FP += 1
             return TP, FP, FN
 
+        average_actions, average_target_actions, counter = 0, 0, 0
         a_TP, a_FP, a_FN = 0, 0, 0
         for i, data in enumerate(self.data_valid):
+            counter += 1
             s, target_a, m = to_device(data)
             a_weights = self.policy(s)
             a_weights += m
@@ -81,6 +84,11 @@ class MLE_Trainer_Abstract():
             a_FP += FP
             a_FN += FN
 
+            average_actions += a.float().sum(dim=-1).mean()
+            average_target_actions += target_a.float().sum(dim=-1).mean()
+
+        logging.info(f"Average actions: {average_actions / counter}")
+        logging.info(f"Average target actions: {average_target_actions / counter}")
         prec = a_TP / (a_TP + a_FP)
         rec = a_TP / (a_TP + a_FN)
         F1 = 2 * prec * rec / (prec + rec)

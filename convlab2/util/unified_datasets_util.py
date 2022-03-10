@@ -125,6 +125,7 @@ def load_unified_data(
                 data_by_split[data_split].append(dialogue)
     return data_by_split
 
+
 def load_nlu_data(dataset, data_split='all', speaker='user', use_context=False, context_window_size=0, **kwargs):
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
@@ -133,6 +134,7 @@ def load_nlu_data(dataset, data_split='all', speaker='user', use_context=False, 
     kwargs.setdefault('utterance', True)
     kwargs.setdefault('dialogue_acts', True)
     return load_unified_data(dataset, **kwargs)
+
 
 def load_dst_data(dataset, data_split='all', speaker='user', context_window_size=100, **kwargs):
     kwargs.setdefault('data_split', data_split)

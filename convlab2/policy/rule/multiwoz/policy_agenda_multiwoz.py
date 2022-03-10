@@ -114,8 +114,8 @@ class UserPolicyAgendaMultiWoz(Policy):
 
         sys_action = {}
         for intent, domain, slot, value in sys_dialog_act:
-            if slot == 'choice' and value.strip().lower() in ['0', 'zero']:
-                nooffer_key = '-'.join([domain, 'nooffer'])
+            if slot == 'Choice' and value.strip().lower() in ['0', 'zero']:
+                nooffer_key = '-'.join([domain, 'NoOffer'])
                 sys_action.setdefault(nooffer_key, [])
                 sys_action[nooffer_key].append(['none', 'none'])
             else:
@@ -515,7 +515,7 @@ class Agenda(object):
                 if len(g_book) == 0:
                     self._push_item(self.cur_domain +
                                     '-inform', "NotBook", "none")
-            if 'offerbook' in diaact:
+            if 'OfferBook' in diaact:
                 domain = diaact.split('-')[0]
                 g_book = self._get_goal_infos(domain, goal)[-2]
                 if len(g_book) == 0:
