@@ -1,6 +1,6 @@
 {
 	"model": {
-		"load_path": "convlab2/policy/mle/multiwoz/experiment_2022-02-14-18-40-51/save/supervised",
+		"load_path": "convlab2/policy/mle/experiments/experiment_2022-03-10-11-44-08/save/supervised",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,
@@ -18,7 +18,7 @@
 	},
 	"vectorizer_sys": {
 		"uncertainty_vector_mul": {
-			"class_path": "convlab2.policy.vector.vector_multiwoz.MultiWozVector",
+			"class_path": "convlab2.policy.vector.vector_binary.VectorBinary",
 			"ini_params": {
 				"use_masking": false,
 				"manually_add_entity_names": false,

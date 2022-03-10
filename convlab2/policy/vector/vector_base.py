@@ -2,9 +2,9 @@
 import os
 import sys
 import numpy as np
-import copy
 import logging
 
+from data.unified_datasets.multiwoz21.database import Database
 from copy import deepcopy
 from convlab2.policy.vec import Vector
 from convlab2.util.custom_util import flatten_acts
@@ -27,12 +27,13 @@ class VectorBase(Vector):
         self.set_seed(seed)
         self.ontology = load_ontology(dataset_name)
         try:
-            self.db = load_database(dataset_name)
+            #self.db = load_database(dataset_name)
+            self.db = Database()
             self.db_domains = self.db.domains
-        except:
+        except Exception as e:
             self.db = None
             self.db_domains = None
-            print("VectorBase: Can not load a database, path is probably not existing.")
+            print(f"VectorBase: {e}")
 
         self.dataset_name = dataset_name
         self.max_actionval = {}
