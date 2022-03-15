@@ -2,107 +2,117 @@ import zipfile
 import json
 import os
 import copy
-import logging
+from shutil import copy2, rmtree
+from zipfile import ZipFile, ZIP_DEFLATED
 
-logging.basicConfig(level=logging.INFO)
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-# print(sys.path[-1])
-
-from convlab2.util.file_util import read_zipped_json, write_zipped_json
-
-self_dir = os.path.dirname(os.path.abspath(__file__))
-
-cat_slot_values = {
-    'area': ['north', 'east', 'west', 'south', 'centre'],
-    'pricerange': ['cheap', 'moderate', 'expensive']
-}
-
-camrest_desc = {
-    'restaurant': {
-        'domain': 'find a restaurant to eat',
-        'food': 'food type the restaurant serves',
-        'area': 'area where the restaurant is located',
-        'name': 'name of the restaurant',
-        'pricerange': 'price range of the restaurant',
-        'phone': 'phone number of the restaurant',
-        'address': 'exact location of the restaurant',
-        'postcode': 'postal code of the restaurant',
+ontology = {
+    'domains': {
+        'restaurant': {
+            'description': 'find a restaurant to eat',
+            'slots': {
+                'area': {
+                    'description': 'area where the restaurant is located',
+                    'is_categorical': True,
+                    'possible_values': ["centre","north","west","south","east"]
+                },
+                'price range': {
+                    'description': 'price range of the restaurant',
+                    'is_categorical': True,
+                    'possible_values': ["cheap","moderate","expensive"]
+                },
+                'food': {
+                    'description': 'the cuisine of the restaurant',
+                    'is_categorical': False,
+                    'possible_values': ["afghan","african","afternoon tea","asian oriental","australasian","australian","austrian","barbeque","basque","belgian","bistro","brazilian","british","canapes","cantonese","caribbean","catalan","chinese","christmas","corsica","creative","crossover","cuban","danish","eastern european","english","eritrean","european","french","fusion","gastropub","german","greek","halal","hungarian","indian","indonesian","international","irish","italian","jamaican","japanese","korean","kosher","latin american","lebanese","light bites","malaysian","mediterranean","mexican","middle eastern","modern american","modern eclectic","modern european","modern global","molecular gastronomy","moroccan","new zealand","north african","north american","north indian","northern european","panasian","persian","polish","polynesian","portuguese","romanian","russian","scandinavian","scottish","seafood","singaporean","south african","south indian","spanish","sri lankan","steakhouse","swedish","swiss","thai","the americas","traditional","turkish","tuscan","unusual","vegetarian","venetian","vietnamese","welsh","world"]
+                },
+                'name': {
+                    'description': 'name of the restaurant',
+                    'is_categorical': False,
+                    'possible_values': []
+                },
+                'phone': {
+                    'description': 'phone number of the restaurant',
+                    'is_categorical': False,
+                    'possible_values': []
+                },
+                'address': {
+                    'description': 'exact location of the restaurant',
+                    'is_categorical': False,
+                    'possible_values': []
+                },
+                'postcode': {
+                    'description': 'postcode of the restaurant',
+                    'is_categorical': False,
+                    'possible_values': []
+                }
+            }
+        }
     },
     'intents': {
-        'inform': 'inform user of value of a slot',
-        'request': 'ask for value of a slot',
-        'nooffer': 'inform user that no restaurant matches his request'
+        'inform': {
+            'description': 'inform the value of a slot'
+        },
+        'request': {
+            'description': 'ask for the value of a slot'
+        },
+        'nooffer': {
+            'description': 'inform the user that there is no result satisfies user requirements'
+        }
+    },
+    'state': {
+        'restaurant': {
+            'price range': '',
+            'area': '',
+            'food': ''
+        }
+    },
+    'dialogue_acts': {
+        "categorical": {},
+        "non-categorical": {},
+        "binary": {}
     }
 }
 
-all_slots = ['food', 'area', 'name', 'pricerange', 'phone', 'address', 'postcode']
 
-
-def convert_da(utt, da, all_intent, all_binary_das):
+def convert_da(utt, da):
+    global ontology
     converted_da = {
         'binary': [],
         'categorical': [],
         'non-categorical': []
     }
 
-    for _intent, svs in da.items():
-        if _intent not in all_intent:
-            all_intent.append(_intent)
-
-        if _intent == 'nooffer':
+    for intent, svs in da.items():
+        assert intent in ontology['intents']
+        if intent == 'nooffer':
+            assert svs == [['none', 'none']]
             converted_da['binary'].append({
-                'intent': _intent,
+                'intent': intent,
                 'domain': 'restaurant',
                 'slot': '',
-                'value': ''
             })
-
-            if {
-                'intent': _intent,
-                'domain': 'restaurant',
-                'slot': '',
-                'value': ''
-            } not in all_binary_das:
-                all_binary_das.append({
-                    'intent': _intent,
-                    'domain': 'restaurant',
-                    'slot': '',
-                    'value': ''
-                })
             continue
 
         for s, v in svs:
             if 'care' in v:
-                v = 'dontcare'
-            s = s.lower()
-            v = v.lower()
-            if _intent == 'request':
+                assert v == 'dontcare', print(v)
+            assert s == s.lower()
+            if s == 'pricerange':
+                s = 'price range'
+            v = v
+            if intent == 'request':
+                assert v == '?'
                 converted_da['binary'].append({
-                    'intent': _intent,
+                    'intent': intent,
                     'domain': 'restaurant',
-                    'slot': s,
-                    'value': ''
+                    'slot': s
                 })
-
-                if {
-                    'intent': _intent,
-                    'domain': 'restaurant',
-                    'slot': s,
-                    'value': ''
-                } not in all_binary_das:
-                    all_binary_das.append({
-                        'intent': _intent,
-                        'domain': 'restaurant',
-                        'slot': s,
-                        'value': ''
-                    })
                 continue
 
-            if s in cat_slot_values:
-                assert v in cat_slot_values[s] + ['dontcare']
+            if s in ['price range', 'area']:
+                assert v.lower() in ontology['domains']['restaurant']['slots'][s]['possible_values'] + ['dontcare'], print(s, v)
                 converted_da['categorical'].append({
-                    'intent': _intent,
+                    'intent': intent,
                     'domain': 'restaurant',
                     'slot': s,
                     'value': v
@@ -110,240 +120,158 @@ def convert_da(utt, da, all_intent, all_binary_das):
 
             else:
                 # non-categorical
-                start_ch = utt.find(v)
+                start_ch = utt.lower().find(v.lower())
 
                 if start_ch == -1:
-                    # if not v == 'dontcare':
-                    #     logging.info('non-categorical slot value not found')
-                    #     logging.info('value: {}'.format(v))
-                    #     logging.info('sentence: {}'.format(utt))
-                    #     continue
+                    if not v == 'dontcare':
+                        print('non-categorical slot value not found')
+                        print('value: {}'.format(v))
+                        print('sentence: {}'.format(utt))
+                        print()
 
                     converted_da['non-categorical'].append({
-                        'intent': _intent,
+                        'intent': intent,
                         'domain': 'restaurant',
                         'slot': s,
                         'value': v,
-                        # 'start': 0,
-                        # 'end': 0
                     })
-                    continue
-
-                converted_da['non-categorical'].append({
-                    'intent': _intent,
-                    'domain': 'restaurant',
-                    'slot': s,
-                    'value': utt[start_ch: start_ch + len(v)],
-                    'start': start_ch,
-                    'end': start_ch + len(v)
-                })
-                assert utt[start_ch: start_ch + len(v)] == v
+                else:
+                    converted_da['non-categorical'].append({
+                        'intent': intent,
+                        'domain': 'restaurant',
+                        'slot': s,
+                        'value': utt[start_ch: start_ch + len(v)],
+                        'start': start_ch,
+                        'end': start_ch + len(v)
+                    })
+                    assert utt[start_ch: start_ch + len(v)].lower() == v.lower()
 
     return converted_da
 
 
-def convert_state(state, state_slots):
-    ret_state = {'restaurant': {k: '' for k in state_slots}}
-    for da in state:
+def convert_state(slu):
+    global ontology
+    ret_state = copy.deepcopy(ontology['state'])
+    for da in slu:
         if da['act'] != 'inform':
             continue
 
         for s, v in da['slots']:
-            s = s.lower()
-            v = v.lower()
-
-            if not s in all_slots:
-                logging.info('state slot {} not in all_slots!'.format(s))
+            s = s if s != 'pricerange' else 'price range'
+            if s not in ret_state['restaurant']:
+                print('slot not in state')
+                print(da)
+                print()
                 continue
-
             ret_state['restaurant'][s] = v
-
-            if s not in state_slots:
-                print(s)
-                raise
 
     return ret_state
 
 
-def get_state_update(prev_state, cur_state, prev_turns, cur_user_da, dialog_id):
-    # cur_user_da: List of non-categorical slot-values
-    diff_state = {}
-    state_update = {'categorical': [], 'non-categorical':[]}
-    for s, v in cur_state.items():
-        if s in prev_state and prev_state[s] == v:
-            continue
-        diff_state[s] = v
-
-    for s, v in diff_state.items():
-        if v == '':
-            continue
-        if s in cat_slot_values:
-            assert v in cat_slot_values[s] + ['dontcare']
-            state_update['categorical'].append({
-                'domain': 'restaurant',
-                'slot': s,
-                'value': v,
-            })
-        else:
-            # non-categorical slot
-            found = False
-            for _usr_da in cur_user_da:
-                if _usr_da['slot'] == s and _usr_da['value'] == v :
-                    found = True
-                    if v != 'dontcare' and 'start' in _usr_da:
-                        state_update['non-categorical'].append({
-                            'domain': 'restaurant',
-                            'slot': s,
-                            'value': v,
-                            'utt_idx': len(prev_turns),
-                            'start': _usr_da['start'],
-                            'end': _usr_da['end']
-                        })
-                    else:
-                        state_update['non-categorical'].append({
-                            'domain': 'restaurant',
-                            'slot': s,
-                            'value': v,
-                        })
-            if found:
-                continue
-
-            prev_sys_da = [] if len(prev_turns) == 0 else prev_turns[-1]['dialogue_act']['non-categorical']
-            for _sys_da in prev_sys_da:
-                if _sys_da['slot'] == s and _sys_da['value'] == v and 'start' in _sys_da:
-                    if _sys_da['slot'] == s and _sys_da['value'] == v:
-                        state_update['non-categorical'].append({
-                            'domain': 'restaurant',
-                            'slot': s,
-                            'value': v,
-                            'utt_idx': len(prev_turns) - 1,
-                            'start': _sys_da['start'],
-                            'end': _sys_da['end']
-                        })
-                        found = True
-
-            if not found:
-                state_update['non-categorical'].append({
-                    'domain': 'restaurant',
-                    'slot': s,
-                    'value': v
-                })
-
-    return state_update
-
-
 def preprocess():
-    original_zipped_path = os.path.join(self_dir, 'original_data.zip')
-    if not os.path.exists(original_zipped_path):
-        raise FileNotFoundError(original_zipped_path)
-    if not os.path.exists(os.path.join(self_dir, 'data.zip')) or not os.path.exists(
-            os.path.join(self_dir, 'ontology.json')):
-        # print('unzip to', new_dir)
-        # print('This may take several minutes')
-        archive = zipfile.ZipFile(original_zipped_path, 'r')
-        archive.extractall(self_dir)
+    # use convlab-2 version camrest which already has dialog act annotation
+    original_data_dir = '../../camrest/'
+    new_data_dir = 'data'
+    
+    os.makedirs(new_data_dir, exist_ok=True)
 
-    all_data = []
-    all_intent = []
-    all_binary_das = []
-    all_state_slots = ['pricerange', 'area', 'food']
+    copy2(f'{original_data_dir}/db/CamRestDB.json', new_data_dir)
+    
+    dataset = 'camrest'
+    domain = 'restaurant'
+    splits = ['train', 'validation', 'test']
+    dialogues_by_split = {split:[] for split in splits}
+    
+    for split in ['train', 'val', 'test']:
+        data = json.load(zipfile.ZipFile(os.path.join(original_data_dir, f'{split}.json.zip'), 'r').open(f'{split}.json'))
+        if split == 'val':
+            split = 'validation'
 
-    data_splits = ['train', 'val', 'test']
-    extract_dir = os.path.join(self_dir, 'original_data')
+        cur_domains = [domain]
 
-    if not os.path.exists('data.zip') or not os.path.exists('ontology.json'):
+        for ori_dialog in data:
+            dialogue_id = f'{dataset}-{split}-{len(dialogues_by_split[split])}'
 
-        dialog_id = 1
-        for data_split in data_splits:
-            data = json.load(open(os.path.join(self_dir, extract_dir, '{}.json'.format(data_split))))
+            goal = {
+                'description': ori_dialog['goal']['text'],
+                'inform': {'restaurant': {}},
+                'request': {'restaurant': {}}
+            }
+            for slot, value in ori_dialog['goal']['info'].items():
+                if slot == 'pricerange':
+                    slot = 'price range'
+                goal['inform'][domain][slot] = value
+            for slot in ori_dialog['goal']['reqt']:
+                if slot == 'pricerange':
+                    slot = 'price range'
+                goal['request'][domain][slot] = ''
 
-            for i, d in enumerate(data):
+            dialogue = {
+                'dataset': dataset,
+                'data_split': split,
+                'dialogue_id': dialogue_id,
+                'original_id': ori_dialog['dialogue_id'],
+                'domains': cur_domains,
+                'goal': goal,
+                'finished': ori_dialog['finished'],
+                'turns': []
+            }
 
-                dialogue = d['dial']
-                converted_dialogue = {
-                    'dataset': 'camrest',
-                    'data_split': data_split,
-                    'dialogue_id': 'camrest_' + str(dialog_id),
-                    'original_id': d['dialogue_id'],
-                    'domains': ['restaurant'],
-                    'turns': []
+            for turn in ori_dialog['dial']:
+                usr_text = turn['usr']['transcript']
+                usr_da = turn['usr']['dialog_act']
+
+                sys_text = turn['sys']['sent']
+                sys_da = turn['sys']['dialog_act']
+
+                cur_state = convert_state(turn['usr']['slu'])
+                cur_user_da = convert_da(usr_text, usr_da)
+
+                usr_turn = {
+                    'speaker': 'user',
+                    'utterance': usr_text,
+                    'utt_idx': len(dialogue['turns']),
+                    'dialogue_acts': cur_user_da,
+                    'state': cur_state,
                 }
 
-                prev_state = {'restaurant': {}}
-                for turn in dialogue:
-                    usr_text = turn['usr']['transcript'].lower()
-                    usr_da = turn['usr']['dialog_act']
+                sys_turn = {
+                    'speaker': 'system',
+                    'utterance': sys_text,
+                    'utt_idx': len(dialogue['turns'])+1,
+                    'dialogue_acts': convert_da(sys_text, sys_da),
+                    'db_results': {}
+                }
 
-                    sys_text = turn['sys']['sent'].lower()
-                    sys_da = turn['sys']['dialog_act']
+                dialogue['turns'].append(usr_turn)
+                dialogue['turns'].append(sys_turn)
 
-                    cur_state = convert_state(turn['usr']['slu'], all_state_slots)
-                    cur_user_da = convert_da(usr_text, usr_da, all_intent, all_binary_das)
+            for turn in dialogue['turns']:
+                speaker = turn['speaker']
+                dialogue_acts = turn['dialogue_acts']
 
-                    usr_turn = {
-                        'utt_idx': len(converted_dialogue['turns']),
-                        'speaker': 'user',
-                        'utterance': usr_text,
-                        'dialogue_act': cur_user_da,
-                        'state': copy.deepcopy(cur_state),
-                        'state_update': get_state_update(prev_state['restaurant'], cur_state['restaurant'], converted_dialogue['turns'], cur_user_da['non-categorical'], converted_dialogue['dialogue_id'])
-                    }
+                # add to dialogue_acts dictionary in the ontology
+                for da_type in dialogue_acts:
+                    das = dialogue_acts[da_type]
+                    for da in das:
+                        ontology["dialogue_acts"][da_type].setdefault((da['intent'], da['domain'], da['slot']), {})
+                        ontology["dialogue_acts"][da_type][(da['intent'], da['domain'], da['slot'])][speaker] = True
+            dialogues_by_split[split].append(dialogue)
 
-                    sys_turn = {
-                        'utt_idx': len(converted_dialogue['turns'])+1,
-                        'speaker': 'system',
-                        'utterance': sys_text,
-                        'dialogue_act': convert_da(sys_text, sys_da, all_intent, all_binary_das),
-                    }
-
-                    prev_state = copy.deepcopy(cur_state)
-
-                    converted_dialogue['turns'].append(usr_turn)
-                    converted_dialogue['turns'].append(sys_turn)
-                if converted_dialogue['turns'][-1]['speaker'] == 'system':
-                    converted_dialogue['turns'].pop(-1)
-                all_data.append(converted_dialogue)
-                dialog_id += 1
-
-        json.dump(all_data, open('./data.json', 'w'), indent=4)
-        write_zipped_json(os.path.join(self_dir, 'data.zip'), 'data.json')
-        os.remove('data.json')
-
-        new_ont = {
-            'domains': {},
-            'intents': {},
-            'binary_dialogue_act': [],
-            'state': {}
-        }
-
-        new_ont['state']['restaurant'] = {}
-        for ss in all_state_slots:
-            new_ont['state']['restaurant'][ss] = ''
-
-        for b in all_binary_das:
-            new_ont['binary_dialogue_act'].append(b)
-
-        for i in all_intent:
-            new_ont['intents'][i] = {'description': camrest_desc['intents'][i]}
-
-        new_ont['domains']['restaurant'] = {
-            'description': camrest_desc['restaurant']['domain'],
-            'slots': {}
-        }
-        for s in all_slots:
-            new_ont['domains']['restaurant']['slots'][s] = {
-                "description": camrest_desc['restaurant'][s],
-                "is_categorical": True if s in cat_slot_values else False,
-                "possible_values": cat_slot_values[s] if s in cat_slot_values else []
-            }
-        json.dump(new_ont, open(os.path.join(self_dir, './ontology.json'), 'w'), indent=4)
-
-
-    else:
-        all_data = read_zipped_json(os.path.join(self_dir, './data.zip'), 'data.json')
-        new_ont = json.load(open(os.path.join(self_dir, './ontology.json'), 'r'))
-
-    return all_data, new_ont
+    dialogues = []
+    for split in splits:
+        dialogues += dialogues_by_split[split]
+    for da_type in ontology['dialogue_acts']:
+        ontology["dialogue_acts"][da_type] = sorted([str({'user': speakers.get('user', False), 'system': speakers.get('system', False), 'intent':da[0],'domain':da[1], 'slot':da[2]}) for da, speakers in ontology["dialogue_acts"][da_type].items()])
+    json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
+        for filename in os.listdir(new_data_dir):
+            zf.write(f'{new_data_dir}/{filename}')
+    rmtree(original_data_dir)
+    rmtree(new_data_dir)
+    return dialogues, ontology
 
 
 if __name__ == '__main__':
