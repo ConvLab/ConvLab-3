@@ -3,7 +3,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-0",
-    "original_id": "dlg-9962109d-437b-4ed3-b037-980272a3bda1",
+    "original_id": "dlg-bca5ce0a-056f-446e-be94-3ba77b32a84f",
     "domains": [
       "movie"
     ],
@@ -15,18 +15,35 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "I'd like to buy tickets for movie particularly on AMC Mercado 24.",
+        "utterance": "hi....am buying a ticket tonight so we go and see a movie at AMC mountain 16",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": []
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "date.showing",
+              "value": "tonight",
+              "start": 25,
+              "end": 32
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "AMC mountain 16",
+              "start": 61,
+              "end": 76
+            }
+          ]
         },
         "state": {
           "movie": {
             "name.movie": "",
-            "name.theater": "",
-            "date.showing": "",
+            "name.theater": "AMC mountain 16",
+            "date.showing": "tonight",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -59,32 +76,23 @@
       },
       {
         "speaker": "user",
-        "utterance": "I prefer to go for an action movie, Let me know the movie lists & show timings.",
+        "utterance": "hhhmmmmm not at all. i dont have any in mind for now",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.genre",
-              "value": "action",
-              "start": 22,
-              "end": 28
-            }
-          ]
+          "non-categorical": []
         },
         "state": {
           "movie": {
             "name.movie": "",
-            "name.theater": "",
-            "date.showing": "",
+            "name.theater": "AMC mountain 16",
+            "date.showing": "tonight",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
-            "name.genre": "action",
+            "name.genre": "",
             "name.person": "",
             "num.tickets": "",
             "price.ticket": "",
@@ -101,7 +109,7 @@
       },
       {
         "speaker": "system",
-        "utterance": "Sure. I can help with that. Let me check listings at AMC Mercado 24.",
+        "utterance": "Sure. I can help with that. Let me listings at AMC Mercado 24.",
         "utt_idx": 3,
         "dialogue_acts": {
           "binary": [],
@@ -111,9 +119,9 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
-              "value": "AMC Mercado 24",
-              "start": 53,
-              "end": 67
+              "value": "MC Mercado 24.",
+              "start": 48,
+              "end": 62
             }
           ]
         },
@@ -121,23 +129,32 @@
       },
       {
         "speaker": "user",
-        "utterance": "Please do check at AMC Mercado 24 instead of AMC Mercado 16",
+        "utterance": "sure you can but i want to see the movie at AMC mountain 16",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": []
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "AMC mountain 16",
+              "start": 44,
+              "end": 59
+            }
+          ]
         },
         "state": {
           "movie": {
             "name.movie": "",
-            "name.theater": "AMC Mercado 24",
-            "date.showing": "",
+            "name.theater": "AMC mountain 16",
+            "date.showing": "tonight",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
-            "name.genre": "action",
+            "name.genre": "",
             "name.person": "",
             "num.tickets": "",
             "price.ticket": "",
@@ -182,7 +199,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, It is",
+        "utterance": "yeah",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -193,7 +210,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "",
+            "date.showing": "tonight",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -275,7 +292,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Thank you. Make it for 9:10 pm",
+        "utterance": "yeah but 9.10pm will be perfect for me",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
@@ -285,9 +302,9 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
-              "value": "9:10 pm",
-              "start": 23,
-              "end": 30
+              "value": "9.10pm",
+              "start": 9,
+              "end": 15
             }
           ]
         },
@@ -295,7 +312,7 @@
           "movie": {
             "name.movie": "No Time To Die",
             "name.theater": "AMC Mountain 16:",
-            "date.showing": "",
+            "date.showing": "tonight",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -310,7 +327,7 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": "9:10 pm",
+            "time.showing": "9.10pm",
             "type.screening": ""
           }
         }
@@ -328,7 +345,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I need 9 tickets.",
+        "utterance": "myself and two other persons are going to see a movie",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -339,7 +356,7 @@
           "movie": {
             "name.movie": "No Time To Die",
             "name.theater": "AMC Mountain 16:",
-            "date.showing": "",
+            "date.showing": "tonight",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -354,7 +371,7 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": "9:10 pm",
+            "time.showing": "9.10pm",
             "type.screening": ""
           }
         }
@@ -413,7 +430,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, Go ahead. Good to go then.",
+        "utterance": "yeah",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
@@ -457,7 +474,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Thank you for your assistance. Have a good one.",
+        "utterance": "yes you can",
         "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
@@ -501,7 +518,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, that is all for the day. Thanks!",
+        "utterance": "ok thanks but i dont need anything again",
         "utt_idx": 16,
         "dialogue_acts": {
           "binary": [],
@@ -549,7 +566,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-1",
-    "original_id": "dlg-684cfa8c-0f50-4ecb-9543-12b4080d5dec",
+    "original_id": "dlg-c9064676-75fe-4d0a-83c2-497e1f2115a6",
     "domains": [
       "movie"
     ],
@@ -561,7 +578,7 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "Can you get me movie tickets for tonight at the AMC Mountain 16?",
+        "utterance": "I need to get some tickets for a movie tonight at the AMC Mountain 16 theater.",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
@@ -572,16 +589,16 @@
               "domain": "movie",
               "slot": "date.showing",
               "value": "tonight",
-              "start": 33,
-              "end": 40
+              "start": 39,
+              "end": 46
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 48,
-              "end": 63
+              "start": 54,
+              "end": 69
             }
           ]
         },
@@ -622,7 +639,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Are there any action movies?",
+        "utterance": "I'm hoping there's an action movie showing.",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
@@ -633,8 +650,8 @@
               "domain": "movie",
               "slot": "name.genre",
               "value": "action",
-              "start": 14,
-              "end": 20
+              "start": 22,
+              "end": 28
             }
           ]
         },
@@ -684,7 +701,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, not the Mercado, the AMC Mountain 16.",
+        "utterance": "Sorry, I wanted the AMC Mountain 16, not the Mercado theater.",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -695,8 +712,8 @@
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 25,
-              "end": 40
+              "start": 20,
+              "end": 35
             }
           ]
         },
@@ -754,7 +771,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "That's correct.",
+        "utterance": "Yes, the Mountain 16.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -874,7 +891,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, the 9:10pm sounds good.",
+        "utterance": "Yes, the 9:10pm sounds perfect for my schedule.",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
@@ -927,7 +944,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Me and two others.",
+        "utterance": "Three, since it'll just be my two friends and I.",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -1012,7 +1029,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Affirmative.",
+        "utterance": "Yes, that's correct.",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
@@ -1056,7 +1073,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Make it so.",
+        "utterance": "Absolutely!",
         "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
@@ -1117,7 +1134,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, that's all.",
+        "utterance": "No thanks, I'm good.",
         "utt_idx": 16,
         "dialogue_acts": {
           "binary": [],
@@ -1165,7 +1182,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-2",
-    "original_id": "dlg-0717348f-786f-477a-a87b-7fcade729006",
+    "original_id": "dlg-f7500bcf-472c-48c3-adfd-e4ec9f63bcf1",
     "domains": [
       "movie"
     ],
@@ -1177,7 +1194,7 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "I'd like to see a movie tonight, specifically at the AMC Mountain 16.",
+        "utterance": "I need help finding showtimes for tonight at my local theater the AMC Mountain 16.",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
@@ -1188,16 +1205,16 @@
               "domain": "movie",
               "slot": "date.showing",
               "value": "tonight",
-              "start": 24,
-              "end": 31
+              "start": 34,
+              "end": 41
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 53,
-              "end": 68
+              "start": 66,
+              "end": 81
             }
           ]
         },
@@ -1238,7 +1255,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yeah, I want an action movie.",
+        "utterance": "No, I'm looking for anything that has action in it.",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
@@ -1249,8 +1266,8 @@
               "domain": "movie",
               "slot": "name.genre",
               "value": "action",
-              "start": 16,
-              "end": 22
+              "start": 38,
+              "end": 44
             }
           ]
         },
@@ -1300,7 +1317,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Actually, I wanted the AMC Mountain 16.",
+        "utterance": "No, that's the wrong theater, I wanted show times for the AMC Mountain 16.",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -1311,8 +1328,8 @@
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 23,
-              "end": 38
+              "start": 58,
+              "end": 73
             }
           ]
         },
@@ -1370,7 +1387,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "That's right.",
+        "utterance": "Yes, please.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -1490,12 +1507,21 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, let's do the 9:10 showing.",
+        "utterance": "Yeah, the 9:10pm show works perfectly.",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": []
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "9:10pm",
+              "start": 10,
+              "end": 16
+            }
+          ]
         },
         "state": {
           "movie": {
@@ -1534,7 +1560,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Myself, my wife, and my friend.",
+        "utterance": "I have a small group of us going, so I need three tickets.",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -1619,7 +1645,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "That is correct.",
+        "utterance": "Yes, that' right.",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
@@ -1663,7 +1689,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes it is.",
+        "utterance": "Yes, I'm ready to check out.",
         "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
@@ -1724,7 +1750,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, thank you very much.",
+        "utterance": "No, that's all I needed, thanks.",
         "utt_idx": 16,
         "dialogue_acts": {
           "binary": [],
@@ -1772,7 +1798,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-3",
-    "original_id": "dlg-9ef3529f-fed0-4d76-8f3c-4d1fcdab9ed1",
+    "original_id": "dlg-df1f0d45-27f2-4fb0-8aaa-b6b5f5a843bb",
     "domains": [
       "movie"
     ],
@@ -1784,7 +1810,7 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "I'd like to get some tickets to a movie for tonight at AMC Mountain 16.",
+        "utterance": "Hello, I am interested in buying tickets tonight in AMC Mountain 16 theater.",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
@@ -1795,16 +1821,16 @@
               "domain": "movie",
               "slot": "date.showing",
               "value": "tonight",
-              "start": 44,
-              "end": 51
+              "start": 41,
+              "end": 48
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 55,
-              "end": 70
+              "start": 52,
+              "end": 67
             }
           ]
         },
@@ -1845,7 +1871,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "If there is an action movie playing, that would be great.",
+        "utterance": "I would say something action-like.",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
@@ -1855,9 +1881,9 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "name.genre",
-              "value": "action",
-              "start": 15,
-              "end": 21
+              "value": "action-like",
+              "start": 22,
+              "end": 33
             }
           ]
         },
@@ -1870,7 +1896,7 @@
             "duration.movie": "",
             "location": "",
             "name.character": "",
-            "name.genre": "action",
+            "name.genre": "action-like",
             "name.person": "",
             "num.tickets": "",
             "price.ticket": "",
@@ -1907,7 +1933,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Wait, it's supposed to be AMC Mountain 16.",
+        "utterance": "I wanted AMC Mountain 16, NOT AMC Mercado 24",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -1918,8 +1944,8 @@
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 26,
-              "end": 41
+              "start": 9,
+              "end": 24
             }
           ]
         },
@@ -1932,7 +1958,7 @@
             "duration.movie": "",
             "location": "",
             "name.character": "",
-            "name.genre": "action",
+            "name.genre": "action-like",
             "name.person": "",
             "num.tickets": "",
             "price.ticket": "",
@@ -1977,7 +2003,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, that is right.",
+        "utterance": "Yes.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -2097,7 +2123,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "That will work. Let's go with the 9:10 start time.",
+        "utterance": "Oh cool, looks like 9:10 is a good choice.",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
@@ -2141,7 +2167,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "They are for myself, my mom, and my brother, so get three tickets please.",
+        "utterance": "Us three",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -2226,7 +2252,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yep, that's right.",
+        "utterance": "Yes, that's good.",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
@@ -2270,7 +2296,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, please buy them.",
+        "utterance": "Hells yeah.",
         "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
@@ -2331,7 +2357,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, that's all I need for today. Thanks a lot for your help.",
+        "utterance": "No, it's all right. Have a good night!",
         "utt_idx": 16,
         "dialogue_acts": {
           "binary": [],
@@ -2379,7 +2405,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-4",
-    "original_id": "dlg-317727d0-4881-4e08-a3da-d598ee157605",
+    "original_id": "dlg-6086332d-a1a6-4acf-a3a5-4237a90a4ad2",
     "domains": [
       "movie"
     ],
@@ -2391,7 +2417,7 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "I would like 2 tickets to see Mulan.",
+        "utterance": "I will like to buy tickets in order to proceed on seeing two movies at the Mountain AMC 16 Theatre tomorrow.",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
@@ -2400,33 +2426,33 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "num.tickets",
-              "value": "2",
-              "start": 13,
-              "end": 14
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 75,
+              "end": 90
             },
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 30,
-              "end": 35
+              "slot": "date.showing",
+              "value": "tomorrow",
+              "start": 99,
+              "end": 107
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "",
-            "date.showing": "",
+            "name.movie": "",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "2",
+            "num.tickets": "",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
@@ -2441,35 +2467,18 @@
       },
       {
         "speaker": "system",
-        "utterance": "What day would you like 2 tickets to see No Time To Die?",
+        "utterance": "I am at your service. May I have the titles of the movies of choice?",
         "utt_idx": 1,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "num.tickets",
-              "value": "2",
-              "start": 24,
-              "end": 25
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "No Time To Die",
-              "start": 41,
-              "end": 55
-            }
-          ]
+          "non-categorical": []
         },
         "db_results": {}
       },
       {
         "speaker": "user",
-        "utterance": "I would not, It should be Mulan",
+        "utterance": "The first movie is \"No Time To Die\" while the second is \"Milani\"",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
@@ -2479,24 +2488,32 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "name.movie",
-              "value": "Mulan",
-              "start": 26,
-              "end": 31
+              "value": "\"No Time To Die\"",
+              "start": 19,
+              "end": 35
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Milani\"",
+              "start": 56,
+              "end": 64
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "",
-            "date.showing": "",
+            "name.movie": "\"Milani\"",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "2",
+            "num.tickets": "",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
@@ -2511,7 +2528,7 @@
       },
       {
         "speaker": "system",
-        "utterance": "What is incorrect?",
+        "utterance": "Movie choice confirmed. Please confirm that your second choice is correct.",
         "utt_idx": 3,
         "dialogue_acts": {
           "binary": [],
@@ -2522,7 +2539,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Movie Title should Be Mulan.",
+        "utterance": "I made the wrong spelling in the second choice. The correct movie name is \"Mulan\"",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -2532,24 +2549,24 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "name.movie",
-              "value": "Mulan",
-              "start": 22,
-              "end": 27
+              "value": "\"Mulan\"",
+              "start": 74,
+              "end": 81
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "",
-            "date.showing": "",
+            "name.movie": "\"Mulan\"",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "2",
+            "num.tickets": "",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
@@ -2564,7 +2581,7 @@
       },
       {
         "speaker": "system",
-        "utterance": "What day would you like 2 tickets to see Mulan?",
+        "utterance": "Movie name \"Mulan\" confirmed. Your confirmed movie preferences are \"No Time To Die\" and \"Mulan\"",
         "utt_idx": 5,
         "dialogue_acts": {
           "binary": [],
@@ -2573,18 +2590,26 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "num.tickets",
-              "value": "2",
-              "start": 24,
-              "end": 25
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 11,
+              "end": 18
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.movie",
-              "value": "Mulan",
-              "start": 41,
-              "end": 46
+              "value": "\"No Time To Die\"",
+              "start": 67,
+              "end": 83
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 88,
+              "end": 95
             }
           ]
         },
@@ -2592,7 +2617,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Tomorrow",
+        "utterance": "That is correct. I will like to know the movies' showtime preference for tomorrow.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -2602,24 +2627,24 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "date.showing",
-              "value": "Tomorrow",
-              "start": 0,
-              "end": 8
+              "value": "tomorrow",
+              "start": 73,
+              "end": 81
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "",
-            "date.showing": "Tomorrow",
+            "name.movie": "\"Mulan\"",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "2",
+            "num.tickets": "",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
@@ -2634,7 +2659,7 @@
       },
       {
         "speaker": "system",
-        "utterance": "Mulan is showing in one theater, the Mountain AMC 16 at the following times tomorrow: 4:00pm 6:10pm 8:30pm 10:40pm; which showing would you prefer?",
+        "utterance": "These are the showtimes for the movies: \"No Time To Die\" will be available at 3:00pm 5:10pm 7:30pm 9:40pm, and \"Mulan\" will be available at 4:00pm 6:10pm 8:30pm 10:40pm. Please indicate your most prefered showtime for the movies respectively.",
         "utt_idx": 7,
         "dialogue_acts": {
           "binary": [],
@@ -2644,57 +2669,81 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "name.movie",
-              "value": "Mulan",
-              "start": 0,
-              "end": 5
+              "value": "\"No Time To Die\"",
+              "start": 40,
+              "end": 56
             },
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 37,
-              "end": 52
+              "slot": "time.showing",
+              "value": "3:00pm",
+              "start": 78,
+              "end": 84
             },
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "date.showing",
-              "value": "tomorrow:",
-              "start": 76,
-              "end": 85
+              "slot": "time.showing",
+              "value": "5:10pm",
+              "start": 85,
+              "end": 91
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "7:30pm",
+              "start": 92,
+              "end": 98
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "9:40pm",
+              "start": 99,
+              "end": 105
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 111,
+              "end": 118
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
               "value": "4:00pm",
-              "start": 86,
-              "end": 92
+              "start": 140,
+              "end": 146
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
               "value": "6:10pm",
-              "start": 93,
-              "end": 99
+              "start": 147,
+              "end": 153
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
               "value": "8:30pm",
-              "start": 100,
-              "end": 106
+              "start": 154,
+              "end": 160
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
-              "value": "10:40pm;",
-              "start": 107,
-              "end": 115
+              "value": "10:40pm",
+              "start": 161,
+              "end": 168
             }
           ]
         },
@@ -2703,25 +2752,30 @@
             {
               "index": 6,
               "args": {
-                "name.movie": "Mulan"
-              },
-              "response": {
-                "name.theater_1": "Mountain AMC 16"
-              },
-              "name": "find_theaters"
-            },
-            {
-              "index": 6,
-              "args": {
-                "name.movie": "Mulan",
-                "date.showing": "Tomorrow",
-                "name.theater": "Mountain AMC 16"
+                "name.movie": "\"Mulan\"",
+                "name.theater": "Mountain AMC 16",
+                "date.showing": "tomorrow"
               },
               "response": {
                 "time.showing_1": "4:00pm",
                 "time.showing_2": "6:10pm",
                 "time.showing_3": "8:30pm",
-                "time.showing_4": "10:40pm;"
+                "time.showing_4": "10:40pm"
+              },
+              "name": "find_showtimes"
+            },
+            {
+              "index": 6,
+              "args": {
+                "name.movie": "\"No Time To Die\"",
+                "name.theater": "Mountain AMC 16",
+                "date.showing": "tomorrow"
+              },
+              "response": {
+                "time.showing_1": "3:00pm",
+                "time.showing_2": "5:10pm",
+                "time.showing_3": "7:30pm",
+                "time.showing_4": "9:40pm"
               },
               "name": "find_showtimes"
             }
@@ -2730,7 +2784,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I would like the 4pm showing.",
+        "utterance": "I choose 3:00pm for \"No Time To Die\" and 10:40pm for \"Mulan\"",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
@@ -2740,24 +2794,48 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
-              "value": "4pm",
-              "start": 17,
-              "end": 20
+              "value": "3:00pm",
+              "start": 9,
+              "end": 15
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"No Time To Die\"",
+              "start": 20,
+              "end": 36
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "10:40pm",
+              "start": 41,
+              "end": 48
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 53,
+              "end": 60
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
+            "name.movie": "\"Mulan\"",
             "name.theater": "Mountain AMC 16",
-            "date.showing": "tomorrow:",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "2",
+            "num.tickets": "",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
@@ -2765,14 +2843,14 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": "4pm",
+            "time.showing": "10:40pm",
             "type.screening": ""
           }
         }
       },
       {
         "speaker": "system",
-        "utterance": "You would like 2 tickets for Mulan which is playing at the Mountain AMC 16 at 4pm, is that correct?",
+        "utterance": "Showtime preferences for movies confirmed as \"No Time To Die\" 3:00pm and \"Mulan\" as 10:40pm.",
         "utt_idx": 9,
         "dialogue_acts": {
           "binary": [],
@@ -2781,34 +2859,34 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "num.tickets",
-              "value": "2",
-              "start": 15,
-              "end": 16
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
               "slot": "name.movie",
-              "value": "Mulan",
-              "start": 29,
-              "end": 34
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 59,
-              "end": 74
+              "value": "\"No Time To Die\"",
+              "start": 45,
+              "end": 61
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
-              "value": "4pm",
-              "start": 78,
-              "end": 81
+              "value": "3:00pm",
+              "start": 62,
+              "end": 68
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 73,
+              "end": 80
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "10:40pm",
+              "start": 84,
+              "end": 91
             }
           ]
         },
@@ -2816,7 +2894,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes",
+        "utterance": "Yes, that is correct",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -2825,16 +2903,16 @@
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
+            "name.movie": "\"Mulan\"",
             "name.theater": "Mountain AMC 16",
-            "date.showing": "tomorrow:",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "2",
+            "num.tickets": "",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
@@ -2842,14 +2920,14 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": "4pm",
+            "time.showing": "10:40pm",
             "type.screening": ""
           }
         }
       },
       {
         "speaker": "system",
-        "utterance": "Which Payment method would you like to use? You can say Default, Visa 1 or Visa 2.",
+        "utterance": "Please indicate the number of tickets for each movie",
         "utt_idx": 11,
         "dialogue_acts": {
           "binary": [],
@@ -2860,18 +2938,35 @@
       },
       {
         "speaker": "user",
-        "utterance": "Default",
+        "utterance": "I need one ticket for each movie, making 2 tickets in total.",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": []
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "one",
+              "start": 7,
+              "end": 10
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "2",
+              "start": 41,
+              "end": 42
+            }
+          ]
         },
         "state": {
           "movie": {
-            "name.movie": "Mulan",
+            "name.movie": "\"Mulan\"",
             "name.theater": "Mountain AMC 16",
-            "date.showing": "tomorrow:",
+            "date.showing": "tomorrow",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -2886,30 +2981,259 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": "4pm",
+            "time.showing": "10:40pm",
             "type.screening": ""
           }
         }
       },
       {
         "speaker": "system",
-        "utterance": "Great, I've purchased those tickets for you. A Receipt and the tickets themselves have been sent to your email. I have added the movie to your personal calendar for tomorrow. Enjoy the show.",
+        "utterance": "These are your preferences: 2 movies titled \"No Time To Die\" and \"Mulan\"\\rMountain AMC 16 Theatre\\rShowtime preferences: \"No Time To Die\" at 3:00pm\\r\"Mulan\" at 10:40pm\\rTotal Number of Tickets:2 (1 each movie).\\rPlease confirm these details are correct.",
         "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"No Time To Die\"",
+              "start": 44,
+              "end": 60
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 65,
+              "end": 72
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "rMountain AMC 1",
+              "start": 73,
+              "end": 88
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": ": \"No Time To Di",
+              "start": 119,
+              "end": 135
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "t 3:00",
+              "start": 139,
+              "end": 145
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "m\\r\"Mul",
+              "start": 146,
+              "end": 153
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "at 10:4",
+              "start": 157,
+              "end": 164
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "s:",
+              "start": 191,
+              "end": 193
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, absolutely correct",
+        "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
           "non-categorical": []
         },
+        "state": {
+          "movie": {
+            "name.movie": "m\\r\"Mul",
+            "name.theater": "rMountain AMC 1",
+            "date.showing": "tomorrow",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "s:",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "",
+            "time.showing": "at 10:4",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Can we proceed for the purchase of your tickets",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, please proceed.",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie": {
+            "name.movie": "m\\r\"Mul",
+            "name.theater": "rMountain AMC 1",
+            "date.showing": "tomorrow",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "s:",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "",
+            "time.showing": "at 10:4",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Please enter your banking payment details and emails where tickets to be sent.",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Here it is.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie": {
+            "name.movie": "m\\r\"Mul",
+            "name.theater": "rMountain AMC 1",
+            "date.showing": "tomorrow",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "s:",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "",
+            "time.showing": "at 10:4",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Your tickets for movies \"No Time To Die\" and \"Mulan\" have been successfully purchased and has been forward to your email account.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"No Time To Die\"",
+              "start": 24,
+              "end": 40
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "\"Mulan\"",
+              "start": 45,
+              "end": 52
+            }
+          ]
+        },
         "db_results": {
           "movie": [
             {
-              "index": 12,
+              "index": 18,
               "args": {
-                "name.movie": "Mulan",
+                "name.movie": "\"No Time To Die\"",
                 "name.theater": "Mountain AMC 16",
-                "num.tickets": "2",
-                "time.showing": "4:00pm",
-                "date.showing": "Tomorrow",
+                "num.tickets": "one",
+                "time.showing": "3:00pm",
+                "date.showing": "tomorrow",
+                "seating": "any"
+              },
+              "response": {
+                "status": "success"
+              },
+              "name": "book_tickets"
+            },
+            {
+              "index": 18,
+              "args": {
+                "name.movie": "\"Mulan\"",
+                "name.theater": "Mountain AMC 16",
+                "num.tickets": "one",
+                "time.showing": "10:40pm",
+                "date.showing": "tomorrow",
                 "seating": "any"
               },
               "response": {
@@ -2926,7 +3250,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-5",
-    "original_id": "dlg-c4439035-6aa6-4373-9349-7b40ab213c48",
+    "original_id": "dlg-f15a36b2-3c86-4397-9b71-76b70908dc8e",
     "domains": [
       "movie"
     ],
@@ -2938,8 +3262,523 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "buy tickets for the movie No Time to Die playing at Mountain AMC 16 today",
+        "utterance": "Purchase two tickets for Mulan for 4pm today.",
         "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "two tickets",
+              "start": 9,
+              "end": 20
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "Mulan",
+              "start": 25,
+              "end": 30
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.preference",
+              "value": "4pm",
+              "start": 35,
+              "end": 38
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "date.showing",
+              "value": "today",
+              "start": 39,
+              "end": 44
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "Mulan",
+            "name.theater": "",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "two tickets",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "4pm",
+            "time.showing": "",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you want to purchase two tickets for Mulan at 6:10pm today?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "two tickets",
+              "start": 24,
+              "end": 35
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "Mulan",
+              "start": 40,
+              "end": 45
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "6:10pm",
+              "start": 49,
+              "end": 55
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "date.showing",
+              "value": "today",
+              "start": 56,
+              "end": 61
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No, 4pm.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4pm",
+              "start": 4,
+              "end": 7
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "Mulan",
+            "name.theater": "",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "two tickets",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "4pm",
+            "time.showing": "4pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Okay, 4pm.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4pm",
+              "start": 6,
+              "end": 9
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, purchase two tickets for Mulan at Mountain AMC 16 for 4pm today.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "two tickets",
+              "start": 14,
+              "end": 25
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "Mulan",
+              "start": 30,
+              "end": 35
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 39,
+              "end": 54
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4pm",
+              "start": 59,
+              "end": 62
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "date.showing",
+              "value": "today",
+              "start": 63,
+              "end": 68
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "Mulan",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "two tickets",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "4pm",
+            "time.showing": "4pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you want to purchase two tickets for Mulan at Mountain AMC 16 for 4pm today?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "two tickets",
+              "start": 24,
+              "end": 35
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "Mulan",
+              "start": 40,
+              "end": 45
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 49,
+              "end": 64
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4pm",
+              "start": 69,
+              "end": 72
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "date.showing",
+              "value": "today",
+              "start": 73,
+              "end": 78
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie": {
+            "name.movie": "Mulan",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "two tickets",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "4pm",
+            "time.showing": "4pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Your tickets are confirmed and they’ve been sent to your email address.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {
+          "movie": [
+            {
+              "index": 6,
+              "args": {
+                "name.movie": "Mulan",
+                "name.theater": "Mountain AMC 16",
+                "num.tickets": "two tickets",
+                "time.showing": "4pm",
+                "date.showing": "today",
+                "seating": "any"
+              },
+              "response": {
+                "status": "success"
+              },
+              "name": "book_tickets"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm3",
+    "data_split": "train",
+    "dialogue_id": "tm3-train-6",
+    "original_id": "dlg-e7b03004-d331-4540-9487-b43131eaec28",
+    "domains": [
+      "movie"
+    ],
+    "goal": {
+      "description": "SCENARIO: Pretend you’re *using a digital assistant to purchase tickets for a movie currently showing in theaters*.  {{LIST The entire conversation needs to follow the structure given below *in the TASK section*., You already know which movie you want to see as well as all the details (which you can pick from the section below)., The conversation ends with *a successful ticket purchase*., Do not include any extras like “thank you” or “goodbye” or “hello” etc. }}\n\nDETAILS:  This is *made up data* which you should use to complete your dialog creation (since there are actually no movies playing anywhere right now due to COVID-19).:\n{{LIST You are interested in seeing either *No Time To Die* OR  *Mulan*.,  There is one theater in your town: *Mountain AMC 16*., Showtimes for Mulan: 4:00pm 6:10pm 8:30pm 10:40pm, Showtimes for No Time To Die: 3:00pm 5:10pm 7:30pm 9:40pm, Make sure to include the number of tickets.}}\n*USE THIS Structure*\nUser: (Express desire to buy movie tickets and include TWO of the details needed for the purchase--one should be the movie name. See DETAILS section above.)\nAssistant: (Confirm the TWO details given so far and ask for confirmation *make one of the details incorrect*.)\nUser: (Alert the assistant of the detail that is wrong and give the right value.)\nAssistant: (Correct the wrong value, repeating back the correct value.)\nUser: (Confirms the correction, *THEN adds the THREE remaining details*.)\nAssistant: (Confirms all five details then asks if this is correct and whether they can go ahead with the purchase.)\nUser: (Answers yes.)\nAssistant: (Indicates successful purchase saying ”Your tickets are confirmed and they’ve been sent to your email address.”)\n\nTASK: *Write the transcript* of your spoken conversation according to the structure given above. Make sure it includes one exchange where *one of the details the assistant confirms is incorrect* (movie, theater, showtime, number, tickets or day).\n\nSPEAKING STYLE: {{LIST The assistant is polite and efficient, The assistant’s speaking style should match yours but they are not overly formal or too casual, Don’t call your assistant by name (e.g. “Johnny” or “Alexa” or “Siri” or “Assistant” or “Computer”). Just assume they’re already listening to you.}}\n\n{{CONVERSATION}}\n\n{{CHECK confirm_native_speaker This conversation task was written by a native English speaker.}}\n{{CHECK confirm_slots The users discusses *each of these details*: 1) movie, 2) theater, 3) showtime, 4) number of tickets, 5) day.}}\n{{CHECK confirm_error_exchange The conversation includes *one exchange where one of the details the assistant reads back is wrong* and so the user must point it out so it can be corrected.}}\n{{CHECK confirm_details The assistant *confirms all the ticket details* together just before booking.}}\n{{CHECK confirm_purchase The assistant *completes purchasing the tickets* saying *”Your tickets are confirmed and they’ve been sent to your email address.”*}}\n",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Already have a movie in mind",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie": {
+            "name.movie": "",
+            "name.theater": "",
+            "date.showing": "",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "",
+            "time.showing": "",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, what movie is it?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I want No Time To Die",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time To Die",
+              "start": 7,
+              "end": 21
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time To Die",
+            "name.theater": "",
+            "date.showing": "",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "",
+            "time.showing": "",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "What theater do you want?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I want Mountain AMC 16",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 7,
+              "end": 22
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time To Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "",
+            "time.showing": "",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, so No Time to Die and Cineplex 10?",
+        "utt_idx": 5,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
@@ -2949,24 +3788,44 @@
               "domain": "movie",
               "slot": "name.movie",
               "value": "No Time to Die",
-              "start": 26,
-              "end": 40
+              "start": 7,
+              "end": 21
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
+              "value": "Cineplex 10",
+              "start": 26,
+              "end": 37
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "no, no Mountain AMC 16, for today",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
               "value": "Mountain AMC 16",
-              "start": 52,
-              "end": 67
+              "start": 7,
+              "end": 22
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "date.showing",
               "value": "today",
-              "start": 68,
-              "end": 73
+              "start": 28,
+              "end": 33
             }
           ]
         },
@@ -2996,8 +3855,8 @@
       },
       {
         "speaker": "system",
-        "utterance": "Okay, you want me to buy tickets for the movie \"No Time to Die\" playing at Cinemark, is this correct?",
-        "utt_idx": 1,
+        "utterance": "Ok changes made. No Time to Die and Mountain AMC 16. What are the times wanted for the movie?",
+        "utt_idx": 7,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
@@ -3006,17 +3865,17 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "name.movie",
-              "value": "\"No Time to Die\"",
-              "start": 47,
-              "end": 63
+              "value": "No Time to Die",
+              "start": 17,
+              "end": 31
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
-              "value": "Cinemark",
-              "start": 75,
-              "end": 83
+              "value": "Mountain AMC 16",
+              "start": 36,
+              "end": 51
             }
           ]
         },
@@ -3024,8 +3883,8 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, the movie is playing at the Mountain AMC 16 closest to me",
-        "utt_idx": 2,
+        "utterance": "probably the earliest showing",
+        "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
@@ -3033,29 +3892,21 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 32,
-              "end": 47
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "location",
-              "value": "closest to me",
-              "start": 48,
-              "end": 61
+              "slot": "time.preference",
+              "value": "earliest showing",
+              "start": 13,
+              "end": 29
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "\"No Time to Die\"",
+            "name.movie": "No Time to Die",
             "name.theater": "Mountain AMC 16",
             "date.showing": "today",
             "date.release": "",
             "duration.movie": "",
-            "location": "closest to me",
+            "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
@@ -3066,7 +3917,7 @@
             "review.audience": "",
             "review.critic": "",
             "seating": "",
-            "time.preference": "",
+            "time.preference": "earliest showing",
             "time.showing": "",
             "type.screening": ""
           }
@@ -3074,7 +3925,533 @@
       },
       {
         "speaker": "system",
-        "utterance": "Okay, I have changed my theater selection to \"Mountain AMC 16\". What showtime and number of tickets would you like?",
+        "utterance": "the times available start at 4:00pm",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4:00pm",
+              "start": 29,
+              "end": 35
+            }
+          ]
+        },
+        "db_results": {
+          "movie": [
+            {
+              "index": 8,
+              "args": {
+                "name.movie": "No Time To Die",
+                "name.theater": "Mountain AMC 16",
+                "date.showing": "today"
+              },
+              "response": {
+                "time.showing_1": "4:00pm"
+              },
+              "name": "find_showtimes"
+            }
+          ]
+        }
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like the 4:00pm showing",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4:00pm",
+              "start": 17,
+              "end": 23
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time to Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "earliest showing",
+            "time.showing": "4:00pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "how many tickets are wanted?",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "2 tickets",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "2",
+              "start": 0,
+              "end": 1
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time to Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "2",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "earliest showing",
+            "time.showing": "4:00pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, so I have No Time To Die, 4 tickets, at Mountain AMC 16, at 4:00pm",
+        "utt_idx": 13,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time To Die",
+              "start": 14,
+              "end": 28
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "4",
+              "start": 30,
+              "end": 31
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 44,
+              "end": 59
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4:00pm",
+              "start": 64,
+              "end": 70
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "no, only 2 tickets",
+        "utt_idx": 14,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "2",
+              "start": 9,
+              "end": 10
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time To Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "2",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "earliest showing",
+            "time.showing": "4:00pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "ok sorry about that, 2 tickets",
+        "utt_idx": 15,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "2",
+              "start": 21,
+              "end": 22
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "yes that is correct",
+        "utt_idx": 16,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time To Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "2",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "earliest showing",
+            "time.showing": "4:00pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Ok, would you like to purchase 2 ticket to No Time to Die at the Mountain AMC 16 for today at 4pm?",
+        "utt_idx": 17,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "num.tickets",
+              "value": "2",
+              "start": 31,
+              "end": 32
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time to Die",
+              "start": 43,
+              "end": 57
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 65,
+              "end": 80
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "date.showing",
+              "value": "today",
+              "start": 85,
+              "end": 90
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "4pm",
+              "start": 94,
+              "end": 97
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes, do it.",
+        "utt_idx": 18,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time to Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "2",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "earliest showing",
+            "time.showing": "4pm",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Your tickets are confirmed and they’ve been sent to your email address.",
+        "utt_idx": 19,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {
+          "movie": [
+            {
+              "index": 18,
+              "args": {
+                "name.movie": "No Time To Die",
+                "name.theater": "Mountain AMC 16",
+                "num.tickets": "2",
+                "time.showing": "4:00pm",
+                "date.showing": "today"
+              },
+              "response": {
+                "status": "success"
+              },
+              "name": "book_tickets"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "tm3",
+    "data_split": "train",
+    "dialogue_id": "tm3-train-7",
+    "original_id": "dlg-f971a49c-8289-4918-a328-ae7f6ac6b21a",
+    "domains": [
+      "movie"
+    ],
+    "goal": {
+      "description": "SCENARIO: Pretend you’re *using a digital assistant to purchase tickets for a movie currently showing in theaters*.  {{LIST The entire conversation needs to follow the structure given below *in the TASK section*., You already know which movie you want to see as well as all the details (which you can pick from the section below)., The conversation ends with *a successful ticket purchase*., Do not include any extras like “thank you” or “goodbye” or “hello” etc. }}\n\nDETAILS:  This is *made up data* which you should use to complete your dialog creation (since there are actually no movies playing anywhere right now due to COVID-19).:\n{{LIST You are interested in seeing either *No Time To Die* OR  *Mulan*.,  There is one theater in your town: *Mountain AMC 16*., Showtimes for Mulan: 4:00pm 6:10pm 8:30pm 10:40pm, Showtimes for No Time To Die: 3:00pm 5:10pm 7:30pm 9:40pm, Make sure to include the number of tickets.}}\n*USE THIS Structure*\nUser: (Express desire to buy movie tickets and include TWO of the details needed for the purchase--one should be the movie name. See DETAILS section above.)\nAssistant: (Confirm the TWO details given so far and ask for confirmation *make one of the details incorrect*.)\nUser: (Alert the assistant of the detail that is wrong and give the right value.)\nAssistant: (Correct the wrong value, repeating back the correct value.)\nUser: (Confirms the correction, *THEN adds the THREE remaining details*.)\nAssistant: (Confirms all five details then asks if this is correct and whether they can go ahead with the purchase.)\nUser: (Answers yes.)\nAssistant: (Indicates successful purchase saying ”Your tickets are confirmed and they’ve been sent to your email address.”)\n\nTASK: *Write the transcript* of your spoken conversation according to the structure given above. Make sure it includes one exchange where *one of the details the assistant confirms is incorrect* (movie, theater, showtime, number, tickets or day).\n\nSPEAKING STYLE: {{LIST The assistant is polite and efficient, The assistant’s speaking style should match yours but they are not overly formal or too casual, Don’t call your assistant by name (e.g. “Johnny” or “Alexa” or “Siri” or “Assistant” or “Computer”). Just assume they’re already listening to you.}}\n\n{{CONVERSATION}}\n\n{{CHECK confirm_native_speaker This conversation task was written by a native English speaker.}}\n{{CHECK confirm_slots The users discusses *each of these details*: 1) movie, 2) theater, 3) showtime, 4) number of tickets, 5) day.}}\n{{CHECK confirm_error_exchange The conversation includes *one exchange where one of the details the assistant reads back is wrong* and so the user must point it out so it can be corrected.}}\n{{CHECK confirm_details The assistant *confirms all the ticket details* together just before booking.}}\n{{CHECK confirm_purchase The assistant *completes purchasing the tickets* saying *”Your tickets are confirmed and they’ve been sent to your email address.”*}}\n",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Purchase tickets for the 3 p.m. showing of No Time to Die.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.preference",
+              "value": "3 p.m",
+              "start": 25,
+              "end": 30
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time to Die",
+              "start": 43,
+              "end": 57
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time to Die",
+            "name.theater": "",
+            "date.showing": "",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "3 p.m",
+            "time.showing": "",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I've understood to you to say that you want to purchase tickets for the 5:10 p.m. showing of No Time to Die. Is this correct?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "5:10 p.m",
+              "start": 72,
+              "end": 80
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time to Die",
+              "start": 93,
+              "end": 107
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No. I don't want the 5:10 p.m. time. I want to purchase tickets for the 3 p.m showing.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.preference",
+              "value": "5:10 p.m",
+              "start": 21,
+              "end": 29
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.preference",
+              "value": "3 p.m",
+              "start": 72,
+              "end": 77
+            }
+          ]
+        },
+        "state": {
+          "movie": {
+            "name.movie": "No Time to Die",
+            "name.theater": "",
+            "date.showing": "",
+            "date.release": "",
+            "duration.movie": "",
+            "location": "",
+            "name.character": "",
+            "name.genre": "",
+            "name.person": "",
+            "num.tickets": "",
+            "price.ticket": "",
+            "price.total": "",
+            "rating.movie": "",
+            "review.audience": "",
+            "review.critic": "",
+            "seating": "",
+            "time.preference": "3 p.m",
+            "time.showing": "5:10 p.m",
+            "type.screening": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "I understand. You want to purchase tickets for the 3 p.m. show. Is this correct?",
         "utt_idx": 3,
         "dialogue_acts": {
           "binary": [],
@@ -3083,10 +4460,10 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "name.theater",
-              "value": "\"Mountain AMC 16\"",
-              "start": 45,
-              "end": 62
+              "slot": "time.showing",
+              "value": "3 p.m.",
+              "start": 51,
+              "end": 57
             }
           ]
         },
@@ -3094,7 +4471,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I would like two tickets for the 7:30pm showtime today",
+        "utterance": "Yes. Purchase two tickets for today's 3 p.m. showing of No Time to Die at Mountain AMC 16.",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -3104,55 +4481,71 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "num.tickets",
-              "value": "two",
-              "start": 13,
-              "end": 16
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.preference",
-              "value": "7:30pm",
-              "start": 33,
-              "end": 39
+              "value": "two tickets",
+              "start": 14,
+              "end": 25
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "date.showing",
-              "value": "today",
-              "start": 49,
-              "end": 54
+              "value": "today's",
+              "start": 30,
+              "end": 37
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "3 p.m",
+              "start": 38,
+              "end": 43
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time to Die",
+              "start": 56,
+              "end": 70
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.theater",
+              "value": "Mountain AMC 16",
+              "start": 74,
+              "end": 89
             }
           ]
         },
         "state": {
           "movie": {
-            "name.movie": "\"No Time to Die\"",
-            "name.theater": "\"Mountain AMC 16\"",
-            "date.showing": "today",
+            "name.movie": "No Time to Die",
+            "name.theater": "Mountain AMC 16",
+            "date.showing": "today's",
             "date.release": "",
             "duration.movie": "",
-            "location": "closest to me",
+            "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "two",
+            "num.tickets": "two tickets",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
             "review.audience": "",
             "review.critic": "",
             "seating": "",
-            "time.preference": "7:30pm",
-            "time.showing": "",
+            "time.preference": "3 p.m",
+            "time.showing": "3 p.m",
             "type.screening": ""
           }
         }
       },
       {
         "speaker": "system",
-        "utterance": "Okay, just to confirm, I will buy two tickets for the movie \"No Time to Die\" playing at 7:30PM at the Mountain AMC 16 Theater, is this correct?",
+        "utterance": "I've understood you to say that you want to purchase two tickets for today's 3 p.m. showing of No Time to Die at Mountain AMC 16. If this is correct, may I complete the purchase?",
         "utt_idx": 5,
         "dialogue_acts": {
           "binary": [],
@@ -3162,33 +4555,41 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "num.tickets",
-              "value": "two",
-              "start": 34,
-              "end": 37
+              "value": "two tickets",
+              "start": 53,
+              "end": 64
             },
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "name.movie",
-              "value": "\"No Time to Die\"",
-              "start": 60,
+              "slot": "date.showing",
+              "value": "today's",
+              "start": 69,
               "end": 76
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
-              "value": "7:30PM",
-              "start": 88,
-              "end": 94
+              "value": "3 p.m",
+              "start": 77,
+              "end": 82
+            },
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "name.movie",
+              "value": "No Time to Die",
+              "start": 95,
+              "end": 109
             },
             {
               "intent": "inform",
               "domain": "movie",
               "slot": "name.theater",
               "value": "Mountain AMC 16",
-              "start": 102,
-              "end": 117
+              "start": 113,
+              "end": 128
             }
           ]
         },
@@ -3196,7 +4597,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes this is correct",
+        "utterance": "Yes, that's correct.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -3205,24 +4606,24 @@
         },
         "state": {
           "movie": {
-            "name.movie": "\"No Time to Die\"",
+            "name.movie": "No Time to Die",
             "name.theater": "Mountain AMC 16",
-            "date.showing": "today",
+            "date.showing": "today's",
             "date.release": "",
             "duration.movie": "",
-            "location": "closest to me",
+            "location": "",
             "name.character": "",
             "name.genre": "",
             "name.person": "",
-            "num.tickets": "two",
+            "num.tickets": "two tickets",
             "price.ticket": "",
             "price.total": "",
             "rating.movie": "",
             "review.audience": "",
             "review.critic": "",
             "seating": "",
-            "time.preference": "7:30pm",
-            "time.showing": "7:30PM",
+            "time.preference": "3 p.m",
+            "time.showing": "3 p.m",
             "type.screening": ""
           }
         }
@@ -3243,671 +4644,8 @@
               "args": {
                 "name.movie": "No Time to Die",
                 "name.theater": "Mountain AMC 16",
-                "num.tickets": "two",
-                "time.showing": "7:30PM",
-                "date.showing": "today"
-              },
-              "response": {
-                "status": "success"
-              },
-              "name": "book_tickets"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "dataset": "tm3",
-    "data_split": "train",
-    "dialogue_id": "tm3-train-6",
-    "original_id": "dlg-0a9d4930-5dab-4125-a598-6c45f94e92dd",
-    "domains": [
-      "movie"
-    ],
-    "goal": {
-      "description": "SCENARIO: Pretend you’re *using a digital assistant to purchase tickets for a movie currently showing in theaters*.  {{LIST The entire conversation needs to follow the structure given below *in the TASK section*., You already know which movie you want to see as well as all the details (which you can pick from the section below)., The conversation ends with *a successful ticket purchase*., Do not include any extras like “thank you” or “goodbye” or “hello” etc. }}\n\nDETAILS:  This is *made up data* which you should use to complete your dialog creation (since there are actually no movies playing anywhere right now due to COVID-19).:\n{{LIST You are interested in seeing either *No Time To Die* OR  *Mulan*.,  There is one theater in your town: *Mountain AMC 16*., Showtimes for Mulan: 4:00pm 6:10pm 8:30pm 10:40pm, Showtimes for No Time To Die: 3:00pm 5:10pm 7:30pm 9:40pm, Make sure to include the number of tickets.}}\n*USE THIS Structure*\nUser: (Express desire to buy movie tickets and include TWO of the details needed for the purchase--one should be the movie name. See DETAILS section above.)\nAssistant: (Confirm the TWO details given so far and ask for confirmation *make one of the details incorrect*.)\nUser: (Alert the assistant of the detail that is wrong and give the right value.)\nAssistant: (Correct the wrong value, repeating back the correct value.)\nUser: (Confirms the correction, *THEN adds the THREE remaining details*.)\nAssistant: (Confirms all five details then asks if this is correct and whether they can go ahead with the purchase.)\nUser: (Answers yes.)\nAssistant: (Indicates successful purchase saying ”Your tickets are confirmed and they’ve been sent to your email address.”)\n\nTASK: *Write the transcript* of your spoken conversation according to the structure given above. Make sure it includes one exchange where *one of the details the assistant confirms is incorrect* (movie, theater, showtime, number, tickets or day).\n\nSPEAKING STYLE: {{LIST The assistant is polite and efficient, The assistant’s speaking style should match yours but they are not overly formal or too casual, Don’t call your assistant by name (e.g. “Johnny” or “Alexa” or “Siri” or “Assistant” or “Computer”). Just assume they’re already listening to you.}}\n\n{{CONVERSATION}}\n\n{{CHECK confirm_native_speaker This conversation task was written by a native English speaker.}}\n{{CHECK confirm_slots The users discusses *each of these details*: 1) movie, 2) theater, 3) showtime, 4) number of tickets, 5) day.}}\n{{CHECK confirm_error_exchange The conversation includes *one exchange where one of the details the assistant reads back is wrong* and so the user must point it out so it can be corrected.}}\n{{CHECK confirm_details The assistant *confirms all the ticket details* together just before booking.}}\n{{CHECK confirm_purchase The assistant *completes purchasing the tickets* saying *”Your tickets are confirmed and they’ve been sent to your email address.”*}}\n",
-      "inform": {},
-      "request": {}
-    },
-    "turns": [
-      {
-        "speaker": "user",
-        "utterance": "hi i need tickets for a movie?",
-        "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "movie": {
-            "name.movie": "",
-            "name.theater": "",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": "",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "hello could you tell me theater name?",
-        "utt_idx": 1,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "name of theater Mountain AMC 16",
-        "utt_idx": 2,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 16,
-              "end": 31
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": "",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "fine tell me the movie name?",
-        "utt_idx": 3,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "Time To Die OR Mulan.",
-        "utt_idx": 4,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Time To Die",
-              "start": 0,
-              "end": 11
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 15,
-              "end": 20
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": "",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "sorry one of your detail is incorrect",
-        "utt_idx": 5,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "give the correct values",
-        "utt_idx": 6,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": "",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "the name of the theater Mountain AMC 16.\\rare interested in seeing either No Time To Die OR Mulan.",
-        "utt_idx": 7,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 24,
-              "end": 39
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "No Time To Di",
-              "start": 74,
-              "end": 87
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mula",
-              "start": 92,
-              "end": 96
-            }
-          ]
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "tell me show time those movies?",
-        "utt_idx": 8,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mula",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": "",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Showtimes for Mulan: 4:00pm 6:10pm 8:30pm 10:40pm\\rShowtimes for No Time To Die: 3:00pm 5:10pm 7:30pm 9:40pm",
-        "utt_idx": 9,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan:",
-              "start": 14,
-              "end": 20
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "4:00pm",
-              "start": 21,
-              "end": 27
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "6:10pm",
-              "start": 28,
-              "end": 34
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "8:30pm",
-              "start": 35,
-              "end": 41
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "10:40pm",
-              "start": 42,
-              "end": 49
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "No Time To Die",
-              "start": 65,
-              "end": 79
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "3:00p",
-              "start": 81,
-              "end": 86
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "5:10p",
-              "start": 88,
-              "end": 93
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "7:30p",
-              "start": 95,
-              "end": 100
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "9:40p",
-              "start": 102,
-              "end": 107
-            }
-          ]
-        },
-        "db_results": {
-          "movie": [
-            {
-              "index": 8,
-              "args": {
-                "name.theater": "Mountain AMC 16",
-                "name.movie": "Mulan"
-              },
-              "response": {
-                "time.showing_1": "4:00pm",
-                "time.showing_2": "6:10pm",
-                "time.showing_3": "8:30pm",
-                "time.showing_4": "10:40pm"
-              },
-              "name": "find_showtimes"
-            },
-            {
-              "index": 8,
-              "args": {
-                "name.theater": "Mountain AMC 16",
-                "name.movie": "No Time To Die"
-              },
-              "response": {
-                "time.showing_1": "3:00pm",
-                "time.showing_2": "5:10pm",
-                "time.showing_3": "7:30pm",
-                "time.showing_4": "9:40pm"
-              },
-              "name": "find_showtimes"
-            }
-          ]
-        }
-      },
-      {
-        "speaker": "user",
-        "utterance": "No Time To Die is fine",
-        "utt_idx": 10,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "No Time To Die",
-              "start": 0,
-              "end": 14
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "No Time To Die",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": "9:40p",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "please select the show time",
-        "utt_idx": 11,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "7:30pm",
-        "utt_idx": 12,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": ":30pm",
-              "start": 1,
-              "end": 6
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "No Time To Die",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": ":30pm",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "how many tickets you want?",
-        "utt_idx": 13,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "i want 5 tickets",
-        "utt_idx": 14,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "num.tickets",
-              "value": "5",
-              "start": 7,
-              "end": 8
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "No Time To Die",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "5",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": ":30pm",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "your details are correct can go ahead with purchase?",
-        "utt_idx": 15,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "yes",
-        "utt_idx": 16,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "movie": {
-            "name.movie": "No Time To Die",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "5",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": ":30pm",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "please wait i will confirm your tickets",
-        "utt_idx": 17,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "thank you",
-        "utt_idx": 18,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "movie": {
-            "name.movie": "No Time To Die",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "5",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "",
-            "time.showing": ":30pm",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Your tickets are confirmed and they’ve been sent to your email address",
-        "utt_idx": 19,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {
-          "movie": [
-            {
-              "index": 18,
-              "args": {
-                "name.movie": "No Time To Die",
-                "name.theater": "Mountain AMC 16",
-                "num.tickets": "5",
-                "time.showing": "7:30pm",
+                "num.tickets": "two tickets",
+                "time.showing": "3 p.m",
                 "date.showing": "today",
                 "seating": "any"
               },
@@ -3924,368 +4662,8 @@
   {
     "dataset": "tm3",
     "data_split": "train",
-    "dialogue_id": "tm3-train-7",
-    "original_id": "dlg-0b2cddfe-673d-439e-9bcd-b5356156cbd6",
-    "domains": [
-      "movie"
-    ],
-    "goal": {
-      "description": "SCENARIO: Pretend you’re *using a digital assistant to purchase tickets for a movie currently showing in theaters*.  {{LIST The entire conversation needs to follow the structure given below *in the TASK section*., You already know which movie you want to see as well as all the details (which you can pick from the section below)., The conversation ends with *a successful ticket purchase*., Do not include any extras like “thank you” or “goodbye” or “hello” etc. }}\n\nDETAILS:  This is *made up data* which you should use to complete your dialog creation (since there are actually no movies playing anywhere right now due to COVID-19).:\n{{LIST You are interested in seeing either *No Time To Die* OR  *Mulan*.,  There is one theater in your town: *Mountain AMC 16*., Showtimes for Mulan: 4:00pm 6:10pm 8:30pm 10:40pm, Showtimes for No Time To Die: 3:00pm 5:10pm 7:30pm 9:40pm, Make sure to include the number of tickets.}}\n*USE THIS Structure*\nUser: (Express desire to buy movie tickets and include TWO of the details needed for the purchase--one should be the movie name. See DETAILS section above.)\nAssistant: (Confirm the TWO details given so far and ask for confirmation *make one of the details incorrect*.)\nUser: (Alert the assistant of the detail that is wrong and give the right value.)\nAssistant: (Correct the wrong value, repeating back the correct value.)\nUser: (Confirms the correction, *THEN adds the THREE remaining details*.)\nAssistant: (Confirms all five details then asks if this is correct and whether they can go ahead with the purchase.)\nUser: (Answers yes.)\nAssistant: (Indicates successful purchase saying ”Your tickets are confirmed and they’ve been sent to your email address.”)\n\nTASK: *Write the transcript* of your spoken conversation according to the structure given above. Make sure it includes one exchange where *one of the details the assistant confirms is incorrect* (movie, theater, showtime, number, tickets or day).\n\nSPEAKING STYLE: {{LIST The assistant is polite and efficient, The assistant’s speaking style should match yours but they are not overly formal or too casual, Don’t call your assistant by name (e.g. “Johnny” or “Alexa” or “Siri” or “Assistant” or “Computer”). Just assume they’re already listening to you.}}\n\n{{CONVERSATION}}\n\n{{CHECK confirm_native_speaker This conversation task was written by a native English speaker.}}\n{{CHECK confirm_slots The users discusses *each of these details*: 1) movie, 2) theater, 3) showtime, 4) number of tickets, 5) day.}}\n{{CHECK confirm_error_exchange The conversation includes *one exchange where one of the details the assistant reads back is wrong* and so the user must point it out so it can be corrected.}}\n{{CHECK confirm_details The assistant *confirms all the ticket details* together just before booking.}}\n{{CHECK confirm_purchase The assistant *completes purchasing the tickets* saying *”Your tickets are confirmed and they’ve been sent to your email address.”*}}\n",
-      "inform": {},
-      "request": {}
-    },
-    "turns": [
-      {
-        "speaker": "user",
-        "utterance": "I would like to purchase some tickets to the 4pm showing of Mulan.",
-        "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.preference",
-              "value": "4pm",
-              "start": 45,
-              "end": 48
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 60,
-              "end": 65
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "4pm",
-            "time.showing": "",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "So let me get this right; you want tickets to the 8:30pm showing of Mulan?",
-        "utt_idx": 1,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "8:30pm",
-              "start": 50,
-              "end": 56
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 68,
-              "end": 73
-            }
-          ]
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "No, I wanted tickets to the 4pm showing of Mulan.",
-        "utt_idx": 2,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.preference",
-              "value": "4pm",
-              "start": 28,
-              "end": 31
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 43,
-              "end": 48
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "",
-            "date.showing": "",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "4pm",
-            "time.showing": "8:30pm",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Okay, so you want tickets to the 4pm showing of Mulan?",
-        "utt_idx": 3,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "4pm",
-              "start": 33,
-              "end": 36
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 48,
-              "end": 53
-            }
-          ]
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "Correct. I'd like to purchase two tickets to the 4 PM showing of Mulan at the Mountain AMC 16 for this Saturday.",
-        "utt_idx": 4,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "num.tickets",
-              "value": "two",
-              "start": 30,
-              "end": 33
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.preference",
-              "value": "4 PM",
-              "start": 49,
-              "end": 53
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 65,
-              "end": 70
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 78,
-              "end": 93
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "date.showing",
-              "value": "this Saturday",
-              "start": 98,
-              "end": 111
-            }
-          ]
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "this Saturday",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "two",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "4 PM",
-            "time.showing": "4pm",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "So let me get this right; you would like purchase two tickets to the 4 PM showing of Mulan at the Mountain AMC 16 for this Saturday?",
-        "utt_idx": 5,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": [
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "num.tickets",
-              "value": "two",
-              "start": 50,
-              "end": 53
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "time.showing",
-              "value": "4 PM",
-              "start": 69,
-              "end": 73
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.movie",
-              "value": "Mulan",
-              "start": 85,
-              "end": 90
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "name.theater",
-              "value": "Mountain AMC 16",
-              "start": 98,
-              "end": 113
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
-              "slot": "date.showing",
-              "value": "this Saturday",
-              "start": 118,
-              "end": 131
-            }
-          ]
-        },
-        "db_results": {}
-      },
-      {
-        "speaker": "user",
-        "utterance": "Yes.",
-        "utt_idx": 6,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "state": {
-          "movie": {
-            "name.movie": "Mulan",
-            "name.theater": "Mountain AMC 16",
-            "date.showing": "this Saturday",
-            "date.release": "",
-            "duration.movie": "",
-            "location": "",
-            "name.character": "",
-            "name.genre": "",
-            "name.person": "",
-            "num.tickets": "two",
-            "price.ticket": "",
-            "price.total": "",
-            "rating.movie": "",
-            "review.audience": "",
-            "review.critic": "",
-            "seating": "",
-            "time.preference": "4 PM",
-            "time.showing": "4 PM",
-            "type.screening": ""
-          }
-        }
-      },
-      {
-        "speaker": "system",
-        "utterance": "Excellent. Your tickets are confirmed and they’ve been sent to your email address",
-        "utt_idx": 7,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
-        "db_results": {
-          "movie": [
-            {
-              "index": 6,
-              "args": {
-                "name.movie": "Mulan",
-                "name.theater": "Mountain AMC 16",
-                "num.tickets": "two",
-                "time.showing": "4pm",
-                "date.showing": "this Saturday",
-                "seating": "any"
-              },
-              "response": {
-                "status": "success"
-              },
-              "name": "book_tickets"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "dataset": "tm3",
-    "data_split": "train",
     "dialogue_id": "tm3-train-8",
-    "original_id": "dlg-0976855e-c0ce-49de-a217-cbfbd4670d33",
+    "original_id": "dlg-3df5f971-6025-47be-9f73-65ec676acb8b",
     "domains": [
       "movie"
     ],
@@ -4297,7 +4675,7 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "I would like to buy tickets for a movie tonight at AMC Mountain 16.",
+        "utterance": "I need to buy tickets for AMC Mountain 16",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
@@ -4306,18 +4684,10 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "date.showing",
-              "value": "tonight",
-              "start": 40,
-              "end": 47
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 51,
-              "end": 66
+              "start": 26,
+              "end": 41
             }
           ]
         },
@@ -4325,7 +4695,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4358,7 +4728,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I am looking for something that has action and adventure in it.",
+        "utterance": "I like action",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
@@ -4369,8 +4739,8 @@
               "domain": "movie",
               "slot": "name.genre",
               "value": "action",
-              "start": 36,
-              "end": 42
+              "start": 7,
+              "end": 13
             }
           ]
         },
@@ -4378,7 +4748,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4420,7 +4790,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No not Mercado, I want it at AMC Mountain 16.",
+        "utterance": "NO that would be AMC Mountain 16",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -4431,8 +4801,8 @@
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 29,
-              "end": 44
+              "start": 17,
+              "end": 32
             }
           ]
         },
@@ -4440,7 +4810,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4490,7 +4860,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes.",
+        "utterance": "That's correct",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -4501,7 +4871,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4610,7 +4980,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes that's great. I'd like tickets to the 9:10 pm showing.",
+        "utterance": "The 9:10 PM would work",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
@@ -4620,9 +4990,9 @@
               "intent": "inform",
               "domain": "movie",
               "slot": "time.showing",
-              "value": ":10 pm",
-              "start": 43,
-              "end": 49
+              "value": "9:10 PM",
+              "start": 4,
+              "end": 11
             }
           ]
         },
@@ -4630,7 +5000,7 @@
           "movie": {
             "name.movie": "No Time To Die",
             "name.theater": "AMC Mountain 16:",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4645,7 +5015,7 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": ":10 pm",
+            "time.showing": "9:10 PM",
             "type.screening": ""
           }
         }
@@ -4663,7 +5033,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I need three tickets.",
+        "utterance": "just me and two others",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -4674,7 +5044,7 @@
           "movie": {
             "name.movie": "No Time To Die",
             "name.theater": "AMC Mountain 16:",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4689,7 +5059,7 @@
             "review.critic": "",
             "seating": "",
             "time.preference": "",
-            "time.showing": ":10 pm",
+            "time.showing": "9:10 PM",
             "type.screening": ""
           }
         }
@@ -4748,7 +5118,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes that's correct.",
+        "utterance": "Correct",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
@@ -4792,7 +5162,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, thank you.",
+        "utterance": "Yes please",
         "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
@@ -4853,7 +5223,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No thank you.",
+        "utterance": "No thanks",
         "utt_idx": 16,
         "dialogue_acts": {
           "binary": [],
@@ -4901,7 +5271,7 @@
     "dataset": "tm3",
     "data_split": "train",
     "dialogue_id": "tm3-train-9",
-    "original_id": "dlg-266f509a-b0f9-4316-a644-8b3d55674611",
+    "original_id": "dlg-e255c743-b8a0-4e53-9590-3fc2fde3142d",
     "domains": [
       "movie"
     ],
@@ -4913,7 +5283,7 @@
     "turns": [
       {
         "speaker": "user",
-        "utterance": "Yes, I would like to buy tickets for tonight. At AMC Mountain 16.",
+        "utterance": "Hey, I'd like to purchase some movie tickets for the AMC Mountain 16.",
         "utt_idx": 0,
         "dialogue_acts": {
           "binary": [],
@@ -4922,18 +5292,10 @@
             {
               "intent": "inform",
               "domain": "movie",
-              "slot": "date.showing",
-              "value": "tonight",
-              "start": 37,
-              "end": 44
-            },
-            {
-              "intent": "inform",
-              "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 49,
-              "end": 64
+              "start": 53,
+              "end": 68
             }
           ]
         },
@@ -4941,7 +5303,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -4974,7 +5336,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I want to see a good action flick.",
+        "utterance": "I think we're all in the mood for an action movie.",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [],
@@ -4985,8 +5347,8 @@
               "domain": "movie",
               "slot": "name.genre",
               "value": "action",
-              "start": 21,
-              "end": 27
+              "start": 37,
+              "end": 43
             }
           ]
         },
@@ -4994,7 +5356,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -5036,7 +5398,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, but I wanted AMC Mountain 16.",
+        "utterance": "Sorry, I'm wanting to visit the AMC Mountain 16.",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [],
@@ -5047,8 +5409,8 @@
               "domain": "movie",
               "slot": "name.theater",
               "value": "AMC Mountain 16",
-              "start": 18,
-              "end": 33
+              "start": 32,
+              "end": 47
             }
           ]
         },
@@ -5056,7 +5418,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -5106,7 +5468,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, that is right.",
+        "utterance": "Now you're on the right track.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [],
@@ -5117,7 +5479,7 @@
           "movie": {
             "name.movie": "",
             "name.theater": "AMC Mountain 16",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -5226,18 +5588,27 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, the 9:10 works great.",
+        "utterance": "That sounds like a perfect fit. I'd like to book the 9:10pm show.",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [],
           "categorical": [],
-          "non-categorical": []
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "movie",
+              "slot": "time.showing",
+              "value": "9:10pm",
+              "start": 53,
+              "end": 59
+            }
+          ]
         },
         "state": {
           "movie": {
             "name.movie": "No Time To Die",
             "name.theater": "AMC Mountain 16:",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -5270,7 +5641,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Just three including myself.",
+        "utterance": "I'd like tickets for my partner, my child and myself. So, three.",
         "utt_idx": 10,
         "dialogue_acts": {
           "binary": [],
@@ -5281,7 +5652,7 @@
           "movie": {
             "name.movie": "No Time To Die",
             "name.theater": "AMC Mountain 16:",
-            "date.showing": "tonight",
+            "date.showing": "",
             "date.release": "",
             "duration.movie": "",
             "location": "",
@@ -5355,7 +5726,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes, that is exactly right.",
+        "utterance": "That's absolutely correct.",
         "utt_idx": 12,
         "dialogue_acts": {
           "binary": [],
@@ -5399,7 +5770,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Yes.",
+        "utterance": "Go right ahead.",
         "utt_idx": 14,
         "dialogue_acts": {
           "binary": [],
@@ -5460,7 +5831,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "No, that is it. You have been a low of help. Thanks again.",
+        "utterance": "No thanks!",
         "utt_idx": 16,
         "dialogue_acts": {
           "binary": [],

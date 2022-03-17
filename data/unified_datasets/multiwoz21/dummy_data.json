@@ -6,7 +6,6 @@
     "original_id": "SNG01856.json",
     "domains": [
       "hotel",
-      "booking",
       "general"
     ],
     "goal": {
@@ -92,6 +91,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -106,8 +108,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "area",
-              "value": ""
+              "slot": "area"
             }
           ]
         },
@@ -115,6 +116,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -176,6 +178,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -205,15 +210,8 @@
           "binary": [
             {
               "intent": "inform",
-              "domain": "booking",
-              "slot": "",
-              "value": ""
-            },
-            {
-              "intent": "inform",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             }
           ]
         },
@@ -221,6 +219,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -299,6 +298,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -310,8 +312,8 @@
           "categorical": [
             {
               "intent": "nobook",
-              "domain": "booking",
-              "slot": "day",
+              "domain": "hotel",
+              "slot": "book day",
               "value": "Tuesday"
             }
           ],
@@ -319,15 +321,13 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "book stay",
-              "value": ""
+              "domain": "hotel",
+              "slot": "book stay"
             },
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "day",
-              "value": ""
+              "domain": "hotel",
+              "slot": "book day"
             }
           ]
         },
@@ -335,6 +335,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -398,6 +399,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -409,8 +413,8 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "ref",
               "value": "7GAWK763",
               "start": 46,
@@ -421,8 +425,12 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
+            },
+            {
+              "intent": "book",
+              "domain": "hotel",
+              "slot": ""
             }
           ]
         },
@@ -430,12 +438,8 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
-          "hotel": [
-            {
-              "name": "the cambridge belfry",
-              "reference": "7GAWK763"
-            }
-          ],
+          "hospital": [],
+          "hotel": [],
           "attraction": [],
           "train": []
         }
@@ -451,8 +455,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -496,6 +499,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -510,8 +516,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -519,6 +524,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [
             {
               "name": "the cambridge belfry",
@@ -565,8 +571,7 @@
             {
               "intent": "inform",
               "domain": "police",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -610,6 +615,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -651,6 +659,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -667,8 +676,7 @@
             {
               "intent": "request",
               "domain": "police",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             }
           ]
         },
@@ -712,6 +720,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -745,6 +756,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -761,8 +773,7 @@
             {
               "intent": "request",
               "domain": "police",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -806,6 +817,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -822,6 +836,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -838,8 +853,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -883,6 +897,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -897,8 +914,7 @@
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -906,6 +922,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -960,6 +977,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -974,14 +994,12 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -989,6 +1007,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -1004,7 +1023,6 @@
     "domains": [
       "hotel",
       "train",
-      "booking",
       "general"
     ],
     "goal": {
@@ -1099,6 +1117,9 @@
             "arrive by": "20:45",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1128,8 +1149,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "departure",
-              "value": ""
+              "slot": "departure"
             }
           ]
         },
@@ -1137,6 +1157,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -1200,6 +1221,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1214,8 +1238,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -1223,6 +1246,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -1284,6 +1308,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1332,6 +1359,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -1395,6 +1423,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": "5"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1406,7 +1437,7 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "ref",
               "value": "A9NHSO9Y",
@@ -1414,20 +1445,22 @@
               "end": 69
             }
           ],
-          "binary": []
+          "binary": [
+            {
+              "intent": "book",
+              "domain": "train",
+              "slot": ""
+            }
+          ]
         },
         "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
-          "train": [
-            {
-              "trainID": "TR4977",
-              "reference": "A9NHSO9Y"
-            }
-          ]
+          "train": []
         }
       },
       {
@@ -1492,6 +1525,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": "5"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1517,6 +1553,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": [
@@ -1576,6 +1613,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": "5"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1589,9 +1629,8 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "day",
-              "value": ""
+              "domain": "hotel",
+              "slot": "book day"
             }
           ]
         },
@@ -1599,6 +1638,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": [
@@ -1682,6 +1722,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": "5"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1693,26 +1736,28 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "ref",
               "value": "5NAWGJDC",
               "start": 46,
               "end": 54
             }
           ],
-          "binary": []
+          "binary": [
+            {
+              "intent": "book",
+              "domain": "hotel",
+              "slot": ""
+            }
+          ]
         },
         "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
-          "hotel": [
-            {
-              "name": "the cambridge belfry",
-              "reference": "5NAWGJDC"
-            }
-          ],
+          "hospital": [],
+          "hotel": [],
           "attraction": [],
           "train": [
             {
@@ -1733,8 +1778,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -1778,6 +1822,9 @@
             "arrive by": "20:45",
             "departure": "birmingham new street",
             "book people": "5"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1792,8 +1839,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -1801,6 +1847,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [
             {
               "name": "the cambridge belfry",
@@ -1890,6 +1937,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -1915,6 +1965,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -1931,20 +1982,17 @@
             {
               "intent": "request",
               "domain": "police",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             },
             {
               "intent": "request",
               "domain": "police",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "police",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -1988,6 +2036,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2029,6 +2080,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2045,8 +2097,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2090,6 +2141,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2104,8 +2158,7 @@
             {
               "intent": "greet",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2113,6 +2166,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2167,6 +2221,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2181,8 +2238,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2190,6 +2246,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2205,8 +2262,7 @@
     "domains": [
       "hotel",
       "train",
-      "general",
-      "booking"
+      "general"
     ],
     "goal": {
       "description": "You are looking for information in Cambridge. You are looking for a <span class='emphasis'>place to stay</span>. The hotel should be in the <span class='emphasis'>east</span> and <span class='emphasis'>doesn't need to include internet</span>. The hotel should <span class='emphasis'>include free parking</span> and should be in the type of <span class='emphasis'>guesthouse</span>. If there is no such hotel, how about one that has <span class='emphasis'>free wifi</span>. Make sure you get <span class='emphasis'>address</span>. You are also looking for a <span class='emphasis'>train</span>. The train should leave on <span class='emphasis'>wednesday</span> and should <span class='emphasis'>arrive by 11:30</span>. The train should go to <span class='emphasis'>cambridge</span> and should depart from <span class='emphasis'>ely</span>. Once you find the train you want to make a booking for <span class='emphasis'>8 people</span>. Make sure you get the <span class='emphasis'>reference number</span>",
@@ -2289,6 +2345,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2312,14 +2371,12 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "price range",
-              "value": ""
+              "slot": "price range"
             },
             {
               "intent": "inform",
               "domain": "hotel",
-              "slot": "internet",
-              "value": ""
+              "slot": "internet"
             }
           ]
         },
@@ -2327,6 +2384,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2394,6 +2452,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2417,14 +2478,12 @@
             {
               "intent": "inform",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             },
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -2432,6 +2491,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2495,6 +2555,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2534,8 +2597,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "price range",
-              "value": ""
+              "slot": "price range"
             }
           ]
         },
@@ -2543,6 +2605,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2597,6 +2660,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2627,15 +2693,8 @@
           "binary": [
             {
               "intent": "inform",
-              "domain": "booking",
-              "slot": "",
-              "value": ""
-            },
-            {
-              "intent": "inform",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             }
           ]
         },
@@ -2643,6 +2702,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2666,8 +2726,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -2711,6 +2770,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2767,6 +2829,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2830,6 +2893,9 @@
             "arrive by": "",
             "departure": "ely",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2844,26 +2910,22 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "destination",
-              "value": ""
+              "slot": "destination"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "leave at",
-              "value": ""
+              "slot": "leave at"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "arrive by",
-              "value": ""
+              "slot": "arrive by"
             }
           ]
         },
@@ -2871,6 +2933,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -2942,6 +3005,9 @@
             "arrive by": "dontcare",
             "departure": "cambridge",
             "book people": "8"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -2965,8 +3031,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "day",
-              "value": ""
+              "slot": "day"
             }
           ]
         },
@@ -2974,6 +3039,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3052,6 +3118,9 @@
             "arrive by": "11:30",
             "departure": "cambridge",
             "book people": "8"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3063,7 +3132,7 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "ref",
               "value": "7ZCVR4Q3",
@@ -3071,7 +3140,7 @@
               "end": 106
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "price",
               "value": "35.2 GBP",
@@ -3079,20 +3148,22 @@
               "end": 49
             }
           ],
-          "binary": []
+          "binary": [
+            {
+              "intent": "book",
+              "domain": "train",
+              "slot": ""
+            }
+          ]
         },
         "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
-          "train": [
-            {
-              "trainID": "TR5626",
-              "reference": "7ZCVR4Q3"
-            }
-          ]
+          "train": []
         }
       },
       {
@@ -3106,8 +3177,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3151,6 +3221,9 @@
             "arrive by": "11:30",
             "departure": "cambridge",
             "book people": "8"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3165,8 +3238,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3174,6 +3246,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": [
@@ -3194,7 +3267,6 @@
     "domains": [
       "hotel",
       "train",
-      "booking",
       "general"
     ],
     "goal": {
@@ -3292,6 +3364,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3306,8 +3381,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "destination",
-              "value": ""
+              "slot": "destination"
             }
           ]
         },
@@ -3315,6 +3389,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3378,6 +3453,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3409,8 +3487,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "departure",
-              "value": ""
+              "slot": "departure"
             }
           ]
         },
@@ -3418,6 +3495,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3496,6 +3574,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3510,8 +3591,7 @@
             {
               "intent": "offerbook",
               "domain": "train",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -3519,6 +3599,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3560,20 +3641,17 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "arrive by",
-              "value": ""
+              "slot": "arrive by"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "duration",
-              "value": ""
+              "slot": "duration"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "price",
-              "value": ""
+              "slot": "price"
             }
           ]
         },
@@ -3617,6 +3695,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3674,6 +3755,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3741,6 +3823,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3764,8 +3849,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "price range",
-              "value": ""
+              "slot": "price range"
             }
           ]
         },
@@ -3773,6 +3857,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3834,6 +3919,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3873,14 +3961,12 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "internet",
-              "value": ""
+              "slot": "internet"
             },
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "parking",
-              "value": ""
+              "slot": "parking"
             }
           ]
         },
@@ -3888,6 +3974,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3942,6 +4029,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -3952,19 +4042,13 @@
         "dialogue_acts": {
           "categorical": [],
           "non-categorical": [],
-          "binary": [
-            {
-              "intent": "inform",
-              "domain": "booking",
-              "slot": "",
-              "value": ""
-            }
-          ]
+          "binary": []
         },
         "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -3981,8 +4065,7 @@
             {
               "intent": "request",
               "domain": "hotel",
-              "slot": "ref",
-              "value": ""
+              "slot": "ref"
             }
           ]
         },
@@ -4026,6 +4109,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4039,9 +4125,8 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "book stay",
-              "value": ""
+              "domain": "hotel",
+              "slot": "book stay"
             }
           ]
         },
@@ -4049,6 +4134,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4120,6 +4206,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4133,9 +4222,8 @@
           "binary": [
             {
               "intent": "request",
-              "domain": "booking",
-              "slot": "day",
-              "value": ""
+              "domain": "hotel",
+              "slot": "book day"
             }
           ]
         },
@@ -4143,6 +4231,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4204,6 +4293,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4215,16 +4307,16 @@
           "categorical": [],
           "non-categorical": [
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "ref",
               "value": "04CSEO7Q",
               "start": 132,
               "end": 140
             },
             {
-              "intent": "book",
-              "domain": "booking",
+              "intent": "inform",
+              "domain": "hotel",
               "slot": "name",
               "value": "Acorn guest house",
               "start": 89,
@@ -4235,8 +4327,12 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
+            },
+            {
+              "intent": "book",
+              "domain": "hotel",
+              "slot": ""
             }
           ]
         },
@@ -4244,12 +4340,8 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
-          "hotel": [
-            {
-              "name": "acorn guest house",
-              "reference": "04CSEO7Q"
-            }
-          ],
+          "hospital": [],
+          "hotel": [],
           "attraction": [],
           "train": []
         }
@@ -4265,8 +4357,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4310,6 +4401,9 @@
             "arrive by": "",
             "departure": "norwich",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4324,8 +4418,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4333,6 +4426,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [
             {
               "name": "acorn guest house",
@@ -4392,8 +4486,7 @@
             {
               "intent": "inform",
               "domain": "attraction",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -4437,6 +4530,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4460,14 +4556,12 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "area",
-              "value": ""
+              "slot": "area"
             },
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "type",
-              "value": ""
+              "slot": "type"
             }
           ]
         },
@@ -4475,6 +4569,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4536,6 +4631,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4576,6 +4674,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4592,8 +4691,7 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -4637,6 +4735,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4660,8 +4761,7 @@
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "food",
-              "value": ""
+              "slot": "food"
             }
           ]
         },
@@ -4669,6 +4769,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4732,6 +4833,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4762,14 +4866,12 @@
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "food",
-              "value": ""
+              "slot": "food"
             },
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "area",
-              "value": ""
+              "slot": "area"
             }
           ]
         },
@@ -4777,6 +4879,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4817,8 +4920,7 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "type",
-              "value": ""
+              "slot": "type"
             }
           ]
         },
@@ -4862,6 +4964,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -4922,6 +5027,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -4938,20 +5044,17 @@
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             },
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "restaurant",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             }
           ]
         },
@@ -4995,6 +5098,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -5026,8 +5132,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5035,6 +5140,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5051,8 +5157,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5096,6 +5201,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -5110,14 +5218,12 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5125,6 +5231,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5165,8 +5272,7 @@
             {
               "intent": "inform",
               "domain": "hospital",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5210,6 +5316,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": "emergency department"
           }
         }
       },
@@ -5224,8 +5333,7 @@
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "department",
-              "value": ""
+              "slot": "department"
             }
           ]
         },
@@ -5233,6 +5341,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5249,8 +5358,7 @@
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -5294,6 +5402,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": "emergency department"
           }
         }
       },
@@ -5319,6 +5430,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5335,8 +5447,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5380,6 +5491,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": "emergency department"
           }
         }
       },
@@ -5394,8 +5508,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5403,6 +5516,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5513,6 +5627,9 @@
             "arrive by": "",
             "departure": "cambridge",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -5551,8 +5668,7 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "leave at",
-              "value": ""
+              "slot": "leave at"
             }
           ]
         },
@@ -5560,6 +5676,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5631,6 +5748,9 @@
             "arrive by": "",
             "departure": "cambridge",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -5671,6 +5791,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5687,14 +5808,12 @@
             {
               "intent": "request",
               "domain": "train",
-              "slot": "arrive by",
-              "value": ""
+              "slot": "arrive by"
             },
             {
               "intent": "request",
               "domain": "train",
-              "slot": "price",
-              "value": ""
+              "slot": "price"
             }
           ]
         },
@@ -5738,6 +5857,9 @@
             "arrive by": "",
             "departure": "cambridge",
             "book people": ""
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -5777,8 +5899,7 @@
             {
               "intent": "offerbook",
               "domain": "train",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -5786,6 +5907,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -5849,6 +5971,9 @@
             "arrive by": "",
             "departure": "cambridge",
             "book people": "1"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -5859,7 +5984,7 @@
         "dialogue_acts": {
           "categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "day",
               "value": "Wednesday"
@@ -5867,7 +5992,7 @@
           ],
           "non-categorical": [
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "ref",
               "value": "xu1qlhvw",
@@ -5875,7 +6000,7 @@
               "end": 111
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "departure",
               "value": "Cambridge",
@@ -5883,7 +6008,7 @@
               "end": 51
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "book people",
               "value": "one",
@@ -5891,7 +6016,7 @@
               "end": 16
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "train id",
               "value": "TR1879",
@@ -5899,7 +6024,7 @@
               "end": 31
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "destination",
               "value": "Peterborough",
@@ -5907,7 +6032,7 @@
               "end": 68
             },
             {
-              "intent": "offerbooked",
+              "intent": "inform",
               "domain": "train",
               "slot": "leave at",
               "value": "13:06",
@@ -5919,8 +6044,12 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
+            },
+            {
+              "intent": "book",
+              "domain": "train",
+              "slot": ""
             }
           ]
         },
@@ -5928,14 +6057,10 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
-          "train": [
-            {
-              "trainID": "TR1879",
-              "reference": "XU1QLHVW"
-            }
-          ]
+          "train": []
         }
       },
       {
@@ -5962,20 +6087,17 @@
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             },
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "attraction",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -6019,6 +6141,9 @@
             "arrive by": "",
             "departure": "cambridge",
             "book people": "1"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -6066,8 +6191,7 @@
             {
               "intent": "reqmore",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6075,6 +6199,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": [
@@ -6096,8 +6221,7 @@
             {
               "intent": "thank",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6141,6 +6265,9 @@
             "arrive by": "",
             "departure": "cambridge",
             "book people": "1"
+          },
+          "hospital": {
+            "department": ""
           }
         }
       },
@@ -6155,14 +6282,12 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             },
             {
               "intent": "welcome",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6170,6 +6295,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": [
@@ -6265,6 +6391,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": "paediatric clinic"
           }
         }
       },
@@ -6290,6 +6419,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []
@@ -6306,20 +6436,17 @@
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "address",
-              "value": ""
+              "slot": "address"
             },
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "postcode",
-              "value": ""
+              "slot": "postcode"
             },
             {
               "intent": "request",
               "domain": "hospital",
-              "slot": "phone",
-              "value": ""
+              "slot": "phone"
             }
           ]
         },
@@ -6363,6 +6490,9 @@
             "arrive by": "",
             "departure": "",
             "book people": ""
+          },
+          "hospital": {
+            "department": "paediatric clinic"
           }
         }
       },
@@ -6377,8 +6507,7 @@
             {
               "intent": "bye",
               "domain": "general",
-              "slot": "",
-              "value": ""
+              "slot": ""
             }
           ]
         },
@@ -6386,6 +6515,7 @@
         "booked": {
           "taxi": [],
           "restaurant": [],
+          "hospital": [],
           "hotel": [],
           "attraction": [],
           "train": []

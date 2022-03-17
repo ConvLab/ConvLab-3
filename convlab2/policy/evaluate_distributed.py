@@ -54,7 +54,7 @@ def sampler(pid, queue, evt, sess, seed_range):
                 sys_response)
 
             turns += 1
-            total_return_success += reward
+            total_return_success += sess.evaluator.get_reward(terminated=session_over)
             total_return_complete += sess.user_agent.policy.policy.get_reward()
             acts = sess.sys_agent.dst.state['system_action']
             avg_actions += len(acts)
@@ -77,9 +77,6 @@ def sampler(pid, queue, evt, sess, seed_range):
                 success = sess.evaluator.success
                 success_strict = sess.evaluator.success_strict
                 break
-
-        total_return_success = 80 if success_strict else -40
-        total_return_success -= turns
 
         for key in sess.evaluator.goal:
             if key not in task_success:

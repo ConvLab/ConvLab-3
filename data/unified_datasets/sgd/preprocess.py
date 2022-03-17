@@ -132,8 +132,12 @@ def preprocess():
     dialogues = []
     ontology = {'domains': {},
                 'intents': get_intent(),
-                'binary_dialogue_acts': set(),
-                'state': {}}
+                'state': {},
+                'dialogue_acts': {
+                    "categorical": {},
+                    "non-categorical": {},
+                    "binary": {}
+                }}
     splits = ['train', 'validation', 'test']
     dataset_name = 'sgd'
     for data_split in splits:
@@ -212,8 +216,7 @@ def preprocess():
                                     turn['dialogue_acts']['binary'].append({
                                         "intent": intent,
                                         "domain": '',
-                                        "slot": '',
-                                        "value": '',
+                                        "slot": ''
                                     })
                                 elif action['act'] in ['NOTIFY_SUCCESS', 'NOTIFY_FAILURE', 'REQUEST_ALTS', 'AFFIRM_INTENT', 'NEGATE_INTENT']:
                                     # Slot and values are always empty
@@ -221,17 +224,15 @@ def preprocess():
                                     turn['dialogue_acts']['binary'].append({
                                         "intent": intent,
                                         "domain": domain,
-                                        "slot": '',
-                                        "value": '',
+                                        "slot": ''
                                     })
                                 elif action['act'] in ['OFFER_INTENT', 'INFORM_INTENT']:
-                                    # always has "intent" as the slot, and a single value containing the intent being offered.
+                                    # slot containing the intent being offered.
                                     assert slot == 'intent' and len(value_list) == 1
                                     turn['dialogue_acts']['binary'].append({
                                         "intent": intent,
                                         "domain": domain,
-                                        "slot": slot,
-                                        "value": value_list[0],
+                                        "slot": value_list[0]
                                     })
                                 elif action['act'] in ['REQUEST'] and len(value_list) == 0:
                                     # always contains a slot, but values are optional.
@@ -239,8 +240,7 @@ def preprocess():
                                     turn['dialogue_acts']['binary'].append({
                                         "intent": intent,
                                         "domain": domain,
-                                        "slot": slot,
-                                        "value": '',
+                                        "slot": slot
                                     })
                                 elif action['act'] in ['SELECT'] and len(value_list) == 0:
                                     # (slot=='' and len(value_list) == 0) or (slot!='' and len(value_list) > 0)
@@ -248,8 +248,7 @@ def preprocess():
                                     turn['dialogue_acts']['binary'].append({
                                         "intent": intent,
                                         "domain": domain,
-                                        "slot": slot,
-                                        "value": '',
+                                        "slot": slot
                                     })
                                 elif action['act'] in ['INFORM_COUNT']:
                                     # always has "count" as the slot, and a single element in values for the number of results obtained by the system.
@@ -332,17 +331,20 @@ def preprocess():
                                 turn['service_call'][domain] = frame['service_call']
                                 turn['db_results'][domain] = frame['service_results']
 
-                        for da in turn['dialogue_acts']['binary']:
-                            da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
-                            if da_tuple not in ontology['binary_dialogue_acts']:
-                                ontology['binary_dialogue_acts'].add(da_tuple)
+                        # add to dialogue_acts dictionary in the ontology
+                        for da_type in turn['dialogue_acts']:
+                            das = turn['dialogue_acts'][da_type]
+                            for da in das:
+                                ontology["dialogue_acts"][da_type].setdefault((da['intent'], da['domain'], da['slot']), {})
+                                ontology["dialogue_acts"][da_type][(da['intent'], da['domain'], da['slot'])][speaker] = True
                         dialogue['turns'].append(turn)
                     dialogues.append(dialogue)
     
-    ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(ontology['binary_dialogue_acts'])]
+    for da_type in ontology['dialogue_acts']:
+        ontology["dialogue_acts"][da_type] = sorted([str({'user': speakers.get('user', False), 'system': speakers.get('system', False), 'intent':da[0],'domain':da[1], 'slot':da[2]}) for da, speakers in ontology["dialogue_acts"][da_type].items()])
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')

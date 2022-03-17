@@ -100,8 +100,12 @@ def preprocess():
                 'intents': {
                     'inform': {'description': 'inform the value of a slot or general information.'}
                 },
-                'binary_dialogue_acts': set(),
-                'state': {}}
+                'state': {},
+                'dialogue_acts': {
+                    "categorical": {},
+                    "non-categorical": {},
+                    "binary": {}
+                }}
     global descriptions
     global anno2slot
     ori_ontology = json.load(open(os.path.join(original_data_dir, "TM-3-2020/ontology/entities.json")))
@@ -122,7 +126,8 @@ def preprocess():
     dataset = 'tm3'
     splits = ['train', 'validation', 'test']
     dialogues_by_split = {split:[] for split in splits}
-    for data_file in tqdm(glob.glob(os.path.join(original_data_dir, f"TM-3-2020/data/*.json")), desc='processing taskmaster-{}'.format(domain)):
+    data_files = sorted(glob.glob(os.path.join(original_data_dir, f"TM-3-2020/data/*.json")))
+    for data_file in tqdm(data_files, desc='processing taskmaster-{}'.format(domain)):
         data = json.load(open(data_file))
         # random split, train:validation:test = 8:1:1
         random.seed(42)
@@ -192,7 +197,6 @@ def preprocess():
                                 'intent': intent,
                                 'domain': domain,
                                 'slot': slot,
-                                'value': ''
                             })
                             continue
                         assert turn['utterance'][segment['start_index']:segment['end_index']] == segment['text']
@@ -214,11 +218,15 @@ def preprocess():
                 
                 bdas = set()
                 for da in turn['dialogue_acts']['binary']:
-                    da_tuple = (da['intent'], da['domain'], da['slot'], da['value'],)
+                    da_tuple = (da['intent'], da['domain'], da['slot'],)
                     bdas.add(da_tuple)
-                    if da_tuple not in ontology['binary_dialogue_acts']:
-                        ontology['binary_dialogue_acts'].add(da_tuple)
-                turn['dialogue_acts']['binary'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(bdas)]
+                turn['dialogue_acts']['binary'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2]} for bda in sorted(bdas)]
+                # add to dialogue_acts dictionary in the ontology
+                for da_type in turn['dialogue_acts']:
+                    das = turn['dialogue_acts'][da_type]
+                    for da in das:
+                        ontology["dialogue_acts"][da_type].setdefault((da['intent'], da['domain'], da['slot']), {})
+                        ontology["dialogue_acts"][da_type][(da['intent'], da['domain'], da['slot'])][speaker] = True
 
                 for da in turn['dialogue_acts']['non-categorical']:
                     slot, value = da['slot'], da['value']
@@ -237,11 +245,12 @@ def preprocess():
                 dialogue['turns'].append(turn)
             dialogues_by_split[data_split].append(dialogue)
 
-    ontology['binary_dialogue_acts'] = [{'intent':bda[0],'domain':bda[1],'slot':bda[2],'value':bda[3]} for bda in sorted(ontology['binary_dialogue_acts'])]
+    for da_type in ontology['dialogue_acts']:
+        ontology["dialogue_acts"][da_type] = sorted([str({'user': speakers.get('user', False), 'system': speakers.get('system', False), 'intent':da[0],'domain':da[1], 'slot':da[2]}) for da, speakers in ontology["dialogue_acts"][da_type].items()])
     dialogues = dialogues_by_split['train']+dialogues_by_split['validation']+dialogues_by_split['test']
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
