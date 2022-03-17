@@ -189,10 +189,7 @@ class RewardEstimator(object):
         gen_loss /= turns
         logging.debug('<<reward estimator>> epoch {}, loss_real:{}, loss_gen:{}'.format(
                 epoch, real_loss, gen_loss))
-        
-        if (epoch+1) % self.save_per_epoch == 0:
-            self.save_irl(self.save_dir, epoch)
-        
+
     def save_irl(self, directory, epoch):
         if not os.path.exists(directory):
             os.makedirs(directory)
