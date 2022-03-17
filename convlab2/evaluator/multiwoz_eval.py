@@ -96,7 +96,7 @@ class MultiWozEvaluator(Evaluator):
         self.booked_states = self._init_dict_booked()
         self.successful_domains = []
 
-    def add_sys_da(self, da_turn, belief_state):
+    def add_sys_da(self, da_turn, belief_state=None):
         """add sys_da into array
 
         args:
@@ -130,7 +130,10 @@ class MultiWozEvaluator(Evaluator):
                             len(self.dbs[domain]) > int(value):
                         self.booked[domain] = self.dbs[domain][int(value)].copy()
                         self.booked[domain]['Ref'] = value
-                        self.booked_states[domain] = deepcopy(belief_state[domain])
+                        if belief_state is not None:
+                            self.booked_states[domain] = deepcopy(belief_state[domain])
+                        else:
+                            self.booked_states[domain] = None
 
     def add_usr_da(self, da_turn):
         """add usr_da into array
@@ -213,7 +216,7 @@ class MultiWozEvaluator(Evaluator):
                 tot = len(goal[domain]['book'].keys())
                 if tot == 0:
                     continue
-                state = booked_states[domain]
+                state = booked_states.get(domain, None)
                 if state is None:
                     # nothing has been booked but should have been
                     score.append(0)
