@@ -8,7 +8,7 @@ import os
 import json
 from convlab2.policy.policy import Policy
 from convlab2.policy.rlmodule import MultiDiscretePolicy, Value
-from convlab2.util.custom_util import model_downloader
+from convlab2.util.custom_util import model_downloader, set_seed
 import sys
 
 root_dir = os.path.dirname(os.path.dirname(
@@ -36,10 +36,14 @@ class PPO(Policy):
         self.is_train = is_train
         self.info_dict = {}
         self.vector = vectorizer
-        assert self.vector is not None
 
         logging.info('PPO seed ' + str(seed))
-        self.set_seed(seed)
+        set_seed(seed)
+
+        if self.vector is None:
+            logging.info("No vectorizer was set, using default..")
+            from convlab2.policy.vector.vector_binary import VectorBinary
+            self.vector = VectorBinary()
 
         # construct policy and value network
         if dataset == 'Multiwoz':
@@ -56,14 +60,6 @@ class PPO(Policy):
             self.value_optim = optim.Adam(
                 self.value.parameters(), lr=cfg['value_lr'])
 
-    def set_seed(self, seed):
-        np.random.seed(seed)
-        torch.random.manual_seed(seed)
-        random.seed(seed)
-        torch.manual_seed(seed)
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed)
-
     def predict(self, state):
         """
         Predict an system action given state.
@@ -77,7 +73,7 @@ class PPO(Policy):
         s_vec = torch.Tensor(s)
         mask_vec = torch.Tensor(action_mask)
         a = self.policy.select_action(
-            s_vec.to(device=DEVICE), False, action_mask=mask_vec.to(device=DEVICE)).cpu()
+            s_vec.to(device=DEVICE), self.is_train, action_mask=mask_vec.to(device=DEVICE)).cpu()
 
         a_counter = 0
         while a.sum() == 0:
@@ -145,7 +141,7 @@ class PPO(Policy):
 
         return A_sa, v_target
 
-    def update(self, epoch, batchsz, s, a, r, mask, action_mask, only_critic=False):
+    def update(self, epoch, batchsz, s, a, r, mask, action_mask):
         # get estimated V(s) and PI_old(s, a)
         # actually, PI_old(s, a) can be saved when interacting with env, so as to save the time of one forward elapsed
         # v: [b, 1] => [b]
@@ -187,7 +183,6 @@ class PPO(Policy):
 
                 # backprop
                 loss.backward()
-                # nn.utils.clip_grad_norm(self.value.parameters(), 4)
                 self.value_optim.step()
 
                 # 2. update policy network by clipping
@@ -219,10 +214,9 @@ class PPO(Policy):
                 for p in self.policy.parameters():
                     p.grad[p.grad != p.grad] = 0.0
                 # gradient clipping, for stability
-                torch.nn.utils.clip_grad_norm(self.policy.parameters(), 10)
+                torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
                 # self.lock.acquire() # retain lock to update weights
-                if not only_critic:
-                    self.policy_optim.step()
+                self.policy_optim.step()
 
                 # self.lock.release() # release lock
 
