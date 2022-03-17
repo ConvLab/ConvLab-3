@@ -97,7 +97,7 @@ def evaluate(args, model_name, load_path, verbose=False):
 
     action_dict = {}
 
-    task_success = {'Complete': [], 'Success': [], 'Success strict': [], 'total_return': []}
+    task_success = {'Complete': [], 'Success': [], 'Success strict': [], 'total_return': [], 'turns': []}
     for seed in range(1000, 1400):
         set_seed(seed)
         sess.init_session()
@@ -153,6 +153,7 @@ def evaluate(args, model_name, load_path, verbose=False):
         task_success['Success'].append(task_succ)
         task_success['Success strict'].append(task_succ_strict)
         task_success['total_return'].append(total_return)
+        task_success['turns'].append(turns)
 
     for key in task_success:
         logging.info(
