@@ -90,26 +90,26 @@ def get_slot_candidate_embeddings(set_type, args, tokenizer, embedding_model, sa
                 token_type_ids = torch.tensor([feats['token_type_ids']]).to(embedding_model.device) # [1, max_slot_len]
                 if 'attention_mask' in feats:
                     attention_mask = torch.tensor([feats['attention_mask']]).to(embedding_model.device) # [1, max_slot_len]
-                    feats, pooled_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids,
+                    embedded_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids,
                                             attention_mask=attention_mask)
-                    attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, feats.size(-1)))
-                    feats = feats * attention_mask # [1, max_slot_len, hidden_dim]
+                    attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, embedded_feats.last_hidden_state.size(-1)))
+                    feats = embedded_feats.last_hidden_state * attention_mask # [1, max_slot_len, hidden_dim]
                 else:
-                    feats, pooled_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids)
+                    embedded_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids)
             else:
                 if 'attention_mask' in feats:
                     attention_mask = torch.tensor([feats['attention_mask']]).to(embedding_model.device)
-                    feats, pooled_feats = embedding_model(input_ids=input_ids, attention_mask=attention_mask)
-                    attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, feats.size(-1)))
-                    feats = feats * attention_mask # [1, max_slot_len, hidden_dim]
+                    embedded_feats = embedding_model(input_ids=input_ids, attention_mask=attention_mask)
+                    attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, embedded_feats.last_hidden_state.size(-1)))
+                    feats = embedded_feats.last_hidden_state * attention_mask # [1, max_slot_len, hidden_dim]
                 else:
-                    feats, pooled_feats = embedding_model(input_ids=input_ids) # [1, max_slot_len, hidden_dim]
+                    embedded_feats = embedding_model(input_ids=input_ids) # [1, max_slot_len, hidden_dim]
         
         if args.set_similarity:
             slot_emb = feats[0, :, :].detach().cpu() # [seq_len, hidden_dim]
         else:
             if args.candidate_pooling == 'cls' and pooled_feats is not None:
-                slot_emb = pooled_feats[0, :].detach().cpu() # [hidden_dim]
+                slot_emb = embedded_feats.pooler_output[0, :].detach().cpu() # [hidden_dim]
             elif args.candidate_pooling == 'mean':
                 feats = feats.sum(1)
                 feats = torch.nn.functional.layer_norm(feats, feats.size())
@@ -132,26 +132,26 @@ def get_slot_candidate_embeddings(set_type, args, tokenizer, embedding_model, sa
                     token_type_ids = torch.tensor([f['token_type_ids'] for f in feats]).to(embedding_model.device) # [num_candidates, max_candidate_len]
                     if 'attention_mask' in feats[0]:
                         attention_mask = torch.tensor([f['attention_mask'] for f in feats]).to(embedding_model.device) # [num_candidates, max_candidate_len]
-                        feats, pooled_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids,
+                        embedded_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids,
                                                 attention_mask=attention_mask)
-                        attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, feats.size(-1)))
-                        feats = feats * attention_mask # [num_candidates, max_candidate_len, hidden_dim]
+                        attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, embedded_feats.last_hidden_state.size(-1)))
+                        feats = embedded_feats.last_hidden_state * attention_mask # [num_candidates, max_candidate_len, hidden_dim]
                     else:
-                        feats, pooled_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids) # [num_candidates, max_candidate_len, hidden_dim]
+                        embedded_feats = embedding_model(input_ids=input_ids, token_type_ids=token_type_ids) # [num_candidates, max_candidate_len, hidden_dim]
                 else:
                     if 'attention_mask' in feats[0]:
                         attention_mask = torch.tensor([f['attention_mask'] for f in feats]).to(embedding_model.device)
-                        feats, pooled_feats = embedding_model(input_ids=input_ids, attention_mask=attention_mask)
-                        attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, feats.size(-1)))
-                        feats = feats * attention_mask # [num_candidates, max_candidate_len, hidden_dim]
+                        embedded_feats = embedding_model(input_ids=input_ids, attention_mask=attention_mask)
+                        attention_mask = attention_mask.unsqueeze(-1).repeat((1, 1, embedded_feats.last_hidden_state.size(-1)))
+                        feats = embedded_feats.last_hidden_state * attention_mask # [num_candidates, max_candidate_len, hidden_dim]
                     else:
-                        feats, pooled_feats = embedding_model(input_ids=input_ids) # [num_candidates, max_candidate_len, hidden_dim]
+                        embedded_feats = embedding_model(input_ids=input_ids) # [num_candidates, max_candidate_len, hidden_dim]
             
             if args.set_similarity:
                 feats = feats.detach().cpu() # [num_candidates, max_candidate_len, hidden_dim]
             else:
                 if args.candidate_pooling == 'cls' and pooled_feats is not None:
-                    feats = pooled_feats.detach().cpu()
+                    feats = embedded_feats.pooler_output.detach().cpu()
                 elif args.candidate_pooling == "mean":
                     feats = feats.sum(1)
                     feats = torch.nn.functional.layer_norm(feats, feats.size())
