@@ -171,7 +171,12 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
         logging.info(
             f"{key}: Num: {len(task_success[key])} Success: {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}")
 
-    return complete_rate, success_rate, success_rate_strict, avg_return, turns, avg_actions
+    return {"complete_rate": complete_rate,
+            "success_rate": success_rate,
+            "success_rate_strict": success_rate_strict,
+            "avg_return": avg_return,
+            "turns": turns,
+            "avg_actions": avg_actions}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True):

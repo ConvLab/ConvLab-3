@@ -155,6 +155,7 @@ def sample(env, policy, batchsz, process_num, seed, user_rl=False):
 
     return buff.get_batch()
 
+
 def update(env, policy, batchsz, epoch, process_num, only_critic=False, seed=0, user_rl=False):
 
     # sample data asynchronously
@@ -241,19 +242,13 @@ if __name__ == '__main__':
 
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
-    complete_rate, success_rate, success_rate_strict, avg_return, turns, avg_actions = eval_policy(
-        conf, policy_sys, env, sess, save_eval, log_save_path)
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
 
-    tb_writer.add_scalar('complete_rate', complete_rate, 0)
-    tb_writer.add_scalar('success_rate', success_rate, 0)
-    tb_writer.add_scalar('success_rate_strict', success_rate_strict, 0)
-    tb_writer.add_scalar('avg_return', avg_return, 0)
-    tb_writer.add_scalar('turns', turns, 0)
-    tb_writer.add_scalar('avg_actions', avg_actions, 0)
-
-    best_complete_rate = complete_rate
-    best_success_rate = success_rate_strict
+    for key in eval_dict:
+        tb_writer.add_scalar(key, eval_dict[key], 0)
+    best_complete_rate = eval_dict['complete_rate']
+    best_success_rate = eval_dict['success_rate_strict']
 
     logging.info("Start of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
@@ -268,25 +263,13 @@ if __name__ == '__main__':
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
             logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
 
-            complete_rate, success_rate, success_rate_strict, avg_return, turns, avg_actions = eval_policy(
-                conf, policy_sys, env, sess, save_eval, log_save_path)
+            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
             best_complete_rate, best_success_rate = \
                 save_best(policy_sys, best_complete_rate, best_success_rate,
-                          complete_rate, success_rate_strict, save_path)
-
-            tb_writer.add_scalar('complete_rate', complete_rate,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('success_rate', success_rate,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('success_rate_strict', success_rate_strict,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('avg_return', avg_return,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('turns', turns, idx *
-                                 conf['model']['batchsz'])
-            tb_writer.add_scalar('avg_actions', avg_actions,
-                                 idx * conf['model']['batchsz'])
+                          eval_dict["complete_rate"], eval_dict["success_rate_strict"], save_path)
+            for key in eval_dict:
+                tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
 
     logging.info("End of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
