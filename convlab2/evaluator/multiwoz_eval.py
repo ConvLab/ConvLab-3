@@ -472,9 +472,8 @@ class MultiWozEvaluator(Evaluator):
 
         book_rate = self._book_rate_goal(goal, self.booked, [domain])
         book_rate = np.mean(book_rate) if book_rate else None
-
-        book_constraints = self._book_goal_constraints(goal, self.booked_states, [domain])
-        book_constraints = np.mean(book_constraints) if book_constraints else None
+        match, mismatch = self._final_goal_analyze_domain(domain)
+        goal_sess = 1 if (match == 0 and mismatch == 0) else match / (match + mismatch)
 
         inform = self._inform_F1_goal(goal, self.sys_da_array, [domain])
         try:
@@ -482,14 +481,47 @@ class MultiWozEvaluator(Evaluator):
         except ZeroDivisionError:
             inform_rec = None
 
-        if (book_rate == 1 and inform_rec == 1) \
-                or (book_rate == 1 and inform_rec is None) \
-                or (book_rate is None and inform_rec == 1):
-            domain_success = 1
-            domain_success_strict = 1 if (book_constraints == 1 or book_constraints is None) else 0
-            return domain_success if not self.check_book_constraints else domain_success_strict
+        if ((book_rate == 1 and inform_rec == 1) or (book_rate == 1 and inform_rec is None) or
+            (book_rate is None and inform_rec == 1)) and goal_sess == 1:
+            return 1
         else:
             return 0
+
+    def _final_goal_analyze_domain(self, domain):
+
+        match = mismatch = 0
+        if domain in self.goal:
+            dom_goal_dict = self.goal[domain]
+        else:
+            return match, mismatch
+        constraints = []
+        if 'reqt' in dom_goal_dict:
+            reqt_constraints = list(dom_goal_dict['reqt'].items())
+            constraints += reqt_constraints
+        else:
+            reqt_constraints = []
+        if 'info' in dom_goal_dict:
+            info_constraints = list(dom_goal_dict['info'].items())
+            constraints += info_constraints
+        else:
+            info_constraints = []
+        query_result = self.database.query(
+            domain, info_constraints, soft_contraints=reqt_constraints)
+        if not query_result:
+            mismatch += 1
+
+        booked = self.booked[domain]
+        if not self.goal[domain].get('book'):
+            match += 1
+        elif isinstance(booked, dict):
+            ref = booked['Ref']
+            if any(found['Ref'] == ref for found in query_result):
+                match += 1
+            else:
+                mismatch += 1
+        else:
+            match += 1
+        return match, mismatch
 
     def _final_goal_analyze(self):
         """whether the final goal satisfies constraints"""
