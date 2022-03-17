@@ -23,7 +23,8 @@ import torch
 from torch.nn import DataParallel
 from torch.distributions import Categorical
 import numpy as np
-from transformers import AdamW, get_linear_schedule_with_warmup
+from transformers import get_linear_schedule_with_warmup
+from torch.optim import AdamW
 from tqdm import tqdm, trange
 try:
     from apex import amp
@@ -93,7 +94,7 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
     ]
 
     # Initialise the optimizer
-    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate, correct_bias=False)
+    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate)
 
     # Initialise linear lr scheduler
     num_warmup_steps = int(t_total * args.warmup_proportion)
@@ -683,21 +684,7 @@ def evaluate(args, model, device, dataloader):
                 p_ = torch.log(p_ + 1e-10) / 1.0
                 p_ = torch.softmax(p_, -1)
 
-            # logits[slot].append(p_)
-
-            if args.accuracy_samples > 0:
-                dist = Categorical(probs=p_.reshape(-1, p_.size(-1)))
-                lab_sample = dist.sample((args.accuracy_samples,))
-                lab_sample = lab_sample.transpose(0, 1)
-                acc = [lab in s for lab, s in zip(labels.reshape(-1), lab_sample)]
-                acc = torch.tensor(acc).float()
-            elif args.accuracy_topn > 0:
-                labs = p_.reshape(-1, p_.size(-1)).argsort(dim=-1, descending=True)
-                labs = labs[:, :args.accuracy_topn]
-                acc = [lab in s for lab, s in zip(labels.reshape(-1), labs)]
-                acc = torch.tensor(acc).float()
-            else:
-                acc = (p_.argmax(-1) == labels).reshape(-1).float()
+            acc = (p_.argmax(-1) == labels).reshape(-1).float()
 
             jg_acc += acc
 
