@@ -470,6 +470,9 @@ class MultiWozEvaluator(Evaluator):
                 elif i == 'request':
                     goal[d]['reqt'].append(s)
 
+        book_constraints = self._book_goal_constraints(goal, self.booked_states, [domain])
+        book_constraints = np.mean(book_constraints) if book_constraints else None
+
         book_rate = self._book_rate_goal(goal, self.booked, [domain])
         book_rate = np.mean(book_rate) if book_rate else None
         match, mismatch = self._final_goal_analyze_domain(domain)
@@ -483,7 +486,9 @@ class MultiWozEvaluator(Evaluator):
 
         if ((book_rate == 1 and inform_rec == 1) or (book_rate == 1 and inform_rec is None) or
             (book_rate is None and inform_rec == 1)) and goal_sess == 1:
-            return 1
+            domain_success = 1
+            domain_strict_success = 1 if (book_constraints == 1 or book_constraints is None) else 0
+            return domain_success if not self.check_book_constraints else domain_strict_success
         else:
             return 0
 
