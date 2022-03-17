@@ -1,0 +1,2276 @@
+[
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-0",
+    "original_id": 0,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 11193: You are looking for an expensive restaurant and it should be in the south part of town. Make sure you get the address of the venue.",
+      "inform": {
+        "restaurant": {
+          "price range": "expensive",
+          "area": "south"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "address": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I need to find an expensive restauant that's in the south section of the city.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "south"
+            }
+          ],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "south",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are several restaurants in the south part of town that serve expensive food. Do you have a cuisine preference?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "south"
+            }
+          ],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No I don't care about the type of cuisine.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "dontcare"
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "south",
+            "food": "dontcare"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Chiquito Restaurant Bar is a Mexican restaurant located in the south part of town.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "south"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Chiquito Restaurant Bar",
+              "start": 0,
+              "end": 23
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Mexican",
+              "start": 29,
+              "end": 36
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is their address?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "south",
+            "food": "dontcare"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There address is 2G Cambridge Leisure Park Cherry Hinton Road Cherry Hinton, it there anything else I can help you with?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "2G Cambridge Leisure Park Cherry Hinton Road Cherry Hinton",
+              "start": 17,
+              "end": 75
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is the food type they serve ?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "south",
+            "food": "dontcare"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "They serve Mexican food .",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Mexican",
+              "start": 11,
+              "end": 18
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Nope, that's what I was looking for. Thanks a lot!",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "south",
+            "food": "dontcare"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Thank you very much for using the Cambridge Restaurant System.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-1",
+    "original_id": 1,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 02790: You want to find a moderately priced restaurant and it should serve cantonese food. If there is no such venue how about chinese type of food. You want to know the phone number of the venue.",
+      "inform": {
+        "restaurant": {
+          "food": "chinese",
+          "price range": "moderate"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I am looking for a restaurant that is moderately priced and serves Cantonese food.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Cantonese",
+              "start": 67,
+              "end": 76
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "cantonese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are no restaurants that serve Cantonese food in the moderate price range.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "nooffer",
+              "domain": "restaurant",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How about chinese type of food?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "chinese",
+              "start": 10,
+              "end": 17
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "the Golden wok serves chinese food and is in the moderate price range.  Would you like their location? ",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Golden wok",
+              "start": 4,
+              "end": 14
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "chinese",
+              "start": 22,
+              "end": 29
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Their phone number please.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Their phone number is 01223 350688.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223 350688",
+              "start": 22,
+              "end": 34
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is the area?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "it is located in the north part of town",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "north"
+            }
+          ],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you for your help. Good bye.",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Goodbye.",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-2",
+    "original_id": 2,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 10230: You are looking for an expensive restaurant and it should serve australian food. If there is no such venue how about british type of food. You want to know the phone number of the venue.",
+      "inform": {
+        "restaurant": {
+          "food": "british",
+          "price range": "expensive"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hello, I am looking for an expensive restaurant that serves Australian food. ",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Australian",
+              "start": 60,
+              "end": 70
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "",
+            "food": "australian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are no records matching your request for an expensive restaurant serving Australian food. May I help you find a different restaurant? ",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food"
+            },
+            {
+              "intent": "nooffer",
+              "domain": "restaurant",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What about British food?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "British",
+              "start": 11,
+              "end": 18
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "",
+            "food": "british"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are six restaurants matching your query. One of them is travellers rest.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "travellers rest",
+              "start": 62,
+              "end": 77
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Could I have the phone number for one of the restaurants?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "",
+            "food": "british"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "there phone number is 01223352500 is there anything else i can help you with?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223352500",
+              "start": 22,
+              "end": 33
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thanks, goodbye.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "",
+            "food": "british"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Thank you, goodbye.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-3",
+    "original_id": 3,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 01215: You want to find an expensive restaurant and it should serve african food. You want to know the phone number.",
+      "inform": {
+        "restaurant": {
+          "food": "african",
+          "price range": "expensive"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I am wanting an expensive restaurant that offers African food. What is their number?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "African",
+              "start": 49,
+              "end": 56
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "",
+            "food": "african"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Where are you located? I see two that might work but Id like to offer the closest.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I do not care about the area of town.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "dontcare"
+            }
+          ],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "dontcare",
+            "food": "african"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Bedouin is an expensive African restaurant in the city centre. ",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "centre"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "African",
+              "start": 24,
+              "end": 31
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Bedouin",
+              "start": 0,
+              "end": 7
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That sounds good, what is their number so that I can ring them?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "dontcare",
+            "food": "african"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Their phone number is 01223 367660.",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223 367660",
+              "start": 22,
+              "end": 34
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great! Thank you. Good Bye. ",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "expensive",
+            "area": "dontcare",
+            "food": "african"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome, goodbye.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-4",
+    "original_id": 4,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 07173: You are looking for a moderately priced restaurant and it should be in the north part of town. Make sure you get the address and type of food.",
+      "inform": {
+        "restaurant": {
+          "price range": "moderate",
+          "area": "north"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "address": "",
+          "food": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I would like a moderately priced restaurant in the north part of town.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "north"
+            }
+          ],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "north",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Golden Wok is a moderately priced restaurant in the north side of town. ",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "north"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Golden Wok",
+              "start": 0,
+              "end": 10
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What type of food does Golden Wok serve?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "north",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The Golden Wok serves Chinese food.  Would you like more information?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Golden Wok",
+              "start": 4,
+              "end": 14
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Chinese",
+              "start": 22,
+              "end": 29
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes what is the address for the business?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "north",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "They are located at 191 Histon Road Chesterton",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "191 Histon Road Chesterton",
+              "start": 20,
+              "end": 46
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great. I have everything I need, Thank you  ",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "north",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welconme",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-5",
+    "original_id": 5,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 11163: You want to find a restaurant in the north part of town and it should serve traditional food. If there is no such venue how about asian oriental type of food. You want to know the address and phone number of the venue.",
+      "inform": {
+        "restaurant": {
+          "food": "asian oriental",
+          "area": "north"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "address": "",
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "i want somewhere that serves traditional food.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "traditional",
+              "start": 29,
+              "end": 40
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "",
+            "food": "traditional"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are no traditional restaurants in the city. Can I help you with a different type of cuisine? ",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food"
+            },
+            {
+              "intent": "nooffer",
+              "domain": "restaurant",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How abou asian oriental food",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "asian oriental",
+              "start": 9,
+              "end": 23
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "",
+            "food": "asian oriental"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are 5 restaurants meeting your criteria. What area and price range did you have in mind?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "price range"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is the address and phone number?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "",
+            "food": "asian oriental"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The dojo noodle bar serves asian oriental food.  They are located at 40210 Millers Yard City Centre and their phone number is 01223 363471.  ",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "dojo noodle bar",
+              "start": 4,
+              "end": 19
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "asian oriental",
+              "start": 27,
+              "end": 41
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "40210 Millers Yard City Centre",
+              "start": 69,
+              "end": 99
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223 363471",
+              "start": 126,
+              "end": 138
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "thank you. good bye.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "",
+            "food": "asian oriental"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Good bye",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-6",
+    "original_id": 6,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 07425: You are looking for a cheap restaurant and it should be in the north part of town. Don't go for the first venue the system offers you, ask if there is anything else. Make sure you get the phone number of the venue.",
+      "inform": {
+        "restaurant": {
+          "price range": "cheap",
+          "area": "north"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Is there a cheap place in the north part of town? ",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "cheap"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "north"
+            }
+          ],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "cheap",
+            "area": "north",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "There are two restaurants that meet your specification. One is Italian and the other is Indian. Which would you prefer?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Italian",
+              "start": 63,
+              "end": 70
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Indian",
+              "start": 88,
+              "end": 94
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Italian, please. Can you give me the address?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Italian",
+              "start": 0,
+              "end": 7
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "cheap",
+            "area": "north",
+            "food": "italian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "da vinci pizzeria is in the north part of town their address is 20 Milton Road Chesterton.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "north"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "20 Milton Road Chesterton",
+              "start": 64,
+              "end": 89
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "da vinci pizzeria",
+              "start": 0,
+              "end": 17
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is the phone number please?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "cheap",
+            "area": "north",
+            "food": "italian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "da vinci pizzeria's phone number is 01223351707. Can I help you with anything else? ",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "da vinci pizzeria",
+              "start": 0,
+              "end": 17
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223351707",
+              "start": 36,
+              "end": 47
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No that will be it.  Thank you ",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "cheap",
+            "area": "north",
+            "food": "italian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome. Goodbye.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-7",
+    "original_id": 7,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 09135: You want to find a moderately priced restaurant and it should be in the east part of town. Make sure you get the phone number of the venue.",
+      "inform": {
+        "restaurant": {
+          "price range": "moderate",
+          "area": "east"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I want a moderately priced restaurant in the east part of town. What is the phone number?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "east"
+            }
+          ],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "east",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Would you prefer Indian food or Italian food?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "food"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Italian",
+              "start": 32,
+              "end": 39
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Indian",
+              "start": 17,
+              "end": 23
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I don't care. Give me their phone number.",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "east",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Curry Prince is a moderately priced restaurant in the east part of town that serves Indian food. Would you like the phone number?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "east"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Curry Prince",
+              "start": 0,
+              "end": 12
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Indian",
+              "start": 84,
+              "end": 90
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes give me the phone number.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "east",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The phone number for Curry Prince is 01223 566388. ",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223 566388",
+              "start": 37,
+              "end": 49
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Curry Prince",
+              "start": 21,
+              "end": 33
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Awesome, thank you! Goodbye!",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "east",
+            "food": ""
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome, goodbye.",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-8",
+    "original_id": 8,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 11820: You are looking for a restaurant in the east part of town and it should serve world food. If there is no such venue how about indian type of food. You want to know the address and phone number of the venue.",
+      "inform": {
+        "restaurant": {
+          "food": "indian",
+          "area": "east"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "address": "",
+          "phone": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I'd like a place that serves world food in the east part of town. ",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "east"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "world",
+              "start": 29,
+              "end": 34
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "east",
+            "food": "world"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Sorry but no world food restaurants in the east is found. can i provide you something else. ",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "nooffer",
+              "domain": "restaurant",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "How about Indian food?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Indian",
+              "start": 10,
+              "end": 16
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "east",
+            "food": "indian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Your options are Curry Prince, Pipasha Restaurant, Rajmahal, and Sitar Tandoori. Which one would you like more information regarding?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Curry Prince",
+              "start": 17,
+              "end": 29
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Pipasha Restaurant",
+              "start": 31,
+              "end": 49
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Sitar Tandoori",
+              "start": 65,
+              "end": 79
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Rajmahal",
+              "start": 51,
+              "end": 59
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I would like the address and phone number of Curry Prince.",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "east",
+            "food": "indian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The curry prince is located at 451 Newmarket Road Fen Ditton and their phone number is 01223 566388.  Can I help you with anything else today? ",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "451 Newmarket Road Fen Ditton",
+              "start": 31,
+              "end": 60
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223 566388",
+              "start": 87,
+              "end": 99
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "curry prince",
+              "start": 4,
+              "end": 16
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No, thank you goobye.",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "",
+            "area": "east",
+            "food": "indian"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "thank you, goodbye",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "camrest",
+    "data_split": "train",
+    "dialogue_id": "camrest-train-9",
+    "original_id": 9,
+    "domains": [
+      "restaurant"
+    ],
+    "goal": {
+      "description": "Task 06252: You are looking for a moderately priced restaurant and it should serve chinese food. Make sure you get the address, phone number, and postcode.",
+      "inform": {
+        "restaurant": {
+          "food": "chinese",
+          "price range": "moderate"
+        }
+      },
+      "request": {
+        "restaurant": {
+          "address": "",
+          "phone": "",
+          "postcode": ""
+        }
+      }
+    },
+    "finished": true,
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I'd like to find a moderately priced chinese restaurant.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "chinese",
+              "start": 37,
+              "end": 44
+            }
+          ]
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "Golden Wok is a moderately priced Chinese restaurant in North.",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "North"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Golden Wok",
+              "start": 0,
+              "end": 10
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Chinese",
+              "start": 34,
+              "end": 41
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Can you give me the address, phone number, and area code?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "postcode"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "The Golden Wok is at 191 Histon Road Chesterton, post code C.B 4, 3 H.L. The phone number is 01223 350688.",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "address",
+              "value": "191 Histon Road Chesterton",
+              "start": 21,
+              "end": 47
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "postcode",
+              "value": "C.B 4, 3 H.L",
+              "start": 59,
+              "end": 71
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "name",
+              "value": "Golden Wok",
+              "start": 4,
+              "end": 14
+            },
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "phone",
+              "value": "01223 350688",
+              "start": 93,
+              "end": 105
+            }
+          ]
+        },
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you very much for the address of the golden wok!",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "state": {
+          "restaurant": {
+            "price range": "moderate",
+            "area": "",
+            "food": "chinese"
+          }
+        }
+      },
+      {
+        "speaker": "system",
+        "utterance": "You're welcome. good bye!",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "db_results": {}
+      }
+    ]
+  }
+]
