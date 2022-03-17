@@ -5,10 +5,11 @@ import numpy as np
 import logging
 import os
 import json
+
 from convlab2.policy.policy import Policy
 from convlab2.policy.rlmodule import MultiDiscretePolicy, Value
+from convlab2.util.custom_util import set_seed
 from convlab2.util.train_util import init_logging_handler
-from convlab2.policy.vector.vector_binary import VectorBinary
 from convlab2.util.file_util import cached_path
 import zipfile
 import sys
@@ -21,7 +22,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class GDPL(Policy):
 
-    def __init__(self, is_train=False, dataset='Multiwoz'):
+    def __init__(self, is_train=False, dataset='Multiwoz', seed=0, vectorizer=None):
 
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
             cfg = json.load(f)
@@ -33,19 +34,24 @@ class GDPL(Policy):
         self.epsilon = cfg['epsilon']
         self.tau = cfg['tau']
         self.is_train = is_train
-        if is_train:
-            init_logging_handler(os.path.join(os.path.dirname(os.path.abspath(__file__)), cfg['log_dir']))
+        self.vector = vectorizer
+        self.info_dict = {}
+
+        set_seed(seed)
+        if self.vector is None:
+            logging.info("No vectorizer was set, using default..")
+            from convlab2.policy.vector.vector_binary import VectorBinary
+            self.vector = VectorBinary()
 
         # construct policy and value network
         if dataset == 'Multiwoz':
-            self.vector = VectorBinary()
             self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'], self.vector.da_dim).to(device=DEVICE)
 
         self.value = Value(self.vector.state_dim, cfg['hv_dim']).to(device=DEVICE)
         if is_train:
             self.policy_optim = optim.RMSprop(self.policy.parameters(), lr=cfg['policy_lr'])
             self.value_optim = optim.Adam(self.value.parameters(), lr=cfg['value_lr'])
-        
+
     def predict(self, state):
         """
         Predict an system action given state.
@@ -54,10 +60,26 @@ class GDPL(Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-        s_vec = torch.Tensor(self.vector.state_vectorize(state))
-        a = self.policy.select_action(s_vec.to(device=DEVICE), self.is_train).cpu()
-        action = self.vector.action_devectorize(a.numpy())
+        s, action_mask = self.vector.state_vectorize(state)
+        s_vec = torch.Tensor(s)
+        mask_vec = torch.Tensor(action_mask)
+        a = self.policy.select_action(
+            s_vec.to(device=DEVICE), self.is_train, action_mask=mask_vec.to(device=DEVICE)).cpu()
+
+        a_counter = 0
+        while a.sum() == 0:
+            a_counter += 1
+            a = self.policy.select_action(
+                s_vec.to(device=DEVICE), True, action_mask=mask_vec.to(device=DEVICE)).cpu()
+            if a_counter == 5:
+                break
+        # print('True :')
+        # print(a)
+        action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
+        self.info_dict["action_used"] = action
+        # for key in state.keys():
+        #     print("Key : {} , Value : {}".format(key,state[key]))
         return action
 
     def init_session(self):
@@ -110,7 +132,7 @@ class GDPL(Policy):
 
         return A_sa, v_target
     
-    def update(self, epoch, batchsz, s, a, next_s, mask, rewarder):
+    def update(self, epoch, batchsz, s, a, next_s, mask, rewarder, action_mask):
         # update reward estimator
         rewarder.update_irl((s, a, next_s), batchsz, epoch)
         

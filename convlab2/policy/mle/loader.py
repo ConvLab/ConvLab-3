@@ -56,7 +56,8 @@ class PolicyDataVectorizer:
 
                 vectorized_state, mask = self.vector.state_vectorize(state)
                 vectorized_action = self.vector.action_vectorize(dialogue_act)
-                self.data[split].append({"state": vectorized_state, "action": vectorized_action, "mask": mask})
+                self.data[split].append({"state": vectorized_state, "action": vectorized_action, "mask": mask,
+                                         "terminated": state['terminated']})
 
             with open(os.path.join(processed_dir, '{}.pkl'.format(split)), 'wb') as f:
                 pickle.dump(self.data[split], f)

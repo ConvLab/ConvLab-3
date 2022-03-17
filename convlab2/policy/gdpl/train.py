@@ -1,30 +1,41 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Dec 31 10:57:51 2019
+Created on Sun Jul 14 16:14:07 2019
 @author: truthless
 """
-import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+import sys
+import os
+import logging
+import time
 import numpy as np
 import torch
-from torch import multiprocessing as mp
-from convlab2.dialog_agent.agent import PipelineAgent
-from convlab2.dialog_agent.env import Environment
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.policy.rule.multiwoz import RulePolicy
+
 from convlab2.policy.gdpl import GDPL
 from convlab2.policy.gdpl import RewardEstimator
-from convlab2.policy.rlmodule import Memory, Transition
+from convlab2.policy.rlmodule import Memory
+from torch import multiprocessing as mp
 from argparse import ArgumentParser
+from convlab2.policy.ppo.config import get_config
+from convlab2.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
+    eval_policy, log_start_args, save_best, load_config_file
+from datetime import datetime
+
+sys.path.append(os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__)))))
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = DEVICE
 
 try:
+    mp.set_start_method('spawn', force=True)
     mp = mp.get_context('spawn')
 except RuntimeError:
     pass
 
-def sampler(pid, queue, evt, env, policy, batchsz):
+
+def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
+
     """
     This is a sampler function, and it will be called by multiprocess.Process to sample data from environment by multiple
     processes.
@@ -36,8 +47,8 @@ def sampler(pid, queue, evt, env, policy, batchsz):
     :param batchsz: total sampled items
     :return:
     """
-    buff = Memory()
 
+    buff = Memory(seed=train_seed)
     # we need to sample batchsz of (state, action, next_state, reward, mask)
     # each trajectory contains `trajectory_len` num of items, so we only need to sample
     # `batchsz//trajectory_len` num of trajectory totally
@@ -51,24 +62,32 @@ def sampler(pid, queue, evt, env, policy, batchsz):
     while sampled_num < batchsz:
         # for each trajectory, we reset the env and get initial state
         s = env.reset()
-
         for t in range(traj_len):
 
             # [s_dim] => [a_dim]
-            s_vec = torch.Tensor(policy.vector.state_vectorize(s))
-            a = policy.predict(s)
+            s_vec, action_mask = policy.vector.state_vectorize(s)
+            s_vec = torch.Tensor(s_vec)
+            action_mask = torch.Tensor(action_mask)
 
+            a = policy.predict(s)
+            # print("---> sample action")
+            # print(f"s     : {s['system_action']}")
+            # print(f"a     : {a}")
             # interact with env
-            next_s, _, done = env.step(a)
+            next_s, r, done = env.step(a)
+            # print(f"next_s: {next_s['system_action']}")
 
             # a flag indicates ending or not
             mask = 0 if done else 1
 
             # get reward compared to demostrations
-            next_s_vec = torch.Tensor(policy.vector.state_vectorize(next_s))
+            next_s_vec, next_action_mask = policy.vector.state_vectorize(
+                next_s)
+            next_s_vec = torch.Tensor(next_s_vec)
 
             # save to queue
-            buff.push(s_vec.numpy(), policy.vector.action_vectorize(a), 0, next_s_vec.numpy(), mask)
+            buff.push(s_vec.numpy(), policy.vector.action_vectorize(
+                a), r, next_s_vec.numpy(), mask, action_mask.numpy())
 
             # update per step
             s = next_s
@@ -88,14 +107,15 @@ def sampler(pid, queue, evt, env, policy, batchsz):
     evt.wait()
 
 
-def sample(env, policy, batchsz, process_num):
+def sample(env, policy, batchsz, process_num, seed):
+
     """
     Given batchsz number of task, the batchsz will be splited equally to each processes
     and when processes return, it merge all data and return
-	:param env:
-	:param policy:
+        :param env:
+        :param policy:
     :param batchsz:
-	:param process_num:
+        :param process_num:
     :return: batch
     """
 
@@ -115,7 +135,7 @@ def sample(env, policy, batchsz, process_num):
     evt = mp.Event()
     processes = []
     for i in range(process_num):
-        process_args = (i, queue, evt, env, policy, process_batchsz)
+        process_args = (i, queue, evt, env, policy, process_batchsz, seed)
         processes.append(mp.Process(target=sampler, args=process_args))
     for p in processes:
         # set the process as daemon, and it will be killed once the main process is stoped.
@@ -135,44 +155,127 @@ def sample(env, policy, batchsz, process_num):
     return buff.get_batch()
 
 
-def update(env, policy, batchsz, epoch, process_num, rewarder):
-    # sample data asynchronously
-    batch = sample(env, policy, batchsz, process_num)
+def update(env, policy, batchsz, epoch, process_num, rewarder, seed=0):
 
+    # sample data asynchronously
+    batch = sample(env, policy, batchsz, process_num, seed)
+
+    # print(batch)
     # data in batch is : batch.state: ([1, s_dim], [1, s_dim]...)
     # batch.action: ([1, a_dim], [1, a_dim]...)
     # batch.reward/ batch.mask: ([1], [1]...)
     s = torch.from_numpy(np.stack(batch.state)).to(device=DEVICE)
     a = torch.from_numpy(np.stack(batch.action)).to(device=DEVICE)
+    r = torch.from_numpy(np.stack(batch.reward)).to(device=DEVICE)
     next_s = torch.from_numpy(np.stack(batch.next_state)).to(device=DEVICE)
     mask = torch.Tensor(np.stack(batch.mask)).to(device=DEVICE)
+    action_mask = torch.Tensor(np.stack(batch.action_mask)).to(device=DEVICE)
     batchsz_real = s.size(0)
 
-    policy.update(epoch, batchsz_real, s, a, next_s, mask, rewarder)
+    policy.update(epoch, batchsz_real, s, a, next_s, mask, rewarder, action_mask)
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser()
-    parser.add_argument("--load_path", type=str, default="", help="path of model to load")
-    parser.add_argument("--batchsz", type=int, default=1024, help="batch size of trajactory sampling")
-    parser.add_argument("--epoch", type=int, default=200, help="number of epochs to train")
-    parser.add_argument("--process_num", type=int, default=8, help="number of processes of trajactory sampling")
-    args = parser.parse_args()
-    # simple rule DST
-    dst_sys = RuleDST()
 
-    policy_sys = GDPL(True)
-    policy_sys.load(args.load_path)
+    time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+
+    begin_time = datetime.now()
+    parser = ArgumentParser()
+    parser.add_argument("--path", type=str, default='convlab2/policy/gdpl/semantic_level_config.json',
+                        help="Load path for config file")
+    parser.add_argument("--seed", type=int, default=0,
+                        help="Seed for the policy parameter initialization")
+    parser.add_argument("--mode", type=str, default='info',
+                        help="Set level for logger")
+    parser.add_argument("--save_eval_dials", type=bool, default=False,
+                        help="Flag for saving dialogue_info during evaluation")
+
+    path = parser.parse_args().path
+    seed = parser.parse_args().seed
+    mode = parser.parse_args().mode
+    save_eval = parser.parse_args().save_eval_dials
+
+    logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
+        init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
+
+    args = [('model', 'seed', seed)]
+
+    environment_config = load_config_file(path)
+    save_config(vars(parser.parse_args()), environment_config, config_save_path)
+
+    conf = get_config(path, args)
+    seed = conf['model']['seed']
+    logging.info('Train seed is ' + str(seed))
+    set_seed(seed)
+
+    policy_sys = GDPL(True, seed=conf['model']['seed'], vectorizer=conf['vectorizer_sys_activated'])
     rewarder = RewardEstimator(policy_sys.vector, False)
 
-    # not use dst
-    dst_usr = None
-    # rule policy
-    policy_usr = RulePolicy(character='usr')
-    # assemble
-    simulator = PipelineAgent(None, None, policy_usr, None, 'user')
+    # Load model
+    if conf['model']['use_pretrained_initialisation']:
+        logging.info("Loading supervised model checkpoint.")
+        policy_sys.load_from_pretrained(conf['model'].get('pretrained_load_path', ""))
+    elif conf['model']['load_path']:
+        try:
+            policy_sys.load(conf['model']['load_path'])
+        except Exception as e:
+            logging.info(f"Could not load a policy: {e}")
+    else:
+        logging.info("Policy initialised from scratch")
 
-    env = Environment(None, simulator, None, dst_sys)
+    log_start_args(conf)
+    logging.info(f"New episodes per epoch: {conf['model']['batchsz']}")
 
-    for i in range(args.epoch):
-        update(env, policy_sys, args.batchsz, i, args.process_num, rewarder)
+    env, sess = env_config(conf, policy_sys)
+
+    # Setup uncertainty thresholding
+    if env.sys_dst:
+        try:
+            if env.sys_dst.use_confidence_scores:
+                policy_sys.vector.setup_uncertain_query(env.sys_dst.thresholds)
+        except:
+            logging.info('Uncertainty threshold not set.')
+
+    policy_sys.current_time = current_time
+    policy_sys.log_dir = config_save_path.replace('configs', 'logs')
+    policy_sys.save_dir = save_path
+
+    logging.info(f"Evaluating at start - {time_now}" + '-'*60)
+    time_now = time.time()
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
+    logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
+
+    for key in eval_dict:
+        tb_writer.add_scalar(key, eval_dict[key], 0)
+    best_complete_rate = eval_dict['complete_rate']
+    best_success_rate = eval_dict['success_rate_strict']
+
+    logging.info("Start of Training: " +
+                 time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+
+    for i in range(conf['model']['epoch']):
+        idx = i + 1
+        # print("Epoch :{}".format(str(idx)))
+        update(env, policy_sys, conf['model']['batchsz'], idx, conf['model']['process_num'], rewarder, seed=seed)
+
+        if idx % conf['model']['eval_frequency'] == 0 and idx != 0:
+            time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+            logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
+
+            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
+
+            best_complete_rate, best_success_rate = \
+                save_best(policy_sys, best_complete_rate, best_success_rate,
+                          eval_dict["complete_rate"], eval_dict["success_rate_strict"], save_path)
+            for key in eval_dict:
+                tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
+
+    logging.info("End of Training: " +
+                 time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+
+    f = open(os.path.join(dir_path, "time.txt"), "a")
+    f.write(str(datetime.now() - begin_time))
+    f.close()
+
+    move_finished_training(dir_path, os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))

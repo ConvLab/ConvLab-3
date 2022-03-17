@@ -12,9 +12,10 @@ from torch import optim
 import torch.utils.data as data
 from convlab2.util.train_util import to_device
 from convlab2.policy.vector.dataset import ActStateDataset
-from convlab2.policy.mle.multiwoz.loader import ActMLEPolicyDataLoaderMultiWoz
+from convlab2.policy.mle.loader import PolicyDataVectorizer
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class RewardEstimator(object):
     def __init__(self, vector, pretrain=False):
@@ -239,10 +240,11 @@ class AIRL(nn.Module):
         :param next_s: [b, s_dim]
         :return:  [b, 1]
         """
-        weights = self.g(torch.cat([s,a], -1)) + self.gamma * self.h(next_s) - self.h(s)
+        weights = self.g(torch.cat([s, a], -1)) + self.gamma * self.h(next_s) - self.h(s)
         return weights
 
-class ActEstimatorDataLoaderMultiWoz(ActMLEPolicyDataLoaderMultiWoz):
+
+class ActEstimatorDataLoaderMultiWoz(PolicyDataVectorizer):
     def __init__(self):
         super(ActEstimatorDataLoaderMultiWoz, self).__init__()
         
@@ -252,12 +254,12 @@ class ActEstimatorDataLoaderMultiWoz(ActMLEPolicyDataLoaderMultiWoz):
         a = []
         next_s = []
         for i, item in enumerate(self.data[part]):
-            s.append(torch.Tensor(item[0]))
-            a.append(torch.Tensor(item[1]))
-            if item[0][-1]: #terminated
-                next_s.append(torch.Tensor(item[0]))
+            s.append(torch.Tensor(item['state']))
+            a.append(torch.Tensor(item['action']))
+            if item['terminated']: #terminated
+                next_s.append(torch.Tensor(item['state']))
             else:
-                next_s.append(torch.Tensor(self.data[part][i+1][0]))
+                next_s.append(torch.Tensor(self.data[part][i+1]['state']))
         s = torch.stack(s)
         a = torch.stack(a)
         next_s = torch.stack(next_s)
@@ -265,5 +267,3 @@ class ActEstimatorDataLoaderMultiWoz(ActMLEPolicyDataLoaderMultiWoz):
         dataloader = data.DataLoader(dataset, batchsz, True)
         print('Finish creating {} irl dataset'.format(part))
         return dataloader
-        
-    
