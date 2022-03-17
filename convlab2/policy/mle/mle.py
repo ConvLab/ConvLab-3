@@ -33,7 +33,7 @@ class MLEAbstract(Policy):
         s_vec, m = self.vector.state_vectorize(state)
         s_vec = torch.Tensor(s_vec)
         m = torch.from_numpy(m).to(DEVICE)
-        a = self.policy.select_action(s_vec.to(device=DEVICE), action_mask=m).cpu()
+        a = self.policy.select_action(s_vec.to(device=DEVICE), False, action_mask=m).cpu()
         action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
         return action

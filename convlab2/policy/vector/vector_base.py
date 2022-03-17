@@ -404,9 +404,10 @@ class VectorBase(Vector):
             index = -1
             for [item, idx] in action[key]:
                 if index != -1 and index != idx and idx != '?':
-                    logging.debug(
-                        "System is likely refering multiple entities within this turn")
-                    logging.debug(action[key])
+                    pass
+                    #logging.debug(
+                    #    "System is likely refering multiple entities within this turn")
+                    #logging.debug(action[key])
                 index = idx
         action = lexicalize_da(action, entities, self.state, self.requestable)
 
