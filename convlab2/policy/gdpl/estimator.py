@@ -40,7 +40,7 @@ class RewardEstimator(object):
         self.irl_iter = iter(self.data_train)
         if pretrain:
             self.data_train = manager.create_dataset_irl('train', cfg['batchsz'])
-            self.data_valid = manager.create_dataset_irl('valid', cfg['batchsz'])
+            self.data_valid = manager.create_dataset_irl('validation', cfg['batchsz'])
             self.data_test = manager.create_dataset_irl('test', cfg['batchsz'])
             self.irl_iter = iter(self.data_train)
             self.irl_iter_valid = iter(self.data_valid)

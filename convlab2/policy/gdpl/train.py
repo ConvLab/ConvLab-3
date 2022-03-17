@@ -185,6 +185,7 @@ if __name__ == '__main__':
                         help="Load path for config file")
     parser.add_argument("--seed", type=int, default=0,
                         help="Seed for the policy parameter initialization")
+    parser.add_argument("--pretrain", action='store_true', help="whether to pretrain the reward estimator")
     parser.add_argument("--mode", type=str, default='info',
                         help="Set level for logger")
     parser.add_argument("--save_eval_dials", type=bool, default=False,
@@ -209,7 +210,7 @@ if __name__ == '__main__':
     set_seed(seed)
 
     policy_sys = GDPL(True, seed=conf['model']['seed'], vectorizer=conf['vectorizer_sys_activated'])
-    rewarder = RewardEstimator(policy_sys.vector, False)
+    rewarder = RewardEstimator(policy_sys.vector, parser.parse_args().pretrain)
 
     # Load model
     if conf['model']['use_pretrained_initialisation']:

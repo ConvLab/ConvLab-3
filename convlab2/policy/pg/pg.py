@@ -153,7 +153,7 @@ class PG(Policy):
                 for p in self.policy.parameters():
                     p.grad[p.grad != p.grad] = 0.0
                 # gradient clipping, for stability
-                torch.nn.utils.clip_grad_norm(self.policy.parameters(), 10)
+                torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
                 # self.lock.acquire() # retain lock to update weights
                 self.policy_optim.step()
                 # self.lock.release() # release lock
