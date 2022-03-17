@@ -10,7 +10,7 @@ import numpy as np
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
 
-from convlab2.policy.vector.vector_multiwoz import MultiWozVector
+from convlab2.policy.vector.vector_binary import VectorBinary
 from convlab2.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
 
 PAD = '<pad>'

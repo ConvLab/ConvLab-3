@@ -10,7 +10,7 @@ import copy
 from convlab2.policy.policy import Policy
 from convlab2.policy.rlmodule import EpsilonGreedyPolicy, MemoryReplay
 from convlab2.util.train_util import init_logging_handler
-from convlab2.policy.vector.vector_multiwoz import MultiWozVector
+from convlab2.policy.vector.vector_binary import VectorBinary
 from convlab2.policy.rule.multiwoz.rule_based_multiwoz_bot import RuleBasedMultiwozBot
 from convlab2.util.file_util import cached_path
 import zipfile
@@ -42,9 +42,7 @@ class DQN(Policy):
 
         # construct multiwoz vector
         if dataset == 'Multiwoz':
-            voc_file = os.path.join(root_dir, 'data/multiwoz/sys_da_voc.txt')
-            voc_opp_file = os.path.join(root_dir, 'data/multiwoz/usr_da_voc.txt')
-            self.vector = MultiWozVector(voc_file, voc_opp_file, composite_actions=True, vocab_size=cfg['vocab_size'])
+            self.vector = VectorBinary()
 
         #replay memory
         self.memory = MemoryReplay(cfg['memory_size'])

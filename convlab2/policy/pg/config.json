@@ -1,11 +1,12 @@
 {
 	"batchsz": 32,
 	"gamma": 0.99,
-	"lr": 0.001,
+	"lr": 0.00001,
 	"save_dir": "save",
 	"log_dir": "log",
-	"save_per_epoch": 1,
+	"save_per_epoch": 5,
 	"update_round": 5,
+	"seed": 0,
 	"h_dim": 100,
 	"load": "save/best"
 }

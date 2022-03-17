@@ -12,12 +12,29 @@ import os
 import random
 import re
 import logging
-import numpy as np
-import torch
 
 from convlab2.policy.policy import Policy
 from convlab2.task.multiwoz.goal_generator import GoalGenerator
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_USR_DA, REF_SYS_DA
+from data.unified_datasets.multiwoz21.preprocess import normalize_domain_slot_value, reverse_da
+
+
+def unified_format(acts):
+    new_acts = {'categorical': []}
+    for act in acts:
+        intent, domain, slot, value = act
+        new_acts['categorical'].append({"intent": intent, "domain": domain, "slot": slot, "value": value})
+    return new_acts
+
+
+def act_dict_to_flat_tuple(acts):
+    tuples = []
+    for domain_intent, svs in acts.items():
+        for slot, value in svs:
+            domain, intent = domain_intent.split('-')
+            tuples.append([intent, domain, slot, value])
+    return tuples
+
 
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -57,10 +74,6 @@ class UserPolicyAgendaMultiWoz(Policy):
         """
         self.max_turn = 40
         self.max_initiative = 4
-        self.forbidden_domains = {}
-        self.mandatory_domains = []
-        self.only_single_domains = False
-
         self.goal_generator = GoalGenerator()
 
         self.__turn = 0
@@ -75,24 +88,11 @@ class UserPolicyAgendaMultiWoz(Policy):
         """ Build new Goal and Agenda for next session """
         self.reset_turn()
         if not ini_goal:
-            self.find_valid_goal()
+            self.goal = Goal(self.goal_generator)
         else:
             self.goal = ini_goal
         self.domain_goals = self.goal.domain_goals
         self.agenda = Agenda(self.goal)
-
-    def find_valid_goal(self):
-
-        valid = False
-        while not valid:
-            self.goal = Goal(self.goal_generator)
-            if self.only_single_domains and len(self.goal.domain_goals) > 1:
-                continue
-            if set(self.forbidden_domains) & set(self.goal.domain_goals):
-                continue
-            if not set(self.mandatory_domains).issubset(set(self.goal.domain_goals)):
-                continue
-            valid = True
 
     def predict(self, sys_dialog_act):
         """
@@ -105,6 +105,10 @@ class UserPolicyAgendaMultiWoz(Policy):
             reward (float): Reward given by user.
         """
         self.__turn += 2
+
+        sys_dialog_act = unified_format(sys_dialog_act)
+        sys_dialog_act = reverse_da(sys_dialog_act)
+        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
 
         assert isinstance(sys_dialog_act, list)
 
@@ -139,8 +143,12 @@ class UserPolicyAgendaMultiWoz(Policy):
 
         tuples = []
         for domain_intent, svs in action.items():
+            domain, intent = domain_intent.lower().split('-')
             for slot, value in svs:
-                domain, intent = domain_intent.split('-')
+                try:
+                    domain, slot, value = normalize_domain_slot_value(domain, slot, value)
+                except:
+                    pass
                 tuples.append([intent, domain, slot, value])
 
         return tuples
@@ -645,7 +653,6 @@ class Agenda(object):
     def _handle_inform(self, domain, intent, slot_vals, goal: Goal):
         g_reqt, g_info, g_fail_info, g_book, g_fail_book = self._get_goal_infos(
             domain, goal)
-
         info_right = True
         for [slot, value] in slot_vals:
             if slot == 'time':

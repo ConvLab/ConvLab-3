@@ -1,10 +1,11 @@
 import json
 import os
 
+from copy import deepcopy
+from convlab2.util import load_ontology
 from convlab2.util.multiwoz.state import default_state
 from convlab2.dst.rule.multiwoz.dst_util import normalize_value
 from convlab2.dst.dst import DST
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 
 
 class RuleDST(DST):
@@ -17,9 +18,12 @@ class RuleDST(DST):
             It helps check whether ``user_act`` has correct content.
     """
 
-    def __init__(self):
+    def __init__(self, dataset_name='multiwoz21'):
         DST.__init__(self)
+        self.ontology = load_ontology(dataset_name)
         self.state = default_state()
+        self.default_belief_state = deepcopy(self.ontology['state'])
+        self.state['belief_state'] = deepcopy(self.default_belief_state)
         path = os.path.dirname(
             os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
         path = os.path.join(path, 'data/multiwoz/value_dict.json')
@@ -31,52 +35,33 @@ class RuleDST(DST):
         :param user_act:
         :return:
         """
-        #print("dst", user_act)
         for intent, domain, slot, value in user_act:
-            domain = domain.lower()
-            intent = intent.lower()
-            if domain in ['unk', 'general', 'booking']:
+            if domain not in self.state['belief_state']:
                 continue
             if intent == 'inform':
-                k = REF_SYS_DA[domain.capitalize()].get(slot, slot)
-                if k is None:
+                if slot == 'none' or slot == '':
                     continue
-                try:
-                    assert domain in self.state['belief_state']
-                except:
-                    raise Exception(
-                        'Error: domain <{}> not in new belief state'.format(domain))
                 domain_dic = self.state['belief_state'][domain]
-                assert 'semi' in domain_dic
-                assert 'book' in domain_dic
-                if k in domain_dic['semi']:
-                    nvalue = normalize_value(self.value_dict, domain, k, value)
-                    self.state['belief_state'][domain]['semi'][k] = nvalue
-                elif k in domain_dic['book']:
-                    self.state['belief_state'][domain]['book'][k] = value
-                elif k.lower() in domain_dic['book']:
-                    self.state['belief_state'][domain]['book'][k.lower()
-                                                               ] = value
-                elif k == 'trainID' and domain == 'train':
-                    self.state['belief_state'][domain]['book'][k] = normalize_value(self.value_dict, domain, k, value)
-                elif k != 'none':
+                if slot in domain_dic:
+                    nvalue = normalize_value(self.value_dict, domain, slot, value)
+                    self.state['belief_state'][domain][slot] = nvalue
+                elif slot != 'none' or slot != '':
                     # raise Exception('unknown slot name <{}> of domain <{}>'.format(k, domain))
                     with open('unknown_slot.log', 'a+') as f:
                         f.write(
-                            'unknown slot name <{}> of domain <{}>\n'.format(k, domain))
+                            'unknown slot name <{}> of domain <{}>\n'.format(slot, domain))
             elif intent == 'request':
-                k = REF_SYS_DA[domain.capitalize()].get(slot, slot)
                 if domain not in self.state['request_state']:
                     self.state['request_state'][domain] = {}
-                if k not in self.state['request_state'][domain]:
-                    self.state['request_state'][domain][k] = 0
+                if slot not in self.state['request_state'][domain]:
+                    self.state['request_state'][domain][slot] = 0
         # self.state['user_action'] = user_act  # should be added outside DST module
         return self.state
 
     def init_session(self):
         """Initialize ``self.state`` with a default state, which ``convlab2.util.multiwoz.state.default_state`` returns."""
         self.state = default_state()
-
+        self.state['belief_state'] = deepcopy(self.default_belief_state)
 
 if __name__ == '__main__':
     # from convlab2.dst.rule.multiwoz import RuleDST

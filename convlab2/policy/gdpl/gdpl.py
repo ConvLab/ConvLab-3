@@ -5,10 +5,11 @@ import numpy as np
 import logging
 import os
 import json
+
 from convlab2.policy.policy import Policy
 from convlab2.policy.rlmodule import MultiDiscretePolicy, Value
+from convlab2.util.custom_util import set_seed
 from convlab2.util.train_util import init_logging_handler
-from convlab2.policy.vector.vector_multiwoz import MultiWozVector
 from convlab2.util.file_util import cached_path
 import zipfile
 import sys
@@ -21,7 +22,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class GDPL(Policy):
 
-    def __init__(self, is_train=False, dataset='Multiwoz'):
+    def __init__(self, is_train=False, dataset='Multiwoz', seed=0, vectorizer=None):
 
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
             cfg = json.load(f)
@@ -33,21 +34,24 @@ class GDPL(Policy):
         self.epsilon = cfg['epsilon']
         self.tau = cfg['tau']
         self.is_train = is_train
-        if is_train:
-            init_logging_handler(os.path.join(os.path.dirname(os.path.abspath(__file__)), cfg['log_dir']))
+        self.vector = vectorizer
+        self.info_dict = {}
+
+        set_seed(seed)
+        if self.vector is None:
+            logging.info("No vectorizer was set, using default..")
+            from convlab2.policy.vector.vector_binary import VectorBinary
+            self.vector = VectorBinary()
 
         # construct policy and value network
         if dataset == 'Multiwoz':
-            voc_file = os.path.join(root_dir, 'data/multiwoz/sys_da_voc.txt')
-            voc_opp_file = os.path.join(root_dir, 'data/multiwoz/usr_da_voc.txt')
-            self.vector = MultiWozVector(voc_file, voc_opp_file)
             self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'], self.vector.da_dim).to(device=DEVICE)
 
         self.value = Value(self.vector.state_dim, cfg['hv_dim']).to(device=DEVICE)
         if is_train:
             self.policy_optim = optim.RMSprop(self.policy.parameters(), lr=cfg['policy_lr'])
             self.value_optim = optim.Adam(self.value.parameters(), lr=cfg['value_lr'])
-        
+
     def predict(self, state):
         """
         Predict an system action given state.
@@ -56,10 +60,26 @@ class GDPL(Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-        s_vec = torch.Tensor(self.vector.state_vectorize(state))
-        a = self.policy.select_action(s_vec.to(device=DEVICE), self.is_train).cpu()
-        action = self.vector.action_devectorize(a.numpy())
+        s, action_mask = self.vector.state_vectorize(state)
+        s_vec = torch.Tensor(s)
+        mask_vec = torch.Tensor(action_mask)
+        a = self.policy.select_action(
+            s_vec.to(device=DEVICE), False, action_mask=mask_vec.to(device=DEVICE)).cpu()
+
+        a_counter = 0
+        while a.sum() == 0:
+            a_counter += 1
+            a = self.policy.select_action(
+                s_vec.to(device=DEVICE), True, action_mask=mask_vec.to(device=DEVICE)).cpu()
+            if a_counter == 5:
+                break
+        # print('True :')
+        # print(a)
+        action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
+        self.info_dict["action_used"] = action
+        # for key in state.keys():
+        #     print("Key : {} , Value : {}".format(key,state[key]))
         return action
 
     def init_session(self):
@@ -112,7 +132,7 @@ class GDPL(Policy):
 
         return A_sa, v_target
     
-    def update(self, epoch, batchsz, s, a, next_s, mask, rewarder):
+    def update(self, epoch, batchsz, s, a, next_s, mask, rewarder, action_mask):
         # update reward estimator
         rewarder.update_irl((s, a, next_s), batchsz, epoch)
         
@@ -120,7 +140,7 @@ class GDPL(Policy):
         # actually, PI_old(s, a) can be saved when interacting with env, so as to save the time of one forward elapsed
         # v: [b, 1] => [b]
         v = self.value(s).squeeze(-1).detach()
-        log_pi_old_sa = self.policy.get_log_prob(s, a).detach()
+        log_pi_old_sa = self.policy.get_log_prob(s, a, action_mask).detach()
         
         # estimate advantage and v_target according to GAE and Bellman Equation
         r = rewarder.estimate(s, a, next_s, log_pi_old_sa).detach()
@@ -131,22 +151,25 @@ class GDPL(Policy):
             # 1. shuffle current batch
             perm = torch.randperm(batchsz)
             # shuffle the variable for mutliple optimize
-            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf = v_target[perm], A_sa[perm], s[perm], a[perm], \
-                                                                           log_pi_old_sa[perm]
+            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf, action_mask_shuf = v_target[perm], \
+                                                                                             A_sa[perm], s[perm], \
+                                                                                             a[perm], \
+                                                                           log_pi_old_sa[perm], action_mask[perm]
 
             # 2. get mini-batch for optimizing
             optim_chunk_num = int(np.ceil(batchsz / self.optim_batchsz))
             # chunk the optim_batch for total batch
-            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf = torch.chunk(v_target_shuf, optim_chunk_num), \
+            v_target_shuf, A_sa_shuf, s_shuf, a_shuf, log_pi_old_sa_shuf, action_mask_shuf = torch.chunk(v_target_shuf, optim_chunk_num), \
                                                                            torch.chunk(A_sa_shuf, optim_chunk_num), \
                                                                            torch.chunk(s_shuf, optim_chunk_num), \
                                                                            torch.chunk(a_shuf, optim_chunk_num), \
                                                                            torch.chunk(log_pi_old_sa_shuf,
-                                                                                       optim_chunk_num)
+                                                                                       optim_chunk_num), \
+                                                                        torch.chunk(action_mask_shuf, optim_chunk_num)
             # 3. iterate all mini-batch to optimize
             policy_loss, value_loss = 0., 0.
-            for v_target_b, A_sa_b, s_b, a_b, log_pi_old_sa_b in zip(v_target_shuf, A_sa_shuf, s_shuf, a_shuf,
-                                                                     log_pi_old_sa_shuf):
+            for v_target_b, A_sa_b, s_b, a_b, log_pi_old_sa_b, action_mask_b in zip(v_target_shuf, A_sa_shuf, s_shuf, a_shuf,
+                                                                     log_pi_old_sa_shuf, action_mask_shuf):
                 # print('optim:', batchsz, v_target_b.size(), A_sa_b.size(), s_b.size(), a_b.size(), log_pi_old_sa_b.size())
                 # 1. update value network
                 self.value_optim.zero_grad()
@@ -156,13 +179,12 @@ class GDPL(Policy):
                 
                 # backprop
                 loss.backward()
-                # nn.utils.clip_grad_norm(self.value.parameters(), 4)
                 self.value_optim.step()
 
                 # 2. update policy network by clipping
                 self.policy_optim.zero_grad()
                 # [b, 1]
-                log_pi_sa = self.policy.get_log_prob(s_b, a_b)
+                log_pi_sa = self.policy.get_log_prob(s_b, a_b, action_mask_b)
                 # ratio = exp(log_Pi(a|s) - log_Pi_old(a|s)) = Pi(a|s) / Pi_old(a|s)
                 # we use log_pi for stability of numerical operation
                 # [b, 1] => [b]
@@ -180,7 +202,7 @@ class GDPL(Policy):
                 for p in self.policy.parameters():
                     p.grad[p.grad != p.grad] = 0.0
                 # gradient clipping, for stability
-                torch.nn.utils.clip_grad_norm(self.policy.parameters(), 10)
+                torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
                 # self.lock.acquire() # retain lock to update weights
                 self.policy_optim.step()
                 # self.lock.release() # release lock
@@ -189,9 +211,6 @@ class GDPL(Policy):
             policy_loss /= optim_chunk_num
             logging.debug('<<dialog policy gdpl>> epoch {}, iteration {}, value, loss {}'.format(epoch, i, value_loss))
             logging.debug('<<dialog policy gdpl>> epoch {}, iteration {}, policy, loss {}'.format(epoch, i, policy_loss))
-
-        if (epoch+1) % self.save_per_epoch == 0:
-            self.save(self.save_dir, epoch)
     
     def save(self, directory, epoch):
         if not os.path.exists(directory):

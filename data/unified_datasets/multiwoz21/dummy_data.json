@@ -439,12 +439,7 @@
           "taxi": [],
           "restaurant": [],
           "hospital": [],
-          "hotel": [
-            {
-              "name": "the cambridge belfry",
-              "reference": "7GAWK763"
-            }
-          ],
+          "hotel": [],
           "attraction": [],
           "train": []
         }
@@ -1465,12 +1460,7 @@
           "hospital": [],
           "hotel": [],
           "attraction": [],
-          "train": [
-            {
-              "trainID": "TR4977",
-              "reference": "A9NHSO9Y"
-            }
-          ]
+          "train": []
         }
       },
       {
@@ -1767,12 +1757,7 @@
           "taxi": [],
           "restaurant": [],
           "hospital": [],
-          "hotel": [
-            {
-              "name": "the cambridge belfry",
-              "reference": "5NAWGJDC"
-            }
-          ],
+          "hotel": [],
           "attraction": [],
           "train": [
             {
@@ -3178,12 +3163,7 @@
           "hospital": [],
           "hotel": [],
           "attraction": [],
-          "train": [
-            {
-              "trainID": "TR5626",
-              "reference": "7ZCVR4Q3"
-            }
-          ]
+          "train": []
         }
       },
       {
@@ -4361,12 +4341,7 @@
           "taxi": [],
           "restaurant": [],
           "hospital": [],
-          "hotel": [
-            {
-              "name": "acorn guest house",
-              "reference": "04CSEO7Q"
-            }
-          ],
+          "hotel": [],
           "attraction": [],
           "train": []
         }
@@ -6085,12 +6060,7 @@
           "hospital": [],
           "hotel": [],
           "attraction": [],
-          "train": [
-            {
-              "trainID": "TR1879",
-              "reference": "XU1QLHVW"
-            }
-          ]
+          "train": []
         }
       },
       {
