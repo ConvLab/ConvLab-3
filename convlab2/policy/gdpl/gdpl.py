@@ -64,7 +64,7 @@ class GDPL(Policy):
         s_vec = torch.Tensor(s)
         mask_vec = torch.Tensor(action_mask)
         a = self.policy.select_action(
-            s_vec.to(device=DEVICE), self.is_train, action_mask=mask_vec.to(device=DEVICE)).cpu()
+            s_vec.to(device=DEVICE), False, action_mask=mask_vec.to(device=DEVICE)).cpu()
 
         a_counter = 0
         while a.sum() == 0:

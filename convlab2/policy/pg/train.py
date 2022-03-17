@@ -179,7 +179,7 @@ if __name__ == '__main__':
 
     begin_time = datetime.now()
     parser = ArgumentParser()
-    parser.add_argument("--path", type=str, default='convlab2/policy/ppo/semantic_level_config.json',
+    parser.add_argument("--path", type=str, default='convlab2/policy/pg/semantic_level_config.json',
                         help="Load path for config file")
     parser.add_argument("--seed", type=int, default=0,
                         help="Seed for the policy parameter initialization")
