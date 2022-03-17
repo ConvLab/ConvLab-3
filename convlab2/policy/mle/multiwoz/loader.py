@@ -7,13 +7,11 @@ class ActMLEPolicyDataLoaderMultiWoz(ActMLEPolicyDataLoader):
 
     def __init__(self, vectoriser=None):
         root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        voc_file = os.path.join(root_dir, 'data/multiwoz/sys_da_voc.txt')
-        voc_opp_file = os.path.join(root_dir, 'data/multiwoz/usr_da_voc.txt')
         if vectoriser:
             self.vector = vectoriser
         else:
             print("We use vanilla Vectoriser")
-            self.vector = MultiWozVector(voc_file, voc_opp_file)
+            self.vector = MultiWozVector()
 
         processed_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'processed_data')
 

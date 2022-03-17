@@ -32,7 +32,11 @@ if __name__ == '__main__':
 
     set_seed(config['seed'])
 
-    if 'multiwoz' in data_dir:
+    if 'unified_datasets' in data_dir:
+        dataset_name = config['dataset_name']
+        print('-' * 20 + f'dataset:unified_datasets:{dataset_name}' + '-' * 20)
+        from convlab2.nlu.jointBERT.unified_datasets.postprocess import is_slot_da, calculateF1, recover_intent
+    elif 'multiwoz' in data_dir:
         print('-'*20 + 'dataset:multiwoz' + '-'*20)
         from convlab2.nlu.jointBERT.multiwoz.postprocess import is_slot_da, calculateF1, recover_intent
     elif 'camrest' in data_dir:
@@ -149,14 +153,25 @@ if __name__ == '__main__':
                         'predict': predicts,
                         'golden': labels
                     })
-                    predict_golden['slot'].append({
-                        'predict': [x for x in predicts if is_slot_da(x)],
-                        'golden': [x for x in labels if is_slot_da(x)]
-                    })
-                    predict_golden['intent'].append({
-                        'predict': [x for x in predicts if not is_slot_da(x)],
-                        'golden': [x for x in labels if not is_slot_da(x)]
-                    })
+                    if isinstance(predicts, dict):
+                        predict_golden['slot'].append({
+                            'predict': {k:v for k, v in predicts.items() if is_slot_da(k)},
+                            'golden': {k:v for k, v in labels.items() if is_slot_da(k)}
+                        })
+                        predict_golden['intent'].append({
+                            'predict': {k:v for k, v in predicts.items() if not is_slot_da(k)},
+                            'golden': {k:v for k, v in labels.items() if not is_slot_da(k)}
+                        })
+                    else:
+                        assert isinstance(predicts, list)
+                        predict_golden['slot'].append({
+                            'predict': [x for x in predicts if is_slot_da(x)],
+                            'golden': [x for x in labels if is_slot_da(x)]
+                        })
+                        predict_golden['intent'].append({
+                            'predict': [x for x in predicts if not is_slot_da(x)],
+                            'golden': [x for x in labels if not is_slot_da(x)]
+                        })
 
             for j in range(10):
                 writer.add_text('val_sample_{}'.format(j),

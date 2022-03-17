@@ -27,21 +27,18 @@ def check_ontology(ontology):
             intent name: {
                 "description": intent description
             }
-        },
-        "binary_dialogue_acts": {
-            [
-                {
-                    "intent": intent name,
-                    "domain": domain name,
-                    "slot": slot name,
-                    "value": some value
-                }
-            ]
         }
         "state": {
             domain name: {
                 slot name: ""
             }
+        },
+        "dialogue_acts": {
+            "categorical": [
+                "{'user': True/False, 'system': True/False, 'intent': intent, 'domain': domain, 'slot': slot}",
+            ],
+            "non-categorical": {},
+            "binary": {}
         }
     }
     """
@@ -70,18 +67,19 @@ def check_ontology(ontology):
         if not intent["description"]:
             descriptions["intents"] = False
 
-    binary_dialogue_acts = set()
-    for bda in ontology['binary_dialogue_acts']:
-        assert bda['intent'] is None or bda["intent"] in ontology['intents'], f'ONTOLOGY\tintent undefined intent in binary dialog act: {bda}'
-        binary_dialogue_acts.add(tuple(bda.values()))
-    ontology['bda_set'] = binary_dialogue_acts
-
     assert 'state' in ontology, 'ONTOLOGY\tno state'
     for domain_name, domain in ontology['state'].items():
         assert domain_name in ontology['domains']
         for slot_name, value in domain.items():
             assert slot_name in ontology['domains'][domain_name]['slots']
             assert value == "", "should set value in state to \"\""
+
+    ontology['da_dict'] = {}
+    for da_type in ontology['dialogue_acts']:
+        ontology['da_dict'][da_type] = {}
+        for da_str in ontology['dialogue_acts'][da_type]:
+            da = eval(da_str)
+            ontology["da_dict"][da_type][(da['intent'], da['domain'], da['slot'])] = {'user': da['user'], 'system': da['system']}
 
     # print('description existence:', descriptions, '\n')
     for description, value in descriptions.items():
@@ -212,9 +210,11 @@ def check_dialogues(name, dialogues, ontology):
                         assert da['value'] == value, f'{dialogue_id}:{turn_id}\tspan({value}) and value{da["value"]} not match' 
                         stat[split][f'non-cat slot span(dialogue act)'][0] += 1
 
-            for da in dialogue_acts['binary']:
-                assert tuple(da.values()) in ontology['bda_set'], f'{dialogue_id}:{turn_id}\tbinary dialog act {da} not present in ontology'
-                # do not check_dsv for binary dialogue acts
+            for da_type in dialogue_acts:
+                for da in dialogue_acts[da_type]:
+                    assert ontology['da_dict'][da_type][(da['intent'], da['domain'], da['slot'])][turn['speaker']] == True
+                    if da_type == 'binary':
+                        assert 'value' not in da, f'{dialogue_id}:{turn_id}\tbinary dialogue act should not have value'
 
             if turn['speaker'] == 'user':
                 assert 'db_results' not in turn
