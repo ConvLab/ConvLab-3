@@ -4,9 +4,10 @@ import logging
 import re
 import numpy as np
 from copy import deepcopy
-from pprint import pprint
 from convlab2.evaluator.evaluator import Evaluator
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab2.util.multiwoz.dbquery import Database
+from data.unified_datasets.multiwoz21.preprocess import reverse_da
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -95,13 +96,20 @@ class MultiWozEvaluator(Evaluator):
         self.booked_states = self._init_dict_booked()
         self.successful_domains = []
 
-    def add_sys_da(self, da_turn, belief_state):
+    def add_sys_da(self, da_turn, belief_state=None):
         """add sys_da into array
 
         args:
             da_turn:
                 list[intent, domain, slot, value]
         """
+
+        sys_dialog_act = da_turn
+        sys_dialog_act = unified_format(sys_dialog_act)
+        sys_dialog_act = reverse_da(sys_dialog_act)
+        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
+        da_turn = sys_dialog_act
+
         for intent, domain, slot, value in da_turn:
             dom_int = '-'.join([domain, intent])
             domain = dom_int.split('-')[0].lower()
@@ -122,7 +130,10 @@ class MultiWozEvaluator(Evaluator):
                             len(self.dbs[domain]) > int(value):
                         self.booked[domain] = self.dbs[domain][int(value)].copy()
                         self.booked[domain]['Ref'] = value
-                        self.booked_states[domain] = belief_state[domain]
+                        if belief_state is not None:
+                            self.booked_states[domain] = deepcopy(belief_state[domain])
+                        else:
+                            self.booked_states[domain] = None
 
     def add_usr_da(self, da_turn):
         """add usr_da into array
@@ -205,12 +216,17 @@ class MultiWozEvaluator(Evaluator):
                 tot = len(goal[domain]['book'].keys())
                 if tot == 0:
                     continue
-                state = booked_states[domain]
+                state = booked_states.get(domain, None)
                 if state is None:
                     # nothing has been booked but should have been
                     score.append(0)
                     continue
-                if len(state['book']) < 2:
+                tracks_booking = False
+                for slot in state:
+                    if "book" in slot:
+                        tracks_booking = True
+                        break
+                if not tracks_booking:
                     # state does not track any booking constraints -> trivially satisfied
                     score.append(1)
                     continue
@@ -218,7 +234,7 @@ class MultiWozEvaluator(Evaluator):
                 match = 0
                 for slot, value in goal[domain]['book'].items():
                     try:
-                        value_predicted = state['book'].get(slot, "")
+                        value_predicted = state.get(f"book {slot}", "")
                         if value == value_predicted:
                             match += 1
                     except Exception as e:
@@ -244,7 +260,6 @@ class MultiWozEvaluator(Evaluator):
         inform_not_reqt = set()
         reqt_not_inform = set()
         bad_inform = set()
-
         for da in sys_history:
             domain, intent, slot, value = da.split('-', 3)
             if intent in ['inform', 'recommend', 'offerbook', 'offerbooked'] and \
@@ -256,7 +271,6 @@ class MultiWozEvaluator(Evaluator):
                 else:
                     bad_inform.add((intent, domain, key))
                     FP += 1
-
         for domain in domains:
             for k in goal[domain]['reqt']:
                 if k in inform_slot[domain]:
@@ -388,9 +402,11 @@ class MultiWozEvaluator(Evaluator):
         """
         booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
-        book_constraint_sess = self.book_rate_constrains(ref2goal)
+        #book_constraint_sess = self.book_rate_constrains(ref2goal)
+        book_constraint_sess = 1
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
+        #goal_sess = 1
         # book rate == 1 & inform recall == 1
         if ((book_sess == 1 and inform_sess[1] == 1)
             or (book_sess == 1 and inform_sess[1] is None)

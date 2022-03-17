@@ -99,7 +99,6 @@ class PipelineAgent(Agent):
         self.agent_saves = []
         self.history = []
         self.turn = 0
-        self.cur_domain = None
 
         #logging.info("Pipeline Agent info_dict check")
         if hasattr(self.nlu, 'info_dict') == False:
@@ -184,20 +183,11 @@ class PipelineAgent(Agent):
             self.dst.state['history'].append([self.name, model_response])
             if self.name == 'sys':
                 self.dst.state['system_action'] = self.output_action
-                # If system takes booking action add booking info to the 'book-booked' section of the belief state
-                if type(self.input_action) != list:
-                    self.input_action = self.dst.state['user_action']
-                if type(self.input_action) == list:
-                    for intent, domain, slot, value in self.input_action:
-                        if domain.lower() not in ['booking', 'general']:
-                            self.cur_domain = domain
 
                 if type(self.output_action) == list:
                     for intent, domain, slot, value in self.output_action:
-                        if domain.lower() not in ['general', 'booking']:
-                            self.cur_domain = domain
                         if intent == "book":
-                            self.dst.state['belief_state'][domain.lower()]['book']['booked'] = [{slot.lower(): value}]
+                            self.dst.state['booked'][domain] = [{slot: value}]
             else:
                 self.dst.state['user_action'] = self.output_action
                 # user dst is also updated by itself
@@ -244,7 +234,6 @@ class PipelineAgent(Agent):
 
     def init_session(self, **kwargs):
         """Init the attributes of DST and Policy module."""
-        self.cur_domain = None
         if self.nlu is not None:
             self.nlu.init_session()
         if self.dst is not None:
@@ -328,7 +317,6 @@ class DialogueAgent(Agent):
                             "user_id": None, "timestamp": None, "dialogue_info": [], "dialogue_info_fundamental": []}
         self.initTime = int(time.time())
         self.lastUpdate = int(time.time())
-        self.cur_domain = None
 
         logging.info("Dialogue Agent info_dict check")
         if not hasattr(self.nlu, 'info_dict'):
@@ -401,16 +389,8 @@ class DialogueAgent(Agent):
             # If system takes booking action add booking info to the 'book-booked' section of the belief state
             if type(self.output_action) == list:
                 for intent, domain, slot, value in self.output_action:
-                    if domain.lower() not in ['general', 'booking']:
-                        self.cur_domain = domain
-                    dial_act = f'{domain.lower()}-{intent.lower()}-{slot.lower()}'
-                    if dial_act == 'booking-book-ref' and self.cur_domain.lower() in ['hotel', 'restaurant', 'train']:
-                        if self.cur_domain:
-                            self.dst.state['belief_state'][self.cur_domain.lower()]['book']['booked'] = [{slot.lower():value}]
-                    elif dial_act == 'train-offerbooked-ref' or dial_act == 'train-inform-ref':
-                        self.dst.state['belief_state']['train']['book']['booked'] = [{slot.lower():value}]
-                    elif dial_act == 'taxi-inform-car':
-                        self.dst.state['belief_state']['taxi']['book']['booked'] = [{slot.lower():value}]
+                    if intent == "book":
+                        self.dst.state['booked'][domain] = [{slot: value}]
         self.history.append([self.name, model_response])
 
         self.turn += 1
@@ -454,7 +434,6 @@ class DialogueAgent(Agent):
 
     def init_session(self):
         """Init the attributes of DST and Policy module."""
-        self.cur_domain = None
         if self.nlu is not None:
             self.nlu.init_session()
         if self.dst is not None:

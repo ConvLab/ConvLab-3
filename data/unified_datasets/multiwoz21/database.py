@@ -12,9 +12,9 @@ class Database(BaseDatabase):
     def __init__(self):
         """extract data.zip and load the database."""
         archive = ZipFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.zip'))
-        domains = ['restaurant', 'hotel', 'attraction', 'train', 'hospital', 'police']
+        self.domains = ['restaurant', 'hotel', 'attraction', 'train', 'hospital', 'police']
         self.dbs = {}
-        for domain in domains:
+        for domain in self.domains:
             with archive.open('data/{}_db.json'.format(domain)) as f:
                 self.dbs[domain] = json.loads(f.read())
         # add some missing information
