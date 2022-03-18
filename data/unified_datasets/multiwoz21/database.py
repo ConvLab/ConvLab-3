@@ -67,12 +67,12 @@ class Database(BaseDatabase):
                     try:
                         if key not in record:
                             continue
-                        if key == 'leave at':
+                        if key == 'leaveAt':
                             val1 = int(val.split(':')[0]) * 100 + int(val.split(':')[1])
                             val2 = int(record['leaveAt'].split(':')[0]) * 100 + int(record['leaveAt'].split(':')[1])
                             if val1 > val2:
                                 break
-                        elif key == 'arrive by':
+                        elif key == 'arriveBy':
                             val1 = int(val.split(':')[0]) * 100 + int(val.split(':')[1])
                             val2 = int(record['arriveBy'].split(':')[0]) * 100 + int(record['arriveBy'].split(':')[1])
                             if val1 < val2:
