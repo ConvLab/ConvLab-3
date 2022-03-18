@@ -43,15 +43,18 @@ def create_nlu_data(dataset, data_dir, args):
         return ';'.join(da_seqs)
 
     def deserialize_dialogue_acts(das_seq):
-        pattern = re.compile(r'\[(.*?)\]')
-        da_seqs = das_seq.split('];[')
         dialogue_acts = {'binary': [], 'categorical': [], 'non-categorical': []}
+        if len(das_seq) == 0:
+            return dialogue_acts
+        da_seqs = das_seq.split('];[')
         for i, da_seq in enumerate(da_seqs):
-            if i > 0:
-                da_seq = '[' + da_seq
-            if i < len(da_seq) - 1:
-                da_seq = da_seq + ']'
-            da = pattern.findall(da_seq)
+            if i == 0:
+                assert da_seq[0] == '['
+                da_seq = da_seq[1:]
+            if i == len(da_seqs) - 1:
+                assert da_seq[-1] == ']'
+                da_seq = da_seq[:-1]
+            da = da_seq.split('][')
             if len(da) == 0:
                 continue
             da_type = da[0]

@@ -71,15 +71,20 @@ class NLUMetrics(datasets.Metric):
         )
 
     def deserialize_dialogue_acts(self, das_seq):
-        pattern = re.compile(r'\[(.*?)\]')
-        da_seqs = das_seq.split('];[')
         dialogue_acts = {'binary': [], 'categorical': [], 'non-categorical': []}
+        if len(das_seq) == 0:
+            return dialogue_acts
+        da_seqs = das_seq.split('];[')
         for i, da_seq in enumerate(da_seqs):
-            if i > 0:
-                da_seq = '[' + da_seq
-            if i < len(da_seq) - 1:
-                da_seq = da_seq + ']'
-            da = pattern.findall(da_seq)
+            if len(da_seq) == 0:
+                continue
+            if i == 0:
+                if da_seq[0] == '[':
+                    da_seq = da_seq[1:]
+            if i == len(da_seqs) - 1:
+                if da_seq[-1] == ']':
+                    da_seq = da_seq[:-1]
+            da = da_seq.split('][')
             if len(da) == 0:
                 continue
             da_type = da[0]

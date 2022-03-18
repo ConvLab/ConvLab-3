@@ -199,7 +199,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
             substring = texts_placeholders[idx][0]
             searchObj = re.search(value_pattern, substring)
             assert searchObj
-            start, end = searchObj.span(2)
+            start, end = searchObj.span(1)
             texts_placeholders[idx:idx+1] = [(substring[0:start], False), (placeholder, True), (substring[end:], False)]
             return True
         return False
@@ -233,7 +233,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                     domain, slot, value = da['domain'], da['slot'], da['value']
                     if value.lower() not in ignore_values:
                         placeholder = delex_format.format(domain=domain, slot=slot, value=value)
-                        pattern = re.compile(r'(\W|^)'+f'({value})'+r'(\W|$)', flags=re.I)
+                        pattern = re.compile(r'\b'+f'({value})'+r'\b', flags=re.I)
                         if delex_inplace(delex_utt, pattern):
                             delex_vocab.add(placeholder)
 
@@ -247,7 +247,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                             for value in values.split('|'):
                                 if value.lower() not in ignore_values:
                                     placeholder = delex_format.format(domain=domain, slot=slot, value=value)
-                                    pattern = re.compile(r'(\W|^)'+f'({value})'+r'(\W|$)', flags=re.I)
+                                    pattern = re.compile(r'\b'+f'({value})'+r'\b', flags=re.I)
                                     if delex_inplace(delex_utt, pattern):
                                         delex_vocab.add(placeholder)
 
@@ -270,9 +270,9 @@ if __name__ == "__main__":
     pprint(data_by_split['test'][0])
 
     dataset, delex_vocab = create_delex_data(dataset)
-    json.dump(dataset['test'], open('delex_multiwoz21_test.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(delex_vocab, open('delex_vocab.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    with open('delex_cmp.txt', 'w') as f:
+    json.dump(dataset['test'], open('new_delex_multiwoz21_test.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(delex_vocab, open('new_delex_vocab.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    with open('new_delex_cmp.txt', 'w') as f:
         for dialog in dataset['test']:
             for turn in dialog['turns']:
                 f.write(turn['utterance']+'\n')
