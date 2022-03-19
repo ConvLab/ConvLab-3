@@ -17,6 +17,8 @@ def evaluate(predict_result):
             else:
                 predicts = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in sample['predictions']['dialogue_acts'][da_type]]
                 labels = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in sample['dialogue_acts'][da_type]]
+            predicts = sorted(list(set(predicts)))
+            labels = sorted(list(set(labels)))
             for ele in predicts:
                 if ele in labels:
                     metrics['overall']['TP'] += 1
@@ -28,7 +30,7 @@ def evaluate(predict_result):
                 if ele not in predicts:
                     metrics['overall']['FN'] += 1
                     metrics[da_type]['FN'] += 1
-            flag &= (sorted(predicts)==sorted(labels))
+            flag &= (predicts==labels)
         acc.append(flag)
     
     for metric in metrics:

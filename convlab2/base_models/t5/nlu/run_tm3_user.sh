@@ -66,3 +66,5 @@ python -m torch.distributed.launch \
     --overwrite_output_dir \
     --preprocessing_num_workers 4 \
     --per_device_eval_batch_size ${per_device_eval_batch_size} \
+
+python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json

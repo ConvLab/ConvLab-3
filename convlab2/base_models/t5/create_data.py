@@ -3,6 +3,7 @@ import json
 from tqdm import tqdm
 import re
 from convlab2.util import load_dataset, load_nlu_data, load_dst_data, load_policy_data, load_nlg_data, load_e2e_data, load_rg_data
+from convlab2.base_models.t5.nlu.serialization import serialize_dialogue_acts, deserialize_dialogue_acts, equal_da_seq
 
 def create_rg_data(dataset, data_dir, args):
     data_by_split = load_rg_data(dataset, speaker=args.speaker)
@@ -28,56 +29,6 @@ def create_nlu_data(dataset, data_dir, args):
     data_by_split = load_nlu_data(dataset, speaker=args.speaker, use_context=args.context_window_size>0, context_window_size=args.context_window_size)
     data_dir = os.path.join(data_dir, args.speaker, f'context_{args.context_window_size}')
     os.makedirs(data_dir, exist_ok=True)
-
-    def serialize_dialogue_acts(dialogue_acts):
-        da_seqs = []
-        for da_type in dialogue_acts:
-            for da in dialogue_acts[da_type]:
-                intent, domain, slot = da['intent'], da['domain'], da['slot']
-                if da_type == 'binary':
-                    da_seq = f'[{da_type}][{intent}][{domain}][{slot}]'
-                else:
-                    value = da['value']
-                    da_seq = f'[{da_type}][{intent}][{domain}][{slot}][{value}]'
-                da_seqs.append(da_seq)
-        return ';'.join(da_seqs)
-
-    def deserialize_dialogue_acts(das_seq):
-        dialogue_acts = {'binary': [], 'categorical': [], 'non-categorical': []}
-        if len(das_seq) == 0:
-            return dialogue_acts
-        da_seqs = das_seq.split('];[')
-        for i, da_seq in enumerate(da_seqs):
-            if i == 0:
-                assert da_seq[0] == '['
-                da_seq = da_seq[1:]
-            if i == len(da_seqs) - 1:
-                assert da_seq[-1] == ']'
-                da_seq = da_seq[:-1]
-            da = da_seq.split('][')
-            if len(da) == 0:
-                continue
-            da_type = da[0]
-            if len(da) == 5 and da_type in ['categorical', 'non-categorical']:
-                dialogue_acts[da_type].append({'intent': da[1], 'domain': da[2], 'slot': da[3], 'value': da[4]})
-            elif len(da) == 4 and da_type == 'binary':
-                dialogue_acts[da_type].append({'intent': da[1], 'domain': da[2], 'slot': da[3]})
-            else:
-                # invalid da format, skip
-                # print(das_seq)
-                # print(da_seq)
-                # print()
-                pass
-        return dialogue_acts
-
-    def equal_da_seq(dialogue_acts, das_seq):
-        predict_dialogue_acts = deserialize_dialogue_acts(das_seq)
-        for da_type in ['binary', 'categorical', 'non-categorical']:
-            das = sorted([(da['intent'], da['domain'], da['slot'], da.get('value', '')) for da in dialogue_acts[da_type]])
-            predict_das = sorted([(da['intent'], da['domain'], da['slot'], da.get('value', '')) for da in predict_dialogue_acts[da_type]])
-            if das != predict_das:
-                return False
-        return True
 
     data_splits = data_by_split.keys()
     file_name = os.path.join(data_dir, f"source_prefix.txt")

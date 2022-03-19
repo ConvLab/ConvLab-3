@@ -14,7 +14,7 @@
 """NLU Metric"""
 
 import datasets
-import re
+from convlab2.base_models.t5.nlu.serialization import deserialize_dialogue_acts
 
 
 # TODO: Add BibTeX citation
@@ -42,8 +42,8 @@ Returns:
 Examples:
 
     >>> nlu_metric = datasets.load_metric("nlu_metric.py")
-    >>> predictions = ["[binary]-[thank]-[general]-[]", "[non-categorical]-[inform]-[taxi]-[leave at]-[17:15]"]
-    >>> references = ["[binary]-[thank]-[general]-[]", "[non-categorical]-[inform]-[train]-[leave at]-[17:15]"]
+    >>> predictions = ["[binary][thank][general][]", "[non-categorical][inform][taxi][leave at][17:15]"]
+    >>> references = ["[binary][thank][general][]", "[non-categorical][inform][train][leave at][17:15]"]
     >>> results = nlu_metric.compute(predictions=predictions, references=references)
     >>> print(results)
     {'seq_em': 0.5, 'accuracy': 0.5, 
@@ -70,36 +70,6 @@ class NLUMetrics(datasets.Metric):
             })
         )
 
-    def deserialize_dialogue_acts(self, das_seq):
-        dialogue_acts = {'binary': [], 'categorical': [], 'non-categorical': []}
-        if len(das_seq) == 0:
-            return dialogue_acts
-        da_seqs = das_seq.split('];[')
-        for i, da_seq in enumerate(da_seqs):
-            if len(da_seq) == 0:
-                continue
-            if i == 0:
-                if da_seq[0] == '[':
-                    da_seq = da_seq[1:]
-            if i == len(da_seqs) - 1:
-                if da_seq[-1] == ']':
-                    da_seq = da_seq[:-1]
-            da = da_seq.split('][')
-            if len(da) == 0:
-                continue
-            da_type = da[0]
-            if len(da) == 5 and da_type in ['categorical', 'non-categorical']:
-                dialogue_acts[da_type].append({'intent': da[1], 'domain': da[2], 'slot': da[3], 'value': da[4]})
-            elif len(da) == 4 and da_type == 'binary':
-                dialogue_acts[da_type].append({'intent': da[1], 'domain': da[2], 'slot': da[3]})
-            else:
-                # invalid da format, skip
-                # print(das_seq)
-                # print(da_seq)
-                # print()
-                pass
-        return dialogue_acts
-
     def _compute(self, predictions, references):
         """Returns the scores: sequence exact match, dialog acts accuracy and f1"""
         seq_em = []
@@ -108,8 +78,8 @@ class NLUMetrics(datasets.Metric):
 
         for prediction, reference in zip(predictions, references):
             seq_em.append(prediction.strip()==reference.strip())
-            pred_da = self.deserialize_dialogue_acts(prediction)
-            gold_da = self.deserialize_dialogue_acts(reference)
+            pred_da = deserialize_dialogue_acts(prediction)
+            gold_da = deserialize_dialogue_acts(reference)
             flag = True
             for da_type in ['binary', 'categorical', 'non-categorical']:
                 if da_type == 'binary':
