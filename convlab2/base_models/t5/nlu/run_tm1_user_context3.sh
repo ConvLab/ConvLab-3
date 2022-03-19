@@ -24,7 +24,8 @@ num_train_epochs=10
 
 python ../create_data.py --tasks ${task_name} --datasets ${dataset_name} --speaker ${speaker} --context_window_size ${context_window_size}
 
-python ../run_seq2seq.py \
+python -m torch.distributed.launch \
+    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
     --task_name ${task_name} \
     --train_file ${train_file} \
     --source_column ${source_column} \
@@ -48,7 +49,8 @@ python ../run_seq2seq.py \
     --adafactor \
     --gradient_checkpointing
 
-python ../run_seq2seq.py \
+python -m torch.distributed.launch \
+    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
     --task_name ${task_name} \
     --test_file ${test_file} \
     --source_column ${source_column} \
