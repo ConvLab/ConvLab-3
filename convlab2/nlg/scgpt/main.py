@@ -14,9 +14,10 @@ from torch.utils.tensorboard import SummaryWriter
 import os
 from transformers import get_linear_schedule_with_warmup
 
-from convlab2.util.unified_datasets_util import load_dataset, load_nlg_data
+from convlab2.util.unified_datasets_util import load_dataset, load_nlg_data, load_ontology
 from convlab2.nlg.scgpt.util import act2str
 from convlab2.nlg.scgpt.model import SCGPTDataset
+from evaluate import GentScorer
 
 # 分部式训练
 import torch.distributed as dist
@@ -34,6 +35,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--local_rank", default=-1, type=int)
 parser.add_argument('--do_train', action="store_true", help="Whether to run training.")
 parser.add_argument('--dataset', default="multiwoz21", type=str, help="Whether to run training.")
+parser.add_argument("--max_seq_len", default=256, type=int)
 FLAGS = parser.parse_args()
 local_rank = FLAGS.local_rank
 
@@ -80,7 +82,7 @@ def pad_collate(batch):
     START_OF_PRED_ID = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
     pad_token_id = tokenizer.pad_token_id
     batch = [item[0] + [START_OF_PRED_ID] + item[1] for item in batch]
-    batch = [item[-512:] for item in batch]  # TF限制输入长度
+    batch = [item[-FLAGS.max_seq_len:] for item in batch]  # TF限制输入长度
     max_len = max([len(item) for item in batch])
     seq_lens = [len(item) for item in batch]
     split_id = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
@@ -98,8 +100,8 @@ def pad_collate(batch):
 
 ## Training Hyper-params
 EPOCH_NUM = 20
-BATCH_SIZE = 10   # real_batch_size = BATCH_SIZE * num_gpu
-VAL_STEP = 30
+BATCH_SIZE = 20   # real_batch_size = BATCH_SIZE * num_gpu
+VAL_STEP = 300
 WARM_STEPS = 250
 if code_test:
     EPOCH_NUM = 2
@@ -187,7 +189,7 @@ def inference_batch(model, sents):
         sent_ids = [sent + [tokenizer.pad_token_id]*(max_len-len(sent)) for sent in sent_ids]
         inputs = torch.LongTensor(sent_ids).to(local_rank)
         model_to_run = model.module if type(model) is DDP else model
-        outputs = model_to_run.generate(inputs, max_length=513, eos_token_id=tokenizer.eos_token_id,
+        outputs = model_to_run.generate(inputs, max_length=FLAGS.max_seq_len, eos_token_id=tokenizer.pad_token_id,
                                         pad_token_id=tokenizer.pad_token_id)  # greedy
         # outputs = model_to_run.generate(inputs, num_beams=4, max_length=513, eos_token_id=gpt2_tokenizer.eos_token_id,
         #                                 pad_token_id=gpt2_tokenizer.pad_token_id)  # beam search
@@ -209,31 +211,73 @@ def inference_sents(model, sents):
     return outputs
 
 
-def test(model, nlg_data, model_path):
+def test(model, nlg_data, ontology, model_path):
     """将sheel中的GPU个数设为1运行"""
     model.load_state_dict(torch.load(model_path))
+    model.eval()
     print(f'model loaded from [{model_path}]')
     # sample_file = os.path.join(f'../../../data/dstc2/sample50_{TASK_TYPE}_input_data.txt')
     # Load test nlg data
     test_data = nlg_data['test']
     dialog_acts = [act2str(item['dialogue_acts']) for item in test_data]
     golden_responses = [item['utterance'] for item in test_data]
-    outputs = inference_sents(model, dialog_acts, use_tqdm=True)
+    outputs = inference_sents(model, dialog_acts)
     if dist.get_rank() == 0:
         output_file = './test_output.txt'
         with open(output_file, 'w+') as f:
             for i in range(len(dialog_acts)):
                 f.write(f'{dialog_acts[i]}\n{golden_responses[i]}\n{outputs[i]}\n\n')
             f.close()
+    evaluator = GentScorer()
+    parallel_corpus = []
+    # BLEU
+    for i in range(len(dialog_acts)):
+        parallel_corpus.append([[golden_responses[i]], [outputs[i]]])
+    BLEU_Score = evaluator.scoreSBLEU(parallel_corpus)
+    # ERR
+    ## all values in ontology
+    val2ds_dict = {}
+    for domain_name in ontology['domains']:
+        domain = ontology['domains'][domain_name]
+        for slot_name in domain['slots']:
+            slot = domain['slots'][slot_name]
+            possible_vals = slot['possible_values']
+            if len(possible_vals) > 0:
+                for val in possible_vals:
+                    val2ds_dict[val] = f'{domain_name}-{slot_name}'
+    ## missing values
+    score_list = []
+    for item in nlg_data:
+        da = item['dialogue_acts']
+        utterance = item['utterance']
+        missing_count = 0
+        redundant_count = 0
+        all_count = 0
+        all_values = set()
+        for key in da:
+            slot_value = da[key]
+            for triple in slot_value:
+                if 'value' in triple:
+                    value = triple['value']
+                    all_values.add(value)
+                    if value.strip().lower() not in utterance.lower():
+                        missing_count += 1
+                    all_count += 1
+        ## redundant values
+        for val in val2ds_dict:
+            if f' {val.strip().lower()} ' in f' {utterance.strip().lower()} ' and val.strip().lower() not in all_values:
+                redundant_count += 1
+        item_score = float(redundant_count + all_count) / all_count
+        score_list.append(item_score)
+    ERR_Score = np.mean(score_list)
+    print(f'BLEU: {BLEU_Score}\nERR_Score: {ERR_Score}')
 
 
 if __name__ == '__main__':
     dataset = load_dataset(FLAGS.dataset)
+    ontology = load_ontology(FLAGS.dataset)
     nlg_data = load_nlg_data(dataset)
     if FLAGS.do_train:
         train(model, nlg_data)
     else:
-        test(model, nlg_data, 'saved_model/{TASK_TYPE}/19_save/19_step5840.pt')
-        # test_samples(f'saved_model/{TASK_TYPE}/19_save/19_step5840.pt')
-    # elif FLAGS.show_attn:
-    #     show_attention(f'saved_model/{TASK_TYPE}/19_save/19_step5840.pt')
+        test(model, nlg_data, ontology, './saved_model/epoch_0/epoch_0_step2839.pt')
