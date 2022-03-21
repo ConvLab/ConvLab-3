@@ -246,7 +246,7 @@ class GentScorer(object):
     ## 2. Compute slot error rate
     ## 3. Detailed illustraction of how differet split
     ##    of data affect performance
-    def __init__(self, detectfile):
+    def __init__(self):
         self.bleuscorer = BLEUScorer()
 
     def scoreERR(self, parallel_pairs):
