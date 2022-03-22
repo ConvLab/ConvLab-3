@@ -19,22 +19,19 @@ from convlab2.nlg.scgpt.util import act2str
 from convlab2.nlg.scgpt.model import SCGPTDataset
 from evaluate import GentScorer
 
-# 分部式训练
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from util import build_mask
 from scgpt_special_tokens import *
-# from plot.attn_plot import plot_attn_encdec
 
-## Model Testing
 code_test = False
 
-## 多GPU并行参数设置
 parser = argparse.ArgumentParser()
 parser.add_argument("--local_rank", default=-1, type=int)
 parser.add_argument('--do_train', action="store_true", help="Whether to run training.")
-parser.add_argument('--dataset', default="multiwoz21", type=str, help="Whether to run training.")
+parser.add_argument('--dataset', default="multiwoz21", type=str, help="The name of the dataset to be used.")
+parser.add_argument('--model_path', default="", type=str, help="The path of model for testing.")
 parser.add_argument("--max_seq_len", default=256, type=int)
 FLAGS = parser.parse_args()
 local_rank = FLAGS.local_rank
@@ -52,16 +49,15 @@ tokenizer.add_special_tokens({'pad_token': PAD_TOKEN, 'eos_token': END_OF_PRED, 
 model = GPT2LMHeadModel.from_pretrained('./gpt2').to(local_rank)
 model.resize_token_embeddings(len(tokenizer))
 
-## loss计算
 nll_loss = nn.NLLLoss(reduce=False).to(local_rank)
 ce_loss = nn.CrossEntropyLoss(reduce=False).to(local_rank)
 def cal_loss(input, target, seq_lens, seq_lens_input):
     """Only calculate loss on responses, not on dialog act"""
     global nll_loss
     """Input: [batch, length, vocab]; target: [batch, length]; seq_lens: [batch]"""
-    log_probs = F.log_softmax(input, dim=-1).transpose(1, 2)  # 类别维度要放在dim=1的位置，nn.NLLLoss的要求
+    log_probs = F.log_softmax(input, dim=-1).transpose(1, 2)
     loss = nll_loss(log_probs, target)
-    # loss = ce_loss(input, target)  # 等价
+    # loss = ce_loss(input, target)
     mask = build_mask(torch.max(seq_lens).item()-1, seq_lens-1).to(local_rank)
     input_mask = build_mask(torch.max(seq_lens).item()-1, seq_lens_input-1).to(local_rank)
     output_mask = torch.logical_xor(mask, input_mask)
@@ -82,7 +78,7 @@ def pad_collate(batch):
     START_OF_PRED_ID = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
     pad_token_id = tokenizer.pad_token_id
     batch = [item[0] + [START_OF_PRED_ID] + item[1] for item in batch]
-    batch = [item[-FLAGS.max_seq_len:] for item in batch]  # TF限制输入长度
+    batch = [item[-FLAGS.max_seq_len:] for item in batch]
     max_len = max([len(item) for item in batch])
     seq_lens = [len(item) for item in batch]
     split_id = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
@@ -286,4 +282,4 @@ if __name__ == '__main__':
     if FLAGS.do_train:
         train(model, nlg_data)
     else:
-        test(model, nlg_data, ontology, './saved_model/epoch_0/epoch_0_step2839.pt')
+        test(model, nlg_data, ontology, FLAGS.model_path)
