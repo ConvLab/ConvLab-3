@@ -26,3 +26,17 @@ def generate(self, action)
 ```
 This class supports both CPU and GPU mode by providing the
 'device' parameter in constructor function.
+
+
+## Reference
+```
+@inproceedings{peng-etal-2020-shot,
+    title = "Few-shot Natural Language Generation for Task-Oriented Dialog",
+    author = "Peng, Baolin and Zhu, Chenguang  and  Li, Chunyuan  and  Li, Xiujun  and  Li, Jinchao  and  Zeng, Michael  and  Gao, Jianfeng",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2020",
+    month = nov,
+    year = "2020",
+    publisher = "Association for Computational Linguistics",
+    pages = "172--182",
+}
+```
