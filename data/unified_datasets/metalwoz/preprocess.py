@@ -4,6 +4,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import random
 import json_lines
 from collections import Counter
+from shutil import rmtree
 
 
 def preprocess():
@@ -97,6 +98,8 @@ def preprocess():
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
+    rmtree(new_data_dir)
+    return dialogues, ontology
 
 
 if __name__ == '__main__':
