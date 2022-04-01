@@ -1,88 +1,102 @@
 import json
 import os
 from zipfile import ZipFile, ZIP_DEFLATED
-
+import random
 import json_lines
-
-
-dataset = 'metalwoz'
-self_dir = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(self_dir)), 'data')
-# origin_data_dir = os.path.join(DATA_PATH, dataset)
-origin_data_dir = self_dir
+from collections import Counter
 
 
 def preprocess():
+    random.seed(42)
+
     ontology = {
         'domains': {},
         'intents': {},
-        'binary_dialogue_act': [],
-        'state': {}
+        'state': {},
+        "dialogue_acts": {
+            "categorical": {},
+            "non-categorical": {},
+            "binary": {}
+        }
     }
 
-    def process_dialog(ori_dialog, split, dialog_id):
-        domain = ori_dialog['domain']
-        ontology['domains'][domain] = {
-            'description': "",
-            'slots': {}
-        }
-        dialog = {
-            "dataset": dataset,
-            "data_split": split,
-            "dialogue_id": f'{dataset}_{dialog_id}',
-            "original_id": ori_dialog['id'],
-            "domains": [domain],
-        }
-        turns = []
-        # starts with system
-        for utt_idx, utt in enumerate(ori_dialog['turns'][1:]):
-            turn = {
-                'utt_idx': utt_idx,
-                'utterance': utt,
-                'dialogue_act': {
-                    'categorical': [],
-                    'non-categorical': [],
-                    'binary': [],
-                },
-            }
-            if utt_idx % 2 == 0:
-                turn['speaker'] = 'user'
-                turn['state'] = {}
-                turn['state_update'] = {
-                    'categorical': [],
-                    'non-categorical': [],
-                }
-            else:
-                turn['speaker'] = 'system'
-            turns.append(turn)
-        if turns[-1]['speaker'] == 'system':
-            turns.pop()
+    dataset = 'metalwoz'
+    splits = ['train', 'validation', 'test']
+    dialogues_by_split = {split: [] for split in splits}
+    ZipFile('metalwoz-test-v1.zip').extract('dstc8_metalwoz_heldout.zip')
+    cnt = Counter()
+    for filename in ['metalwoz-v1.zip', 'dstc8_metalwoz_heldout.zip']:
+        with ZipFile(filename) as zipfile:
+            task_id2description = {x['task_id']: x for x in json_lines.reader(zipfile.open('tasks.txt'))}
+            for path in zipfile.namelist():
+                if path.startswith('dialogues'):
+                    if filename == 'metalwoz-v1.zip':
+                        split = random.choice(['train']*9+['validation'])
+                    else:
+                        split = 'test'
+                    if split == 'validation':
+                        print(path, split)
+                    for ori_dialog in json_lines.reader(zipfile.open(path)):
+                        dialogue_id = f'{dataset}-{split}-{len(dialogues_by_split[split])}'
+                        domain = ori_dialog['domain']
 
-        dialog['turns'] = turns
-        return dialog
+                        task_des = task_id2description[ori_dialog['task_id']]
 
-    dialog_id = 0
-    data = []
-    with ZipFile(os.path.join(origin_data_dir, 'metalwoz-v1.zip')) as zipfile:
-        for path in zipfile.namelist():
-            if path.startswith('dialogues'):
-                for dialog in json_lines.reader(zipfile.open(path)):
-                    data.append(process_dialog(dialog, 'train', dialog_id))
-                    dialog_id += 1
+                        goal = {
+                            'description': "user role: {}. user prompt: {}. system role: {}. system prompt: {}.".format(
+                                task_des['user_role'], task_des['user_prompt'], task_des['bot_role'], task_des['bot_prompt']),
+                            'inform': {},
+                            'request': {}
+                        }
 
-    ZipFile(os.path.join(origin_data_dir, 'metalwoz-test-v1.zip')).extract('dstc8_metalwoz_heldout.zip')
-    with ZipFile(os.path.join('dstc8_metalwoz_heldout.zip')) as zipfile:
-        for path in zipfile.namelist():
-            if path.startswith('dialogues'):
-                for dialog in json_lines.reader(zipfile.open(path)):
-                    data.append(process_dialog(dialog, 'test', dialog_id))
-                    dialog_id += 1
+                        dialogue = {
+                            'dataset': dataset,
+                            'data_split': split,
+                            'dialogue_id': dialogue_id,
+                            'original_id': ori_dialog['id'],
+                            'domains': [domain],  # will be updated by dialog_acts and state
+                            'goal': goal,
+                            'turns': []
+                        }
+
+                        ontology['domains'][domain] = {
+                            'description': task_des['bot_role'],
+                            'slots': {}
+                        }
+                        cnt[ori_dialog['turns'][0]] += 1
+                        # assert ori_dialog['turns'][0] == "how may I help you?", print(ori_dialog['turns'])
+                        for utt_idx, utt in enumerate(ori_dialog['turns'][1:]):
+                            speaker = 'user' if utt_idx % 2 == 0 else 'system'
+                            turn = {
+                                'speaker': speaker,
+                                'utterance': utt,
+                                'utt_idx': utt_idx,
+                                'dialogue_acts': {
+                                    'categorical': [],
+                                    'non-categorical': [],
+                                    'binary': [],
+                                }
+                            }
+                            if speaker == 'system':
+                                turn['db_results'] = {}
+                            else:
+                                turn['state'] = {}
+                            dialogue['turns'].append(turn)
+
+                        dialogues_by_split[split].append(dialogue)
+
     os.remove('dstc8_metalwoz_heldout.zip')
-
-    json.dump(ontology, open(os.path.join(self_dir, 'ontology.json'), 'w'))
-    json.dump(data, open('data.json', 'w'), indent=4)
-    ZipFile(os.path.join(self_dir, 'data.zip'), 'w', ZIP_DEFLATED).write('data.json')
-    os.remove('data.json')
+    new_data_dir = 'data'
+    os.makedirs(new_data_dir, exist_ok=True)
+    dialogues = []
+    for split in splits:
+        dialogues += dialogues_by_split[split]
+    json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(ontology, open(f'{new_data_dir}/ontology.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dialogues, open(f'{new_data_dir}/dialogues.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
+        for filename in os.listdir(new_data_dir):
+            zf.write(f'{new_data_dir}/{filename}')
 
 
 if __name__ == '__main__':
