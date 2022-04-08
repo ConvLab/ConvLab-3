@@ -12,7 +12,6 @@ validation_file="${data_dir}/validation.json"
 test_file="${data_dir}/test.json"
 metric_name_or_path="nlu_metric.py"
 metric_for_best_model="overall_f1"
-source_prefix="${data_dir}/source_prefix.txt"
 source_column="context"
 target_column="dialogue_acts_seq"
 model_name_or_path="t5-small"
@@ -30,7 +29,6 @@ python -m torch.distributed.launch \
     --train_file ${train_file} \
     --source_column ${source_column} \
     --target_column ${target_column} \
-    --source_prefix ${source_prefix} \
     --model_name_or_path ${model_name_or_path} \
     --do_train \
     --save_strategy epoch \
@@ -55,7 +53,6 @@ python -m torch.distributed.launch \
     --test_file ${test_file} \
     --source_column ${source_column} \
     --target_column ${target_column} \
-    --source_prefix ${source_prefix} \
     --model_name_or_path ${output_dir} \
     --do_predict \
     --predict_with_generate \

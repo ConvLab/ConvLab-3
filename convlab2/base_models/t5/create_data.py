@@ -11,9 +11,6 @@ def create_rg_data(dataset, data_dir, args):
     os.makedirs(data_dir, exist_ok=True)
 
     data_splits = data_by_split.keys()
-    file_name = os.path.join(data_dir, f"source_prefix.txt")
-    with open(file_name, "w") as f:
-        f.write("generate a system response according to the context: ")
     for data_split in data_splits:
         data = []
         for sample in tqdm(data_by_split[data_split], desc=f'{data_split} sample', leave=False):
@@ -31,9 +28,6 @@ def create_nlu_data(dataset, data_dir, args):
     os.makedirs(data_dir, exist_ok=True)
 
     data_splits = data_by_split.keys()
-    file_name = os.path.join(data_dir, f"source_prefix.txt")
-    with open(file_name, "w") as f:
-        f.write("parse the dialogue action of the last utterance: ")
     for data_split in data_splits:
         data = []
         for sample in tqdm(data_by_split[data_split], desc=f'{data_split} sample', leave=False):
@@ -55,9 +49,6 @@ def create_goal2dialogue_data(dataset, data_dir, args):
     os.makedirs(data_dir, exist_ok=True)
 
     data_splits = data_by_split.keys()
-    file_name = os.path.join(data_dir, f"source_prefix.txt")
-    with open(file_name, "w") as f:
-        f.write("generate a dialogue between user and system according to the user goal: ")
     for data_split in data_splits:
         data = []
         for sample in tqdm(data_by_split[data_split], desc=f'{data_split} sample', leave=False):
