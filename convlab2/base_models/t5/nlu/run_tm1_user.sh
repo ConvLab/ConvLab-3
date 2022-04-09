@@ -39,7 +39,6 @@ python -m torch.distributed.launch \
     --overwrite_output_dir \
     --preprocessing_num_workers 4 \
     --per_device_train_batch_size ${per_device_train_batch_size} \
-    --per_device_eval_batch_size ${per_device_eval_batch_size} \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --learning_rate ${lr} \
     --num_train_epochs ${num_train_epochs} \
