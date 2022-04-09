@@ -8,7 +8,6 @@ logging_dir="${output_dir}/runs"
 train_file="${data_dir}/train.json"
 validation_file="${data_dir}/validation.json"
 test_file="${data_dir}/test.json"
-source_prefix="${data_dir}/source_prefix.txt"
 source_column="goal"
 target_column="dialogue"
 max_target_length=1024
@@ -30,7 +29,6 @@ python -m torch.distributed.launch \
     --source_column ${source_column} \
     --target_column ${target_column} \
     --max_target_length ${max_target_length} \
-    --source_prefix ${source_prefix} \
     --model_name_or_path ${model_name_or_path} \
     --do_train \
     --do_eval \

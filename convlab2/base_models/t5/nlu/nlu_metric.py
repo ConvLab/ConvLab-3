@@ -83,13 +83,11 @@ class NLUMetrics(datasets.Metric):
             flag = True
             for da_type in ['binary', 'categorical', 'non-categorical']:
                 if da_type == 'binary':
-                    predicts = [(x['intent'], x['domain'], x['slot']) for x in pred_da[da_type]]
-                    labels = [(x['intent'], x['domain'], x['slot']) for x in gold_da[da_type]]
+                    predicts = sorted(list({(x['intent'], x['domain'], x['slot']) for x in pred_da[da_type]}))
+                    labels = sorted(list({(x['intent'], x['domain'], x['slot']) for x in gold_da[da_type]}))
                 else:
-                    predicts = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in pred_da[da_type]]
-                    labels = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in gold_da[da_type]]
-                predicts = sorted(list(set(predicts)))
-                labels = sorted(list(set(labels)))
+                    predicts = sorted(list({(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in pred_da[da_type]}))
+                    labels = sorted(list({(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in gold_da[da_type]}))
                 for ele in predicts:
                     if ele in labels:
                         f1_metrics['overall']['TP'] += 1

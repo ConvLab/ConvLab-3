@@ -47,7 +47,7 @@ from transformers.utils.versions import require_version
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-check_min_version("4.12.5")
+check_min_version("4.17.0")
 
 require_version("datasets>=1.16.1")
 
@@ -77,6 +77,10 @@ class ModelArguments:
     use_fast_tokenizer: bool = field(
         default=True,
         metadata={"help": "Whether to use one of the fast tokenizer (backed by the tokenizers library) or not."},
+    )
+    truncation_side: Optional[str] = field(
+        default="right",
+        metadata={"help": "Which side to truncate, left or right."}
     )
     model_revision: str = field(
         default="main",
@@ -341,6 +345,7 @@ def main():
         model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
         use_fast=model_args.use_fast_tokenizer,
+        truncation_side=model_args.truncation_side,
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
@@ -382,10 +387,11 @@ def main():
             )
 
     if data_args.source_prefix_filepath is not None:
-        prefix = open(data_args.source_prefix_filepath, 'r', encoding='utf-8').readline().strip()
+        prefix = open(data_args.source_prefix_filepath, 'r', encoding='utf-8').readline().strip('\n')
     else:
         prefix = ""
     
+    logger.info(f'source prefix: "{prefix}"')
 
     # Preprocessing the datasets.
     # We need to tokenize inputs and targets.
