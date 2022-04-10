@@ -75,8 +75,8 @@ class DSTMetrics(datasets.Metric):
             pred_state = deserialize_dialogue_state(prediction)
             gold_state = deserialize_dialogue_state(reference)
 
-            predicts = sorted(list({(domain, slot, value) for domain in pred_state for slot, value in pred_state[domain].items() if len(value)>0}))
-            labels = sorted(list({(domain, slot, value) for domain in gold_state for slot, value in gold_state[domain].items() if len(value)>0}))
+            predicts = sorted(list({(domain, slot, ''.join(value.split()).lower()) for domain in pred_state for slot, value in pred_state[domain].items() if len(value)>0}))
+            labels = sorted(list({(domain, slot, ''.join(value.split()).lower()) for domain in gold_state for slot, value in gold_state[domain].items() if len(value)>0}))
 
             flag = True
             for ele in predicts:

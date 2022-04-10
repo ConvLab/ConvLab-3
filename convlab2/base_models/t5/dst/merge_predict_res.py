@@ -1,7 +1,7 @@
 import json
 import os
 from convlab2.util import load_dataset, load_dst_data
-from convlab2.base_models.t5.dst.serialization import deserialize_state
+from convlab2.base_models.t5.dst.serialization import deserialize_dialogue_state
 
 
 def merge(dataset_name, speaker, save_dir, context_window_size, predict_result):
@@ -13,7 +13,7 @@ def merge(dataset_name, speaker, save_dir, context_window_size, predict_result):
         save_dir = os.path.dirname(predict_result)
     else:
         os.makedirs(save_dir, exist_ok=True)
-    predict_result = [deserialize_state(json.loads(x)['predictions'].strip()) for x in open(predict_result)]
+    predict_result = [deserialize_dialogue_state(json.loads(x)['predictions'].strip()) for x in open(predict_result)]
 
     for sample, prediction in zip(data, predict_result):
         sample['predictions'] = {'state': prediction}

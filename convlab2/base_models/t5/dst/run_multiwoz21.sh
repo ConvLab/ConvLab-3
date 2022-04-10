@@ -26,7 +26,7 @@ num_train_epochs=10
 
 python ../create_data.py --tasks ${task_name} --datasets ${dataset_name} --speaker ${speaker} --context_window_size ${context_window_size}
 
-python -m torch.distributed.launch --master_port 29501 \
+python -m torch.distributed.launch \
     --nproc_per_node ${n_gpus} ../run_seq2seq.py \
     --task_name ${task_name} \
     --train_file ${train_file} \
@@ -43,8 +43,7 @@ python -m torch.distributed.launch --master_port 29501 \
     --do_predict \
     --save_strategy epoch \
     --evaluation_strategy epoch \
-    --load_best_model_at_end \
-    --predict_with_generate \
+    --prediction_loss_only \
     --metric_name_or_path ${metric_name_or_path} \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
@@ -60,24 +59,24 @@ python -m torch.distributed.launch --master_port 29501 \
     --adafactor \
     --gradient_checkpointing
 
-# python -m torch.distributed.launch \
-#     --nproc_per_node ${n_gpus} ../run_seq2seq.py \
-#     --task_name ${task_name} \
-#     --test_file ${test_file} \
-#     --source_column ${source_column} \
-#     --target_column ${target_column} \
-#     --max_source_length ${max_source_length} \
-#     --max_target_length ${max_target_length} \
-#     --truncation_side ${truncation_side} \
-#     --model_name_or_path ${output_dir} \
-#     --do_predict \
-#     --predict_with_generate \
-#     --metric_name_or_path ${metric_name_or_path} \
-#     --cache_dir ${cache_dir} \
-#     --output_dir ${output_dir} \
-#     --logging_dir ${logging_dir} \
-#     --overwrite_output_dir \
-#     --preprocessing_num_workers 4 \
-#     --per_device_eval_batch_size ${per_device_eval_batch_size} \
+python -m torch.distributed.launch \
+    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
+    --task_name ${task_name} \
+    --test_file ${test_file} \
+    --source_column ${source_column} \
+    --target_column ${target_column} \
+    --max_source_length ${max_source_length} \
+    --max_target_length ${max_target_length} \
+    --truncation_side ${truncation_side} \
+    --model_name_or_path ${output_dir} \
+    --do_predict \
+    --predict_with_generate \
+    --metric_name_or_path ${metric_name_or_path} \
+    --cache_dir ${cache_dir} \
+    --output_dir ${output_dir} \
+    --logging_dir ${logging_dir} \
+    --overwrite_output_dir \
+    --preprocessing_num_workers 4 \
+    --per_device_eval_batch_size ${per_device_eval_batch_size} \
 
 python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
