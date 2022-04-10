@@ -44,7 +44,6 @@ python -m torch.distributed.launch \
     --save_strategy epoch \
     --evaluation_strategy epoch \
     --prediction_loss_only \
-    --metric_name_or_path ${metric_name_or_path} \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
     --logging_dir ${logging_dir} \
