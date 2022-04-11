@@ -14,7 +14,7 @@ def create_lm_data(dataset, data_dir, args):
         data = []
         for sample in tqdm(data_by_split[data_split], desc=f'{data_split} sample', leave=False):
             if args.model_type == 'dialogpt':
-                dialogue = ' <|endoftext|> '.join([turn['utterance'] for turn in sample['turns']])
+                dialogue = ' <|endoftext|> '.join([turn['utterance'] for turn in sample['turns']]) + ' <|endoftext|>'
             else:
                 dialogue = ' '.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['turns']])
             data.append(json.dumps({'dialogue': dialogue}, ensure_ascii=False)+'\n')
