@@ -238,7 +238,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                     domain, slot, value = da['domain'], da['slot'], da['value']
                     if value.lower() not in ignore_values:
                         placeholder = delex_format.format(domain=domain, slot=slot, value=value)
-                        pattern = re.compile(r'\b'+f'({value})'+r'\b', flags=re.I)
+                        pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
                         if delex_inplace(delex_utt, pattern):
                             delex_vocab.add(placeholder)
 
@@ -252,7 +252,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                             for value in values.split('|'):
                                 if value.lower() not in ignore_values:
                                     placeholder = delex_format.format(domain=domain, slot=slot, value=value)
-                                    pattern = re.compile(r'\b'+f'({value})'+r'\b', flags=re.I)
+                                    pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
                                     if delex_inplace(delex_utt, pattern):
                                         delex_vocab.add(placeholder)
 
