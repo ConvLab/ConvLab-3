@@ -2,8 +2,9 @@ set -e
 n_gpus=1
 task_name="lm"
 dataset_name="multiwoz21"
-data_dir="data/${task_name}/${dataset_name}"
-output_dir="output/${task_name}/${dataset_name}"
+model_type="dialogpt"
+data_dir="data/${task_name}/${dataset_name}/${model_type}"
+output_dir="output/${task_name}/${dataset_name}/${model_type}"
 cache_dir="../cache"
 logging_dir="${output_dir}/runs"
 train_file="${data_dir}/train.json"

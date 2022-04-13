@@ -30,7 +30,11 @@ from itertools import chain
 from typing import Optional
 
 import datasets
-from datasets import load_dataset, load_metric
+from datasets import load_dataset
+from tqdm import tqdm
+from torch.utils.data import DataLoader
+import torch
+import json
 
 import transformers
 from transformers import (
@@ -155,6 +159,9 @@ class DataTrainingArguments:
         metadata={
             "help": "An optional input evaluation data file to evaluate the metrics on (a text, jsonlines or csv file)."
         },
+    )
+    dump_eval_loss_to: Optional[str] = field(
+        default=None, metadata={"help": "Where to dump the tokens' losses in the evaluation data, default not to"}
     )
     overwrite_cache: bool = field(
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
@@ -484,23 +491,6 @@ def main():
         pad_to_multiple_of=8 if training_args.fp16 else None,
     )
 
-    def preprocess_logits_for_metrics(logits, labels):
-        if isinstance(logits, tuple):
-            # Depending on the model and config, logits may contain extra tensors,
-            # like past_key_values, but logits always come first
-            logits = logits[0]
-        return logits.argmax(dim=-1)
-
-    metric = load_metric("accuracy")
-
-    def compute_metrics(eval_preds):
-        preds, labels = eval_preds
-        # preds have the same shape as the labels, after the argmax(-1) has been calculated
-        # by preprocess_logits_for_metrics but we need to shift the labels
-        labels = labels[:, 1:].reshape(-1)
-        preds = preds[:, :-1].reshape(-1)
-        return metric.compute(predictions=preds, references=labels)
-
     # Initialize our Trainer
     trainer = Trainer(
         model=model,
@@ -509,11 +499,7 @@ def main():
         eval_dataset=eval_dataset if training_args.do_eval else None,
         tokenizer=tokenizer,
         # Data collator will default to DataCollatorWithPadding, so we change it.
-        data_collator=data_collator,
-        compute_metrics=compute_metrics if training_args.do_eval and not is_torch_tpu_available() else None,
-        preprocess_logits_for_metrics=preprocess_logits_for_metrics
-        if training_args.do_eval and not is_torch_tpu_available()
-        else None,
+        data_collator=data_collator
     )
 
     # Training
@@ -539,17 +525,57 @@ def main():
     # Evaluation
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(metric_key_prefix="eval")
-        max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
-        metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
-        try:
-            perplexity = math.exp(metrics["eval_loss"])
-        except OverflowError:
-            perplexity = float("inf")
-        metrics["eval_perplexity"] = perplexity
+        if not data_args.dump_eval_loss_to:
+            metrics = trainer.evaluate(metric_key_prefix="eval")
+            max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
+            metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
+            try:
+                perplexity = math.exp(metrics["eval_loss"])
+            except OverflowError:
+                perplexity = float("inf")
+            metrics["eval_perplexity"] = perplexity
+            logger.info(f"eval_perplexity: {perplexity}")
 
-        trainer.log_metrics("eval", metrics)
-        trainer.save_metrics("eval", metrics)
+            trainer.log_metrics("eval", metrics)
+            trainer.save_metrics("eval", metrics)
+        else:
+            if trainer.is_world_process_zero():
+                output_prediction_file = data_args.dump_eval_loss_to
+                writer = open(output_prediction_file, "w", encoding='utf-8')
+
+                eval_dataloader = DataLoader(
+                    eval_dataset, collate_fn=lambda x: {k: v.to(model.device) for k, v in data_collator(x).items()}, batch_size=training_args.per_device_eval_batch_size
+                )
+                model.eval()
+                losses = []
+                loss_fct = torch.nn.CrossEntropyLoss(reduction='none')
+                for batch in tqdm(eval_dataloader):
+                    with torch.no_grad():
+                        outputs = model(**batch)
+
+                    loss = outputs.loss
+                    losses.append(loss.repeat(training_args.per_device_eval_batch_size))
+                    
+                    shift_logits = outputs.logits[..., :-1, :].contiguous()
+                    shift_labels = batch['labels'][..., 1:].contiguous()
+                    batch_token_loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+                    batch_token_loss = batch_token_loss.view(shift_labels.size()).tolist()
+                    labels = batch['labels'].tolist()
+                    for i in range(len(labels)):
+                        token_ids = [x for x in labels[i] if x != -100]
+                        tokens = tokenizer.convert_ids_to_tokens(token_ids)
+                        token_losses = [0] + batch_token_loss[i][:len(token_ids)-1]
+                        writer.write(json.dumps({"tokens": tokens, "losses": token_losses}, ensure_ascii=False)+'\n')
+
+                losses = torch.cat(losses)
+                losses = losses[: len(eval_dataset)]
+                try:
+                    perplexity = math.exp(torch.mean(losses))
+                except OverflowError:
+                    perplexity = float("inf")
+                logger.info(f"perplexity: {perplexity}")
+
+                writer.close()
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "text-generation"}
     if data_args.dataset_name is not None:

@@ -16,7 +16,7 @@ def create_lm_data(dataset, data_dir, args):
             if args.model_type == 'dialogpt':
                 dialogue = ' <|endoftext|> '.join([turn['utterance'] for turn in sample['turns']]) + ' <|endoftext|>'
             else:
-                dialogue = ' '.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['turns']])
+                dialogue = '\n'.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['turns']])
             data.append(json.dumps({'dialogue': dialogue}, ensure_ascii=False)+'\n')
 
         file_name = os.path.join(data_dir, f"{data_split}.json")
@@ -35,5 +35,5 @@ if __name__ == '__main__':
     for dataset_name in tqdm(args.datasets, desc='datasets'):
         dataset = load_dataset(dataset_name)
         for task_name in tqdm(args.tasks, desc='tasks', leave=False):
-            data_dir = os.path.join('data', task_name, dataset_name)
+            data_dir = os.path.join('data', task_name, dataset_name, args.model_type)
             eval(f"create_{task_name}_data")(dataset, data_dir, args)
