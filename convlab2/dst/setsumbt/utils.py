@@ -77,7 +77,8 @@ def get_args(MODELS):
                         default='cnn')
     parser.add_argument('--candidate_pooling', help='Pooling approach for non set based candidate representations: cls/mean',
                         default='mean')
-    parser.add_argument('--predict_actions', help='Model predicts user actions and active domain', action='store_true')
+    parser.add_argument('--no_action_prediction', help='Model does not predicts user actions and active domain',
+                        action='store_true')
 
     # Loss
     parser.add_argument('--loss_function', help='Loss Function for training: crossentropy/bayesianmatching/labelsmoothing/distillation/distribution_distillation',
@@ -161,6 +162,7 @@ def get_args(MODELS):
 
     args.set_similarity = not args.no_set_similarity
     args.use_descriptions = not args.no_descriptions
+    args.predict_actions = not args.no_action_prediction
 
     # Default Loss funtions options
     if args.loss_function == 'bayesianmatching':
