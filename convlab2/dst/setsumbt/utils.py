@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,7 @@ def get_args(MODELS):
     parser.add_argument('--max_candidate_len', help='Maximum number of tokens per value candidate', default=12, type=int)
     parser.add_argument('--force_processing', action='store_true', help='Force preprocessing of data.')
     parser.add_argument('--data_sampling_size', help='Resampled dataset size', default=-1, type=int)
-    parser.add_argument('--use_descriptions', help='Use slot descriptions rather than slot names for embeddings',
+    parser.add_argument('--no_descriptions', help='Do not use slot descriptions rather than slot names for embeddings',
                         action='store_true')
 
     # MODEL
@@ -160,6 +160,7 @@ def get_args(MODELS):
         args.output_dir = os.path.join(args.output_dir, name)
 
     args.set_similarity = not args.no_set_similarity
+    args.use_descriptions = not args.no_descriptions
 
     # Default Loss funtions options
     if args.loss_function == 'bayesianmatching':
