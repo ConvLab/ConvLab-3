@@ -144,6 +144,11 @@ def get_args(MODELS):
     parser.add_argument('--do_test', help='Evaulate model on test data', action='store_true')
     args = parser.parse_args()
 
+    # Simplify args
+    args.set_similarity = not args.no_set_similarity
+    args.use_descriptions = not args.no_descriptions
+    args.predict_actions = not args.no_action_prediction
+
     # Setup default directories
     if not args.output_dir:
         args.output_dir = os.path.dirname(os.path.abspath(__file__))
@@ -159,10 +164,6 @@ def get_args(MODELS):
         name += datetime.now().strftime("-%d-%m-%y-%H-%M")
 
         args.output_dir = os.path.join(args.output_dir, name)
-
-    args.set_similarity = not args.no_set_similarity
-    args.use_descriptions = not args.no_descriptions
-    args.predict_actions = not args.no_action_prediction
 
     # Default Loss funtions options
     if args.loss_function == 'bayesianmatching':
