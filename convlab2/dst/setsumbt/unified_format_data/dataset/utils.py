@@ -1,0 +1,370 @@
+# -*- coding: utf-8 -*-
+# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Authors: Carel van Niekerk (niekerk@hhu.de)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""Convlab3 Unified dataset data processing utilities"""
+
+from convlab2.util import load_dataset, load_ontology, load_dst_data, load_nlu_data
+
+# MultiWOZ specific label map to avoid duplication and typos in values
+VALUE_MAP = {'guesthouse': 'guest house', 'belfry': 'belfray', '-': ' ', '&': 'and', 'b and b': 'bed and breakfast',
+             'cityroomz': 'city roomz', '  ': ' ', 'acorn house': 'acorn guest house', 'marriot': 'marriott',
+             'worth house': 'the worth house', 'alesbray lodge guest house': 'aylesbray lodge',
+             'huntingdon hotel': 'huntingdon marriott hotel', 'huntingd': 'huntingdon marriott hotel',
+             'jamaicanchinese': 'chinese', 'barbequemodern european': 'modern european',
+             'north americanindian': 'north american', 'caribbeanindian': 'indian', 'sheeps': "sheep's"}
+
+# Generic value sets for quantity and time slots
+QUANTITIES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10 or more']
+TIME = [[(i, j) for i in range(24)] for j in range(0, 60, 5)]
+TIME = ['%02i:%02i' % t for l in TIME for t in l]
+
+
+# Load slots, descriptions and categorical slot values from dataset ontology
+def get_ontology_slots(dataset_name: str) -> dict:
+    '''
+    Function to extract slots, slot descriptions and categorical slot values from the dataset ontology.
+    Args:
+        dataset_name (str): Dataset name
+
+    Returns:
+        ontology_slots (dict): Ontology dictionary containing slots, descriptions and categorical slot values
+    '''
+    ontology = load_ontology(dataset_name)
+    ontology_slots = {domain: {} for domain in ontology['domains'] if domain not in ['booking', 'general']}
+    for domain in ontology_slots:
+        for slot, slot_info in ontology['domains'][domain]['slots'].items():
+            ontology_slots[domain][slot] = {'description': slot_info['description']}
+            if slot_info['is_categorical']:
+                ontology_slots[domain][slot]['possible_values'] = slot_info['possible_values']
+            else:
+                ontology_slots[domain][slot]['possible_values'] = []
+
+    return ontology_slots
+
+
+# Load possible slot values from the oracle states in the dataset
+def get_values_from_data(dataset: dict) -> dict:
+    '''
+    Function to extract slots, slot descriptions and categorical slot values from the dataset ontology.
+    Args:
+        dataset (dict): Dataset dictionary obtained using the load_dataset function
+
+    Returns:
+        value_sets (dict): Dictionary containing possible values obtained from dataset
+    '''
+    data = load_dst_data(dataset, data_split='all', speaker='user')
+    value_sets = {}
+    for set_type, dataset in data.items():
+        for turn in dataset:
+            for domain, substate in turn['state'].items():
+                if domain not in value_sets:
+                    value_sets[domain] = {}
+                for slot, value in substate.items():
+                    if slot not in value_sets[domain]:
+                        value_sets[domain][slot] = []
+                    if value and value not in value_sets[domain][slot]:
+                        value_sets[domain][slot].append(value)
+
+    return clean_values(value_sets)
+
+
+# Clean the possible values for the ontology
+def clean_values(value_sets: dict, value_map: dict=VALUE_MAP) -> dict:
+    '''
+    Function to clean up the possible value sets extracted from the states in the dataset
+    Args:
+        value_sets (dict): Dictionary containing possible values obtained from dataset
+        value_map (dict): MultiWOZ specific label map to avoid duplication and typos in values
+
+    Returns:
+        clean_vals (dict): Cleaned Dictionary containing possible values obtained from dataset
+    '''
+    clean_vals = {}
+    for domain, subset in value_sets.items():
+        clean_vals[domain] = {}
+        for slot, values in subset.items():
+            # Remove pipe separated values
+            values = list(set([val.split('|', 1)[0] for val in values]))
+
+            # Map values using value_map
+            for old, new in value_map.items():
+                values = list(set([val.replace(old, new) for val in values]))
+
+            # Remove empty and dontcare from possible value sets
+            values = [val for val in values if val not in ['', 'dontcare']]
+
+            # MultiWOZ specific value sets for quantity, time and boolean slots
+            if 'people' in slot or 'duration' in slot or 'stay' in slot:
+                values = QUANTITIES
+            elif 'time' in slot or 'leave' in slot or 'arrive' in slot:
+                values = TIME
+            elif 'parking' in slot or 'internet' in slot:
+                values = ['yes', 'no']
+
+            clean_vals[domain][slot] = values
+
+    return clean_vals
+
+
+# Add value sets obtained from the dataset to the ontology
+def ontology_add_values(ontology_slots: dict, value_sets: dict) -> dict:
+    '''
+    Add value sets obtained from the dataset to the ontology
+    Args:
+        ontology_slots (dict): Ontology dictionary containing slots, descriptions and categorical slot values
+        value_sets (dict): Cleaned Dictionary containing possible values obtained from dataset
+
+    Returns:
+        ontology_slots (dict): Ontology dictionary containing slots, slot descriptions and possible value sets
+    '''
+    for domain in ontology_slots:
+        for slot in ontology_slots[domain]:
+            if not ontology_slots[domain][slot]['possible_values']:
+                if domain in value_sets:
+                    if slot in value_sets[domain]:
+                        ontology_slots[domain][slot]['possible_values'] = value_sets[domain][slot]
+            if ontology_slots[domain][slot]['possible_values']:
+                ontology_slots[domain][slot]['possible_values'] = ['none', 'do not care'] \
+                                                                  + ontology_slots[domain][slot]['possible_values']
+
+    return ontology_slots
+
+
+# Get set of requestable slots from the dataset action labels
+def get_requestable_slots(dataset: dict) -> dict:
+    '''
+    Function to get set of requestable slots from the dataset action labels.
+    Args:
+        dataset (dict): Dataset dictionary obtained using the load_dataset function
+
+    Returns:
+        slots (dict): Dictionary containing requestable domain-slot pairs
+    '''
+    data = load_nlu_data(dataset, data_split='all', speaker='user')
+
+    slots = {}
+    for set_type, subset in data.items():
+        for turn in subset:
+            requests = [act for act in turn['dialogue_acts']['categorical'] if act['intent'] == 'request']
+            requests += [act for act in turn['dialogue_acts']['non-categorical'] if act['intent'] == 'request']
+            requests += [act for act in turn['dialogue_acts']['binary'] if act['intent'] == 'request']
+            requests = [(act['domain'], act['slot']) for act in requests]
+            for domain, slot in requests:
+                if domain not in slots:
+                    slots[domain] = []
+                slots[domain].append(slot)
+
+    slots = {domain: list(set(slot_list)) for domain, slot_list in slots.items()}
+
+    return slots
+
+
+# Add requestable slots obtained from the dataset to the ontology
+def ontology_add_requestable_slots(ontology_slots: dict, requestable_slots: dict) -> dict:
+    '''
+    Add requestable slots obtained from the dataset to the ontology
+    Args:
+        ontology_slots (dict): Ontology dictionary containing slots, descriptions and categorical slot values
+        requestable_slots (dict): Dictionary containing requestable domain-slot pairs
+
+    Returns:
+        ontology_slots (dict): Ontology dictionary containing slots, slot descriptions and
+        possible value sets including requests
+    '''
+    for domain in ontology_slots:
+        for slot in ontology_slots[domain]:
+            if domain in requestable_slots:
+                if slot in requestable_slots[domain]:
+                    ontology_slots[domain][slot]['possible_values'].append('?')
+
+    return ontology_slots
+
+
+# Extract the required information from the data provided by unified loader
+def extract_turns(dialogue: list) -> list:
+    '''
+    Extract the required information from the data provided by unified loader
+    Args:
+        dialogue (list): List of turns within a dialogue
+
+    Returns:
+        turns (list): List of turns within a dialogue
+    '''
+    turns = []
+    turn_info = {}
+    for turn in dialogue:
+        if turn['speaker'] == 'system':
+            turn_info['system_utterance'] = turn['utterance']
+        if turn['utt_idx'] == 1:
+            # System utterance in the first turn is always empty as conversation is initiated by the user
+            turn_info['system_utterance'] = ''
+        if turn['speaker'] == 'user':
+            turn_info['user_utterance'] = turn['utterance']
+            # Inform acts not required by model
+            turn_info['dialogue_acts'] = [act for act in turn['dialogue_acts']['categorical']
+                                          if act['intent'] not in ['inform']]
+            turn_info['dialogue_acts'] += [act for act in turn['dialogue_acts']['non-categorical']
+                                           if act['intent'] not in ['inform']]
+            turn_info['dialogue_acts'] += [act for act in turn['dialogue_acts']['binary']
+                                           if act['intent'] not in ['inform']]
+            turn_info['state'] = turn['state']
+
+        if 'system_utterance' in turn_info and 'user_utterance' in turn_info:
+            turns.append(turn_info)
+            turn_info = {}
+
+    return turns
+
+
+# Clean the state within each turn of a dialogue (cleaning values and mapping to options used in ontology)
+def clean_states(turns: list) -> list:
+    '''
+    Clean the state within each turn of a dialogue (cleaning values and mapping to options used in ontology)
+    Args:
+        turns (list): List of turns within a dialogue
+
+    Returns:
+        clean_turns (list): List of turns within a dialogue
+    '''
+    clean_turns = []
+    for turn in turns:
+        clean_state = {}
+        for domain, subset in turn['state'].items():
+            clean_state[domain] = {}
+            for slot, value in subset.items():
+                # Remove pipe separated values
+                value = value.split('|', 1)[0]
+
+                # Map values using value_map
+                for old, new in VALUE_MAP.items():
+                    value = value.replace(old, new)
+
+                # Map dontcare to "do not care" and empty to 'none'
+                value = value.replace('dontcare', 'do not care')
+                value = value if value else 'none'
+
+                # Map quantity values to the integer quantity value
+                if 'people' in slot or 'duration' in slot or 'stay' in slot:
+                    try:
+                        if value not in ['do not care', 'none']:
+                            value = int(value)
+                            value = str(value) if value < 10 else QUANTITIES[-1]
+                    except:
+                        value = value
+                # Map time values to the most appropriate value in the standard time set
+                elif 'time' in slot or 'leave' in slot or 'arrive' in slot:
+                    try:
+                        if value not in ['do not care', 'none']:
+                            # Strip after/before from time value
+                            value = value.replace('after ', '').replace('before ', '')
+                            # Extract hours and minutes from different possible formats
+                            if ':' not in value and len(value) == 4:
+                                h, m = value[:2], value[2:]
+                            elif len(value) == 1:
+                                h = int(value)
+                                m = 0
+                            elif 'pm' in value:
+                                h = int(value.replace('pm', '')) + 12
+                                m = 0
+                            elif 'am' in value:
+                                h = int(value.replace('pm', ''))
+                                m = 0
+                            elif ':' in value:
+                                h, m = value.split(':')
+                            elif ';' in value:
+                                h, m = value.split(';')
+                            # Map to closest 5 minutes
+                            if int(m) % 5 != 0:
+                                m = round(int(m) / 5) * 5
+                                h = int(h)
+                                if m == 60:
+                                    m = 0
+                                    h += 1
+                                if h >= 24:
+                                    h -= 24
+                            # Set in standard 24 hour format
+                            h, m = int(h), int(m)
+                            value = '%02i:%02i' % (h, m)
+                    except:
+                        value = value
+                # Map boolean slots to yes/no value
+                elif 'parking' in slot or 'internet' in slot:
+                    if value not in ['do not care', 'none']:
+                        if value == 'free':
+                            value = 'yes'
+                        elif True in [v in value.lower() for v in ['yes', 'no']]:
+                            value = [v for v in ['yes', 'no'] if v in value][0]
+
+                clean_state[domain][slot] = value
+        turn['state'] = clean_state
+        clean_turns.append(turn)
+
+    return clean_turns
+
+
+# Get active domains at each turn in a dialogue
+def get_active_domains(turns: list) -> list:
+    '''
+    Get active domains at each turn in a dialogue
+    Args:
+        turns (list): List of turns within a dialogue
+
+    Returns:
+        turns (list): List of turns within a dialogue
+    '''
+    for turn_id in range(len(turns)):
+        # At first turn all domains with not none values in the state are active
+        if turn_id == 0:
+            domains = [d for d, substate in turns[turn_id]['state'].items() for s, v in substate.items() if v != 'none']
+            domains += [act['domain'] for act in turns[turn_id]['dialogue_acts'] if act['domain'] in turns[turn_id]['state']]
+            turns[turn_id]['active_domains'] = list(set(domains))
+        else:
+            # Use changes in domains to identify active domains
+            domains = []
+            for domain, substate in turns[turn_id]['state'].items():
+                for slot, value in substate.items():
+                    if value != turns[turn_id - 1]['state'][domain][slot]:
+                        val = value
+                    else:
+                        val = 'none'
+                    if value == 'none':
+                        val = 'none'
+                    if val != 'none':
+                        domains.append(domain)
+            # Add all domains activated by a user action
+            domains += [act['domain'] for act in turns[turn_id]['dialogue_acts'] if act['domain'] in turns[turn_id]['state']]
+            turns[turn_id]['active_domains'] = list(set(domains))
+
+    return turns
+
+
+# Extract all dialogues from dataset
+def extract_dialogues(data: list) -> list:
+    '''
+    Extract all dialogues from dataset
+    Args:
+        data (list): List of all dialogues in a subset of the data
+
+    Returns:
+        dialogues (list): List of all extracted dialogues
+    '''
+    dialogues = []
+    for dial in data:
+        turns = extract_turns(dial['turns'])
+        turns = clean_states(turns)
+        turns = get_active_domains(turns)
+        dialogues.append(turns)
+
+    return dialogues

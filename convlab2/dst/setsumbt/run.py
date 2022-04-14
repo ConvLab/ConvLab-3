@@ -33,9 +33,9 @@ def main():
     if args.run_nbt:
         from convlab2.dst.setsumbt.do.nbt import main
         main(args, config)
-    if args.run_calibration:
-        from convlab2.dst.setsumbt.do.calibration import main
-        main(args, config)
+    # if args.run_calibration:
+    #     from convlab2.dst.setsumbt.do.calibration import main
+    #     main(args, config)
 
 
 if __name__ == "__main__":

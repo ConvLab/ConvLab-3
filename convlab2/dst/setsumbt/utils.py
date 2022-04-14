@@ -30,42 +30,30 @@ def get_args(MODELS):
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 
     # Optional
-    parser.add_argument('--tensorboard_path',
-                        help='Path to tensorboard', default='')
+    parser.add_argument('--tensorboard_path', help='Path to tensorboard', default='')
     parser.add_argument('--logging_path', help='Path for log file', default='')
-    parser.add_argument(
-        '--seed', help='Seed value for reproducability', default=0, type=int)
+    parser.add_argument('--seed', help='Seed value for reproducability', default=0, type=int)
 
     # DATASET (Optional)
-    parser.add_argument(
-        '--dataset', help='Dataset Name: multiwoz21/simr', default='multiwoz21')
-    parser.add_argument('--shrink_active_domains', help='Shrink active domains to only well represented test set domains',
-                        action='store_true')
-    parser.add_argument(
-        '--data_dir', help='Data storage directory', default=None)
-    parser.add_argument(
-        '--max_dialogue_len', help='Maximum number of turns per dialogue', default=12, type=int)
-    parser.add_argument(
-        '--max_turn_len', help='Maximum number of tokens per turn', default=64, type=int)
-    parser.add_argument(
-        '--max_slot_len', help='Maximum number of tokens per slot description', default=12, type=int)
-    parser.add_argument('--max_candidate_len',
-                        help='Maximum number of tokens per value candidate', default=12, type=int)
-    parser.add_argument('--force_processing', action='store_true',
-                        help='Force preprocessing of data.')
-    parser.add_argument('--data_sampling_size',
-                        help='Resampled dataset size', default=-1, type=int)
+    parser.add_argument('--dataset', help='Dataset Name: multiwoz21/simr', default='multiwoz21')
+    # parser.add_argument('--shrink_active_domains', help='Shrink active domains to only well represented test set domains',
+    #                     action='store_true')
+    # parser.add_argument(
+    #     '--data_dir', help='Data storage directory', default=None)
+    parser.add_argument('--max_dialogue_len', help='Maximum number of turns per dialogue', default=12, type=int)
+    parser.add_argument('--max_turn_len', help='Maximum number of tokens per turn', default=64, type=int)
+    parser.add_argument('--max_slot_len', help='Maximum number of tokens per slot description', default=12, type=int)
+    parser.add_argument('--max_candidate_len', help='Maximum number of tokens per value candidate', default=12, type=int)
+    parser.add_argument('--force_processing', action='store_true', help='Force preprocessing of data.')
+    parser.add_argument('--data_sampling_size', help='Resampled dataset size', default=-1, type=int)
     parser.add_argument('--use_descriptions', help='Use slot descriptions rather than slot names for embeddings',
                         action='store_true')
 
     # MODEL
     # Environment
-    parser.add_argument(
-        '--output_dir', help='Output storage directory', default=None)
-    parser.add_argument('--model_type', help='Encoder Model Type: bert/roberta',
-                        default='roberta')
-    parser.add_argument('--model_name_or_path', help='Name or path of the pretrained model.',
-                        default=None)
+    parser.add_argument('--output_dir', help='Output storage directory', default=None)
+    parser.add_argument('--model_type', help='Encoder Model Type: bert/roberta', default='roberta')
+    parser.add_argument('--model_name_or_path', help='Name or path of the pretrained model.', default=None)
     parser.add_argument('--candidate_embedding_model_name', default=None,
                         help='Name of the pretrained candidate embedding model.')
 
@@ -74,28 +62,22 @@ def get_args(MODELS):
                         action='store_true')
     parser.add_argument('--slot_attention_heads', help='Number of attention heads for slot conditioning',
                         default=12, type=int)
-    parser.add_argument('--dropout_rate', help='Dropout Rate',
-                        default=0.3, type=float)
-    parser.add_argument(
-        '--nbt_type', help='Belief Tracker type: gru/lstm', default='gru')
+    parser.add_argument('--dropout_rate', help='Dropout Rate', default=0.3, type=float)
+    parser.add_argument('--nbt_type', help='Belief Tracker type: gru/lstm', default='gru')
     parser.add_argument('--nbt_hidden_size', help='Hidden embedding size for the Neural Belief Tracker',
                         default=300, type=int)
-    parser.add_argument(
-        '--nbt_layers', help='Number of RNN layers in the NBT', default=1, type=int)
-    parser.add_argument(
-        '--rnn_zero_init', help='Zero Initialise RNN hidden states', action='store_true')
+    parser.add_argument('--nbt_layers', help='Number of RNN layers in the NBT', default=1, type=int)
+    parser.add_argument('--rnn_zero_init', help='Zero Initialise RNN hidden states', action='store_true')
     parser.add_argument('--distance_measure', default='cosine',
                         help='Similarity measure for candidate scoring: cosine/euclidean')
-    parser.add_argument(
-        '--ensemble_size', help='Number of models in ensemble', default=-1, type=int)
-    parser.add_argument('--set_similarity', action='store_true',
+    # parser.add_argument('--ensemble_size', help='Number of models in ensemble', default=-1, type=int)
+    parser.add_argument('--no_set_similarity', action='store_true',
                         help='Set True to not use set similarity (Model tracks latent belief state as sequence and performs semantic similarity of sets)')
     parser.add_argument('--set_pooling', help='Set pooling method for set similarity model using single embedding distances',
                         default='cnn')
     parser.add_argument('--candidate_pooling', help='Pooling approach for non set based candidate representations: cls/mean',
                         default='mean')
-    parser.add_argument('--predict_actions', help='Model predicts user actions and active domain',
-                        action='store_true')
+    parser.add_argument('--predict_actions', help='Model predicts user actions and active domain', action='store_true')
 
     # Loss
     parser.add_argument('--loss_function', help='Loss Function for training: crossentropy/bayesianmatching/labelsmoothing/distillation/distribution_distillation',
@@ -104,62 +86,46 @@ def get_args(MODELS):
                         type=float)
     parser.add_argument('--prior_constant', help='Constant parameter for prior in bayesian matching loss',
                         type=float)
-    parser.add_argument('--ensemble_smoothing',
-                        help='Ensemble distribution smoothing constant', type=float)
+    parser.add_argument('--ensemble_smoothing', help='Ensemble distribution smoothing constant', type=float)
     parser.add_argument('--annealing_base_temp', help='Ensemble Distribution destillation temp annealing base temp',
                         type=float)
     parser.add_argument('--annealing_cycle_len', help='Ensemble Distribution destillation temp annealing cycle length',
                         type=float)
-    parser.add_argument('--inhibiting_factor',
-                        help='Inhibiting factor for Inhibited Softmax CE', type=float)
-    parser.add_argument('--label_smoothing',
-                        help='Label smoothing coefficient.', type=float)
-    parser.add_argument(
-        '--user_goal_loss_weight', help='Weight of the user goal prediction loss. 0.0<weight<=1.0', type=float)
-    parser.add_argument(
-        '--user_request_loss_weight', help='Weight of the user request prediction loss. 0.0<weight<=1.0', type=float)
-    parser.add_argument(
-        '--user_general_act_loss_weight', help='Weight of the user general act prediction loss. 0.0<weight<=1.0', type=float)
-    parser.add_argument(
-        '--active_domain_loss_weight', help='Weight of the active domain prediction loss. 0.0<weight<=1.0', type=float)
+    parser.add_argument('--label_smoothing', help='Label smoothing coefficient.', type=float)
+    parser.add_argument('--user_goal_loss_weight', help='Weight of the user goal prediction loss. 0.0<weight<=1.0',
+                        type=float)
+    parser.add_argument('--user_request_loss_weight',
+                        help='Weight of the user request prediction loss. 0.0<weight<=1.0', type=float)
+    parser.add_argument('--user_general_act_loss_weight',
+                        help='Weight of the user general act prediction loss. 0.0<weight<=1.0', type=float)
+    parser.add_argument('--active_domain_loss_weight',
+                        help='Weight of the active domain prediction loss. 0.0<weight<=1.0', type=float)
 
     # TRAINING
-    parser.add_argument('--train_batch_size',
-                        help='Training Set Batch Size', default=4, type=int)
-    parser.add_argument('--max_training_steps', help='Maximum number of training update steps',
-                        default=-1, type=int)
+    parser.add_argument('--train_batch_size', help='Training Set Batch Size', default=8, type=int)
+    parser.add_argument('--max_training_steps', help='Maximum number of training update steps', default=-1, type=int)
     parser.add_argument('--gradient_accumulation_steps', default=1, type=int,
                         help='Number of batches accumulated for one update step')
-    parser.add_argument('--num_train_epochs',
-                        help='Number of training epochs', default=50, type=int)
+    parser.add_argument('--num_train_epochs', help='Number of training epochs', default=50, type=int)
     parser.add_argument('--patience', help='Number of training steps without improving model before stopping.',
                         default=25, type=int)
-    parser.add_argument(
-        '--weight_decay', help='Weight decay rate', default=0.01, type=float)
-    parser.add_argument('--learning_rate',
-                        help='Initial Learning Rate', default=5e-5, type=float)
-    parser.add_argument('--warmup_proportion', help='Warmup proportion for linear scheduler',
-                        default=0.2, type=float)
-    parser.add_argument(
-        '--max_grad_norm', help='Maximum norm of the loss gradients', default=1.0, type=float)
-    parser.add_argument(
-        '--save_steps', help='Number of update steps between saving model', default=-1, type=int)
-    parser.add_argument(
-        '--keep_models', help='How many model checkpoints should be kept during training', default=1, type=int)
+    parser.add_argument('--weight_decay', help='Weight decay rate', default=0.01, type=float)
+    parser.add_argument('--learning_rate', help='Initial Learning Rate', default=5e-5, type=float)
+    parser.add_argument('--warmup_proportion', help='Warmup proportion for linear scheduler', default=0.2, type=float)
+    parser.add_argument('--max_grad_norm', help='Maximum norm of the loss gradients', default=1.0, type=float)
+    parser.add_argument('--save_steps', help='Number of update steps between saving model', default=-1, type=int)
+    parser.add_argument('--keep_models', help='How many model checkpoints should be kept during training',
+                        default=1, type=int)
 
     # CALIBRATION
-    parser.add_argument(
-        '--temp_scaling', help='Temperature scaling coefficient', default=1.0, type=float)
+    parser.add_argument('--temp_scaling', help='Temperature scaling coefficient', default=1.0, type=float)
 
     # EVALUATION
-    parser.add_argument('--dev_batch_size',
-                        help='Dev Set Batch Size', default=16, type=int)
-    parser.add_argument('--test_batch_size',
-                        help='Test Set Batch Size', default=16, type=int)
+    parser.add_argument('--dev_batch_size', help='Dev Set Batch Size', default=16, type=int)
+    parser.add_argument('--test_batch_size', help='Test Set Batch Size', default=16, type=int)
 
     # COMPUTING
-    parser.add_argument(
-        '--n_gpu', help='Number of GPUs to use', default=1, type=int)
+    parser.add_argument('--n_gpu', help='Number of GPUs to use', default=1, type=int)
     parser.add_argument('--fp16', action='store_true',
                         help="Whether to use 16-bit (mixed) precision (through NVIDIA apex) instead of 32-bit")
     parser.add_argument('--fp16_opt_level', type=str, default='O1',
@@ -167,26 +133,17 @@ def get_args(MODELS):
                              "See details at https://nvidia.github.io/apex/amp.html")
 
     # ACTIONS
-    parser.add_argument('--run_nbt', help='Run NBT script',
-                        action='store_true')
-    parser.add_argument('--run_calibration',
-                        help='Run calibration', action='store_true')
+    parser.add_argument('--run_nbt', help='Run NBT script',action='store_true')
+    # parser.add_argument('--run_calibration',
+    #                     help='Run calibration', action='store_true')
 
     # RUN_NBT ACTIONS
-    parser.add_argument(
-        '--do_train', help='Perform training', action='store_true')
-    parser.add_argument(
-        '--do_eval', help='Perform model evaluation during training', action='store_true')
-    parser.add_argument(
-        '--do_test', help='Evaulate model on test data', action='store_true')
+    parser.add_argument('--do_train', help='Perform training', action='store_true')
+    parser.add_argument('--do_eval', help='Perform model evaluation during training', action='store_true')
+    parser.add_argument('--do_test', help='Evaulate model on test data', action='store_true')
     args = parser.parse_args()
 
     # Setup default directories
-    if not args.data_dir:
-        args.data_dir = os.path.dirname(os.path.abspath(__file__))
-        args.data_dir = os.path.join(args.data_dir, 'data')
-        os.makedirs(args.data_dir, exist_ok=True)
-
     if not args.output_dir:
         args.output_dir = os.path.dirname(os.path.abspath(__file__))
         args.output_dir = os.path.join(args.output_dir, 'models')
@@ -201,6 +158,8 @@ def get_args(MODELS):
         name += datetime.now().strftime("-%d-%m-%y-%H-%M")
 
         args.output_dir = os.path.join(args.output_dir, name)
+
+    args.set_similarity = not args.no_set_similarity
 
     # Default Loss funtions options
     if args.loss_function == 'bayesianmatching':
