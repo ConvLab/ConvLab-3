@@ -83,6 +83,7 @@ convlab2/dst/trade/multiwoz_config/
 deploy/bert_multiwoz_all.zip
 deploy/templates/dialog_eg.html
 test.py
+convlab2/dst/setsumbt/models/*
 
 *.egg-info
 pre-trained-models/
