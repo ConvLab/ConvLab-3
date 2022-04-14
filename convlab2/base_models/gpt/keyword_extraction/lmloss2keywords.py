@@ -20,7 +20,7 @@ def merge_tokens(tokens, losses, loss_merge_func=np.mean):
                 tokens[i+1] = 'Ġ'+tokens[i+1]
             i += 1
             continue
-        if token in ['user', 'system'] and i < len(tokens)-1 and tokens[i+1] == ':':
+        if token in ['user', 'system', 'Ġuser', 'Ġsystem'] and i < len(tokens)-1 and tokens[i+1] == ':':
             if i > 0:
                 tokens[i+1] = '<|endoftext|>'
                 i += 1
@@ -109,7 +109,7 @@ def main(args):
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
-    parser = ArgumentParser(description="calculate NLU metrics for unified datasets")
+    parser = ArgumentParser(description="extract keywords according to lm loss")
     parser.add_argument('--model_type', '-m', type=str, help='gpt or dialogpt')
     parser.add_argument('--token_loss_file', '-t', type=str, help='path to the token loss file that contains two columns: [tokens, losses]')
     parser.add_argument('--word_loss_file', '-w', type=str, help='path to the token loss file that contains two columns: [tokens, losses]')
