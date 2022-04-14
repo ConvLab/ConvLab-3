@@ -7,6 +7,7 @@ import json
 import zipfile
 import numpy as np
 import torch
+from datasets import load_dataset
 from tensorboardX import SummaryWriter
 from convlab2.util.file_util import cached_path
 from convlab2.policy.evaluate_distributed import evaluate_distributed
@@ -17,10 +18,8 @@ from convlab2.dialog_agent.env import Environment
 from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.policy.rule.multiwoz import RulePolicy
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
+from convlab2.util import load_dataset
 import shutil
-
-from convlab2.util.multiwoz.state import default_state
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
@@ -52,6 +51,14 @@ def move_finished_training(dir_in, dir_to):
     os.makedirs(dir_to, exist_ok=True)
     shutil.move(dir_in, dir_to)
     logging.info("Moved results to finished experiments folder.")
+
+
+def flatten_acts(dialogue_acts):
+    act_list = []
+    for act_type in dialogue_acts:
+        for act in dialogue_acts[act_type]:
+            act_list.append([act['intent'], act['domain'], act['slot'], act.get('value', "")])
+    return act_list
 
 
 def load_config_file(filepath: str = None) -> dict:
@@ -91,7 +98,7 @@ def set_seed(seed):
 
 def init_logging(root_dir, mode):
     current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-    dir_path = os.path.join(root_dir, f'experiment_{current_time}')
+    dir_path = os.path.join(root_dir, f'experiments/experiment_{current_time}')
     # init_logging_nunu(dir_path)
     _, log_save_path = init_logging_nunu(dir_path, mode)
     save_path = os.path.join(dir_path, 'save')
@@ -164,7 +171,12 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
         logging.info(
             f"{key}: Num: {len(task_success[key])} Success: {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}")
 
-    return complete_rate, success_rate, success_rate_strict, avg_return, turns, avg_actions
+    return {"complete_rate": complete_rate,
+            "success_rate": success_rate,
+            "success_rate_strict": success_rate_strict,
+            "avg_return": avg_return,
+            "turns": turns,
+            "avg_actions": avg_actions}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True):
@@ -368,3 +380,59 @@ def model_downloader(download_dir, model_path):
     archive = zipfile.ZipFile(model_path, 'r')
     archive.extractall(download_dir)
     archive.close()
+
+
+def get_goal_distribution(dataset_name='multiwoz21'):
+
+    data_split = load_dataset(dataset_name)
+    domain_combinations = {}
+    for key in data_split:
+        data = data_split[key]
+        for dialogue in data:
+            goal = dialogue['goal']
+            domains = list(set(goal['inform'].keys()) | set(goal['request'].keys()))
+            domains.sort()
+            domains = "-".join(domains)
+
+            if domains not in domain_combinations:
+                domain_combinations[domains] = 1
+            else:
+                domain_combinations[domains] += 1
+
+    single_domain_counter = {}
+    for combi in domain_combinations:
+        for domain in combi.split("-"):
+            if domain not in single_domain_counter:
+                single_domain_counter[domain] = domain_combinations[combi]
+            else:
+                single_domain_counter[domain] += domain_combinations[combi]
+
+    domain_combinations = list(domain_combinations.items())
+    domain_combinations = [list(pair) for pair in domain_combinations]
+    domain_combinations.sort(key=lambda x: x[1], reverse=True)
+    print(domain_combinations)
+    print(single_domain_counter)
+    print("Number of combinations:", sum([value for _, value in domain_combinations]))
+
+
+def unified_format(acts):
+    new_acts = {'categorical': []}
+    for act in acts:
+        intent, domain, slot, value = act
+        new_acts['categorical'].append({"intent": intent, "domain": domain, "slot": slot, "value": value})
+
+    return new_acts
+
+
+def act_dict_to_flat_tuple(acts):
+    tuples = []
+    for domain_intent, svs in acts.items():
+        for slot, value in svs:
+            domain, intent = domain_intent.split('-')
+            tuples.append([intent, domain, slot, value])
+
+
+if __name__ == '__main__':
+    get_goal_distribution()
+
+

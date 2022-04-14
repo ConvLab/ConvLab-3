@@ -87,3 +87,4 @@ convlab2/dst/setsumbt/models/*
 
 *.egg-info
 pre-trained-models/
+venv
