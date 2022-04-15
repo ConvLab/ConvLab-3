@@ -19,11 +19,12 @@ class BaseDatabase(ABC):
         """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
 
 
-def load_dataset(dataset_name:str) -> Dict:
+def load_dataset(dataset_name:str, dial_ids_order=None) -> Dict:
     """load unified dataset from `data/unified_datasets/$dataset_name`
 
     Args:
         dataset_name (str): unique dataset name in `data/unified_datasets`
+        dial_ids_order (int): idx of shuffled dial order in `data/unified_datasets/$dataset_name/shuffled_dial_ids.json`
 
     Returns:
         dataset (dict): keys are data splits and the values are lists of dialogues
@@ -33,11 +34,16 @@ def load_dataset(dataset_name:str) -> Dict:
     with archive.open('data/dialogues.json') as f:
         dialogues = json.loads(f.read())
     dataset = {}
-    for dialogue in dialogues:
-        if dialogue['data_split'] not in dataset:
-            dataset[dialogue['data_split']] = [dialogue]
-        else:
-            dataset[dialogue['data_split']].append(dialogue)
+    if dial_ids_order is not None:
+        dial_ids = json.load(open(os.path.join(data_dir, 'shuffled_dial_ids.json')))[dial_ids_order]
+        for data_split in dial_ids:
+            dataset[data_split] = [dialogues[i] for i in dial_ids[data_split]]
+    else:
+        for dialogue in dialogues:
+            if dialogue['data_split'] not in dataset:
+                dataset[dialogue['data_split']] = [dialogue]
+            else:
+                dataset[dialogue['data_split']].append(dialogue)
     return dataset
 
 def load_ontology(dataset_name:str) -> Dict:
@@ -187,8 +193,12 @@ def load_rg_data(dataset, data_split='all', speaker='system', context_window_siz
     return load_unified_data(dataset, **kwargs)
 
 
-def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_values=['yes', 'no']):
-    # add delex_utterance to the dataset according to dialogue acts and belief_state
+def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore_values=['yes', 'no']):
+    """add delex_utterance to the dataset according to dialogue acts and belief_state
+    delex_func: function that return the placeholder (e.g. "[(domain_name)-(slot_name)]") given (domain, slot, value)
+    ignore_values: ignored values when delexicalizing using the categorical acts and states
+    """
+    # 
 
     def delex_inplace(texts_placeholders, value_pattern):
         res = []
@@ -226,7 +236,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                     assert utt[start:end] == value
                     # make sure there are no words/number prepend & append and no overlap with other spans
                     if start >= last_end and (start == 0 or re.match('\W', utt[start-1])) and (end == len(utt) or re.match('\W', utt[end])):
-                        placeholder = delex_format.format(domain=domain, slot=slot, value=value)
+                        placeholder = delex_func(domain, slot, value)
                         delex_vocab.add(placeholder)
                         delex_utt.append((utt[last_end:start], False))
                         delex_utt.append((placeholder, True))
@@ -237,7 +247,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                 for da in sorted(turn['dialogue_acts']['categorical'], key=lambda x: len(x['value'])):
                     domain, slot, value = da['domain'], da['slot'], da['value']
                     if value.lower() not in ignore_values:
-                        placeholder = delex_format.format(domain=domain, slot=slot, value=value)
+                        placeholder = delex_func(domain, slot, value)
                         pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
                         if delex_inplace(delex_utt, pattern):
                             delex_vocab.add(placeholder)
@@ -251,7 +261,7 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
                             # has value
                             for value in values.split('|'):
                                 if value.lower() not in ignore_values:
-                                    placeholder = delex_format.format(domain=domain, slot=slot, value=value)
+                                    placeholder = delex_func(domain, slot, value)
                                     pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
                                     if delex_inplace(delex_utt, pattern):
                                         delex_vocab.add(placeholder)
@@ -262,7 +272,10 @@ def create_delex_data(dataset, delex_format='[({domain})-({slot})]', ignore_valu
 
 
 if __name__ == "__main__":
-    dataset = load_dataset('multiwoz21')
+    dataset = load_dataset('multiwoz21', dial_ids_order=0)
+    train_ratio = 0.1
+    dataset['train'] = dataset['train'][:round(len(dataset['train'])*train_ratio)]
+    print(len(dataset['train']))
     print(dataset.keys())
     print(len(dataset['test']))
 
@@ -274,7 +287,11 @@ if __name__ == "__main__":
     data_by_split = load_nlu_data(dataset, data_split='test', speaker='user')
     pprint(data_by_split['test'][0])
 
-    dataset, delex_vocab = create_delex_data(dataset)
+    def delex_slot(domain, slot, value):
+        # only use slot name for delexicalization
+        return f'[{slot}]'
+
+    dataset, delex_vocab = create_delex_data(dataset, delex_slot)
     json.dump(dataset['test'], open('new_delex_multiwoz21_test.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     json.dump(delex_vocab, open('new_delex_vocab.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
     with open('new_delex_cmp.txt', 'w') as f:
