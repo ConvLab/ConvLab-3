@@ -4,6 +4,7 @@ from copy import deepcopy
 from zipfile import ZipFile
 import importlib
 from tabulate import tabulate
+import random
 
 special_values = ['', 'dontcare', None, '?']
 
@@ -279,6 +280,20 @@ def check_dialogues(name, dialogues, ontology):
     return tabulate(table, headers='keys', tablefmt='github')
 
 
+def create_shuffled_dial_ids(dialogues, rng=random.Random(42), num_orders=10):
+    dial_ids = {}
+    for i, dialogue in enumerate(dialogues):
+        dial_ids.setdefault(dialogue['data_split'], [])
+        dial_ids[dialogue['data_split']].append(i)
+    
+    id_orders = []
+    for _ in range(num_orders):
+        for data_split in dial_ids:
+            rng.shuffle(dial_ids[data_split])
+        id_orders.append(deepcopy(dial_ids))
+    return id_orders
+
+
 if __name__ == '__main__':
     from argparse import ArgumentParser
 
@@ -339,6 +354,10 @@ if __name__ == '__main__':
                     dialogues = json.load(f)
                     stat = check_dialogues(name, dialogues, ontology)
                     print('pass')
+                    print('creating shuffled_dial_ids')
+                    id_orders = create_shuffled_dial_ids(dialogues)
+                    with open(os.path.join(name, 'shuffled_dial_ids.json'), 'w', encoding='utf-8') as f:
+                        json.dump(id_orders, f, ensure_ascii=False)
                 
                 print(f'Please copy and paste the statistics in {name}/stat.txt to dataset README.md->Data Splits section\n')
                 with open(f'{name}/stat.txt', 'w') as f:
