@@ -80,9 +80,9 @@ def create_nlg_data(dataset, data_dir, args):
             dialogue_acts_seq = serialize_dialogue_acts(sample['dialogue_acts'])
             if args.context_window_size>0:
                 context = '\n'.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['context']]+[f'{sample["speaker"]}: '])
-                context = f'{dialogue_acts_seq}\n\n{context}'
+                context = f'{dialogue_acts_seq}\n{context}'
             else:
-                context = f'{dialogue_acts_seq}\n\n{sample["speaker"]}: '
+                context = f'{dialogue_acts_seq}\n{sample["speaker"]}: '
             assert equal_da_seq(sample['dialogue_acts'], dialogue_acts_seq), print(sample['dialogue_acts'], dialogue_acts_seq, deserialize_dialogue_acts(dialogue_acts_seq))
             data.append(json.dumps({'context+da': context, 'response': sample['utterance']}, ensure_ascii=False)+'\n')
 
