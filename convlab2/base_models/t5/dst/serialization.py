@@ -5,26 +5,32 @@ def serialize_dialogue_state(state):
             if len(value) > 0:
                 state_dict.setdefault(f'[{domain}]', [])
                 state_dict[f'[{domain}]'].append(f'[{slot}][{value}]')
-    return ';'.join([domain+'{'+','.join(slot_values)+'}' for domain, slot_values in state_dict.items()])
+    return ';'.join([domain+'('+','.join(slot_values)+')' for domain, slot_values in state_dict.items()])
 
 def deserialize_dialogue_state(state_seq):
     state = {}
     if len(state_seq) == 0:
         return state
-    state_seqs = state_seq.split(']};[')  # will consume "]}" and "["
+    state_seqs = state_seq.split(']);[')  # will consume "])" and "["
     for i, state_seq in enumerate(state_seqs):
-        if len(state_seq) == 0 or len(state_seq.split(']{[')) != 2:
+        if len(state_seq) == 0 or len(state_seq.split(']([')) != 2:
             continue
         if i == 0:
             if state_seq[0] == '[':
                 state_seq = state_seq[1:]
         if i == len(state_seqs) - 1:
-            if state_seq[-2:] == ']}':
+            if state_seq[-2:] == '])':
                 state_seq = state_seq[:-2]
         
-        domain, slot_values = state_seq.split(']{[')
+        try:
+            domain, slot_values = state_seq.split(']([')
+        except:
+            continue
         for slot_value in slot_values.split('],['):
-            slot, value = slot_value.split('][')
+            try:
+                slot, value = slot_value.split('][')
+            except:
+                continue
             state.setdefault(domain, {})
             state[domain][slot] = value
     return state

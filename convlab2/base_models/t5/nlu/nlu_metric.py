@@ -36,21 +36,15 @@ Returns:
     seq_em: sequence exact match
     accuracy: dialog acts accuracy
     overall_f1: dialog acts overall f1
-    binary_f1: binary dialog acts f1
-    categorical_f1: categorical dialog acts f1
-    non-categorical_f1: non-categorical dialog acts f1
 Examples:
 
     >>> nlu_metric = datasets.load_metric("nlu_metric.py")
-    >>> predictions = ["[binary][thank][general][]", "[non-categorical][inform][taxi][leave at][17:15]"]
-    >>> references = ["[binary][thank][general][]", "[non-categorical][inform][train][leave at][17:15]"]
+    >>> predictions = ["[thank][general]{[][]}", "[inform][taxi]{[leave at][17:15]}"]
+    >>> references = ["[thank][general]{[][]}", "[inform][train]{[leave at][17:15]}"]
     >>> results = nlu_metric.compute(predictions=predictions, references=references)
     >>> print(results)
     {'seq_em': 0.5, 'accuracy': 0.5, 
-    'overall_f1': 0.5, 'overall_precision': 0.5, 'overall_recall': 0.5, 
-    'binary_f1': 1.0, 'binary_precision': 1.0, 'binary_recall': 1.0, 
-    'categorical_f1': 0.0, 'categorical_precision': 0.0, 'categorical_recall': 0.0, 
-    'non-categorical_f1': 0.0, 'non-categorical_precision': 0.0, 'non-categorical_recall': 0.0}
+    'overall_f1': 0.5, 'overall_precision': 0.5, 'overall_recall': 0.5}
 """
 
 
@@ -74,45 +68,33 @@ class NLUMetrics(datasets.Metric):
         """Returns the scores: sequence exact match, dialog acts accuracy and f1"""
         seq_em = []
         acc = []
-        f1_metrics = {x: {'TP':0, 'FP':0, 'FN':0} for x in ['overall', 'binary', 'categorical', 'non-categorical']}
+        f1_metrics = {'TP':0, 'FP':0, 'FN':0}
 
         for prediction, reference in zip(predictions, references):
             seq_em.append(prediction.strip()==reference.strip())
             pred_da = deserialize_dialogue_acts(prediction)
             gold_da = deserialize_dialogue_acts(reference)
-            flag = True
-            for da_type in ['binary', 'categorical', 'non-categorical']:
-                if da_type == 'binary':
-                    predicts = sorted(list({(x['intent'], x['domain'], x['slot']) for x in pred_da[da_type]}))
-                    labels = sorted(list({(x['intent'], x['domain'], x['slot']) for x in gold_da[da_type]}))
+            pred_da = sorted(list({(da['intent'], da['domain'], da['slot'], ''.join(da.get('value', '').split()).lower()) for da in pred_da}))
+            gold_da = sorted(list({(da['intent'], da['domain'], da['slot'], ''.join(da.get('value', '').split()).lower()) for da in gold_da}))
+            acc.append(pred_da==gold_da)
+            for ele in pred_da:
+                if ele in gold_da:
+                    f1_metrics['TP'] += 1
                 else:
-                    predicts = sorted(list({(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in pred_da[da_type]}))
-                    labels = sorted(list({(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in gold_da[da_type]}))
-                for ele in predicts:
-                    if ele in labels:
-                        f1_metrics['overall']['TP'] += 1
-                        f1_metrics[da_type]['TP'] += 1
-                    else:
-                        f1_metrics['overall']['FP'] += 1
-                        f1_metrics[da_type]['FP'] += 1
-                for ele in labels:
-                    if ele not in predicts:
-                        f1_metrics['overall']['FN'] += 1
-                        f1_metrics[da_type]['FN'] += 1
-                flag &= (predicts==labels)
-            acc.append(flag)
+                    f1_metrics['FP'] += 1
+            for ele in gold_da:
+                if ele not in pred_da:
+                    f1_metrics['FN'] += 1
 
-        for metric in list(f1_metrics.keys()):
-            TP = f1_metrics[metric].pop('TP')
-            FP = f1_metrics[metric].pop('FP')
-            FN = f1_metrics[metric].pop('FN')
-            precision = 1.0 * TP / (TP + FP) if TP + FP else 0.
-            recall = 1.0 * TP / (TP + FN) if TP + FN else 0.
-            f1 = 2.0 * precision * recall / (precision + recall) if precision + recall else 0.
-            f1_metrics.pop(metric)
-            f1_metrics[f'{metric}_f1'] = f1
-            f1_metrics[f'{metric}_precision'] = precision
-            f1_metrics[f'{metric}_recall'] = recall
+        TP = f1_metrics.pop('TP')
+        FP = f1_metrics.pop('FP')
+        FN = f1_metrics.pop('FN')
+        precision = 1.0 * TP / (TP + FP) if TP + FP else 0.
+        recall = 1.0 * TP / (TP + FN) if TP + FN else 0.
+        f1 = 2.0 * precision * recall / (precision + recall) if precision + recall else 0.
+        f1_metrics[f'overall_f1'] = f1
+        f1_metrics[f'overall_precision'] = precision
+        f1_metrics[f'overall_recall'] = recall
 
         return {
             "seq_em": sum(seq_em)/len(seq_em),
