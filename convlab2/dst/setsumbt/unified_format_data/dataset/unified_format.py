@@ -17,6 +17,7 @@
 
 import torch
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
+from copy import deepcopy
 
 from convlab2.dst.setsumbt.unified_format_data.dataset.utils import (load_dataset, get_ontology_slots,
                                             ontology_add_values, get_values_from_data, ontology_add_requestable_slots,
@@ -39,6 +40,7 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
         features (dict): All inputs and labels required to train the model
     '''
     features = dict()
+    ontology = deepcopy(ontology)
 
     # Get encoder input for system, user utterance pairs
     input_feats = []

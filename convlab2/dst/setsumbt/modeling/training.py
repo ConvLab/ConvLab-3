@@ -597,16 +597,19 @@ def train_eval(args, model, device, dev_dataloader):
         req_tp = sum(truepos_req)
         req_fp = sum(falsepos_req)
         req_fn = sum(falseneg_req)
-        req_f1 = req_tp / (req_tp + 0.5 * (req_fp + req_fn))
+        req_f1 = req_tp + 0.5 * (req_fp + req_fn)
+        req_f1 = req_tp / req_f1 if req_f1 != 0.0 else 0.0
         dom_acc = sum(accuracy_dom) / turns
         dom_tp = sum(truepos_dom)
         dom_fp = sum(falsepos_dom)
         dom_fn = sum(falseneg_dom)
-        dom_f1 = dom_tp / (dom_tp + 0.5 * (dom_fp + dom_fn))
+        dom_f1 = dom_tp + 0.5 * (dom_fp + dom_fn)
+        dom_f1 = dom_tp / dom_f1 if dom_f1 != 0.0 else 0.0
         bye_tp = sum(truepos_bye)
         bye_fp = sum(falsepos_bye)
         bye_fn = sum(falseneg_bye)
-        bye_f1 = bye_tp / (bye_tp + 0.5 * (bye_fp + bye_fn))
+        bye_f1 = bye_tp + 0.5 * (bye_fp + bye_fn)
+        bye_f1 = bye_tp / bye_f1 if bye_f1 != 0.0 else 0.0
         bye_acc = sum(accuracy_bye) / turns
     else:
         req_acc, dom_acc, bye_acc = None, None, None
@@ -768,16 +771,19 @@ def evaluate(args, model, device, dataloader):
         req_tp = sum(truepos_req)
         req_fp = sum(falsepos_req)
         req_fn = sum(falseneg_req)
-        req_f1 = req_tp / (req_tp + 0.5 * (req_fp + req_fn))
+        req_f1 = req_tp + 0.5 * (req_fp + req_fn)
+        req_f1 = req_tp / req_f1 if req_f1 != 0.0 else 0.0
         dom_acc = sum(accuracy_dom) / turns
         dom_tp = sum(truepos_dom)
         dom_fp = sum(falsepos_dom)
         dom_fn = sum(falseneg_dom)
-        dom_f1 = dom_tp / (dom_tp + 0.5 * (dom_fp + dom_fn))
+        dom_f1 = dom_tp + 0.5 * (dom_fp + dom_fn)
+        dom_f1 = dom_tp / dom_f1 if dom_f1 != 0.0 else 0.0
         bye_tp = sum(truepos_bye)
         bye_fp = sum(falsepos_bye)
         bye_fn = sum(falseneg_bye)
-        bye_f1 = bye_tp / (bye_tp + 0.5 * (bye_fp + bye_fn))
+        bye_f1 = bye_tp + 0.5 * (bye_fp + bye_fn)
+        bye_f1 = bye_tp / bye_f1 if bye_f1 != 0.0 else 0.0
         bye_acc = sum(accuracy_bye) / turns
     else:
         req_acc, dom_acc, bye_acc = None, None, None

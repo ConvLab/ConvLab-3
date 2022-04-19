@@ -21,6 +21,7 @@ import os
 from shutil import copy2 as copy
 
 import torch
+import transformers
 from transformers import (BertModel, BertConfig, BertTokenizer,
                           RobertaModel, RobertaConfig, RobertaTokenizer)
 from tensorboardX import SummaryWriter

@@ -156,6 +156,7 @@ def get_args(MODELS):
 
         name = 'SetSUMBT'
         name += '-Acts' if args.predict_actions else ''
+        name += '-' + args.dataset
         name += '-' + args.model_type
         name += '-' + args.nbt_type
         name += '-' + args.distance_measure
