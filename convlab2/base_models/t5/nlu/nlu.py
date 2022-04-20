@@ -1,8 +1,6 @@
 import logging
 import os
-import json
 import torch
-from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoConfig
 from convlab2.nlu.nlu import NLU
 from convlab2.base_models.t5.nlu.serialization import deserialize_dialogue_acts
@@ -16,7 +14,6 @@ class T5NLU(NLU):
         self.opponent = 'system' if speaker == 'user' else 'user'
         self.context_window_size = context_window_size
         self.use_context = context_window_size > 0
-        self.prefix = "parse the dialogue action of the last utterance: "
 
         model_dir = os.path.dirname(os.path.abspath(__file__))
         if not os.path.exists(model_name_or_path):
@@ -38,7 +35,7 @@ class T5NLU(NLU):
             utts = context + [utterance]
         else:
             utts = [utterance]
-        input_seq = ' '.join([f"{self.opponent if (i % 2) == (len(utts) % 2) else self.speaker}: {utt}" for i, utt in enumerate(utts)])
+        input_seq = '\n'.join([f"{self.opponent if (i % 2) == (len(utts) % 2) else self.speaker}: {utt}" for i, utt in enumerate(utts)])
         # print(input_seq)
         input_seq = self.tokenizer(input_seq, return_tensors="pt").to(self.device)
         # print(input_seq)
