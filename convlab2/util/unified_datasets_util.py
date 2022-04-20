@@ -124,7 +124,7 @@ def load_unified_data(
                         sample['domains'] = dialogue['domains']
                     if terminated:
                         sample['terminated'] = turn['utt_idx'] == len(dialogue['turns']) - 1
-                    if speaker == 'system':
+                    if speaker == 'system' and 'booked' in turn:
                         sample['booked'] = turn['booked']
                     data_by_split[data_split].append(sample)
             if not split_to_turn:

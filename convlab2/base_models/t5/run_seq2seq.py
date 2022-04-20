@@ -212,8 +212,8 @@ class DataTrainingArguments:
             "help": "Whether to ignore the tokens corresponding to padded labels in the loss computation or not."
         },
     )
-    source_prefix_filepath: Optional[str] = field(
-        default=None, metadata={"help": "A file whose first line is the prefix to add before every source text (useful for T5 models)."}
+    source_prefix: Optional[str] = field(
+        default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
     )
 
     def __post_init__(self):
@@ -271,7 +271,7 @@ def main():
     )
     logger.info(f"Training/evaluation parameters {training_args}")
 
-    if data_args.source_prefix_filepath is None and model_args.model_name_or_path in [
+    if data_args.source_prefix is None and model_args.model_name_or_path in [
         "t5-small",
         "t5-base",
         "t5-large",
@@ -280,7 +280,7 @@ def main():
     ]:
         logger.warning(
             "You're running a t5 model but didn't provide a source prefix, which is the expected, e.g. with "
-            "`--source_prefix_filepath 'path_to_prefix_file' ` whose first line is the source prefix"
+            "`--source_prefix 'summarize: ' `"
         )
 
     # Detecting last checkpoint.
@@ -386,10 +386,7 @@ def main():
                 "resize the model's position encodings by passing `--resize_position_embeddings`."
             )
 
-    if data_args.source_prefix_filepath is not None:
-        prefix = open(data_args.source_prefix_filepath, 'r', encoding='utf-8').readline().strip('\n')
-    else:
-        prefix = ""
+    prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
     
     logger.info(f'source prefix: "{prefix}"')
 
