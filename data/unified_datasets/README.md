@@ -42,6 +42,7 @@ if __name__ == '__main__':
   - `dialogues.json`: a list of all dialogues in the dataset.
   - other necessary files such as databases.
 - `dummy_data.json`: a list of 10 dialogues from `dialogues.json` for illustration.
+- `shuffled_dial_ids.json`: 10 random shuffled data orders created by `check.py` for experiment reproducibility, can be used in `load_dataset` function by passing the `dial_ids_order` in [0, 9]
 
 Datasets that require database interaction should also include the following file:
 - `database.py`: load the database and define the query function:
@@ -60,7 +61,7 @@ class Database(BaseDatabase):
 We first introduce the unified format of `ontology` and `dialogues`. To transform a new dataset into the unified format:
 1. Create `data/unified_datasets/$dataset` folder, where `$dataset` is the name of the dataset.
 2. Write `preprocess.py` to transform the original dataset into the unified format, producing `data.zip` and `dummy_data.json`.
-3. Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics.
+3. Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics and shuffled dialog ids.
 4. Write `README.md` to describe the data following [How to create dataset README](#how-to-create-dataset-readme).
 
 ### Ontology
@@ -120,7 +121,7 @@ Note that multiple descriptions/values are separated by `"|"`.
 
 Other attributes are optional.
 
-> **Necessary**: Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics in `data/unified_datasets/$dataset/stat.txt`.
+> **Necessary**: Run `python check.py $dataset` in the `data/unified_datasets` directory to check the validation of processed dataset and get data statistics in `data/unified_datasets/$dataset/stat.txt` as well as shuffled dialog ids in `data/unified_datasets/$dataset/shuffled_dial_ids.json`.
 
 ### How to create dataset README
 Each dataset has a README.md to describe the original and transformed data. Please follow the `README_TEMPLATE.md` and make sure that you:

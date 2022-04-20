@@ -1,8 +1,8 @@
-n_gpus=4
-task_name="dst"
-dataset_name="multiwoz21"
+n_gpus=1
+task_name="nlu"
+dataset_name=$1
 speaker="user"
-context_window_size=100
+context_window_size=$2
 data_dir="data/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 output_dir="output/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 cache_dir="../cache"
@@ -10,28 +10,26 @@ logging_dir="${output_dir}/runs"
 train_file="${data_dir}/train.json"
 validation_file="${data_dir}/validation.json"
 test_file="${data_dir}/test.json"
-metric_name_or_path="dst_metric.py"
-metric_for_best_model="accuracy"
+metric_name_or_path="nlu_metric.py"
+metric_for_best_model="overall_f1"
 source_column="context"
-target_column="state_seq"
+target_column="dialogue_acts_seq"
 truncation_side="left"
 max_source_length=512
 max_target_length=512
 model_name_or_path="t5-small"
-per_device_train_batch_size=64
+per_device_train_batch_size=128
 per_device_eval_batch_size=64
 gradient_accumulation_steps=2
 lr=1e-3
 num_train_epochs=10
 
-python ../create_data.py --tasks ${task_name} --datasets ${dataset_name} --speaker ${speaker} --context_window_size ${context_window_size}
+python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size}
 
-python -m torch.distributed.launch \
-    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
+python ../run_seq2seq.py \
     --task_name ${task_name} \
     --train_file ${train_file} \
     --validation_file ${validation_file} \
-    --test_file ${test_file} \
     --source_column ${source_column} \
     --target_column ${target_column} \
     --max_source_length ${max_source_length} \
@@ -40,7 +38,6 @@ python -m torch.distributed.launch \
     --model_name_or_path ${model_name_or_path} \
     --do_train \
     --do_eval \
-    --do_predict \
     --save_strategy epoch \
     --evaluation_strategy epoch \
     --prediction_loss_only \
@@ -58,8 +55,7 @@ python -m torch.distributed.launch \
     --adafactor \
     --gradient_checkpointing
 
-python -m torch.distributed.launch \
-    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
+python ../run_seq2seq.py \
     --task_name ${task_name} \
     --test_file ${test_file} \
     --source_column ${source_column} \
@@ -76,8 +72,8 @@ python -m torch.distributed.launch \
     --logging_dir ${logging_dir} \
     --overwrite_output_dir \
     --preprocessing_num_workers 4 \
-    --per_device_eval_batch_size ${per_device_eval_batch_size} \
+    --per_device_eval_batch_size ${per_device_eval_batch_size}
 
 python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
 
-python ../../../dst/evaluate_unified_datasets.py -p ${output_dir}/predictions.json
+python ../../../nlu/evaluate_unified_datasets.py -p ${output_dir}/predictions.json
