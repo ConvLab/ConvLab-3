@@ -19,6 +19,7 @@ import logging
 import random
 import os
 from shutil import copy2 as copy
+import json
 
 import torch
 import transformers
@@ -83,10 +84,10 @@ def main(args=None, config=None):
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    ch = logging.StreamHandler()
-    ch.setLevel(level=logging.INFO)
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+    fh = logging.FileHandler(args.logging_path)
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
 
     # Get device
     if torch.cuda.is_available() and args.n_gpu > 0:
@@ -103,8 +104,7 @@ def main(args=None, config=None):
     model = model.to(device)
 
     # Create Tokenizer and embedding model for Data Loaders and ontology
-    encoder = model.roberta if args.model_type == 'roberta' else None
-    encoder = model.bert if args.model_type == 'bert' else encoder
+    encoder = CandidateEncoderModel.from_pretrained(config.candidate_embedding_model_name)
 
     tokenizer = Tokenizer.from_pretrained(config.tokenizer_name, config=config)
 
@@ -207,13 +207,9 @@ def main(args=None, config=None):
         checkpoints = os.listdir(OUTPUT_DIR)
         checkpoints = [p for p in checkpoints if 'checkpoint' in p]
         checkpoints = sorted([int(p.split('-')[-1]) for p in checkpoints])
-        best_checkpoint = checkpoints[-1]
-        best_checkpoint = os.path.join(
-            OUTPUT_DIR, f'checkpoint-{best_checkpoint}')
-        copy(os.path.join(best_checkpoint, 'pytorch_model.bin'),
-             os.path.join(OUTPUT_DIR, 'pytorch_model.bin'))
-        copy(os.path.join(best_checkpoint, 'config.json'),
-             os.path.join(OUTPUT_DIR, 'config.json'))
+        best_checkpoint = os.path.join(OUTPUT_DIR, f'checkpoint-{checkpoints[-1]}')
+        copy(os.path.join(best_checkpoint, 'pytorch_model.bin'), os.path.join(OUTPUT_DIR, 'pytorch_model.bin'))
+        copy(os.path.join(best_checkpoint, 'config.json'), os.path.join(OUTPUT_DIR, 'config.json'))
 
         # Load best model for evaluation
         model = SetSumbtModel.from_pretrained(OUTPUT_DIR)
@@ -273,7 +269,15 @@ def main(args=None, config=None):
         training.set_ontology_embeddings(model, test_slots)
 
         # TESTING
-        jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss = training.evaluate(args, model, device, test_dataloader)
+        jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, output = training.evaluate(args, model, device, test_dataloader,
+                                                                                return_eval_output=True)
+
+        if not os.path.exists(os.path.join(OUTPUT_DIR, 'predictions')):
+            os.mkdir(os.path.join(OUTPUT_DIR, 'predictions'))
+        writer = open(os.path.join(OUTPUT_DIR, 'predictions', 'test.json'), 'w')
+        json.dump(output, writer)
+        writer.close()
+
         if req_f1:
             logger.info('Test loss: %f, Joint Goal Accuracy: %f, Slot Accuracy: %f, Request F1 Score: %f, Domain F1 Score: %f, Goodbye F1 Score: %f'
                         % (loss, jg_acc, sl_acc, req_f1, dom_f1, bye_f1))

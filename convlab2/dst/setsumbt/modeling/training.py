@@ -618,7 +618,7 @@ def train_eval(args, model, device, dev_dataloader):
     return jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, stats
 
 
-def evaluate(args, model, device, dataloader):
+def evaluate(args, model, device, dataloader, return_eval_output=False):
     """Evaluate Model!"""
     # Evaluate!
     logger.info("***** Running evaluation *****")
@@ -626,6 +626,8 @@ def evaluate(args, model, device, dataloader):
 
     tr_loss = 0.0
     model.eval()
+    if return_eval_output:
+        ontology = dataloader.dataset.ontology
 
     # logits = {slot: [] for slot in model.informable_slot_ids}
     accuracy_jg = []
@@ -637,6 +639,8 @@ def evaluate(args, model, device, dataloader):
     accuracy_dom = []
     accuracy_bye = []
     turns = []
+    if return_eval_output:
+        evaluation_output = []
     epoch_iterator = tqdm(dataloader, desc="Iteration")
     for batch in epoch_iterator:
         with torch.no_grad():
@@ -647,8 +651,7 @@ def evaluate(args, model, device, dataloader):
                                   if ('request_belief-' + slot) in batch} if args.predict_actions else None
                 domain_labels = {domain: batch['domain_belief-' + domain].to(device) for domain in model.domain_ids
                                  if ('domain_belief-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye_belief'].to(
-                    device) if args.predict_actions else None
+                goodbye_labels = batch['goodbye_belief'].to(device) if args.predict_actions else None
             else:
                 labels = {slot: batch['labels-' + slot].to(device) for slot in model.informable_slot_ids
                           if ('labels-' + slot) in batch}
@@ -656,8 +659,7 @@ def evaluate(args, model, device, dataloader):
                                   if ('request-' + slot) in batch} if args.predict_actions else None
                 domain_labels = {domain: batch['active-' + domain].to(device) for domain in model.domain_ids
                                  if ('active-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye'].to(
-                    device) if args.predict_actions else None
+                goodbye_labels = batch['goodbye'].to(device) if args.predict_actions else None
 
             input_ids = batch['input_ids'].to(device)
             token_type_ids = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
@@ -676,9 +678,38 @@ def evaluate(args, model, device, dataloader):
         req_tp, req_fp, req_fn = 0.0, 0.0, 0.0
         dom_tp, dom_fp, dom_fn = 0.0, 0.0, 0.0
         dom_acc = 0.0
+
+        if return_eval_output:
+            eval_output_batch = []
+            for dial_id, dial in enumerate(input_ids):
+                for turn_id, turn in enumerate(dial):
+                    if turn.sum() != 0:
+                        eval_output_batch.append({'dial_id': dial_id,
+                                                  'turn_id': turn_id,
+                                                  'state': {domain: {slot: '' for slot in substate}
+                                                            for domain, substate in ontology.items()},
+                                                  'predictions': {'state': {domain: {slot: '' for slot in substate}
+                                                                            for domain, substate in ontology.items()}}
+                                                  })
+
         for slot in model.informable_slot_ids:
             p_ = p[slot]
             labels = batch['labels-' + slot].to(device)
+
+            if return_eval_output:
+                prediction = p_.argmax(-1)
+
+                for sample in eval_output_batch:
+                    dom, slt = slot.split('-', 1)
+                    pred = prediction[sample['dial_id']][sample['turn_id']].item()
+                    pred = ontology[dom][slt]['possible_values'][pred]
+                    lab = labels[sample['dial_id']][sample['turn_id']].item()
+                    lab = ontology[dom][slt]['possible_values'][lab]
+
+                    sample['state'][dom][slt] = lab if lab != 'none' else ''
+                    sample['predictions']['state'][dom][slt] = pred if pred != 'none' else ''
+
+                evaluation_output += eval_output_batch
 
             if args.temp_scaling > 0.0:
                 p_ = torch.log(p_ + 1e-10) / args.temp_scaling
@@ -789,4 +820,6 @@ def evaluate(args, model, device, dataloader):
         req_acc, dom_acc, bye_acc = None, None, None
         req_f1, dom_f1, bye_f1 = None, None, None
 
+    if return_eval_output:
+        return jg_acc, sl_acc, req_f1, dom_f1, bye_f1, tr_loss / len(dataloader), evaluation_output
     return jg_acc, sl_acc, req_f1, dom_f1, bye_f1, tr_loss / len(dataloader)
