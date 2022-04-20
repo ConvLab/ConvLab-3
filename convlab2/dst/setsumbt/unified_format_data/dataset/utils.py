@@ -129,17 +129,21 @@ def ontology_add_values(ontology_slots: dict, value_sets: dict) -> dict:
     Returns:
         ontology_slots (dict): Ontology dictionary containing slots, slot descriptions and possible value sets
     '''
-    for domain in ontology_slots:
-        for slot in ontology_slots[domain]:
+    ontology = {}
+    for domain in sorted(ontology_slots):
+        ontology[domain] = {}
+        for slot in sorted(ontology_slots[domain]):
             if not ontology_slots[domain][slot]['possible_values']:
                 if domain in value_sets:
                     if slot in value_sets[domain]:
                         ontology_slots[domain][slot]['possible_values'] = value_sets[domain][slot]
             if ontology_slots[domain][slot]['possible_values']:
-                ontology_slots[domain][slot]['possible_values'] = ['none', 'do not care'] \
-                                                                  + ontology_slots[domain][slot]['possible_values']
+                values = sorted(ontology_slots[domain][slot]['possible_values'])
+                ontology_slots[domain][slot]['possible_values'] = ['none', 'do not care'] + values
 
-    return ontology_slots
+            ontology[domain][slot] = ontology_slots[domain][slot]
+
+    return ontology
 
 
 # Get set of requestable slots from the dataset action labels

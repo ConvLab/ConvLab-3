@@ -60,36 +60,16 @@ def main(args=None, config=None):
     args.output_dir = OUTPUT_DIR
 
     # Set pretrained model path to the trained checkpoint
-    if args.do_train:
-        paths = os.listdir(args.output_dir) if os.path.exists(
-            args.output_dir) else []
-        paths = [os.path.join(args.output_dir, p)
-                 for p in paths if 'checkpoint-' in p]
+    paths = os.listdir(args.output_dir) if os.path.exists(args.output_dir) else []
+    if 'pytorch_model.bin' in paths and 'config.json' in paths:
+        args.model_name_or_path = args.output_dir
+        config = ConfigClass.from_pretrained(args.model_name_or_path)
+    else:
+        paths = [os.path.join(args.output_dir, p) for p in paths if 'checkpoint-' in p]
         if paths:
             paths = paths[0]
             args.model_name_or_path = paths
             config = ConfigClass.from_pretrained(args.model_name_or_path)
-        else:
-            paths = os.listdir(args.output_dir) if os.path.exists(
-                args.output_dir) else []
-            if 'pytorch_model.bin' in paths and 'config.json' in paths:
-                args.model_name_or_path = args.output_dir
-                config = ConfigClass.from_pretrained(args.model_name_or_path)
-    else:
-        paths = os.listdir(args.output_dir) if os.path.exists(
-            args.output_dir) else []
-        if 'pytorch_model.bin' in paths and 'config.json' in paths:
-            args.model_name_or_path = args.output_dir
-            config = ConfigClass.from_pretrained(args.model_name_or_path)
-        else:
-            paths = os.listdir(args.output_dir) if os.path.exists(
-                args.output_dir) else []
-            paths = [os.path.join(args.output_dir, p)
-                     for p in paths if 'checkpoint-' in p]
-            if paths:
-                paths = paths[0]
-                args.model_name_or_path = paths
-                config = ConfigClass.from_pretrained(args.model_name_or_path)
 
     args = update_args(args, config)
 
@@ -101,19 +81,12 @@ def main(args=None, config=None):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    if 'stream' not in args.logging_path:
-        fh = logging.FileHandler(args.logging_path)
-        fh.setLevel(logging.INFO)
-        fh.setFormatter(formatter)
-        logger.addHandler(fh)
-    else:
-        ch = logging.StreamHandler()
-        ch.setLevel(level=logging.INFO)
-        ch.setFormatter(formatter)
-        logger.addHandler(ch)
+    ch = logging.StreamHandler()
+    ch.setLevel(level=logging.INFO)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
     # Get device
     if torch.cuda.is_available() and args.n_gpu > 0:
@@ -126,8 +99,7 @@ def main(args=None, config=None):
         args.fp16 = False
 
     # Initialise Model
-    model = SetSumbtModel.from_pretrained(
-        args.model_name_or_path, config=config)
+    model = SetSumbtModel.from_pretrained(args.model_name_or_path, config=config)
     model = model.to(device)
 
     # Create Tokenizer and embedding model for Data Loaders and ontology
