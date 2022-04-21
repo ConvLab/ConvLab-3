@@ -88,7 +88,7 @@ def evaluate(predict_result, ontology):
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
-
+    
     parser = ArgumentParser(description="calculate NLG metrics for unified datasets")
     parser.add_argument('--predict_result', '-p', type=str, required=True,
                         help='path to the prediction file that in the unified data format')
