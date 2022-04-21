@@ -28,7 +28,7 @@ from typing import Optional
 
 import datasets
 import numpy as np
-from datasets import load_dataset
+from datasets import load_dataset, load_metric
 
 import transformers
 from transformers import (
@@ -47,7 +47,7 @@ from transformers.utils.versions import require_version
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-check_min_version("4.12.5")
+check_min_version("4.17.0")
 
 require_version("datasets>=1.16.1")
 
@@ -77,6 +77,10 @@ class ModelArguments:
     use_fast_tokenizer: bool = field(
         default=True,
         metadata={"help": "Whether to use one of the fast tokenizer (backed by the tokenizers library) or not."},
+    )
+    truncation_side: Optional[str] = field(
+        default="right",
+        metadata={"help": "Which side to truncate, left or right."}
     )
     model_revision: str = field(
         default="main",
@@ -135,6 +139,12 @@ class DataTrainingArguments:
         default=None,
         metadata={
             "help": "An optional input test data file to evaluate the metrics on (a jsonlines or csv file)."
+        },
+    )
+    metric_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "An optional metric name or file to evaluate the model."
         },
     )
     overwrite_cache: bool = field(
@@ -196,21 +206,14 @@ class DataTrainingArguments:
                     "value if set."
         },
     )
-    num_beams: Optional[int] = field(
-        default=None,
-        metadata={
-            "help": "Number of beams to use for evaluation. This argument will be passed to ``model.generate``, "
-                    "which is used during ``evaluate`` and ``predict``."
-        },
-    )
     ignore_pad_token_for_loss: bool = field(
         default=True,
         metadata={
             "help": "Whether to ignore the tokens corresponding to padded labels in the loss computation or not."
         },
     )
-    source_prefix_filepath: Optional[str] = field(
-        default=None, metadata={"help": "A file whose first line is the prefix to add before every source text (useful for T5 models)."}
+    source_prefix: Optional[str] = field(
+        default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
     )
 
     def __post_init__(self):
@@ -268,7 +271,7 @@ def main():
     )
     logger.info(f"Training/evaluation parameters {training_args}")
 
-    if data_args.source_prefix_filepath is None and model_args.model_name_or_path in [
+    if data_args.source_prefix is None and model_args.model_name_or_path in [
         "t5-small",
         "t5-base",
         "t5-large",
@@ -277,7 +280,7 @@ def main():
     ]:
         logger.warning(
             "You're running a t5 model but didn't provide a source prefix, which is the expected, e.g. with "
-            "`--source_prefix_filepath 'path_to_prefix_file' ` whose first line is the source prefix"
+            "`--source_prefix 'summarize: ' `"
         )
 
     # Detecting last checkpoint.
@@ -342,6 +345,7 @@ def main():
         model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
         cache_dir=model_args.cache_dir,
         use_fast=model_args.use_fast_tokenizer,
+        truncation_side=model_args.truncation_side,
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
@@ -382,11 +386,9 @@ def main():
                 "resize the model's position encodings by passing `--resize_position_embeddings`."
             )
 
-    if data_args.source_prefix_filepath is not None:
-        prefix = open(data_args.source_prefix_filepath, 'r', encoding='utf-8').readline().strip()
-    else:
-        prefix = ""
+    prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
     
+    logger.info(f'source prefix: "{prefix}"')
 
     # Preprocessing the datasets.
     # We need to tokenize inputs and targets.
@@ -513,7 +515,9 @@ def main():
         pad_to_multiple_of=8 if training_args.fp16 else None,
     )
 
-    # TODO: compute custom metric at evaluation.
+    # compute custom metric at evaluation.
+    if data_args.metric_name_or_path:
+        metric = load_metric(data_args.metric_name_or_path)
     # Must take a EvalPrediction and return a dictionary string to metric values.
     def compute_metrics(p: EvalPrediction):
         preds, labels = p.predictions, p.label_ids
@@ -525,13 +529,19 @@ def main():
             labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
         decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
-        # TODO: compute metric using decoded_preds & decoded_labels
-        result = {}
+        # compute metric using decoded_preds & decoded_labels
+        if data_args.metric_name_or_path:
+            result = metric.compute(predictions=decoded_preds, references=decoded_labels)
+        else:
+            result = {}
 
         prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
         result["gen_len"] = np.mean(prediction_lens)
         result = {k: round(v, 4) for k, v in result.items()}
         return result
+
+    if training_args.generation_max_length is None:
+        training_args.generation_max_length = data_args.val_max_target_length
 
     # Initialize our Trainer
     trainer = Seq2SeqTrainer(
@@ -565,16 +575,9 @@ def main():
         trainer.save_state()
 
     # Evaluation
-    results = {}
-    max_length = (
-        training_args.generation_max_length
-        if training_args.generation_max_length is not None
-        else data_args.val_max_target_length
-    )
-    num_beams = data_args.num_beams if data_args.num_beams is not None else training_args.generation_num_beams
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(max_length=max_length, num_beams=num_beams, metric_key_prefix="eval")
+        metrics = trainer.evaluate(metric_key_prefix="eval")
         max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
 
@@ -584,10 +587,7 @@ def main():
     # Predict
     if training_args.do_predict:
         logger.info("*** Predict ***")
-
-        predict_results = trainer.predict(
-            predict_dataset, metric_key_prefix="predict", max_length=max_length, num_beams=num_beams
-        )
+        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict")
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)
@@ -622,8 +622,6 @@ def main():
         trainer.push_to_hub(**kwargs)
     else:
         trainer.create_model_card(**kwargs)
-
-    return results
 
 
 def _mp_fn(index):

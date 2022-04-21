@@ -6,7 +6,7 @@ import logging
 from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from convlab2.util.multiwoz.state import default_state
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
-from .vector_multiwoz import MultiWozVector as MultiWozVectorBase
+from .vector_binary import VectorBinary as VectorBase
 
 DEFAULT_INTENT_FILEPATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(
@@ -18,7 +18,7 @@ DEFAULT_INTENT_FILEPATH = os.path.join(
 SLOT_MAP = {'taxi_types': 'car type'}
 
 
-class MultiWozVector(MultiWozVectorBase):
+class MultiWozVector(VectorBase):
 
     def __init__(self, voc_file=None, voc_opp_file=None, character='sys',
                  intent_file=DEFAULT_INTENT_FILEPATH,
@@ -145,8 +145,6 @@ class MultiWozVector(MultiWozVectorBase):
             action = state['user_action']
             for intent, domain, slot, value in action:
                 domain_active_dict[domain] = True
-                if domain in self.db_domains:
-                    self.cur_domain = domain
 
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
@@ -189,8 +187,6 @@ class MultiWozVector(MultiWozVectorBase):
             if 'active_domains' in state:
                 domain_active = state['active_domains'][domain.lower()]
                 domain_active_dict[domain] = domain_active
-                if domain in self.db_domains and domain_active:
-                    self.cur_domain = domain
             else:
                 if [slot for slot, value in state['belief_state'][domain.lower()]['semi'].items() if value]:
                     domain_active_dict[domain] = True

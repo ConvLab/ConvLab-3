@@ -12,9 +12,10 @@ from torch import optim
 import torch.utils.data as data
 from convlab2.util.train_util import to_device
 from convlab2.policy.vector.dataset import ActStateDataset
-from convlab2.policy.mle.multiwoz.loader import ActMLEPolicyDataLoaderMultiWoz
+from convlab2.policy.mle.loader import PolicyDataVectorizer
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class RewardEstimator(object):
     def __init__(self, vector, pretrain=False):
@@ -39,7 +40,7 @@ class RewardEstimator(object):
         self.irl_iter = iter(self.data_train)
         if pretrain:
             self.data_train = manager.create_dataset_irl('train', cfg['batchsz'])
-            self.data_valid = manager.create_dataset_irl('valid', cfg['batchsz'])
+            self.data_valid = manager.create_dataset_irl('validation', cfg['batchsz'])
             self.data_test = manager.create_dataset_irl('test', cfg['batchsz'])
             self.irl_iter = iter(self.data_train)
             self.irl_iter_valid = iter(self.data_valid)
@@ -188,10 +189,7 @@ class RewardEstimator(object):
         gen_loss /= turns
         logging.debug('<<reward estimator>> epoch {}, loss_real:{}, loss_gen:{}'.format(
                 epoch, real_loss, gen_loss))
-        
-        if (epoch+1) % self.save_per_epoch == 0:
-            self.save_irl(self.save_dir, epoch)
-        
+
     def save_irl(self, directory, epoch):
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -239,10 +237,11 @@ class AIRL(nn.Module):
         :param next_s: [b, s_dim]
         :return:  [b, 1]
         """
-        weights = self.g(torch.cat([s,a], -1)) + self.gamma * self.h(next_s) - self.h(s)
+        weights = self.g(torch.cat([s, a], -1)) + self.gamma * self.h(next_s) - self.h(s)
         return weights
 
-class ActEstimatorDataLoaderMultiWoz(ActMLEPolicyDataLoaderMultiWoz):
+
+class ActEstimatorDataLoaderMultiWoz(PolicyDataVectorizer):
     def __init__(self):
         super(ActEstimatorDataLoaderMultiWoz, self).__init__()
         
@@ -252,12 +251,12 @@ class ActEstimatorDataLoaderMultiWoz(ActMLEPolicyDataLoaderMultiWoz):
         a = []
         next_s = []
         for i, item in enumerate(self.data[part]):
-            s.append(torch.Tensor(item[0]))
-            a.append(torch.Tensor(item[1]))
-            if item[0][-1]: #terminated
-                next_s.append(torch.Tensor(item[0]))
+            s.append(torch.Tensor(item['state']))
+            a.append(torch.Tensor(item['action']))
+            if item['terminated']: #terminated
+                next_s.append(torch.Tensor(item['state']))
             else:
-                next_s.append(torch.Tensor(self.data[part][i+1][0]))
+                next_s.append(torch.Tensor(self.data[part][i+1]['state']))
         s = torch.stack(s)
         a = torch.stack(a)
         next_s = torch.stack(next_s)
@@ -265,5 +264,3 @@ class ActEstimatorDataLoaderMultiWoz(ActMLEPolicyDataLoaderMultiWoz):
         dataloader = data.DataLoader(dataset, batchsz, True)
         print('Finish creating {} irl dataset'.format(part))
         return dataloader
-        
-    

@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
+import zipfile
+import logging
 import torch
 import os
-import zipfile
+import json
+
 from convlab2.policy.policy import Policy
 from convlab2.util.file_util import cached_path
-import logging
+from convlab2.policy.rlmodule import MultiDiscretePolicy
+from convlab2.policy.vector.vector_binary import VectorBinary
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+DEFAULT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+DEFAULT_ARCHIVE_FILE = os.path.join(DEFAULT_DIRECTORY, "mle_policy_multiwoz.zip")
 
 
 class MLEAbstract(Policy):
 
-    def __init__(self, archive_file, model_file):
-        self.vector = None
-        self.policy = None
+    def __init__(self, vector, policy):
+        self.vector = vector
+        self.policy = policy
 
     def predict(self, state):
         """
@@ -26,7 +33,7 @@ class MLEAbstract(Policy):
         s_vec, m = self.vector.state_vectorize(state)
         s_vec = torch.Tensor(s_vec)
         m = torch.from_numpy(m).to(DEVICE)
-        a = self.policy.select_action(s_vec.to(device=DEVICE), action_mask=m).cpu()
+        a = self.policy.select_action(s_vec.to(device=DEVICE), False, action_mask=m).cpu()
         action = self.vector.action_devectorize(a.detach().numpy())
         state['system_action'] = action
         return action
@@ -67,3 +74,34 @@ class MLEAbstract(Policy):
                 self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
                 logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
                 break
+
+
+class MLE(MLEAbstract):
+
+    def __init__(self):
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
+            cfg = json.load(f)
+
+        self.vector = VectorBinary()
+        self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'], self.vector.da_dim).to(device=DEVICE)
+
+    @classmethod
+    def from_pretrained(cls,
+                        archive_file=DEFAULT_ARCHIVE_FILE,
+                        model_file='https://convlab.blob.core.windows.net/convlab-2/mle_policy_multiwoz.zip'):
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
+            cfg = json.load(f)
+        model = cls()
+        model.load_from_pretrained(archive_file, model_file, cfg['load'])
+        return model
+
+
+class MLEPolicy(MLE):
+    def __init__(self,
+                 archive_file=DEFAULT_ARCHIVE_FILE,
+                 model_file='https://convlab.blob.core.windows.net/convlab-2/mle_policy_multiwoz.zip'):
+        super().__init__()
+        if model_file:
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
+                cfg = json.load(f)
+            self.load_from_pretrained(archive_file, model_file, cfg['load'])

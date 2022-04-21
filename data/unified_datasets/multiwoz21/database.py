@@ -12,9 +12,9 @@ class Database(BaseDatabase):
     def __init__(self):
         """extract data.zip and load the database."""
         archive = ZipFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.zip'))
-        domains = ['restaurant', 'hotel', 'attraction', 'train', 'hospital', 'police']
+        self.domains = ['restaurant', 'hotel', 'attraction', 'train', 'hospital', 'police']
         self.dbs = {}
-        for domain in domains:
+        for domain in self.domains:
             with archive.open('data/{}_db.json'.format(domain)) as f:
                 self.dbs[domain] = json.loads(f.read())
         # add some missing information
@@ -28,11 +28,12 @@ class Database(BaseDatabase):
             entity['postcode'] = "cb20qq"
             entity['address'] = "Hills Rd, Cambridge"
 
-        self.dbattr2slot = {
-            'openhours': 'open hours',
-            'pricerange': 'price range',
-            'arriveBy': 'arrive by',
-            'leaveAt': 'leave at'
+        self.slot2dbattr = {
+            'open hours': 'openhours',
+            'price range': 'pricerange',
+            'arrive by': 'arriveBy',
+            'leave at': 'leaveAt',
+            'train id': 'trainID'
         }
 
     def query(self, domain: str, state: dict, topk: int, ignore_open=False, soft_contraints=(), fuzzy_match_ratio=60) -> list:
@@ -53,7 +54,7 @@ class Database(BaseDatabase):
                 return deepcopy(self.dbs['hospital'])
             else:
                 return [deepcopy(x) for x in self.dbs['hospital'] if x['department'].lower() == department.strip().lower()]
-        state = list(map(lambda ele: ele if not(ele[0] == 'area' and ele[1] == 'center') else ('area', 'centre'), state))
+        state = list(map(lambda ele: (self.slot2dbattr.get(ele[0], ele[0]), ele[1]) if not(ele[0] == 'area' and ele[1] == 'center') else ('area', 'centre'), state))
 
         found = []
         for i, record in enumerate(self.dbs[domain]):
@@ -64,15 +65,14 @@ class Database(BaseDatabase):
                     pass
                 else:
                     try:
-                        record_keys = [self.dbattr2slot.get(k, k) for k in record]
-                        if key.lower() not in record_keys:
+                        if key not in record:
                             continue
-                        if key == 'leave at':
+                        if key == 'leaveAt':
                             val1 = int(val.split(':')[0]) * 100 + int(val.split(':')[1])
                             val2 = int(record['leaveAt'].split(':')[0]) * 100 + int(record['leaveAt'].split(':')[1])
                             if val1 > val2:
                                 break
-                        elif key == 'arrive by':
+                        elif key == 'arriveBy':
                             val1 = int(val.split(':')[0]) * 100 + int(val.split(':')[1])
                             val2 = int(record['arriveBy'].split(':')[0]) * 100 + int(record['arriveBy'].split(':')[1])
                             if val1 < val2:
@@ -105,6 +105,6 @@ if __name__ == '__main__':
     db = Database()
     assert issubclass(Database, BaseDatabase)
     assert isinstance(db, BaseDatabase)
-    res = db.query("train", [['departure', 'cambridge'], ['destination','peterborough'], ['day', 'tuesday'], ['arrive by', '11:15']], topk=3)
+    res = db.query("restaurant", [['price range', 'expensive']], topk=3)
     print(res, len(res))
     # print(db.query("hotel", [['price range', 'moderate'], ['stars','4'], ['type', 'guesthouse'], ['internet', 'yes'], ['parking', 'no'], ['area', 'east']]))

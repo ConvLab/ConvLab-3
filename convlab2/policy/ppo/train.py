@@ -32,9 +32,8 @@ try:
 except RuntimeError:
     pass
 
-# TODO change it back to normal version.
 
-def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0, user_rl=False):
+def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
 
     """
     This is a sampler function, and it will be called by multiprocess.Process to sample data from environment by multiple
@@ -67,8 +66,7 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0, user_rl=False):
             # [s_dim] => [a_dim]
             s_vec, action_mask = policy.vector.state_vectorize(s)
             s_vec = torch.Tensor(s_vec)
-            if not user_rl:
-                action_mask = torch.Tensor(action_mask)
+            action_mask = torch.Tensor(action_mask)
 
             a = policy.predict(s)
             # print("---> sample action")
@@ -108,7 +106,7 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0, user_rl=False):
     evt.wait()
 
 
-def sample(env, policy, batchsz, process_num, seed, user_rl=False):
+def sample(env, policy, batchsz, process_num, seed):
 
     """
     Given batchsz number of task, the batchsz will be splited equally to each processes
@@ -136,7 +134,7 @@ def sample(env, policy, batchsz, process_num, seed, user_rl=False):
     evt = mp.Event()
     processes = []
     for i in range(process_num):
-        process_args = (i, queue, evt, env, policy, process_batchsz, seed, user_rl)
+        process_args = (i, queue, evt, env, policy, process_batchsz, seed)
         processes.append(mp.Process(target=sampler, args=process_args))
     for p in processes:
         # set the process as daemon, and it will be killed once the main process is stoped.
@@ -155,10 +153,11 @@ def sample(env, policy, batchsz, process_num, seed, user_rl=False):
 
     return buff.get_batch()
 
-def update(env, policy, batchsz, epoch, process_num, only_critic=False, seed=0, user_rl=False):
+
+def update(env, policy, batchsz, epoch, process_num, seed=0):
 
     # sample data asynchronously
-    batch = sample(env, policy, batchsz, process_num, seed, user_rl=False)
+    batch = sample(env, policy, batchsz, process_num, seed)
 
     # print(batch)
     # data in batch is : batch.state: ([1, s_dim], [1, s_dim]...)
@@ -171,8 +170,7 @@ def update(env, policy, batchsz, epoch, process_num, only_critic=False, seed=0, 
     action_mask = torch.Tensor(np.stack(batch.action_mask)).to(device=DEVICE)
     batchsz_real = s.size(0)
 
-    policy.update(epoch, batchsz_real, s, a, r, mask,
-                  action_mask, only_critic=only_critic)
+    policy.update(epoch, batchsz_real, s, a, r, mask, action_mask)
 
 
 if __name__ == '__main__':
@@ -241,19 +239,13 @@ if __name__ == '__main__':
 
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
-    complete_rate, success_rate, success_rate_strict, avg_return, turns, avg_actions = eval_policy(
-        conf, policy_sys, env, sess, save_eval, log_save_path)
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
 
-    tb_writer.add_scalar('complete_rate', complete_rate, 0)
-    tb_writer.add_scalar('success_rate', success_rate, 0)
-    tb_writer.add_scalar('success_rate_strict', success_rate_strict, 0)
-    tb_writer.add_scalar('avg_return', avg_return, 0)
-    tb_writer.add_scalar('turns', turns, 0)
-    tb_writer.add_scalar('avg_actions', avg_actions, 0)
-
-    best_complete_rate = complete_rate
-    best_success_rate = success_rate_strict
+    for key in eval_dict:
+        tb_writer.add_scalar(key, eval_dict[key], 0)
+    best_complete_rate = eval_dict['complete_rate']
+    best_success_rate = eval_dict['success_rate_strict']
 
     logging.info("Start of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
@@ -261,32 +253,19 @@ if __name__ == '__main__':
     for i in range(conf['model']['epoch']):
         idx = i + 1
         # print("Epoch :{}".format(str(idx)))
-        update(env, policy_sys, conf['model']['batchsz'],
-               idx, conf['model']['process_num'], only_critic=False, seed=seed)
+        update(env, policy_sys, conf['model']['batchsz'], idx, conf['model']['process_num'], seed=seed)
 
         if idx % conf['model']['eval_frequency'] == 0 and idx != 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
             logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
 
-            complete_rate, success_rate, success_rate_strict, avg_return, turns, avg_actions = eval_policy(
-                conf, policy_sys, env, sess, save_eval, log_save_path)
+            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
             best_complete_rate, best_success_rate = \
                 save_best(policy_sys, best_complete_rate, best_success_rate,
-                          complete_rate, success_rate_strict, save_path)
-
-            tb_writer.add_scalar('complete_rate', complete_rate,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('success_rate', success_rate,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('success_rate_strict', success_rate_strict,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('avg_return', avg_return,
-                                 idx * conf['model']['batchsz'])
-            tb_writer.add_scalar('turns', turns, idx *
-                                 conf['model']['batchsz'])
-            tb_writer.add_scalar('avg_actions', avg_actions,
-                                 idx * conf['model']['batchsz'])
+                          eval_dict["complete_rate"], eval_dict["success_rate_strict"], save_path)
+            for key in eval_dict:
+                tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
 
     logging.info("End of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
