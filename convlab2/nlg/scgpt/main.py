@@ -2,6 +2,7 @@ import sys
 sys.path.append('../../..')
 
 import argparse
+import json
 from tqdm import tqdm
 import torch
 import numpy as np
@@ -31,7 +32,8 @@ parser.add_argument("--local_rank", default=-1, type=int)
 parser.add_argument('--do_train', action="store_true", help="Whether to run training.")
 parser.add_argument('--dataset', default="multiwoz21", type=str, help="The name of the dataset to be used.")
 parser.add_argument('--model_path', default="", type=str, help="The path of model for testing.")
-parser.add_argument("--max_seq_len", default=256, type=int)
+parser.add_argument('--scgpt_model_ckpt_path', default="", type=str, help="The path of model for testing.")
+parser.add_argument("--max_seq_len", default=128, type=int)
 FLAGS = parser.parse_args()
 local_rank = FLAGS.local_rank
 
@@ -39,14 +41,25 @@ torch.cuda.set_device(local_rank)
 dist.init_process_group(backend='nccl')
 
 # TensorBoard
-tb_writer = SummaryWriter('')
+tb_dir = './runs'
+if not os.path.exists(tb_dir):
+    os.mkdir(tb_dir)
+tb_writer = SummaryWriter(tb_dir)
 
 special_tokens = [START_OF_PRED, END_OF_PRED, SYS_SPEAK, USR_SPEAK]
 ## load model
-tokenizer = GPT2Tokenizer.from_pretrained('./gpt2')
-tokenizer.add_special_tokens({'pad_token': PAD_TOKEN, 'eos_token': END_OF_PRED, 'additional_special_tokens': special_tokens})
-model = GPT2LMHeadModel.from_pretrained('./gpt2').to(local_rank)
-model.resize_token_embeddings(len(tokenizer))
+if FLAGS.scgpt_model_ckpt_path == '':
+    tokenizer = GPT2Tokenizer.from_pretrained('./gpt2')
+    tokenizer.add_special_tokens({'pad_token': PAD_TOKEN, 'eos_token': END_OF_PRED, 'additional_special_tokens': special_tokens})
+    model = GPT2LMHeadModel.from_pretrained('./gpt2').to(local_rank)
+    model.resize_token_embeddings(len(tokenizer))
+else:
+    tokenizer = GPT2Tokenizer.from_pretrained(FLAGS.scgpt_model_ckpt_path)
+    tokenizer.add_special_tokens(
+        {'pad_token': PAD_TOKEN, 'eos_token': END_OF_PRED, 'additional_special_tokens': special_tokens})
+    model = GPT2LMHeadModel.from_pretrained(FLAGS.scgpt_model_ckpt_path).to(local_rank)
+    print('model load from ' + FLAGS.scgpt_model_ckpt_path)
+    model.resize_token_embeddings(len(tokenizer))
 
 nll_loss = nn.NLLLoss(reduce=False).to(local_rank)
 ce_loss = nn.CrossEntropyLoss(reduce=False).to(local_rank)
@@ -79,6 +92,7 @@ def pad_collate(batch):
     batch = [item[0] + [START_OF_PRED_ID] + item[1] for item in batch]
     batch = [item[-FLAGS.max_seq_len:] for item in batch]
     max_len = max([len(item) for item in batch])
+    # print('max_len', max_len)
     seq_lens = [len(item) for item in batch]
     split_id = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
     def get_x_len(tokens):
@@ -91,12 +105,15 @@ def pad_collate(batch):
         return split_idx
     seq_lens_input = [get_x_len(item) for item in batch]
     batch = [item + [pad_token_id]*(max_len-len(item)) for item in batch]
+    # print(batch)
+    # print(seq_lens)
+    # print(seq_lens_input)
     return torch.LongTensor(batch), torch.LongTensor(seq_lens), torch.LongTensor(seq_lens_input)
 
 ## Training Hyper-params
 EPOCH_NUM = 20
-BATCH_SIZE = 20   # real_batch_size = BATCH_SIZE * num_gpu
-VAL_STEP = 300
+BATCH_SIZE = 32   # real_batch_size = BATCH_SIZE * num_gpu
+VAL_STEP = 500
 WARM_STEPS = 250
 if code_test:
     EPOCH_NUM = 2
@@ -138,16 +155,19 @@ def train(model, nlg_data, global_step=0):
             tb_writer.add_scalar(f'Train/PPL', torch.exp(loss).item(), global_step)
             tb_writer.add_scalar(f'Train/Learning Rate', scheduler.get_last_lr()[0], global_step)
 
-            if batch_id % VAL_STEP == 0:
-                model.eval()
-                val_loss = eval(model, val_dataloader)
-                ppl = np.exp(val_loss)
-                tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
-                tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
-                model.train()
             global_step += 1
         # save the model when each epoch ends
         if dist.get_rank() == 0:
+
+            # vaidation
+            model.eval()
+            val_loss = eval(model, val_dataloader)
+            ppl = np.exp(val_loss)
+            tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
+            tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
+            model.train()
+
+            # save model
             save_dir = os.path.join(SAVE_PATH, f'epoch_{epoch}')
             os.makedirs(save_dir, exist_ok=True)
             torch.save(model.module.state_dict(), os.path.join(save_dir, f'epoch_{epoch}_step{global_step}.pt'))
@@ -155,6 +175,7 @@ def train(model, nlg_data, global_step=0):
             torch.save(optimizer.state_dict(), os.path.join(save_dir, 'optimizer.pt'))
             torch.save(scheduler.state_dict(), os.path.join(save_dir, 'scheduler.pt'))
             print(f'Save model checkpoint to [{save_dir}]')
+
     tb_writer.flush()
 
 
@@ -212,17 +233,29 @@ def test(model, nlg_data, ontology, model_path):
     print(f'model loaded from [{model_path}]')
     # Load test nlg data
     test_data = nlg_data['test']
-    dialog_acts = [act2str(item['dialogue_acts']) for item in test_data]
-    golden_responses = [item['utterance'] for item in test_data]
+    dialog_acts = [act2str(item['dialogue_acts']).strip() for item in test_data]
+    golden_responses = [item['utterance'].strip() for item in test_data]
     # dialog_acts = dialog_acts[:10]
     # golden_responses = golden_responses[:10]
     outputs = inference_sents(model, dialog_acts)
+    def get_real_output(ipt):
+        if '[start_of_pred]' in ipt:
+            ipt = ipt[ipt.index('[start_of_pred]')+15:].strip()
+        if '[_pad_token_]' in ipt:
+            ipt = ipt[:ipt.index('[_pad_token_]')].strip()
+        return ipt
+    outputs = [get_real_output(item) for item in outputs]
+    output_file = './test_output.json'
     if dist.get_rank() == 0:
-        output_file = './test_output.txt'
         with open(output_file, 'w+') as f:
+            result = []
             for i in range(len(dialog_acts)):
-                f.write(f'{dialog_acts[i]}\n{golden_responses[i]}\n{outputs[i]}\n\n')
-            f.close()
+                result.append({
+                    'dialogue_acts': test_data[i]['dialogue_acts'],
+                    'utterance': test_data[i]['utterance'],
+                    'prediction': outputs[i]
+                })
+            json.dump(result, f, indent=2, ensure_ascii=False)
     evaluator = GentScorer()
     parallel_corpus = []
     # BLEU
@@ -270,6 +303,9 @@ def test(model, nlg_data, ontology, model_path):
         score_list.append(item_score)
     ERR_Score = np.mean(score_list)
     print(f'BLEU: {BLEU_Score}\nERR_Score: {ERR_Score}')
+    # with open(output_file, 'a') as f:
+    #     f.write(f'BLEU: {BLEU_Score}\nERR_Score: {ERR_Score}')
+    #     f.close()
 
 
 if __name__ == '__main__':
