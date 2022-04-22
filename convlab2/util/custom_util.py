@@ -19,6 +19,8 @@ from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.policy.rule.multiwoz import RulePolicy
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab2.util import load_dataset
+from queue import Queue
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
 import shutil
 
 
@@ -430,6 +432,16 @@ def act_dict_to_flat_tuple(acts):
         for slot, value in svs:
             domain, intent = domain_intent.split('-')
             tuples.append([intent, domain, slot, value])
+
+
+def create_goals(goal_generator, num_goals):
+
+    collected_goals = Queue()
+    while collected_goals.qsize() != num_goals:
+        goal = Goal(goal_generator)
+        #domain_goals = goal.domain_goals
+        collected_goals.put(goal)
+    return collected_goals
 
 
 if __name__ == '__main__':
