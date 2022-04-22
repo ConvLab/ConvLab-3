@@ -138,14 +138,19 @@ if __name__ == '__main__':
     parser.add_argument('--speaker', '-s', type=str, choices=['user', 'system', 'all'], help='speaker(s)')
     parser.add_argument('--context_window_size', '-c', type=int, default=0, help='how many contextual utterances are considered')
     parser.add_argument('--len_tokenizer', '-l', type=str, default=None, help='name or path of tokenizer that used to get seq len')
+    parser.add_argument('--ratio', '-r', type=float, default=None, help='how many data is used for training and evaluation')
+    parser.add_argument('--dial_ids_order', '-o', type=int, default=None, help='which data order is used for experiments')
     args = parser.parse_args()
     print(args)
     if args.len_tokenizer:
         tokenizer = AutoTokenizer.from_pretrained(args.len_tokenizer)
     for dataset_name in tqdm(args.datasets, desc='datasets'):
-        dataset = load_dataset(dataset_name)
+        dataset = load_dataset(dataset_name, args.dial_ids_order)
+        if args.ratio:
+            dataset['train'] = dataset['train'][:round(len(dataset['train'])*args.ratio)]
+            dataset['validation'] = dataset['validation'][:round(len(dataset['validation'])*args.ratio)]
         for task_name in tqdm(args.tasks, desc='tasks', leave=False):
-            data_dir = os.path.join('data', task_name, dataset_name)
+            data_dir = os.path.join('data', task_name, (dataset_name if not args.ratio else f'{dataset_name}_{args.ratio}_order{args.dial_ids_order}'))
             data_by_split = eval(f"create_{task_name}_data")(dataset, data_dir, args)
             if args.len_tokenizer:
                 get_max_len(data_by_split, tokenizer)
