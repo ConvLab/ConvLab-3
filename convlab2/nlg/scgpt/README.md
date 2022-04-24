@@ -1,51 +1,48 @@
-# GPT
+# SC-GPT
 
-The code derives from [HuggingFace/Transformers](https://github.com/huggingface/transformers).
-
-## Preprocess
-
-```python
-cd $dataset$
-python preprocess.py
-```
-
-## Train
-
-Fetch and unzip the checkpoint
-
-```
+This is the implemention of [SC-GPT](https://aclanthology.org/2020.findings-emnlp.17) which is proposed by
+Peng et al., 2020.
+You should first download and unzip the SG-GPT checkpoint
+```bash
 wget https://bapengstorage.blob.core.windows.net/fileshare/scgpt.tar.gz
 tar -xvf scgpt.tar.gz
 ```
+and if you want to use this checkpoint, you have to specifiy its path through ``--scgpt_model_ckpt_path`` parameter in ``train.sh`` and ``test.sh``.
 
-Then
-
-``` python
-python train.py --output_dir=trained_output --model_type=gpt2 --model_name_or_path=scgpt --do_train --do_eval --eval_data_file=multiwoz/data/test_sys.txt --use_tokenize --train_data_file=multiwoz/data/train_sys.txt --overwrite_output_dir
-```
-
-some tricks (optional training argument):
-* `--gradient_accumulation_steps xxx` 
-* `--fp16`, if it's set, you'd better set `--per_gpu_train_batch_size` to be multiple of 8
-* `--max_seq xxx`, it should be larger than the length of the longest sequence. You can set `--max_seq 1024`. The script uses a dynamic sequence length at each training step.
-* `--gradient_checkpointing`, it allows larger `per_gpu_train_batch_size`
-* `--use_multi_tensor_adamw`, someone says it's a faster optimizer
-
-distributed data parallel:
-
-  If multiple GPUs are available, you can run `python -m torch.distributed.launch --nproc_per_node CUDA_COUNT train.py ......` 
-
-  `CUDA_COUNT` is the number of GPUs. `.....` are arguments of `train.py`.
-
-## Use
+## Train
 
 ```python
-python run.py --model_type=gpt2 --model_name_or_path=$save_dir$ --num_samples 5 --input_file=$test_file$ --output_file=$output_file$ --length 100 --stop_token '<|endoftext|>' --batch_size 16
+./train.sh
 ```
+When using the training code, you may have to adjust the parameters 
+according to your machine configuration. Note that the training code
+only supports GPU training.
 
-## Data Format
-
+## Evaluation
+```python
+./evaluate.sh
 ```
-dialog act seq & user utterance
-```
+The test code also only supports GPU mode. We will report the BLEU score
+and ERR score according to the original SC-GPT paper(Peng et al., 2020).
 
+## NLG Interface
+The NLG interface of SC-GPT is implemented in ./scgpt.py.
+```python
+def generate(self, action)
+```
+This class supports both CPU and GPU mode by providing the
+'device' parameter in constructor function.
+
+
+## Reference
+```
+@inproceedings{peng-etal-2020-shot,
+    title = "Few-shot Natural Language Generation for Task-Oriented Dialog",
+    author = "Peng, Baolin and Zhu, Chenguang  and  Li, Chunyuan  and  Li, Xiujun  and  Li, Jinchao  and  Zeng, Michael  and  Gao, Jianfeng",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2020",
+    month = nov,
+    year = "2020",
+    publisher = "Association for Computational Linguistics",
+    pages = "172--182",
+}
+```

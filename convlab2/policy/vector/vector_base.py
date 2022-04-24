@@ -328,8 +328,7 @@ class VectorBase(Vector):
                     pairs.append((slot, slot1))
 
         for constraint_slots in pairs:
-            state = [[slot, value] for slot, value in constraints.items()
-                     if slot not in constraint_slots]
+            state = [[slot, value] for slot, value in constraints.items() if slot not in constraint_slots]
             entities = self.db.query(domain, state, topk=1)
             if entities:
                 return np.random.choice(constraint_slots)
