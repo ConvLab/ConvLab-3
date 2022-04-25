@@ -101,11 +101,15 @@ class SetSUMBTTracker(DST):
         logging.info(f'Model transferred to device: {self.device}')
 
         logging.info('Loading model ontology')
-        f = open(os.path.join(self.model_path, 'ontology.json'), 'r')
+        if os.path.isfile(os.path.join(self.model_path, 'ontology.json')):
+            ontology_dir = self.model_path
+        else:
+            ontology_dir = os.path.join(self.model_path, 'database')
+        f = open(os.path.join(ontology_dir, 'ontology.json'), 'r')
         self.ontology = json.load(f)
         f.close()
 
-        db = torch.load(os.path.join(self.model_path, 'ontology.db'))
+        db = torch.load(os.path.join(ontology_dir, 'ontology.db'))
         # Get slot and value embeddings
         slots = {slot: db[slot] for slot in db}
         values = {slot: db[slot][1] for slot in db}
@@ -135,6 +139,7 @@ class SetSUMBTTracker(DST):
                 self.det_dic[key.lower()] = key + '-' + domain
                 self.det_dic[value.lower()] = key + '-' + domain
 
+    #TODO
     def get_thresholds(self, threshold='auto'):
         self.thresholds = {}
         for slot, value_candidates in self.ontology.items():
@@ -155,7 +160,9 @@ class SetSUMBTTracker(DST):
         return self.thresholds
 
     def init_session(self):
-        self.state = default_state()
+        self.state = {domain: {slot: ''} for domain, substate in self.ontology.items()
+                      for slot, slot_info in self.substate.items()
+                      if slot_info['possible_values'] and slot_info['possible_values'] != ['?']}
         self.active_domains = {}
         self.hidden_states = None
         self.info_dict = {}
