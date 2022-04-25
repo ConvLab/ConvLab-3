@@ -36,6 +36,7 @@ def get_args(MODELS):
 
     # DATASET (Optional)
     parser.add_argument('--dataset', help='Dataset Name: multiwoz21/simr', default='multiwoz21')
+    parser.add_argument('--dataset_train_ratio', help='Fraction of training set to use in training', default=1.0, type=float)
     parser.add_argument('--max_dialogue_len', help='Maximum number of turns per dialogue', default=12, type=int)
     parser.add_argument('--max_turn_len', help='Maximum number of tokens per turn', default=64, type=int)
     parser.add_argument('--max_slot_len', help='Maximum number of tokens per slot description', default=12, type=int)
@@ -153,6 +154,7 @@ def get_args(MODELS):
         name = 'SetSUMBT'
         name += '-Acts' if args.predict_actions else ''
         name += '-' + args.dataset
+        name += '-' + str(round(args.dataset_train_ratio*100)) + '%' if args.dataset_train_ratio != 1.0 else ''
         name += '-' + args.model_type
         name += '-' + args.nbt_type
         name += '-' + args.distance_measure

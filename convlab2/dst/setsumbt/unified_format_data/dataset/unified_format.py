@@ -102,7 +102,9 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
         for dial in data:
             labs = []
             for turn in dial:
-                value = [v for d, substate in turn['state'].items() for s, v in substate.items() if f'{d}-{s}' == domslot][0]
+                value = [v for d, substate in turn['state'].items() for s, v in substate.items()
+                         if f'{d}-{s}' == domslot]
+                value = value[0] if value else 'none'
                 domain, slot = domslot.split('-', 1)
                 if value in ontology[domain][slot]['possible_values']:
                     value = ontology[domain][slot]['possible_values'].index(value)
@@ -188,7 +190,8 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
 # Unified Dataset object
 class UnifiedDataset(Dataset):
 
-    def __init__(self, dataset_name: str, set_type: str, tokenizer, max_turns: int=12, max_seq_len:int =64):
+    def __init__(self, dataset_name: str, set_type: str, tokenizer, max_turns: int=12, max_seq_len:int =64,
+                 train_ratio: float=1.0):
         '''
         Build Unified Dataset object
         Args:
@@ -197,6 +200,7 @@ class UnifiedDataset(Dataset):
             tokenizer (transformers tokenizer): Tokenizer for the encoder model used
             max_turns (int): Maximum numbers of turns in a dialogue
             max_seq_len (int): Maximum number of tokens in a dialogue turn
+            train_ratio (float): Fraction of training data to use during training
         '''
         self.dataset_dict = load_dataset(dataset_name)
         self.ontology = get_ontology_slots(dataset_name)
@@ -204,7 +208,13 @@ class UnifiedDataset(Dataset):
         self.ontology = ontology_add_requestable_slots(self.ontology, get_requestable_slots(self.dataset_dict))
 
         data = load_dst_data(self.dataset_dict, data_split=set_type, speaker='all', dialogue_acts=True, split_to_turn=False)
-        data = extract_dialogues(data[set_type])
+
+        data = data[set_type]
+        if train_ratio != 1.0:
+            train_ratio = int(len(data) * train_ratio)
+            data = data[:train_ratio]
+
+        data = extract_dialogues(data)
         self.features = convert_examples_to_features(data, self.ontology, tokenizer, max_turns, max_seq_len)
 
     def __getitem__(self, index):
@@ -246,7 +256,7 @@ class UnifiedDataset(Dataset):
 
 # Module to create torch dataloaders
 def get_dataloader(dataset_name: str, set_type: str, batch_size: int, tokenizer, max_turns: int=12, max_seq_len: int=64,
-                   device='cpu', resampled_size=None):
+                   device='cpu', resampled_size=None, train_ratio=1.0):
     '''
     Module to create torch dataloaders
     Args:
@@ -262,7 +272,7 @@ def get_dataloader(dataset_name: str, set_type: str, batch_size: int, tokenizer,
     Returns:
         loader (torch dataloader): Dataloader to train and evaluate the setsumbt model
     '''
-    data = UnifiedDataset(dataset_name, set_type, tokenizer, max_turns, max_seq_len)
+    data = UnifiedDataset(dataset_name, set_type, tokenizer, max_turns, max_seq_len, train_ratio=train_ratio)
     data.to(device)
 
     if resampled_size:
