@@ -164,7 +164,8 @@ def main(args=None, config=None):
                 args.data_sampling_size = None
             train_dataloader = unified_format.get_dataloader(args.dataset, 'train',
                                                 args.train_batch_size, tokenizer, args.max_dialogue_len,
-                                                config.max_turn_len, resampled_size=args.data_sampling_size)
+                                                config.max_turn_len, resampled_size=args.data_sampling_size,
+                                                train_ratio=args.dataset_train_ratio)
             torch.save(train_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
 
         # Get training batch loaders and ontology embeddings
