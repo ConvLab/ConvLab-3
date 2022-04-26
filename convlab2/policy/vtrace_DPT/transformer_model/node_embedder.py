@@ -78,7 +78,6 @@ class NodeEmbedderRoberta(nn.Module):
 
         #embedded_descriptions = torch.stack(
         #    [self.embedded_descriptions[idx] for idx in description_idx]).to(DEVICE)
-
         embedded_descriptions = self.embedded_descriptions[description_idx]
         description_value_tensor = torch.cat((self.value_embedding(values),
                                                   embedded_descriptions), dim=-1).to(DEVICE)

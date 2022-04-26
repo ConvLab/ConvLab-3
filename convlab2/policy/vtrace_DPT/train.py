@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jul 14 16:14:07 2019
-@author: truthless
+@author: Chris Geishauser
 """
 
 import sys
@@ -33,6 +33,58 @@ try:
     mp = mp.get_context('spawn')
 except RuntimeError:
     pass
+
+
+def create_episodes(environment, policy, num_episodes, memory, goals):
+    sampled_num = 0
+    traj_len = 40
+
+    while sampled_num < num_episodes:
+        goal = goals.get()
+        s = environment.reset(goal)
+
+        user_act_list, sys_act_list, s_vec_list, action_list, reward_list, small_act_list, action_mask_list, mu_list, \
+        trajectory_list, vector_mask_list, critic_value_list, description_idx_list, value_list, current_domain_mask, \
+        non_current_domain_mask = \
+            [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
+
+        for t in range(traj_len):
+
+            s_vec, mask = policy.vector.state_vectorize(s)
+            with torch.no_grad():
+                a = policy.predict(s)
+
+            # s_vec_list.append(policy.info_dict['kg'])
+            action_list.append(policy.info_dict['big_act'].detach())
+            small_act_list.append(policy.info_dict['small_act'])
+            action_mask_list.append(policy.info_dict['action_mask'])
+            mu_list.append(policy.info_dict['a_prob'].detach())
+            critic_value_list.append(policy.info_dict['critic_value'])
+            vector_mask_list.append(torch.Tensor(mask))
+            description_idx_list.append(policy.info_dict["description_idx_list"])
+            value_list.append(policy.info_dict["value_list"])
+            current_domain_mask.append(policy.info_dict["current_domain_mask"])
+            non_current_domain_mask.append(policy.info_dict["non_current_domain_mask"])
+
+            sys_act_list.append(policy.vector.action_vectorize(a))
+            trajectory_list.extend([s['user_action'], a])
+
+            # interact with env
+            next_s, r, done = environment.step(a)
+            reward_list.append(torch.Tensor([r]))
+
+            next_s_vec, next_mask = policy.vector.state_vectorize(next_s)
+
+            # update per step
+            s = next_s
+
+            if done:
+                memory.update_episode(description_idx_list, action_list, reward_list, small_act_list, mu_list,
+                                      action_mask_list, critic_value_list, description_idx_list, value_list,
+                                      current_domain_mask, non_current_domain_mask)
+                break
+
+        sampled_num += 1
 
 
 if __name__ == '__main__':
@@ -101,11 +153,12 @@ if __name__ == '__main__':
     train_processes = conf['model']["process_num_train"]
     logging.info(f"Number of processes for training: {train_processes}")
 
-    queues, episode_queues = get_queues(train_processes)
-    online_metric_queue = mp.SimpleQueue()
-
-    processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, seed,
-                                online_metric_queue)
+    if train_processes > 1:
+        # We use multiprocessing
+        queues, episode_queues = get_queues(train_processes)
+        online_metric_queue = mp.SimpleQueue()
+        processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, seed,
+                                    online_metric_queue)
     goal_generator = GoalGenerator()
 
     num_dialogues = 0
@@ -117,8 +170,11 @@ if __name__ == '__main__':
     while num_dialogues < total_dialogues:
 
         goals = create_goals(goal_generator, new_dialogues)
-        time_now = submit_jobs(new_dialogues, queues, episode_queues, train_processes, memory, goals,
-                               online_metric_queue)
+        if train_processes > 1:
+            time_now, metrics = submit_jobs(new_dialogues, queues, episode_queues, train_processes, memory, goals,
+                                            online_metric_queue)
+        else:
+            create_episodes(env, policy_sys, new_dialogues, memory, goals)
         num_dialogues += new_dialogues
 
         for r in range(conf['model']['update_rounds']):
@@ -139,7 +195,9 @@ if __name__ == '__main__':
 
     logging.info("End of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
-    terminate_processes(processes, queues)
+
+    if train_processes > 1:
+        terminate_processes(processes, queues)
 
     f = open(os.path.join(dir_path, "time.txt"), "a")
     f.write(str(datetime.now() - begin_time))
