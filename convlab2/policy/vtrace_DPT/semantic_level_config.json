@@ -17,7 +17,7 @@
 		"uncertainty_vector_mul": {
 			"class_path": "convlab2.policy.vector.vector_nodes.VectorNodes",
 			"ini_params": {
-				"use_masking": false,
+				"use_masking": true,
 				"manually_add_entity_names": false,
 				"seed": 0
 			}

@@ -107,7 +107,7 @@ class VTRACE(nn.Module, Policy):
         s, action_mask = self.vector.state_vectorize(state)
 
         kg_states = [self.vector.kg_info]
-        a = self.policy.select_action(kg_states, mask=action_mask).detach().cpu()
+        a = self.policy.select_action(kg_states, mask=action_mask, eval=not self.is_train).detach().cpu()
         self.info_dict = self.policy.info_dict
 
         descr_list = self.info_dict["description_idx_list"]

@@ -80,7 +80,7 @@ class EncoderDecoder(nn.Module):
         value_list = torch.Tensor([node['value'] for node in kg_list[0]]).unsqueeze(1).to(DEVICE)
         return description_idx_list, value_list
 
-    def select_action(self, kg_list, mask=None):
+    def select_action(self, kg_list, mask=None, eval=False):
         '''
         :param kg_list: A single knowledge graph consisting of a list of nodes
         :return: multi-action
@@ -159,13 +159,20 @@ class EncoderDecoder(nn.Module):
                 action_logits = action_logits - action_mask * sys.maxsize
                 action_distribution = self.softmax(action_logits).squeeze(-1)
 
-            dist = Categorical(action_distribution)
-            rand_state = torch.random.get_rng_state()
-            action = dist.sample().tolist()[-1]
-            torch.random.set_rng_state(rand_state)
-            semantic_action = self.action_embedder.small_action_dict_reversed[action[-1]]
-            action_list.append(semantic_action)
-            action_list_num.append(action[-1])
+            if not eval or t % 3 != 0:
+                dist = Categorical(action_distribution)
+                rand_state = torch.random.get_rng_state()
+                action = dist.sample().tolist()[-1]
+                torch.random.set_rng_state(rand_state)
+                semantic_action = self.action_embedder.small_action_dict_reversed[action[-1]]
+                action_list.append(semantic_action)
+                action_list_num.append(action[-1])
+            else:
+                action = action_distribution[-1, -1, :]
+                action = torch.argmax(action).item()
+                semantic_action = self.action_embedder.small_action_dict_reversed[action]
+                action_list.append(semantic_action)
+                action_list_num.append(action)
 
             #prepare for next step
             next_input = self.action_embedder.action_projector(self.action_embedder.action_embeddings[action]).view(1, 1, -1) + \
