@@ -15,6 +15,8 @@ from convlab2.policy.policy import Policy
 from convlab2.task.multiwoz.goal_generator import GoalGenerator
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
 from convlab2.util.custom_util import model_downloader
+from data.unified_datasets.multiwoz21.preprocess import normalize_domain_slot_value, reverse_da
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -65,7 +67,7 @@ class UserActionPolicy(Policy):
 
     def _no_offer(self, system_in):
         for intent, domain, slot, value in system_in:
-            if intent == "NoOffer":
+            if intent.lower() == "nooffer":
                 self.terminated = True
                 return True
             else:
@@ -73,21 +75,26 @@ class UserActionPolicy(Policy):
 
     def predict(self, state, mode="max"):
         # update goal
-        self.goal.update_user_goal(action=state["system_action"],
+        sys_dialog_act = state["system_action"]
+        sys_dialog_act = unified_format(sys_dialog_act)
+        sys_dialog_act = reverse_da(sys_dialog_act)
+        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
+
+        self.goal.update_user_goal(action=sys_dialog_act,
                                    state=state['belief_state'])
         # self.goal.update_info_record(sys_act=state["system_action"])
-        self.goal.add_sys_da(state["system_action"])
-        self.sys_acts.append(state["system_action"])
+        self.goal.add_sys_da(sys_dialog_act)
+        self.sys_acts.append(sys_dialog_act)
 
         # need better way to handle this
-        if self._no_offer(state["system_action"]):
+        if self._no_offer(sys_dialog_act):
             return [["bye", "general", "None", "None"]]
 
         # update constraint
         self.time_step += 2
 
         self.predict_action_list = self.goal.action_list(
-            sys_act=state["system_action"],
+            sys_act=sys_dialog_act,
             all_values=self.all_values)
 
         feature, mask = self.feat_handler.get_feature(
@@ -95,7 +102,7 @@ class UserActionPolicy(Policy):
             self.goal,
             state['belief_state'],
             self.sys_history_state,
-            state["system_action"],
+            sys_dialog_act,
             self.pre_usr_act)
         feature = torch.tensor([feature], dtype=torch.float).to(DEVICE)
         mask = torch.tensor([mask], dtype=torch.bool).to(DEVICE)
@@ -117,7 +124,17 @@ class UserActionPolicy(Policy):
         # self.goal.update_info_record(usr_act=usr_action)
         self.goal.add_usr_da(usr_action)
 
-        return usr_action
+        # convert user action to unify data format
+        norm_usr_action = []
+        for intent, domain, slot, value in usr_action:
+            intent = intent.lower()
+            domain, slot, value = normalize_domain_slot_value(
+                domain, slot, value)
+            norm_usr_action.append([intent, domain, slot, value])
+
+        return norm_usr_action
+
+        # return usr_action
 
     def init_session(self, goal=None):
         self.mentioned_domain = []
@@ -387,8 +404,8 @@ class UserPolicy(Policy):
     def __init__(self, config):
         self.config = config
         if not os.path.exists(self.config["model_dir"]):
-            os.mkdir(self.config["model_dir"])
-            model_downloader(self.config["model_dir"],
+            # os.mkdir(self.config["model_dir"])
+            model_downloader(os.path.dirname(self.config["model_dir"]),
                              "https://zenodo.org/record/5779832/files/default.zip")
 
         self.policy = UserActionPolicy(self.config)

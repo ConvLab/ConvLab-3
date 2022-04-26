@@ -97,7 +97,8 @@ def evaluate(args, model_name, load_path, verbose=False):
 
     action_dict = {}
 
-    task_success = {'Complete': [], 'Success': [], 'Success strict': [], 'total_return': [], 'turns': []}
+    task_success = {'Complete': [], 'Success': [],
+                    'Success strict': [], 'total_return': [], 'turns': []}
     for seed in range(1000, 1400):
         set_seed(seed)
         sess.init_session()
@@ -174,7 +175,8 @@ if __name__ == "__main__":
                         default="convlab2/policy/tus/multiwoz/exp/default.json")
     parser.add_argument("--user_mode", type=str, default="")
     parser.add_argument("--user", type=str, default="rule")
-    parser.add_argument("--verbose", action='store_true', help="whether to output utterances")
+    parser.add_argument("--verbose", action='store_true',
+                        help="whether to output utterances")
 
     args = parser.parse_args()
 
