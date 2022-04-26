@@ -118,7 +118,7 @@ def submit_jobs(num_jobs, queues, episode_queues, train_processes, memory, goals
     # one run and 25 in another run (for two processes and 50 jobs for instance)
     metrics = []
     for job in range(num_jobs):
-        goal = goals.get()
+        goal = goals.pop()
         queues[job % train_processes].put(goal)
     time_now = time.time()
     collected_dialogues = 0

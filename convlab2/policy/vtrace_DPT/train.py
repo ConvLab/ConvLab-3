@@ -40,7 +40,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
     traj_len = 40
 
     while sampled_num < num_episodes:
-        goal = goals.get()
+        goal = goals.pop()
         s = environment.reset(goal)
 
         user_act_list, sys_act_list, s_vec_list, action_list, reward_list, small_act_list, action_mask_list, mu_list, \

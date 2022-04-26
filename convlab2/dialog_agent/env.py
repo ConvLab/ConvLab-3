@@ -19,7 +19,7 @@ class Environment():
         self.use_semantic_acts = use_semantic_acts
 
     def reset(self, goal):
-        self.usr.init_session(ini_goal=goal)
+        self.usr.init_session(goal=goal)
         self.sys_dst.init_session()
         if self.evaluator:
             self.evaluator.add_goal(self.usr.policy.get_goal())
