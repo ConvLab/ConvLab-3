@@ -1,8 +1,8 @@
 n_gpus=1
 task_name="nlu"
-dataset_name=$1
+dataset_name="sgd+tm1+tm2+tm3"
 speaker="user"
-context_window_size=$2
+context_window_size=0
 data_dir="data/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 output_dir="output/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 cache_dir="../cache"
@@ -22,9 +22,20 @@ per_device_train_batch_size=128
 per_device_eval_batch_size=64
 gradient_accumulation_steps=2
 lr=1e-3
-num_train_epochs=10
+num_train_epochs=1
 
-python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size}
+names=$(echo ${dataset_name} | tr "+" "\n")
+mkdir -p ${data_dir}
+for name in ${names};
+do
+    echo "preprocessing ${name}"
+    python ../create_data.py -t ${task_name} -d ${name} -s ${speaker} -c ${context_window_size}
+    if [ "${name}" != "${dataset_name}" ]; then
+        cat "data/${task_name}/${name}/${speaker}/context_${context_window_size}/train.json" >> ${train_file}
+        cat "data/${task_name}/${name}/${speaker}/context_${context_window_size}/validation.json" >> ${validation_file}
+        cat "data/${task_name}/${name}/${speaker}/context_${context_window_size}/test.json" >> ${test_file}
+    fi
+done
 
 python ../run_seq2seq.py \
     --task_name ${task_name} \
@@ -40,7 +51,6 @@ python ../run_seq2seq.py \
     --do_eval \
     --save_strategy epoch \
     --evaluation_strategy epoch \
-    --save_total_limit 3 \
     --prediction_loss_only \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
@@ -55,33 +65,3 @@ python ../run_seq2seq.py \
     --debug underflow_overflow \
     --adafactor \
     --gradient_checkpointing
-
-python ../run_seq2seq.py \
-    --task_name ${task_name} \
-    --test_file ${test_file} \
-    --source_column ${source_column} \
-    --target_column ${target_column} \
-    --max_source_length ${max_source_length} \
-    --max_target_length ${max_target_length} \
-    --truncation_side ${truncation_side} \
-    --model_name_or_path ${output_dir} \
-    --do_predict \
-    --predict_with_generate \
-    --metric_name_or_path ${metric_name_or_path} \
-    --cache_dir ${cache_dir} \
-    --output_dir ${output_dir} \
-    --logging_dir ${logging_dir} \
-    --overwrite_output_dir \
-    --preprocessing_num_workers 4 \
-    --per_device_train_batch_size ${per_device_train_batch_size} \
-    --per_device_eval_batch_size ${per_device_eval_batch_size} \
-    --gradient_accumulation_steps ${gradient_accumulation_steps} \
-    --learning_rate ${lr} \
-    --num_train_epochs ${num_train_epochs} \
-    --debug underflow_overflow \
-    --adafactor \
-    --gradient_checkpointing
-
-python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
-
-python ../../../nlu/evaluate_unified_datasets.py -p ${output_dir}/predictions.json
