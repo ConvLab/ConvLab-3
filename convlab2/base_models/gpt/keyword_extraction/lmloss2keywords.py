@@ -80,8 +80,36 @@ def main(args):
 
     stop_words = set(stopwords.words('english'))
 
+    if args.keywords_th_ratio > 0:
+        losses = [loss for x in word_loss_list for word, loss in zip(x['words'], x['losses']) if not any([w.lower() in stop_words for w in word_tokenize(word)])]
+        loss_th = sorted(losses, reverse=True)[round(args.keywords_th_ratio*len(losses))]
+        print(f'loss th for top {args.keywords_th_ratio*100}%: {loss_th}')
+    else:
+        loss_th = 0
+
+    def keywords_filter(word_loss_pairs):
+        candidate_indexes = []
+        for i, word_loss_pair in enumerate(word_loss_pairs):
+            if args.stopwords and any([w.lower() in stop_words for w in word_tokenize(word_loss_pair[0])]):
+                continue
+            if word_loss_pair[1] <= loss_th:
+                continue
+            candidate_indexes.append(i)
+
+        topk = min(round(args.keywords_ratio*len(word_loss_pairs)), args.keywords_num)
+        topk_indexes = sorted(candidate_indexes, key=lambda x: word_loss_pairs[x][1], reverse=True)[:topk]
+        topk_indexes = sorted(topk_indexes)
+        keywords = []
+        for i, index in enumerate(topk_indexes):
+            if i > 0 and index == topk_indexes[i-1] + 1:
+                keywords[-1]+= ' '+word_loss_pairs[index][0]
+            else:
+                keywords.append(word_loss_pairs[index][0])
+
+        return keywords
+
     dialogs = []
-    for item in word_loss_list:
+    for item in tqdm(word_loss_list):
         words = item['words']
         losses = item['losses']
         turns = []
@@ -90,11 +118,9 @@ def main(args):
             if word == '<|endoftext|>':
                 # switch turn
                 turn['utterance'] = ' '.join(turn['words'])
-                turn['keywords'] = list(zip(turn['words'], turn['losses']))
-                if args.stopwords:
-                    turn['keywords'] = [x for x in turn['keywords'] if not any([w.lower() in stop_words for w in word_tokenize(x[0])])]
-                turn['keywords'] = sorted(turn['keywords'], key=lambda x: x[1], reverse=True)
-                turn['keywords'] = [x for x in turn['keywords'] if x[1] > args.keywords_th][:min(round(args.keywords_ratio*len(turn['keywords'])), args.keywords_num)]
+                keywords = keywords_filter(list(zip(turn['words'], turn['losses'])))
+                turn['keywords'] = keywords
+                # turn['keywords'] = ' | '.join([x[0] for x in keywords])
                 turn.pop('words')
                 turn.pop('losses')
                 turns.append(turn)
@@ -116,7 +142,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_file', '-o', type=str, help='path to the output file')
     parser.add_argument('--keywords_num', '-n', type=int, default=100, help='how many words in an utterance serve as keywords')
     parser.add_argument('--keywords_ratio', '-r', type=float, default=1.0, help='how many words (in ratio) in an utterance serve as keywords')
-    parser.add_argument('--keywords_th', '-th', type=float, default=0., help='loss threshold for the keywords')
+    parser.add_argument('--keywords_th_ratio', '-th', type=float, default=0., help='loss threshold for the keywords, ratio of all word losses')
     parser.add_argument('--stopwords', '-s', type=lambda x: bool(eval(x)), default=True, help='filter out stopwords')
     args = parser.parse_args()
     print(args)

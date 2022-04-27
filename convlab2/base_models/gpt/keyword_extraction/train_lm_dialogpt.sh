@@ -19,7 +19,7 @@ gradient_accumulation_steps=4
 lr=5e-5
 num_train_epochs=3
 
-python ../create_data.py --tasks ${task_name} --datasets ${dataset_name} --model_type dialogpt
+python ../create_data.py --tasks ${task_name} --datasets ${dataset_name} --model_type ${model_type}
 
 python ../run_clm.py \
     --model_name_or_path ${model_name_or_path} \
