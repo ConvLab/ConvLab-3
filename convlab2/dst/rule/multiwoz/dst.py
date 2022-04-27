@@ -43,7 +43,8 @@ class RuleDST(DST):
                     continue
                 domain_dic = self.state['belief_state'][domain]
                 if slot in domain_dic:
-                    nvalue = normalize_value(self.value_dict, domain, slot, value)
+                    nvalue = normalize_value(
+                        self.value_dict, domain, slot, value)
                     self.state['belief_state'][domain][slot] = nvalue
                 elif slot != 'none' or slot != '':
                     # raise Exception('unknown slot name <{}> of domain <{}>'.format(k, domain))
@@ -62,6 +63,7 @@ class RuleDST(DST):
         """Initialize ``self.state`` with a default state, which ``convlab2.util.multiwoz.state.default_state`` returns."""
         self.state = default_state()
         self.state['belief_state'] = deepcopy(self.default_belief_state)
+
 
 if __name__ == '__main__':
     # from convlab2.dst.rule.multiwoz import RuleDST

@@ -6,6 +6,7 @@ Created on Wed Jul 17 14:27:34 2019
 """
 
 import pdb
+from copy import deepcopy
 
 
 class Environment():
@@ -47,6 +48,7 @@ class Environment():
             observation) if self.sys_nlu else observation
         self.sys_dst.state['user_action'] = dialog_act
         state = self.sys_dst.update(dialog_act)
+        state = deepcopy(state)
         dialog_act = self.sys_dst.state['user_action']
 
         state['history'].append(["sys", model_response])

@@ -152,11 +152,13 @@ class VectorBase(Vector):
                 system = act['system']
                 user = act['user']
                 if system:
-                    system_acts_with_value = self.add_values_to_act(act['domain'], act['intent'], act['slot'], True)
+                    system_acts_with_value = self.add_values_to_act(
+                        act['domain'], act['intent'], act['slot'], True)
                     self.da_voc.extend(system_acts_with_value)
 
                 if user:
-                    user_acts_with_value = self.add_values_to_act(act['domain'], act['intent'], act['slot'], False)
+                    user_acts_with_value = self.add_values_to_act(
+                        act['domain'], act['intent'], act['slot'], False)
                     self.da_voc_opp.extend(user_acts_with_value)
 
         self.da_voc.sort()
@@ -311,7 +313,8 @@ class VectorBase(Vector):
 
         # Leave slots out of constraints to find which slot constraint results in no entities being found
         for constraint_slot in constraints:
-            state = [[slot, value] for slot, value in constraints.items() if slot != constraint_slot]
+            state = [[slot, value] for slot,
+                     value in constraints.items() if slot != constraint_slot]
             entities = self.db.query(domain, state, topk=1)
             if entities:
                 return constraint_slot
@@ -378,7 +381,8 @@ class VectorBase(Vector):
         for domint in nooffer:
             domain, intent = domint.split('-')
             slot = self.find_nooffer_slot(domain)
-            action[domint] = [[slot, '1']] if slot != 'none' else [[slot, 'none']]
+            action[domint] = [[slot, '1']
+                              ] if slot != 'none' else [[slot, 'none']]
 
         # Randomly select booking constraint "causing" no_book
         nobook = [domint for domint in action if 'nobook' in domint]
@@ -386,12 +390,14 @@ class VectorBase(Vector):
             domain, intent = domint.split('-')
             if domain in self.state:
                 slots = self.state[domain]
-                slots = [slot for slot, i in slots.items() if i and 'book' in slot]
+                slots = [slot for slot, i in slots.items()
+                         if i and 'book' in slot]
                 slots.append('none')
                 slot = np.random.choice(slots)
             else:
                 slot = 'none'
-            action[domint] = [[slot, '1']] if slot != 'none' else [[slot, 'none']]
+            action[domint] = [[slot, '1']
+                              ] if slot != 'none' else [[slot, 'none']]
 
         if self.always_inform_booking_reference:
             action = self.add_booking_reference(action)
@@ -405,9 +411,9 @@ class VectorBase(Vector):
             for [item, idx] in action[key]:
                 if index != -1 and index != idx and idx != '?':
                     pass
-                    #logging.debug(
+                    # logging.debug(
                     #    "System is likely refering multiple entities within this turn")
-                    #logging.debug(action[key])
+                    # logging.debug(action[key])
                 index = idx
         action = lexicalize_da(action, entities, self.state, self.requestable)
 
