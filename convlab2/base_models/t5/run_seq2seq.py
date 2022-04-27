@@ -25,6 +25,8 @@ import sys
 import json
 from dataclasses import dataclass, field
 from typing import Optional
+from itertools import zip_longest
+from functools import reduce
 
 import datasets
 import numpy as np
@@ -439,8 +441,14 @@ def main():
                 inputs.append(examples[source_column][i])
                 targets.append(examples[target_column][i])
 
-        inputs = [prefix + inp for inp in inputs]
-        model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+        inputs = [prefix + '\n\n' + inp for inp in inputs]
+        if padding:
+            model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+        else:
+            # truncate each part separated by \n\n respectively
+            split_inputs = [inp.split('\n\n') for inp in inputs]
+            split_model_inputs = [tokenizer(x, max_length=data_args.max_source_length, padding=False, truncation=True) for x in split_inputs]
+            model_inputs = {k: [reduce(lambda x, y: x[:-1]+y, item[k]) for item in split_model_inputs] for k in split_model_inputs[0]}
 
         # Setup the tokenizer for targets
         with tokenizer.as_target_tokenizer():
