@@ -41,6 +41,7 @@ from transformers import (
     HfArgumentParser,
     Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
+    EarlyStoppingCallback,
     set_seed,
 )
 from transformers.trainer_utils import EvalPrediction, get_last_checkpoint
@@ -216,6 +217,9 @@ class DataTrainingArguments:
     )
     source_prefix: Optional[str] = field(
         default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+    )
+    early_stopping_patience: Optional[int] = field(
+        default=0, metadata={"help": "early stopping patience, default is 0 which means not using early stopping."},
     )
 
     def __post_init__(self):
@@ -561,6 +565,8 @@ def main():
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
+    if data_args.early_stopping_patience > 0:
+        trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=data_args.early_stopping_patience))
 
     # Training
     if training_args.do_train:
