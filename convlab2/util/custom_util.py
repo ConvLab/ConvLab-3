@@ -286,7 +286,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
         goal = goals.pop()
-        sess.init_session(goal)
+        sess.init_session(goal=goal)
         sys_response = [] if sess.sys_agent.nlg is None else ''
         sys_response = [] if sys_semantic_to_usr else sys_response
         avg_actions = 0
