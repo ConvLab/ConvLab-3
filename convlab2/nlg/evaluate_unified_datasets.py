@@ -34,7 +34,7 @@ def evaluate(predict_result, ontology):
     candidates = []
     for i in range(len(predict_result)):
         references.append(predict_result[i]['utterance'])
-        candidates.append(predict_result[i]['prediction'])
+        candidates.append(predict_result[i]['predictions']['utterance'])
     # metrics['bleu'] = corpus_bleu(references, candidates)
     metrics['bleu'] = sacrebleu.corpus_bleu(candidates, [references], lowercase=True).score
 
@@ -54,7 +54,7 @@ def evaluate(predict_result, ontology):
     score_list = []
     for item in predict_result:
         da = item['dialogue_acts']
-        utterance = item['prediction']
+        utterance = item['predictions']['utterance']
         missing_count = 0
         redundant_count = 0
         all_count = 0
