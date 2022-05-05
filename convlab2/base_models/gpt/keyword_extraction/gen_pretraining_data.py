@@ -1,21 +1,41 @@
 import json
 import os
+import random
+from tqdm import tqdm
 
 def main(args):
+    random.seed(45)
     os.makedirs(args.output_dir, exist_ok=True)
     filenames = [f for (_, _, fs) in os.walk(args.input_dir) for f in fs if 'keywords' in f]
     for filename in filenames:
         data = json.load(open(os.path.join(args.input_dir, filename)))
         fout = open(os.path.join(args.output_dir, f"{filename.split('/')[-1].split('_')[1]}.json"), 'w', encoding='utf-8')
-        for dial in data:
+        turn_keywords = [turn['keywords'] for dial in data for turn in dial]
+        random.shuffle(turn_keywords)
+        cnt = 0
+        # keywords_set = {keyword for keywords in turn_keywords_set for keyword in keywords}
+        for dial in tqdm(data):
             context = []
             for i, turn in enumerate(dial):
                 speaker = 'user' if i%2 == 0 else 'system'
-                keywords = ', '.join(turn['keywords'])
+                random.shuffle(turn['keywords'])
+                keywords = ' | '.join(turn['keywords'])
                 utt = turn['utterance']
-                input_seq = '\n'.join([f"{turn['speaker']}: {turn['utt']}" for turn in context]+[f'{speaker}: '])
-                input_seq = f'{keywords}\n{input_seq}'
+                context_seq = '\n'.join([f"{turn['speaker']}: {turn['utt']}" for turn in context]+[f'{speaker}: '])
+                input_seq = f'keywords: {keywords}\n\ncontext: {context_seq}'
                 context.append({'speaker': speaker, 'utt':utt})
+                fout.write(json.dumps({'keywords+context': input_seq, 'response': utt}, ensure_ascii=False)+'\n')
+
+                # min_neg = len(turn['keywords'])
+                # max_neg = 4 * min_neg
+                # negative_keywords = random.sample(keywords_set, random.randint(min_neg, max_neg))
+                # negative_keywords = random.sample(turn_keywords_set, 1)[0]
+                negative_keywords = turn_keywords[cnt]
+                cnt += 1
+                possible_keywords = turn['keywords'] + list(negative_keywords)
+                random.shuffle(possible_keywords)
+                possible_keywords = ' | '.join(possible_keywords)
+                input_seq = f'possible keywords: {possible_keywords}\n\ncontext: {context_seq}'
                 fout.write(json.dumps({'keywords+context': input_seq, 'response': utt}, ensure_ascii=False)+'\n')
     
 

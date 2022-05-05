@@ -1,6 +1,6 @@
 set -e
-n_gpus=2
-task_name="key2gen"
+n_gpus=1
+task_name="key2gen_shuffle_noisy"
 dataset_name="metalwoz+sgd+tm1+tm2+tm3"
 speaker="all"
 model_type="gpt"
@@ -19,7 +19,7 @@ max_target_length=128
 model_name_or_path="t5-small"
 per_device_train_batch_size=128
 per_device_eval_batch_size=128
-gradient_accumulation_steps=4
+gradient_accumulation_steps=8
 lr=1e-3
 num_train_epochs=1
 
