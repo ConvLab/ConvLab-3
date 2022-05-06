@@ -6,7 +6,7 @@ from convlab2.base_models.t5.nlu.serialization import deserialize_dialogue_acts
 
 def merge(dataset_name, speaker, save_dir, context_window_size, predict_result):
     assert os.path.exists(predict_result)
-    dataset = load_dataset(dataset_name)
+    dataset = load_dataset(dataset_name, args.dial_ids_order)
     data = load_nlu_data(dataset, data_split='test', speaker=speaker, use_context=context_window_size>0, context_window_size=context_window_size)['test']
     
     if save_dir is None:
@@ -29,6 +29,7 @@ if __name__ == '__main__':
     parser.add_argument('--save_dir', type=str, help='merged data will be saved as $save_dir/predictions.json. default: on the same directory as predict_result')
     parser.add_argument('--context_window_size', '-c', type=int, default=0, help='how many contextual utterances are considered')
     parser.add_argument('--predict_result', '-p', type=str, required=True, help='path to the output file generated_predictions.json')
+    parser.add_argument('--dial_ids_order', '-o', type=int, default=None, help='which data order is used for experiments')
     args = parser.parse_args()
     print(args)
     merge(args.dataset, args.speaker, args.save_dir, args.context_window_size, args.predict_result)

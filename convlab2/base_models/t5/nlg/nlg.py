@@ -32,13 +32,14 @@ class T5NLG(NLG):
         if self.use_context:
             if len(context) > 0 and type(context[0]) is list and len(context[0]) > 1:
                 context = [item[1] for item in context]
+            context = context[-self.context_window_size:]
             utts = context + ['']
         else:
             utts = ['']
         input_seq = '\n'.join([f"{self.opponent if (i % 2) == (len(utts) % 2) else self.speaker}: {utt}" for i, utt in enumerate(utts)])
         dialogue_acts_seq = serialize_dialogue_acts(dialogue_acts)
         input_seq = dialogue_acts_seq + '\n' + input_seq
-        print(input_seq)
+        # print(input_seq)
         input_seq = self.tokenizer(input_seq, return_tensors="pt").to(self.device)
         # print(input_seq)
         output_seq = self.model.generate(**input_seq, max_length=256)
@@ -122,10 +123,16 @@ if __name__ == '__main__':
         ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
         "What time do you want to leave and what time do you want to arrive by?",
         "I want to leave after 17:15."],
-        ["I want to leave after 17:15.",
+        ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
+        "What time do you want to leave and what time do you want to arrive by?",
+        "I want to leave after 17:15.",
         "Booking completed! your taxi will be blue honda Contact number is 07218068540",
         "Thank you for all the help! I appreciate it."],
-        ["Thank you for all the help! I appreciate it.",
+        ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
+        "What time do you want to leave and what time do you want to arrive by?",
+        "I want to leave after 17:15.",
+        "Booking completed! your taxi will be blue honda Contact number is 07218068540",
+        "Thank you for all the help! I appreciate it.",
         "You are welcome.  Is there anything else I can help you with today?"
         "No, I am all set.  Have a nice day.  Bye."],
     ]

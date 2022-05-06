@@ -28,6 +28,9 @@ data/schema/dstc8-schema-guided-dialogue-master
 data/mdbt/data
 data/mdbt/models
 data/mdbt/word-vectors
+convlab2/**/data
+convlab2/**/output
+convlab2/**/cache
 convlab2/nlg/sclstm/**/resource/*
 convlab2/nlg/sclstm/**/resource_usr/*
 convlab2/nlg/sclstm/**/sclstm.pt
