@@ -14,6 +14,9 @@ __pycache__
 .vscode
 
 # data
+data/unified_datasets/multiwoz21/MultiWOZ_2.1.zip
+data/unified_datasets/tm1/master.zip
+data/unified_datasets/dailydialog/ijcnlp_dailydialog.zip
 data/**/train.json
 data/**/val.json
 data/**/test.json
