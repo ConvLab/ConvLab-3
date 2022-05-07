@@ -1,13 +1,12 @@
-import copy
-import re
 from zipfile import ZipFile, ZIP_DEFLATED
-from shutil import copy2, rmtree
+from shutil import rmtree
 import json
 import os
 from tqdm import tqdm
 from collections import Counter
 from pprint import pprint
-from datasets import load_dataset
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 
 topic_map = {
     1: "Ordinary Life", 
@@ -78,12 +77,14 @@ def preprocess():
                     "binary": {}
                 }}
 
+    detokenizer = TreebankWordDetokenizer()
+
     for data_split in splits:
         archive = ZipFile(os.path.join(original_data_dir, f'{data_split}.zip'))
         with archive.open(f'{data_split}/dialogues_{data_split}.txt') as dialog_file, \
             archive.open(f'{data_split}/dialogues_act_{data_split}.txt') as act_file, \
             archive.open(f'{data_split}/dialogues_emotion_{data_split}.txt') as emotion_file:
-            for dialog_line, act_line, emotion_line in zip(dialog_file, act_file, emotion_file):
+            for dialog_line, act_line, emotion_line in tqdm(zip(dialog_file, act_file, emotion_file)):
                 if not dialog_line.strip():
                     break
                 utts = dialog_line.decode().split("__eou__")[:-1]
@@ -114,6 +115,9 @@ def preprocess():
                     speaker = 'user' if len(dialogue['turns']) % 2 == 0 else 'system'
                     intent = act_map[int(act)]
                     emotion = emotion_map[int(emotion)]
+                    utt = ' '.join([detokenizer.detokenize(word_tokenize(s)) for s in sent_tokenize(utt)])
+                    utt = utt.replace(' ’ ', "'")
+
                     dialogue['turns'].append({
                         'speaker': speaker,
                         'utterance': utt.strip(),
@@ -121,7 +125,7 @@ def preprocess():
                         'dialogue_acts': {
                             'binary': [{
                                 'intent': intent, 
-                                'domain': domain, 
+                                'domain': '', 
                                 'slot': ''
                             }],
                             'categorical': [],
@@ -134,8 +138,8 @@ def preprocess():
                     else:
                         dialogue['turns'][-1]['state'] = {}
 
-                    ontology["dialogue_acts"]['binary'].setdefault((intent, domain, ''), {})
-                    ontology["dialogue_acts"]['binary'][(intent, domain, '')][speaker] = True
+                    ontology["dialogue_acts"]['binary'].setdefault((intent, '', ''), {})
+                    ontology["dialogue_acts"]['binary'][(intent, '', '')][speaker] = True
 
                 dialogues_by_split[data_split].append(dialogue)
 
