@@ -6,17 +6,20 @@ from tqdm import tqdm
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from transformers import GPT2Tokenizer
+from string import punctuation
 
 
-
-def merge_tokens(tokens, losses, loss_merge_func=np.mean):
+def merge_tokens(tokens, losses):
+    """Merge tokens into words"""
     res = []
     i = 0
     while i < len(tokens):
         token = tokens[i]
         loss = losses[i]
         if token in ['Ġ', 'Ċ']:
-            if token == 'Ċ' and i < len(tokens) - 1:
+            # "Ġ" means " ", "Ċ" means "\n"
+            if token == 'Ċ' and i < len(tokens) - 1 and not tokens[i+1].startswith('Ġ'):
                 tokens[i+1] = 'Ġ'+tokens[i+1]
             i += 1
             continue
@@ -28,26 +31,23 @@ def merge_tokens(tokens, losses, loss_merge_func=np.mean):
                 i += 2
             continue
         if token.startswith('Ġ'):
-            # Ġ means space
-            token = token.replace("Ġ", "")
-            res.append([token, loss])
+            # token = token.replace("Ġ", "")
+            res.append([[token], [loss]])
         elif token == '<|endoftext|>':
-            res.append([token, loss])
+            res.append([[token], [loss]])
         else:
             assert 'Ġ' not in token
             if len(res) > 0:
-                res[-1][0] += token
-                res[-1].append(loss)
+                res[-1][0].append(token)
+                res[-1][1].append(loss)
             else:
                 res.append([token, loss])
         i += 1
-    if loss_merge_func:
-        for i in range(len(res)):
-            res[i] = [res[i][0], loss_merge_func(res[i][1:])]
     return res
 
 
-def convert_token_loss2word_loss(token_loss_file, loss_merge_func=np.mean):
+def convert_token_loss2word_loss(token_loss_file):
+    """generate a word loss file according to the token loss file"""
     word_loss_file = os.path.join(os.path.dirname(token_loss_file), token_loss_file.split('/')[-1].replace('token', 'word'))
     fin = open(token_loss_file, 'rb')
     fout = open(word_loss_file, 'w', encoding='utf-8')
@@ -56,7 +56,7 @@ def convert_token_loss2word_loss(token_loss_file, loss_merge_func=np.mean):
     for item in tqdm(json_lines.reader(fin)):
         tokens, losses = item['tokens'], item['losses']
         assert len(tokens) == len(losses)
-        word2losses = merge_tokens(tokens, losses, loss_merge_func)
+        word2losses = merge_tokens(tokens, losses)
         lines.append({"words": [x[0] for x in word2losses], "losses": [x[1] for x in word2losses]})
         fout.write(json.dumps(lines[-1], ensure_ascii=False)+'\n')
 
@@ -79,6 +79,7 @@ def main(args):
         return
 
     stop_words = set(stopwords.words('english'))
+    tokenizer = GPT2Tokenizer.from_pretrained('gpt2-large')
 
     if args.keywords_th_ratio > 0:
         losses = [loss for x in word_loss_list for word, loss in zip(x['words'], x['losses']) if not any([w.lower() in stop_words for w in word_tokenize(word)])]
@@ -88,23 +89,33 @@ def main(args):
         loss_th = 0
 
     def keywords_filter(word_loss_pairs):
-        candidate_indexes = []
+        index2keyword = {}
         for i, word_loss_pair in enumerate(word_loss_pairs):
-            if args.stopwords and any([w.lower() in stop_words for w in word_tokenize(word_loss_pair[0])]):
+            words = word_tokenize(word_loss_pair[0])
+            if args.stopwords and any([w.lower() in stop_words for w in words]):
+                # skip stopwords
                 continue
             if word_loss_pair[1] <= loss_th:
+                # skip if loss is too small
                 continue
-            candidate_indexes.append(i)
-
+            # strip punctuation
+            strip_punctuation = word_loss_pair[0].strip(punctuation).strip()
+            if len(strip_punctuation) == 0:
+                # skip punctuation
+                continue
+            index2keyword[i] = strip_punctuation
+        candidate_indexes = list(index2keyword.keys())
         topk = min(round(args.keywords_ratio*len(word_loss_pairs)), args.keywords_num)
         topk_indexes = sorted(candidate_indexes, key=lambda x: word_loss_pairs[x][1], reverse=True)[:topk]
         topk_indexes = sorted(topk_indexes)
         keywords = []
         for i, index in enumerate(topk_indexes):
-            if i > 0 and index == topk_indexes[i-1] + 1:
-                keywords[-1]+= ' '+word_loss_pairs[index][0]
+            if i > 0 and index == topk_indexes[i-1] + 1 and \
+                word_loss_pairs[index][0].strip().startswith(index2keyword[index]) and \
+                word_loss_pairs[topk_indexes[i-1]][0].strip().endswith(index2keyword[topk_indexes[i-1]]):
+                keywords[-1]+= ' '+index2keyword[index]
             else:
-                keywords.append(word_loss_pairs[index][0])
+                keywords.append(index2keyword[index])
 
         return keywords
 
@@ -115,12 +126,13 @@ def main(args):
         turns = []
         turn = {'words': [], 'losses': []}
         for word, loss in zip(words, losses):
-            if word == '<|endoftext|>':
+            if word == ['<|endoftext|>']:
                 # switch turn
-                turn['utterance'] = ' '.join(turn['words'])
+                turn['words'] = [tokenizer.convert_tokens_to_string(tokens) for tokens in turn['words']]
+                turn['losses'] = [np.mean(losses) for losses in turn['losses']]
+                turn['utterance'] = ''.join(turn['words']).strip()
                 keywords = keywords_filter(list(zip(turn['words'], turn['losses'])))
                 turn['keywords'] = keywords
-                # turn['keywords'] = ' | '.join([x[0] for x in keywords])
                 turn.pop('words')
                 turn.pop('losses')
                 turns.append(turn)

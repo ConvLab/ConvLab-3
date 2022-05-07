@@ -1,7 +1,7 @@
 set -e
-n_gpus=1
+n_gpus=2
 task_name="key2gen_shuffle_noisy"
-dataset_name="metalwoz+sgd+tm1+tm2+tm3"
+dataset_name="dailydialog+metalwoz+sgd+tm1+tm2+tm3"
 speaker="all"
 model_type="gpt"
 data_dir="data/${task_name}/${model_type}/${dataset_name}"
@@ -19,11 +19,11 @@ max_target_length=128
 model_name_or_path="t5-small"
 per_device_train_batch_size=128
 per_device_eval_batch_size=128
-gradient_accumulation_steps=8
+gradient_accumulation_steps=4
 lr=1e-3
 num_train_epochs=1
 
-python -m torch.distributed.launch \
+python -m torch.distributed.launch --master_port 23456\
     --nproc_per_node ${n_gpus} ../../t5/run_seq2seq.py \
     --task_name ${task_name} \
     --train_file ${train_file} \

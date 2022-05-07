@@ -26,17 +26,14 @@ def main(args):
                 context.append({'speaker': speaker, 'utt':utt})
                 fout.write(json.dumps({'keywords+context': input_seq, 'response': utt}, ensure_ascii=False)+'\n')
 
-                # min_neg = len(turn['keywords'])
-                # max_neg = 4 * min_neg
-                # negative_keywords = random.sample(keywords_set, random.randint(min_neg, max_neg))
-                # negative_keywords = random.sample(turn_keywords_set, 1)[0]
                 negative_keywords = turn_keywords[cnt]
                 cnt += 1
                 possible_keywords = turn['keywords'] + list(negative_keywords)
                 random.shuffle(possible_keywords)
                 possible_keywords = ' | '.join(possible_keywords)
                 input_seq = f'possible keywords: {possible_keywords}\n\ncontext: {context_seq}'
-                fout.write(json.dumps({'keywords+context': input_seq, 'response': utt}, ensure_ascii=False)+'\n')
+                if args.noisy:
+                    fout.write(json.dumps({'keywords+context': input_seq, 'response': utt}, ensure_ascii=False)+'\n')
     
 
 if __name__ == '__main__':
@@ -44,6 +41,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description="calculate NLU metrics for unified datasets")
     parser.add_argument('--input_dir', '-i', type=str, help='path to the input files')
     parser.add_argument('--output_dir', '-o', type=str, help='path to the output files')
+    parser.add_argument('--noisy', action='store_true', help='whether add noisy keywords samples')
     args = parser.parse_args()
     print(args)
     main(args)
