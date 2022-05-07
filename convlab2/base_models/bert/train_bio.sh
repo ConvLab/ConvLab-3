@@ -20,6 +20,7 @@ num_train_epochs=1
 metric_for_best_model="f1"
 
 names=$(echo ${dataset_name} | tr "+" "\n")
+rm -r ${data_dir}
 mkdir -p ${data_dir}
 for name in ${names};
 do

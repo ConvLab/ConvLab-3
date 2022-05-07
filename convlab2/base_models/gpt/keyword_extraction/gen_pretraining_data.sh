@@ -2,6 +2,7 @@ dataset_name="metalwoz+sgd+tm1+tm2+tm3"
 names=$(echo ${dataset_name} | tr "+" "\n")
 model_type="gpt"
 data_dir=data/key2gen_shuffle_noisy/${model_type}/${name}/${dataset_name}
+rm -r ${data_dir}
 mkdir -p ${data_dir}
 train_file="${data_dir}/train.json"
 validation_file="${data_dir}/validation.json"

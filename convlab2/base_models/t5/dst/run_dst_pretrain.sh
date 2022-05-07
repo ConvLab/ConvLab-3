@@ -25,6 +25,7 @@ lr=1e-3
 num_train_epochs=1
 
 names=$(echo ${dataset_name} | tr "+" "\n")
+rm -r ${data_dir}
 mkdir -p ${data_dir}
 for name in ${names};
 do
