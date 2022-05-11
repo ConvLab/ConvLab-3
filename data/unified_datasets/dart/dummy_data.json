@@ -1,0 +1,407 @@
+[
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-0",
+    "original_id": "train-0",
+    "domains": [
+      "WikiTableQuestions_mturk"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "First Clearing\tbased on Callicoon, New York and location at On NYS 52 1 Mi. Youngsville",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "First Clearing",
+            "LOCATION",
+            "On NYS 52 1 Mi. Youngsville"
+          ],
+          [
+            "On NYS 52 1 Mi. Youngsville",
+            "CITY_OR_TOWN",
+            "Callicoon, New York"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-1",
+    "original_id": "train-1",
+    "domains": [
+      "WikiTableQuestions_mturk"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Old Turnpike is a Historic Marker in Sullivan County, New York.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "[TABLECONTEXT]",
+            "MARKER_NAME",
+            "Old Turnpike"
+          ],
+          [
+            "[TABLECONTEXT]",
+            "[TITLE]",
+            "List of New York State Historic Markers in Sullivan County, New York"
+          ]
+        ],
+        "subtree_was_extended": true,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-2",
+    "original_id": "train-2",
+    "domains": [
+      "WikiTableQuestions_mturk"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Tereza Martincová",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "Antalya 15, Turkey",
+            "SURFACE",
+            "Hard"
+          ],
+          [
+            "Antalya 15, Turkey",
+            "OPPONENT",
+            "Tereza Martincová"
+          ],
+          [
+            "Antalya 15, Turkey",
+            "SCORE",
+            "6-4, 6-3"
+          ],
+          [
+            "15 April 2013",
+            "TOURNAMENT",
+            "Antalya 15, Turkey"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-3",
+    "original_id": "train-3",
+    "domains": [
+      "WikiTableQuestions_mturk"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Beatriz Haddad Maia played on 2 April 2012\tin Ribeirão Preto, Brazil\ton a hard surface.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "2 April 2012",
+            "TOURNAMENT",
+            "Ribeirão Preto, Brazil"
+          ],
+          [
+            "Ribeirão Preto, Brazil",
+            "SURFACE",
+            "Hard"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-4",
+    "original_id": "train-4",
+    "domains": [
+      "WikiSQL_decl_sents"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "The week 5 game is played in Shea Stadium.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "5",
+            "STADIUM",
+            "shea stadium"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-5",
+    "original_id": "train-5",
+    "domains": [
+      "WikiSQL_decl_sents"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "The team whose nickname is red raiders is located in the orange city, iowa",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "Northwestern College",
+            "NICKNAME",
+            "Red Raiders"
+          ],
+          [
+            "Northwestern College",
+            "LOCATION",
+            "Orange City, Iowa"
+          ]
+        ],
+        "subtree_was_extended": true,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-6",
+    "original_id": "train-6",
+    "domains": [
+      "WikiSQL_decl_sents"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "University of mississippi was in the selc new conference.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "University of Mississippi",
+            "NEW_CONFERENCE",
+            "SELC"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-7",
+    "original_id": "train-7",
+    "domains": [
+      "WikiSQL_decl_sents"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "The years that the new classification was MCLA division i are 2008-2009.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "University of Mississippi",
+            "NEW_CLASSIFICATION",
+            "MCLA Division I"
+          ],
+          [
+            "University of Mississippi",
+            "YEARS",
+            "2008-2009"
+          ]
+        ],
+        "subtree_was_extended": true,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-8",
+    "original_id": "train-8",
+    "domains": [
+      "WikiSQL_decl_sents"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "The nickname of the  team of University of Nebraska at Omaha is mavericks.",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "University of Nebraska at Omaha",
+            "NICKNAME",
+            "Mavericks"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dart",
+    "data_split": "train",
+    "dialogue_id": "dart-train-9",
+    "original_id": "train-9",
+    "domains": [
+      "WikiSQL_decl_sents"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "William Wasmund scored 5.0 points",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "tripleset": [
+          [
+            "William Wasmund",
+            "FIELD_GOALS",
+            "0"
+          ],
+          [
+            "William Wasmund",
+            "EXTRA_POINTS",
+            "0"
+          ],
+          [
+            "William Wasmund",
+            "POINTS",
+            "5"
+          ],
+          [
+            "William Wasmund",
+            "TOUCHDOWNS",
+            "1"
+          ]
+        ],
+        "subtree_was_extended": false,
+        "db_results": {}
+      }
+    ]
+  }
+]
