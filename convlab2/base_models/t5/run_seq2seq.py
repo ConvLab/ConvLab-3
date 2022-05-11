@@ -565,7 +565,7 @@ def main():
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
-    if data_args.early_stopping_patience > 0:
+    if training_args.load_best_model_at_end:
         trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=data_args.early_stopping_patience))
 
     # Training

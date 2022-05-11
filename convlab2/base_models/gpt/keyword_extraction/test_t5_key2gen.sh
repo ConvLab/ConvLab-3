@@ -45,6 +45,5 @@ python -m torch.distributed.launch \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --learning_rate ${lr} \
     --num_train_epochs ${num_train_epochs} \
-    --debug underflow_overflow \
     --adafactor \
     --gradient_checkpointing

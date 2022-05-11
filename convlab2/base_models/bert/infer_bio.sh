@@ -30,8 +30,7 @@ do
         --logging_dir ${logging_dir} \
         --overwrite_output_dir \
         --preprocessing_num_workers 4 \
-        --per_device_eval_batch_size ${per_device_eval_batch_size} \
-        --debug underflow_overflow
+        --per_device_eval_batch_size ${per_device_eval_batch_size}
 
     mv ${output_dir}/predictions.json ${output_dir}/${split}.json
 done

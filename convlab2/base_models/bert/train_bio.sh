@@ -58,5 +58,4 @@ CUDA_VISIBLE_DEVICES=1,2 python -m torch.distributed.launch \
     --per_device_eval_batch_size ${per_device_eval_batch_size} \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --learning_rate ${lr} \
-    --num_train_epochs ${num_train_epochs} \
-    --debug underflow_overflow
+    --num_train_epochs ${num_train_epochs}
