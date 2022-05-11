@@ -23,7 +23,7 @@ gradient_accumulation_steps=4
 lr=1e-3
 num_train_epochs=1
 
-python -m torch.distributed.launch --master_port 23456\
+python -m torch.distributed.launch \
     --nproc_per_node ${n_gpus} ../../t5/run_seq2seq.py \
     --task_name ${task_name} \
     --train_file ${train_file} \

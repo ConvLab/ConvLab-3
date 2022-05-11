@@ -1,7 +1,7 @@
 set -e
-n_gpus=1
-task_name="key2gen"
-dataset_name="multiwoz21"
+n_gpus=2
+task_name="key2gen_shuffle_noisy"
+dataset_name="dailydialog+metalwoz+sgd+tm1+tm2+tm3"
 speaker="all"
 model_type="gpt"
 data_dir="data/${task_name}/${model_type}/${dataset_name}"
@@ -16,7 +16,7 @@ target_column="response"
 truncation_side="left"
 max_source_length=512
 max_target_length=128
-model_name_or_path="output/key2gen/gpt/metalwoz+sgd+tm1+tm2+tm3"
+model_name_or_path="output/${task_name}/${model_type}/${dataset_name}"
 per_device_train_batch_size=128
 per_device_eval_batch_size=128
 gradient_accumulation_steps=4
@@ -40,4 +40,11 @@ python -m torch.distributed.launch \
     --logging_dir ${logging_dir} \
     --overwrite_output_dir \
     --preprocessing_num_workers 4 \
-    --per_device_eval_batch_size ${per_device_eval_batch_size}
+    --per_device_train_batch_size ${per_device_train_batch_size} \
+    --per_device_eval_batch_size ${per_device_eval_batch_size} \
+    --gradient_accumulation_steps ${gradient_accumulation_steps} \
+    --learning_rate ${lr} \
+    --num_train_epochs ${num_train_epochs} \
+    --debug underflow_overflow \
+    --adafactor \
+    --gradient_checkpointing
