@@ -3,10 +3,6 @@ from shutil import rmtree
 import json
 import os
 from tqdm import tqdm
-from collections import Counter
-from pprint import pprint
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.tokenize.treebank import TreebankWordDetokenizer
 import requests
 
 

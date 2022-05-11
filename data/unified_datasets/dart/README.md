@@ -1,4 +1,4 @@
-# Dataset Card for DailyDialog
+# Dataset Card for DART
 
 - **Repository:** https://github.com/Yale-LILY/dart
 - **Paper:** https://arxiv.org/pdf/2007.02871.pdf
@@ -9,10 +9,11 @@
 
 DART is a large and open-domain structured DAta Record to Text generation corpus with high-quality sentence annotations with each input being a set of entity-relation triples following a tree-structured ontology. It consists of 82191 examples across different domains with each input being a semantic triple set derived from data records in tables and the tree ontology of table schema, annotated with sentence description that covers all facts in the triple set.
 
-- **How to get the transformed data from original data:** 
+- **How to get the transformed data from original data:**
   - Run `python preprocess.py` in the current directory.
 - **Main changes of the transformation:**
   - Use `source` annotation as `domain`.
+  - Set `speaker` to `system`.
   - Retain entity-relation triples in the `tripleset` field of each turn.
   - If there are multiple source&text annotation in a original sample, split them into multiple samples.
 - **Annotations:**
@@ -51,7 +52,6 @@ English
     publisher = "Association for Computational Linguistics",
     url = "https://aclanthology.org/2021.naacl-main.37",
 }
-
 ```
 
 ### Licensing Information
