@@ -16,6 +16,7 @@ DART is a large and open-domain structured DAta Record to Text generation corpus
   - Set `speaker` to `system`.
   - Retain entity-relation triples in the `tripleset` field of each turn.
   - If there are multiple source&text annotation in a original sample, split them into multiple samples.
+  - remove 1 empty text in the test set.
 - **Annotations:**
   - entity-relation triples
 
@@ -33,8 +34,8 @@ English
 |------------|-------------|--------------|-----------|--------------|---------------|-------------------------|------------------------|--------------------------------|-----------------------------------|
 | train      |       62659 |        62659 |         1 |        18.85 |             1 | -                       | -                      | -                              | -                                 |
 | validation |        6980 |         6980 |         1 |        21.22 |             1 | -                       | -                      | -                              | -                                 |
-| test       |       12552 |        12552 |         1 |        20.95 |             1 | -                       | -                      | -                              | -                                 |
-| all        |       82191 |        82191 |         1 |        19.37 |             1 | -                       | -                      | -                              | -                                 |
+| test       |       12551 |        12551 |         1 |        20.95 |             1 | -                       | -                      | -                              | -                                 |
+| all        |       82190 |        82190 |         1 |        19.37 |             1 | -                       | -                      | -                              | -                                 |
 
 6 domains: ['WikiTableQuestions_mturk', 'WikiSQL_decl_sents', 'WikiSQL_lily', 'WikiTableQuestions_lily', 'webnlg', 'e2e']
 - **cat slot match**: how many values of categorical slots are in the possible values of ontology in percentage.

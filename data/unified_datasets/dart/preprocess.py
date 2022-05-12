@@ -40,7 +40,9 @@ def preprocess():
             for annotation in item["annotations"]:
                 source = annotation["source"]
                 text = annotation["text"]
-                ontology['domains'][source] = {'description': '', 'slots': {}}
+                if len(text) == 0:
+                    continue
+                ontology['domains'].setdefault(source, {'description': '', 'slots': {}})
 
                 dialogue_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
                 dialogue = {
