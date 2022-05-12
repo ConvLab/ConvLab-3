@@ -19,6 +19,8 @@ from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.policy.rule.multiwoz import RulePolicy
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab2.util import load_dataset
+from convlab2.task.multiwoz.goal_generator import GoalGenerator
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
 import shutil
 
 
@@ -92,8 +94,11 @@ def save_config(terminal_args, config_file_args, config_save_path):
 def set_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
+    torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
 
 def init_logging(root_dir, mode):
@@ -133,8 +138,16 @@ def save_best(policy_sys, best_complete_rate, best_success_rate, complete_rate, 
     return best_complete_rate, best_success_rate
 
 
-def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
+def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_domain_goals=False, allowed_domains=None):
     policy_sys.is_train = False
+
+    goal_generator = GoalGenerator()
+    goals = []
+    for seed in range(1000, 1000 + conf['model']['num_eval_dialogues']):
+        set_seed(seed)
+        goal = create_goals(goal_generator, 1, single_domain_goals, allowed_domains)
+        goals.append(goal[0])
+
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
@@ -142,14 +155,14 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
                                                 num_dialogues=conf['model']['num_eval_dialogues'],
                                                 sys_semantic_to_usr=conf['model'][
                                                     'sys_semantic_to_usr'],
-                                                save_flag=save_eval, save_path=log_save_path)
+                                                save_flag=save_eval, save_path=log_save_path, goals=goals)
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
         avg_actions, task_success, book_acts, inform_acts, request_acts, \
         select_acts, offer_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
-                                 conf['model']['process_num'])
+                                 conf['model']['process_num'], goals)
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
 
         task_success_gathered = {}
@@ -259,12 +272,7 @@ def create_env(args, policy_sys):
     return env, sess
 
 
-def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None):
-    seed = 0
-    random.seed(seed)
-    np.random.seed(seed)
-
-    # sess = BiSession(agent_sys, simulator, None, evaluator)
+def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
 
     eval_save = {}
     turn_counter_dict = {}
@@ -277,7 +285,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
-        sess.init_session()
+        goal = goals.pop()
+        sess.init_session(goal=goal)
         sys_response = [] if sess.sys_agent.nlg is None else ''
         sys_response = [] if sys_semantic_to_usr else sys_response
         avg_actions = 0
@@ -430,6 +439,19 @@ def act_dict_to_flat_tuple(acts):
         for slot, value in svs:
             domain, intent = domain_intent.split('-')
             tuples.append([intent, domain, slot, value])
+
+
+def create_goals(goal_generator, num_goals, single_domains=False, allowed_domains=None):
+
+    collected_goals = []
+    while len(collected_goals) != num_goals:
+        goal = Goal(goal_generator)
+        if single_domains and len(goal.domain_goals) > 1:
+            continue
+        if allowed_domains is not None and not set(goal.domain_goals).issubset(set(allowed_domains)):
+            continue
+        collected_goals.append(goal)
+    return collected_goals
 
 
 if __name__ == '__main__':

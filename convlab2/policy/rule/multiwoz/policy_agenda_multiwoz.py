@@ -85,13 +85,13 @@ class UserPolicyAgendaMultiWoz(Policy):
     def reset_turn(self):
         self.__turn = 0
 
-    def init_session(self, ini_goal=None):
+    def init_session(self, goal=None):
         """ Build new Goal and Agenda for next session """
         self.reset_turn()
-        if not ini_goal:
+        if not goal:
             self.goal = Goal(self.goal_generator)
         else:
-            self.goal = ini_goal
+            self.goal = goal
         self.domain_goals = self.goal.domain_goals
         self.agenda = Agenda(self.goal)
 
