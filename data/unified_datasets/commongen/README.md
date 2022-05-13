@@ -1,4 +1,4 @@
-# Dataset Card for CommenGen
+# Dataset Card for CommonGen
 
 - **Repository:** https://github.com/INK-USC/CommonGen
 - **Paper:** https://aclanthology.org/2020.findings-emnlp.165.pdf

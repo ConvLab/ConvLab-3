@@ -19,6 +19,7 @@ data/unified_datasets/tm1/master.zip
 data/unified_datasets/dailydialog/ijcnlp_dailydialog.zip
 data/unified_datasets/dart/dart-v1.1.1-*.json
 data/unified_datasets/commongen/commongen_data.zip
+data/unified_datasets/kvret/kvret_*
 data/**/train.json
 data/**/val.json
 data/**/test.json
