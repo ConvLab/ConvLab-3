@@ -111,7 +111,11 @@ def preprocess():
                 scenario = item['scenario']
                 domain = scenario['task']['intent']
 
-                db_results = {domain: scenario['kb']['items'] if scenario['kb']['items'] else []}
+                slots = scenario['kb']['column_names']
+                db_results = {domain: []}
+                if scenario['kb']['items']:
+                    for entry in scenario['kb']['items']:
+                        db_results[domain].append({s: entry[s] for s in slots})
                 
                 dialogue_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
                 dialogue = {

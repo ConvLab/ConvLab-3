@@ -64,60 +64,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "2 miles",
-              "traffic_info": "road block nearby",
+              "poi": "Dish Parking",
               "poi_type": "parking garage",
               "address": "550 Alester Ave",
-              "poi": "Dish Parking"
+              "distance": "2 miles",
+              "traffic_info": "road block nearby"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "no traffic",
+              "poi": "Stanford Oval Parking",
               "poi_type": "parking garage",
               "address": "610 Amarillo Ave",
-              "poi": "Stanford Oval Parking"
+              "distance": "6 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "car collision nearby",
+              "poi": "Willows Market",
               "poi_type": "grocery store",
               "address": "409 Bollard St",
-              "poi": "Willows Market"
+              "distance": "4 miles",
+              "traffic_info": "car collision nearby"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "The Westin",
               "poi_type": "rest stop",
               "address": "329 El Camino Real",
-              "poi": "The Westin"
+              "distance": "2 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "1 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "toms house",
               "poi_type": "friends house",
               "address": "580 Van Ness Ave",
-              "poi": "toms house"
+              "distance": "1 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Pizza Chicago",
               "poi_type": "pizza restaurant",
               "address": "915 Arbol Dr",
-              "poi": "Pizza Chicago"
+              "distance": "4 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "car collision nearby",
+              "poi": "Valero",
               "poi_type": "gas station",
               "address": "200 Alester Ave",
-              "poi": "Valero"
+              "distance": "6 miles",
+              "traffic_info": "car collision nearby"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "no traffic",
+              "poi": "Mandarin Roots",
               "poi_type": "chinese restaurant",
               "address": "271 Springer Street",
-              "poi": "Mandarin Roots"
+              "distance": "2 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -152,60 +152,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "2 miles",
-              "traffic_info": "road block nearby",
+              "poi": "Dish Parking",
               "poi_type": "parking garage",
               "address": "550 Alester Ave",
-              "poi": "Dish Parking"
+              "distance": "2 miles",
+              "traffic_info": "road block nearby"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "no traffic",
+              "poi": "Stanford Oval Parking",
               "poi_type": "parking garage",
               "address": "610 Amarillo Ave",
-              "poi": "Stanford Oval Parking"
+              "distance": "6 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "car collision nearby",
+              "poi": "Willows Market",
               "poi_type": "grocery store",
               "address": "409 Bollard St",
-              "poi": "Willows Market"
+              "distance": "4 miles",
+              "traffic_info": "car collision nearby"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "The Westin",
               "poi_type": "rest stop",
               "address": "329 El Camino Real",
-              "poi": "The Westin"
+              "distance": "2 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "1 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "toms house",
               "poi_type": "friends house",
               "address": "580 Van Ness Ave",
-              "poi": "toms house"
+              "distance": "1 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Pizza Chicago",
               "poi_type": "pizza restaurant",
               "address": "915 Arbol Dr",
-              "poi": "Pizza Chicago"
+              "distance": "4 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "car collision nearby",
+              "poi": "Valero",
               "poi_type": "gas station",
               "address": "200 Alester Ave",
-              "poi": "Valero"
+              "distance": "6 miles",
+              "traffic_info": "car collision nearby"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "no traffic",
+              "poi": "Mandarin Roots",
               "poi_type": "chinese restaurant",
               "address": "271 Springer Street",
-              "poi": "Mandarin Roots"
+              "distance": "2 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -240,60 +240,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "2 miles",
-              "traffic_info": "road block nearby",
+              "poi": "Dish Parking",
               "poi_type": "parking garage",
               "address": "550 Alester Ave",
-              "poi": "Dish Parking"
+              "distance": "2 miles",
+              "traffic_info": "road block nearby"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "no traffic",
+              "poi": "Stanford Oval Parking",
               "poi_type": "parking garage",
               "address": "610 Amarillo Ave",
-              "poi": "Stanford Oval Parking"
+              "distance": "6 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "car collision nearby",
+              "poi": "Willows Market",
               "poi_type": "grocery store",
               "address": "409 Bollard St",
-              "poi": "Willows Market"
+              "distance": "4 miles",
+              "traffic_info": "car collision nearby"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "The Westin",
               "poi_type": "rest stop",
               "address": "329 El Camino Real",
-              "poi": "The Westin"
+              "distance": "2 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "1 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "toms house",
               "poi_type": "friends house",
               "address": "580 Van Ness Ave",
-              "poi": "toms house"
+              "distance": "1 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Pizza Chicago",
               "poi_type": "pizza restaurant",
               "address": "915 Arbol Dr",
-              "poi": "Pizza Chicago"
+              "distance": "4 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "car collision nearby",
+              "poi": "Valero",
               "poi_type": "gas station",
               "address": "200 Alester Ave",
-              "poi": "Valero"
+              "distance": "6 miles",
+              "traffic_info": "car collision nearby"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "no traffic",
+              "poi": "Mandarin Roots",
               "poi_type": "chinese restaurant",
               "address": "271 Springer Street",
-              "poi": "Mandarin Roots"
+              "distance": "2 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -359,60 +359,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Town and Country",
               "poi_type": "shopping center",
               "address": "383 University Ave",
-              "poi": "Town and Country"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "76",
               "poi_type": "gas station",
               "address": "91 El Camino Real",
-              "poi": "76"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Stanford Shopping Center",
               "poi_type": "shopping center",
               "address": "773 Alger Dr",
-              "poi": "Stanford Shopping Center"
+              "distance": "2 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Teavana",
               "poi_type": "coffee or tea place",
               "address": "145 Amherst St",
-              "poi": "Teavana"
+              "distance": "3 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Dominos",
               "poi_type": "pizza restaurant",
               "address": "776 Arastradero Rd",
-              "poi": "Dominos"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "road block nearby",
+              "poi": "Palo Alto Garage R",
               "poi_type": "parking garage",
               "address": "481 Amaranta Ave",
-              "poi": "Palo Alto Garage R"
+              "distance": "4 miles",
+              "traffic_info": "road block nearby"
             },
             {
-              "distance": "5 miles",
-              "traffic_info": "no traffic",
+              "poi": "Stanford Express Care",
               "poi_type": "hospital",
               "address": "214 El Camino Real",
-              "poi": "Stanford Express Care"
+              "distance": "5 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "no traffic",
+              "poi": "Palo Alto Medical Foundation",
               "poi_type": "hospital",
               "address": "611 Ames Ave",
-              "poi": "Palo Alto Medical Foundation"
+              "distance": "3 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -445,60 +445,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Town and Country",
               "poi_type": "shopping center",
               "address": "383 University Ave",
-              "poi": "Town and Country"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "76",
               "poi_type": "gas station",
               "address": "91 El Camino Real",
-              "poi": "76"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Stanford Shopping Center",
               "poi_type": "shopping center",
               "address": "773 Alger Dr",
-              "poi": "Stanford Shopping Center"
+              "distance": "2 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Teavana",
               "poi_type": "coffee or tea place",
               "address": "145 Amherst St",
-              "poi": "Teavana"
+              "distance": "3 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Dominos",
               "poi_type": "pizza restaurant",
               "address": "776 Arastradero Rd",
-              "poi": "Dominos"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "road block nearby",
+              "poi": "Palo Alto Garage R",
               "poi_type": "parking garage",
               "address": "481 Amaranta Ave",
-              "poi": "Palo Alto Garage R"
+              "distance": "4 miles",
+              "traffic_info": "road block nearby"
             },
             {
-              "distance": "5 miles",
-              "traffic_info": "no traffic",
+              "poi": "Stanford Express Care",
               "poi_type": "hospital",
               "address": "214 El Camino Real",
-              "poi": "Stanford Express Care"
+              "distance": "5 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "no traffic",
+              "poi": "Palo Alto Medical Foundation",
               "poi_type": "hospital",
               "address": "611 Ames Ave",
-              "poi": "Palo Alto Medical Foundation"
+              "distance": "3 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -531,60 +531,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Town and Country",
               "poi_type": "shopping center",
               "address": "383 University Ave",
-              "poi": "Town and Country"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "76",
               "poi_type": "gas station",
               "address": "91 El Camino Real",
-              "poi": "76"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Stanford Shopping Center",
               "poi_type": "shopping center",
               "address": "773 Alger Dr",
-              "poi": "Stanford Shopping Center"
+              "distance": "2 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Teavana",
               "poi_type": "coffee or tea place",
               "address": "145 Amherst St",
-              "poi": "Teavana"
+              "distance": "3 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Dominos",
               "poi_type": "pizza restaurant",
               "address": "776 Arastradero Rd",
-              "poi": "Dominos"
+              "distance": "4 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "road block nearby",
+              "poi": "Palo Alto Garage R",
               "poi_type": "parking garage",
               "address": "481 Amaranta Ave",
-              "poi": "Palo Alto Garage R"
+              "distance": "4 miles",
+              "traffic_info": "road block nearby"
             },
             {
-              "distance": "5 miles",
-              "traffic_info": "no traffic",
+              "poi": "Stanford Express Care",
               "poi_type": "hospital",
               "address": "214 El Camino Real",
-              "poi": "Stanford Express Care"
+              "distance": "5 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "no traffic",
+              "poi": "Palo Alto Medical Foundation",
               "poi_type": "hospital",
               "address": "611 Ames Ave",
-              "poi": "Palo Alto Medical Foundation"
+              "distance": "3 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -648,60 +648,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "5 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "P.F. Changs",
               "poi_type": "chinese restaurant",
               "address": "669 El Camino Real",
-              "poi": "P.F. Changs"
+              "distance": "5 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Ravenswood Shopping Center",
               "poi_type": "shopping center",
               "address": "434 Arastradero Rd",
-              "poi": "Ravenswood Shopping Center"
+              "distance": "6 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "8 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Chef Chu's",
               "poi_type": "chinese restaurant",
               "address": "593 Arrowhead Way",
-              "poi": "Chef Chu's"
+              "distance": "8 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "5 miles",
-              "traffic_info": "no traffic",
+              "poi": "The Westin",
               "poi_type": "rest stop",
               "address": "329 El Camino Real",
-              "poi": "The Westin"
+              "distance": "5 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Dish Parking",
               "poi_type": "parking garage",
               "address": "550 Alester Ave",
-              "poi": "Dish Parking"
+              "distance": "2 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "1 miles",
-              "traffic_info": "no traffic",
+              "poi": "home",
               "poi_type": "home",
               "address": "5671 barringer street",
-              "poi": "home"
+              "distance": "1 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Philz",
               "poi_type": "coffee or tea place",
               "address": "583 Alester Ave",
-              "poi": "Philz"
+              "distance": "4 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "no traffic",
+              "poi": "Palo Alto Medical Foundation",
               "poi_type": "hospital",
               "address": "611 Ames Ave",
-              "poi": "Palo Alto Medical Foundation"
+              "distance": "3 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -741,60 +741,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "5 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "P.F. Changs",
               "poi_type": "chinese restaurant",
               "address": "669 El Camino Real",
-              "poi": "P.F. Changs"
+              "distance": "5 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Ravenswood Shopping Center",
               "poi_type": "shopping center",
               "address": "434 Arastradero Rd",
-              "poi": "Ravenswood Shopping Center"
+              "distance": "6 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "8 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Chef Chu's",
               "poi_type": "chinese restaurant",
               "address": "593 Arrowhead Way",
-              "poi": "Chef Chu's"
+              "distance": "8 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "5 miles",
-              "traffic_info": "no traffic",
+              "poi": "The Westin",
               "poi_type": "rest stop",
               "address": "329 El Camino Real",
-              "poi": "The Westin"
+              "distance": "5 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Dish Parking",
               "poi_type": "parking garage",
               "address": "550 Alester Ave",
-              "poi": "Dish Parking"
+              "distance": "2 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "1 miles",
-              "traffic_info": "no traffic",
+              "poi": "home",
               "poi_type": "home",
               "address": "5671 barringer street",
-              "poi": "home"
+              "distance": "1 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Philz",
               "poi_type": "coffee or tea place",
               "address": "583 Alester Ave",
-              "poi": "Philz"
+              "distance": "4 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "no traffic",
+              "poi": "Palo Alto Medical Foundation",
               "poi_type": "hospital",
               "address": "611 Ames Ave",
-              "poi": "Palo Alto Medical Foundation"
+              "distance": "3 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -828,60 +828,60 @@
         "db_results": {
           "navigate": [
             {
-              "distance": "5 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "P.F. Changs",
               "poi_type": "chinese restaurant",
               "address": "669 El Camino Real",
-              "poi": "P.F. Changs"
+              "distance": "5 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "6 miles",
-              "traffic_info": "moderate traffic",
+              "poi": "Ravenswood Shopping Center",
               "poi_type": "shopping center",
               "address": "434 Arastradero Rd",
-              "poi": "Ravenswood Shopping Center"
+              "distance": "6 miles",
+              "traffic_info": "moderate traffic"
             },
             {
-              "distance": "8 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Chef Chu's",
               "poi_type": "chinese restaurant",
               "address": "593 Arrowhead Way",
-              "poi": "Chef Chu's"
+              "distance": "8 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "5 miles",
-              "traffic_info": "no traffic",
+              "poi": "The Westin",
               "poi_type": "rest stop",
               "address": "329 El Camino Real",
-              "poi": "The Westin"
+              "distance": "5 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "2 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Dish Parking",
               "poi_type": "parking garage",
               "address": "550 Alester Ave",
-              "poi": "Dish Parking"
+              "distance": "2 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "1 miles",
-              "traffic_info": "no traffic",
+              "poi": "home",
               "poi_type": "home",
               "address": "5671 barringer street",
-              "poi": "home"
+              "distance": "1 miles",
+              "traffic_info": "no traffic"
             },
             {
-              "distance": "4 miles",
-              "traffic_info": "heavy traffic",
+              "poi": "Philz",
               "poi_type": "coffee or tea place",
               "address": "583 Alester Ave",
-              "poi": "Philz"
+              "distance": "4 miles",
+              "traffic_info": "heavy traffic"
             },
             {
-              "distance": "3 miles",
-              "traffic_info": "no traffic",
+              "poi": "Palo Alto Medical Foundation",
               "poi_type": "hospital",
               "address": "611 Ames Ave",
-              "poi": "Palo Alto Medical Foundation"
+              "distance": "3 miles",
+              "traffic_info": "no traffic"
             }
           ]
         }
@@ -1029,52 +1029,52 @@
         "db_results": {
           "schedule": [
             {
-              "room": "-",
-              "agenda": "-",
+              "event": "dentist appointment",
               "time": "10am",
               "date": "the 8th",
-              "party": "aunt",
-              "event": "dentist appointment"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "aunt"
+            },
+            {
+              "event": "taking medicine",
               "time": "5pm",
               "date": "saturday",
-              "party": "Marie",
-              "event": "taking medicine"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "Marie"
+            },
+            {
+              "event": "football activity",
               "time": "4pm",
               "date": "monday",
-              "party": "Alex",
-              "event": "football activity"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "Alex"
+            },
+            {
+              "event": "yoga activity",
               "time": "4pm",
               "date": "the 4th",
-              "party": "Marie",
-              "event": "yoga activity"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "Marie"
+            },
+            {
+              "event": "lab appointment",
               "time": "5pm",
               "date": "the 13th",
-              "party": "father",
-              "event": "lab appointment"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "father"
+            },
+            {
+              "event": "dinner",
               "time": "7pm",
               "date": "the 8th",
-              "party": "Jon",
-              "event": "dinner"
+              "room": "-",
+              "agenda": "-",
+              "party": "Jon"
             }
           ]
         }
@@ -1106,52 +1106,52 @@
         "db_results": {
           "schedule": [
             {
-              "room": "-",
-              "agenda": "-",
+              "event": "dentist appointment",
               "time": "10am",
               "date": "the 8th",
-              "party": "aunt",
-              "event": "dentist appointment"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "aunt"
+            },
+            {
+              "event": "taking medicine",
               "time": "5pm",
               "date": "saturday",
-              "party": "Marie",
-              "event": "taking medicine"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "Marie"
+            },
+            {
+              "event": "football activity",
               "time": "4pm",
               "date": "monday",
-              "party": "Alex",
-              "event": "football activity"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "Alex"
+            },
+            {
+              "event": "yoga activity",
               "time": "4pm",
               "date": "the 4th",
-              "party": "Marie",
-              "event": "yoga activity"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "Marie"
+            },
+            {
+              "event": "lab appointment",
               "time": "5pm",
               "date": "the 13th",
-              "party": "father",
-              "event": "lab appointment"
-            },
-            {
               "room": "-",
               "agenda": "-",
+              "party": "father"
+            },
+            {
+              "event": "dinner",
               "time": "7pm",
               "date": "the 8th",
-              "party": "Jon",
-              "event": "dinner"
+              "room": "-",
+              "agenda": "-",
+              "party": "Jon"
             }
           ]
         }
@@ -1331,80 +1331,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "manhattan",
               "monday": "stormy, low of 50F, high of 70F",
               "tuesday": "cloudy, low of 20F, high of 40F",
-              "friday": "windy, low of 20F, high of 40F",
               "wednesday": "clear skies, low of 50F, high of 60F",
               "thursday": "stormy, low of 50F, high of 70F",
-              "sunday": "hail, low of 30F, high of 50F",
-              "location": "manhattan",
+              "friday": "windy, low of 20F, high of 40F",
               "saturday": "snow, low of 60F, high of 70F",
+              "sunday": "hail, low of 30F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "camarillo",
               "monday": "overcast, low of 50F, high of 70F",
               "tuesday": "stormy, low of 90F, high of 100F",
-              "friday": "clear skies, low of 70F, high of 80F",
               "wednesday": "frost, low of 50F, high of 60F",
               "thursday": "snow, low of 80F, high of 90F",
-              "sunday": "dry, low of 70F, high of 80F",
-              "location": "camarillo",
+              "friday": "clear skies, low of 70F, high of 80F",
               "saturday": "blizzard, low of 40F, high of 50F",
+              "sunday": "dry, low of 70F, high of 80F",
               "today": "monday"
             },
             {
+              "location": "menlo park",
               "monday": "dry, low of 50F, high of 70F",
               "tuesday": "warm, low of 80F, high of 90F",
-              "friday": "cloudy, low of 70F, high of 80F",
               "wednesday": "hail, low of 20F, high of 40F",
               "thursday": "blizzard, low of 40F, high of 60F",
-              "sunday": "stormy, low of 90F, high of 100F",
-              "location": "menlo park",
+              "friday": "cloudy, low of 70F, high of 80F",
               "saturday": "foggy, low of 50F, high of 60F",
+              "sunday": "stormy, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "new york",
               "monday": "hot, low of 70F, high of 90F",
               "tuesday": "foggy, low of 70F, high of 90F",
-              "friday": "cloudy, low of 70F, high of 90F",
               "wednesday": "dry, low of 40F, high of 50F",
               "thursday": "hail, low of 40F, high of 50F",
-              "sunday": "rain, low of 20F, high of 30F",
-              "location": "new york",
+              "friday": "cloudy, low of 70F, high of 90F",
               "saturday": "clear skies, low of 70F, high of 90F",
+              "sunday": "rain, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "corona",
               "monday": "windy, low of 70F, high of 80F",
               "tuesday": "overcast, low of 40F, high of 50F",
-              "friday": "hail, low of 60F, high of 70F",
               "wednesday": "hail, low of 90F, high of 100F",
               "thursday": "rain, low of 80F, high of 100F",
-              "sunday": "frost, low of 20F, high of 30F",
-              "location": "corona",
+              "friday": "hail, low of 60F, high of 70F",
               "saturday": "warm, low of 60F, high of 80F",
+              "sunday": "frost, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "seattle",
               "monday": "cloudy, low of 90F, high of 100F",
               "tuesday": "dry, low of 30F, high of 40F",
-              "friday": "foggy, low of 20F, high of 30F",
               "wednesday": "stormy, low of 80F, high of 100F",
               "thursday": "snow, low of 20F, high of 30F",
-              "sunday": "drizzle, low of 50F, high of 60F",
-              "location": "seattle",
+              "friday": "foggy, low of 20F, high of 30F",
               "saturday": "drizzle, low of 40F, high of 60F",
+              "sunday": "drizzle, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "grand rapids",
               "monday": "drizzle, low of 70F, high of 80F",
               "tuesday": "overcast, low of 40F, high of 60F",
-              "friday": "foggy, low of 50F, high of 60F",
               "wednesday": "overcast, low of 60F, high of 80F",
               "thursday": "snow, low of 20F, high of 40F",
-              "sunday": "cloudy, low of 30F, high of 40F",
-              "location": "grand rapids",
+              "friday": "foggy, low of 50F, high of 60F",
               "saturday": "dry, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 30F, high of 40F",
               "today": "monday"
             }
           ]
@@ -1456,80 +1456,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "manhattan",
               "monday": "stormy, low of 50F, high of 70F",
               "tuesday": "cloudy, low of 20F, high of 40F",
-              "friday": "windy, low of 20F, high of 40F",
               "wednesday": "clear skies, low of 50F, high of 60F",
               "thursday": "stormy, low of 50F, high of 70F",
-              "sunday": "hail, low of 30F, high of 50F",
-              "location": "manhattan",
+              "friday": "windy, low of 20F, high of 40F",
               "saturday": "snow, low of 60F, high of 70F",
+              "sunday": "hail, low of 30F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "camarillo",
               "monday": "overcast, low of 50F, high of 70F",
               "tuesday": "stormy, low of 90F, high of 100F",
-              "friday": "clear skies, low of 70F, high of 80F",
               "wednesday": "frost, low of 50F, high of 60F",
               "thursday": "snow, low of 80F, high of 90F",
-              "sunday": "dry, low of 70F, high of 80F",
-              "location": "camarillo",
+              "friday": "clear skies, low of 70F, high of 80F",
               "saturday": "blizzard, low of 40F, high of 50F",
+              "sunday": "dry, low of 70F, high of 80F",
               "today": "monday"
             },
             {
+              "location": "menlo park",
               "monday": "dry, low of 50F, high of 70F",
               "tuesday": "warm, low of 80F, high of 90F",
-              "friday": "cloudy, low of 70F, high of 80F",
               "wednesday": "hail, low of 20F, high of 40F",
               "thursday": "blizzard, low of 40F, high of 60F",
-              "sunday": "stormy, low of 90F, high of 100F",
-              "location": "menlo park",
+              "friday": "cloudy, low of 70F, high of 80F",
               "saturday": "foggy, low of 50F, high of 60F",
+              "sunday": "stormy, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "new york",
               "monday": "hot, low of 70F, high of 90F",
               "tuesday": "foggy, low of 70F, high of 90F",
-              "friday": "cloudy, low of 70F, high of 90F",
               "wednesday": "dry, low of 40F, high of 50F",
               "thursday": "hail, low of 40F, high of 50F",
-              "sunday": "rain, low of 20F, high of 30F",
-              "location": "new york",
+              "friday": "cloudy, low of 70F, high of 90F",
               "saturday": "clear skies, low of 70F, high of 90F",
+              "sunday": "rain, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "corona",
               "monday": "windy, low of 70F, high of 80F",
               "tuesday": "overcast, low of 40F, high of 50F",
-              "friday": "hail, low of 60F, high of 70F",
               "wednesday": "hail, low of 90F, high of 100F",
               "thursday": "rain, low of 80F, high of 100F",
-              "sunday": "frost, low of 20F, high of 30F",
-              "location": "corona",
+              "friday": "hail, low of 60F, high of 70F",
               "saturday": "warm, low of 60F, high of 80F",
+              "sunday": "frost, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "seattle",
               "monday": "cloudy, low of 90F, high of 100F",
               "tuesday": "dry, low of 30F, high of 40F",
-              "friday": "foggy, low of 20F, high of 30F",
               "wednesday": "stormy, low of 80F, high of 100F",
               "thursday": "snow, low of 20F, high of 30F",
-              "sunday": "drizzle, low of 50F, high of 60F",
-              "location": "seattle",
+              "friday": "foggy, low of 20F, high of 30F",
               "saturday": "drizzle, low of 40F, high of 60F",
+              "sunday": "drizzle, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "grand rapids",
               "monday": "drizzle, low of 70F, high of 80F",
               "tuesday": "overcast, low of 40F, high of 60F",
-              "friday": "foggy, low of 50F, high of 60F",
               "wednesday": "overcast, low of 60F, high of 80F",
               "thursday": "snow, low of 20F, high of 40F",
-              "sunday": "cloudy, low of 30F, high of 40F",
-              "location": "grand rapids",
+              "friday": "foggy, low of 50F, high of 60F",
               "saturday": "dry, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 30F, high of 40F",
               "today": "monday"
             }
           ]
@@ -1564,80 +1564,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "manhattan",
               "monday": "stormy, low of 50F, high of 70F",
               "tuesday": "cloudy, low of 20F, high of 40F",
-              "friday": "windy, low of 20F, high of 40F",
               "wednesday": "clear skies, low of 50F, high of 60F",
               "thursday": "stormy, low of 50F, high of 70F",
-              "sunday": "hail, low of 30F, high of 50F",
-              "location": "manhattan",
+              "friday": "windy, low of 20F, high of 40F",
               "saturday": "snow, low of 60F, high of 70F",
+              "sunday": "hail, low of 30F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "camarillo",
               "monday": "overcast, low of 50F, high of 70F",
               "tuesday": "stormy, low of 90F, high of 100F",
-              "friday": "clear skies, low of 70F, high of 80F",
               "wednesday": "frost, low of 50F, high of 60F",
               "thursday": "snow, low of 80F, high of 90F",
-              "sunday": "dry, low of 70F, high of 80F",
-              "location": "camarillo",
+              "friday": "clear skies, low of 70F, high of 80F",
               "saturday": "blizzard, low of 40F, high of 50F",
+              "sunday": "dry, low of 70F, high of 80F",
               "today": "monday"
             },
             {
+              "location": "menlo park",
               "monday": "dry, low of 50F, high of 70F",
               "tuesday": "warm, low of 80F, high of 90F",
-              "friday": "cloudy, low of 70F, high of 80F",
               "wednesday": "hail, low of 20F, high of 40F",
               "thursday": "blizzard, low of 40F, high of 60F",
-              "sunday": "stormy, low of 90F, high of 100F",
-              "location": "menlo park",
+              "friday": "cloudy, low of 70F, high of 80F",
               "saturday": "foggy, low of 50F, high of 60F",
+              "sunday": "stormy, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "new york",
               "monday": "hot, low of 70F, high of 90F",
               "tuesday": "foggy, low of 70F, high of 90F",
-              "friday": "cloudy, low of 70F, high of 90F",
               "wednesday": "dry, low of 40F, high of 50F",
               "thursday": "hail, low of 40F, high of 50F",
-              "sunday": "rain, low of 20F, high of 30F",
-              "location": "new york",
+              "friday": "cloudy, low of 70F, high of 90F",
               "saturday": "clear skies, low of 70F, high of 90F",
+              "sunday": "rain, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "corona",
               "monday": "windy, low of 70F, high of 80F",
               "tuesday": "overcast, low of 40F, high of 50F",
-              "friday": "hail, low of 60F, high of 70F",
               "wednesday": "hail, low of 90F, high of 100F",
               "thursday": "rain, low of 80F, high of 100F",
-              "sunday": "frost, low of 20F, high of 30F",
-              "location": "corona",
+              "friday": "hail, low of 60F, high of 70F",
               "saturday": "warm, low of 60F, high of 80F",
+              "sunday": "frost, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "seattle",
               "monday": "cloudy, low of 90F, high of 100F",
               "tuesday": "dry, low of 30F, high of 40F",
-              "friday": "foggy, low of 20F, high of 30F",
               "wednesday": "stormy, low of 80F, high of 100F",
               "thursday": "snow, low of 20F, high of 30F",
-              "sunday": "drizzle, low of 50F, high of 60F",
-              "location": "seattle",
+              "friday": "foggy, low of 20F, high of 30F",
               "saturday": "drizzle, low of 40F, high of 60F",
+              "sunday": "drizzle, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "grand rapids",
               "monday": "drizzle, low of 70F, high of 80F",
               "tuesday": "overcast, low of 40F, high of 60F",
-              "friday": "foggy, low of 50F, high of 60F",
               "wednesday": "overcast, low of 60F, high of 80F",
               "thursday": "snow, low of 20F, high of 40F",
-              "sunday": "cloudy, low of 30F, high of 40F",
-              "location": "grand rapids",
+              "friday": "foggy, low of 50F, high of 60F",
               "saturday": "dry, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 30F, high of 40F",
               "today": "monday"
             }
           ]
@@ -1713,80 +1713,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "danville",
               "monday": "clear skies, low of 90F, high of 100F",
               "tuesday": "stormy, low of 20F, high of 40F",
-              "friday": "misty, low of 40F, high of 50F",
               "wednesday": "raining, low of 40F, high of 60F",
               "thursday": "stormy, low of 80F, high of 90F",
-              "sunday": "frost, low of 30F, high of 50F",
-              "location": "danville",
+              "friday": "misty, low of 40F, high of 50F",
               "saturday": "blizzard, low of 40F, high of 50F",
+              "sunday": "frost, low of 30F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "camarillo",
               "monday": "drizzle, low of 50F, high of 60F",
               "tuesday": "clear skies, low of 30F, high of 40F",
-              "friday": "overcast, low of 40F, high of 50F",
               "wednesday": "misty, low of 70F, high of 80F",
               "thursday": "overcast, low of 20F, high of 30F",
-              "sunday": "frost, low of 50F, high of 60F",
-              "location": "camarillo",
+              "friday": "overcast, low of 40F, high of 50F",
               "saturday": "raining, low of 40F, high of 50F",
+              "sunday": "frost, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "san jose",
               "monday": "clear skies, low of 60F, high of 70F",
               "tuesday": "misty, low of 30F, high of 50F",
-              "friday": "misty, low of 30F, high of 40F",
               "wednesday": "hail, low of 90F, high of 100F",
               "thursday": "clear skies, low of 20F, high of 30F",
-              "sunday": "foggy, low of 90F, high of 100F",
-              "location": "san jose",
+              "friday": "misty, low of 30F, high of 40F",
               "saturday": "clear skies, low of 40F, high of 60F",
+              "sunday": "foggy, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "los angeles",
               "monday": "drizzle, low of 60F, high of 70F",
               "tuesday": "warm, low of 60F, high of 70F",
-              "friday": "foggy, low of 90F, high of 100F",
               "wednesday": "clear skies, low of 50F, high of 60F",
               "thursday": "clear skies, low of 90F, high of 100F",
-              "sunday": "cloudy, low of 50F, high of 60F",
-              "location": "los angeles",
+              "friday": "foggy, low of 90F, high of 100F",
               "saturday": "raining, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "durham",
               "monday": "clear skies, low of 50F, high of 70F",
               "tuesday": "dew, low of 40F, high of 60F",
-              "friday": "humid, low of 50F, high of 70F",
               "wednesday": "clear skies, low of 60F, high of 70F",
               "thursday": "drizzle, low of 60F, high of 80F",
-              "sunday": "misty, low of 50F, high of 60F",
-              "location": "durham",
+              "friday": "humid, low of 50F, high of 70F",
               "saturday": "drizzle, low of 30F, high of 50F",
+              "sunday": "misty, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "san francisco",
               "monday": "rain, low of 30F, high of 50F",
               "tuesday": "foggy, low of 50F, high of 70F",
-              "friday": "hail, low of 90F, high of 100F",
               "wednesday": "rain, low of 50F, high of 60F",
               "thursday": "stormy, low of 50F, high of 60F",
-              "sunday": "hot, low of 80F, high of 90F",
-              "location": "san francisco",
+              "friday": "hail, low of 90F, high of 100F",
               "saturday": "blizzard, low of 40F, high of 60F",
+              "sunday": "hot, low of 80F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "boston",
               "monday": "misty, low of 70F, high of 80F",
               "tuesday": "clear skies, low of 80F, high of 90F",
-              "friday": "hail, low of 30F, high of 40F",
               "wednesday": "snow, low of 90F, high of 100F",
               "thursday": "clear skies, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 70F, high of 80F",
-              "location": "boston",
+              "friday": "hail, low of 30F, high of 40F",
               "saturday": "blizzard, low of 20F, high of 30F",
+              "sunday": "cloudy, low of 70F, high of 80F",
               "today": "monday"
             }
           ]
@@ -1821,80 +1821,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "danville",
               "monday": "clear skies, low of 90F, high of 100F",
               "tuesday": "stormy, low of 20F, high of 40F",
-              "friday": "misty, low of 40F, high of 50F",
               "wednesday": "raining, low of 40F, high of 60F",
               "thursday": "stormy, low of 80F, high of 90F",
-              "sunday": "frost, low of 30F, high of 50F",
-              "location": "danville",
+              "friday": "misty, low of 40F, high of 50F",
               "saturday": "blizzard, low of 40F, high of 50F",
+              "sunday": "frost, low of 30F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "camarillo",
               "monday": "drizzle, low of 50F, high of 60F",
               "tuesday": "clear skies, low of 30F, high of 40F",
-              "friday": "overcast, low of 40F, high of 50F",
               "wednesday": "misty, low of 70F, high of 80F",
               "thursday": "overcast, low of 20F, high of 30F",
-              "sunday": "frost, low of 50F, high of 60F",
-              "location": "camarillo",
+              "friday": "overcast, low of 40F, high of 50F",
               "saturday": "raining, low of 40F, high of 50F",
+              "sunday": "frost, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "san jose",
               "monday": "clear skies, low of 60F, high of 70F",
               "tuesday": "misty, low of 30F, high of 50F",
-              "friday": "misty, low of 30F, high of 40F",
               "wednesday": "hail, low of 90F, high of 100F",
               "thursday": "clear skies, low of 20F, high of 30F",
-              "sunday": "foggy, low of 90F, high of 100F",
-              "location": "san jose",
+              "friday": "misty, low of 30F, high of 40F",
               "saturday": "clear skies, low of 40F, high of 60F",
+              "sunday": "foggy, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "los angeles",
               "monday": "drizzle, low of 60F, high of 70F",
               "tuesday": "warm, low of 60F, high of 70F",
-              "friday": "foggy, low of 90F, high of 100F",
               "wednesday": "clear skies, low of 50F, high of 60F",
               "thursday": "clear skies, low of 90F, high of 100F",
-              "sunday": "cloudy, low of 50F, high of 60F",
-              "location": "los angeles",
+              "friday": "foggy, low of 90F, high of 100F",
               "saturday": "raining, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "durham",
               "monday": "clear skies, low of 50F, high of 70F",
               "tuesday": "dew, low of 40F, high of 60F",
-              "friday": "humid, low of 50F, high of 70F",
               "wednesday": "clear skies, low of 60F, high of 70F",
               "thursday": "drizzle, low of 60F, high of 80F",
-              "sunday": "misty, low of 50F, high of 60F",
-              "location": "durham",
+              "friday": "humid, low of 50F, high of 70F",
               "saturday": "drizzle, low of 30F, high of 50F",
+              "sunday": "misty, low of 50F, high of 60F",
               "today": "monday"
             },
             {
+              "location": "san francisco",
               "monday": "rain, low of 30F, high of 50F",
               "tuesday": "foggy, low of 50F, high of 70F",
-              "friday": "hail, low of 90F, high of 100F",
               "wednesday": "rain, low of 50F, high of 60F",
               "thursday": "stormy, low of 50F, high of 60F",
-              "sunday": "hot, low of 80F, high of 90F",
-              "location": "san francisco",
+              "friday": "hail, low of 90F, high of 100F",
               "saturday": "blizzard, low of 40F, high of 60F",
+              "sunday": "hot, low of 80F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "boston",
               "monday": "misty, low of 70F, high of 80F",
               "tuesday": "clear skies, low of 80F, high of 90F",
-              "friday": "hail, low of 30F, high of 40F",
               "wednesday": "snow, low of 90F, high of 100F",
               "thursday": "clear skies, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 70F, high of 80F",
-              "location": "boston",
+              "friday": "hail, low of 30F, high of 40F",
               "saturday": "blizzard, low of 20F, high of 30F",
+              "sunday": "cloudy, low of 70F, high of 80F",
               "today": "monday"
             }
           ]
@@ -1961,80 +1961,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "cleveland",
               "monday": "hail, low of 90F, high of 100F",
               "tuesday": "foggy, low of 60F, high of 80F",
-              "friday": "drizzle, low of 60F, high of 70F",
               "wednesday": "raining, low of 80F, high of 90F",
               "thursday": "snow, low of 30F, high of 50F",
-              "sunday": "drizzle, low of 80F, high of 90F",
-              "location": "cleveland",
+              "friday": "drizzle, low of 60F, high of 70F",
               "saturday": "raining, low of 40F, high of 60F",
+              "sunday": "drizzle, low of 80F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "new york",
               "monday": "rain, low of 60F, high of 80F",
               "tuesday": "stormy, low of 90F, high of 100F",
-              "friday": "foggy, low of 70F, high of 90F",
               "wednesday": "windy, low of 50F, high of 70F",
               "thursday": "windy, low of 70F, high of 80F",
-              "sunday": "dry, low of 70F, high of 90F",
-              "location": "new york",
+              "friday": "foggy, low of 70F, high of 90F",
               "saturday": "dry, low of 40F, high of 60F",
+              "sunday": "dry, low of 70F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "brentwood",
               "monday": "raining, low of 90F, high of 100F",
               "tuesday": "drizzle, low of 70F, high of 90F",
-              "friday": "windy, low of 70F, high of 80F",
               "wednesday": "dew, low of 50F, high of 70F",
               "thursday": "foggy, low of 20F, high of 40F",
-              "sunday": "rain, low of 80F, high of 100F",
-              "location": "brentwood",
+              "friday": "windy, low of 70F, high of 80F",
               "saturday": "dry, low of 20F, high of 30F",
+              "sunday": "rain, low of 80F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "inglewood",
               "monday": "raining, low of 40F, high of 60F",
               "tuesday": "snow, low of 30F, high of 50F",
-              "friday": "cloudy, low of 90F, high of 100F",
               "wednesday": "windy, low of 60F, high of 70F",
               "thursday": "overcast, low of 70F, high of 80F",
-              "sunday": "humid, low of 90F, high of 100F",
-              "location": "inglewood",
+              "friday": "cloudy, low of 90F, high of 100F",
               "saturday": "overcast, low of 30F, high of 40F",
+              "sunday": "humid, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "mountain view",
               "monday": "windy, low of 60F, high of 70F",
               "tuesday": "misty, low of 60F, high of 70F",
-              "friday": "foggy, low of 90F, high of 100F",
               "wednesday": "cloudy, low of 80F, high of 90F",
               "thursday": "hail, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 60F, high of 70F",
-              "location": "mountain view",
+              "friday": "foggy, low of 90F, high of 100F",
               "saturday": "misty, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 60F, high of 70F",
               "today": "monday"
             },
             {
+              "location": "menlo park",
               "monday": "foggy, low of 30F, high of 40F",
               "tuesday": "rain, low of 20F, high of 40F",
-              "friday": "drizzle, low of 90F, high of 100F",
               "wednesday": "misty, low of 70F, high of 90F",
               "thursday": "clear skies, low of 30F, high of 50F",
-              "sunday": "windy, low of 20F, high of 30F",
-              "location": "menlo park",
+              "friday": "drizzle, low of 90F, high of 100F",
               "saturday": "drizzle, low of 80F, high of 90F",
+              "sunday": "windy, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "compton",
               "monday": "humid, low of 60F, high of 70F",
               "tuesday": "stormy, low of 70F, high of 90F",
-              "friday": "cloudy, low of 80F, high of 90F",
               "wednesday": "dry, low of 30F, high of 40F",
               "thursday": "foggy, low of 70F, high of 90F",
-              "sunday": "foggy, low of 60F, high of 80F",
-              "location": "compton",
+              "friday": "cloudy, low of 80F, high of 90F",
               "saturday": "hail, low of 70F, high of 80F",
+              "sunday": "foggy, low of 60F, high of 80F",
               "today": "monday"
             }
           ]
@@ -2078,80 +2078,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "cleveland",
               "monday": "hail, low of 90F, high of 100F",
               "tuesday": "foggy, low of 60F, high of 80F",
-              "friday": "drizzle, low of 60F, high of 70F",
               "wednesday": "raining, low of 80F, high of 90F",
               "thursday": "snow, low of 30F, high of 50F",
-              "sunday": "drizzle, low of 80F, high of 90F",
-              "location": "cleveland",
+              "friday": "drizzle, low of 60F, high of 70F",
               "saturday": "raining, low of 40F, high of 60F",
+              "sunday": "drizzle, low of 80F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "new york",
               "monday": "rain, low of 60F, high of 80F",
               "tuesday": "stormy, low of 90F, high of 100F",
-              "friday": "foggy, low of 70F, high of 90F",
               "wednesday": "windy, low of 50F, high of 70F",
               "thursday": "windy, low of 70F, high of 80F",
-              "sunday": "dry, low of 70F, high of 90F",
-              "location": "new york",
+              "friday": "foggy, low of 70F, high of 90F",
               "saturday": "dry, low of 40F, high of 60F",
+              "sunday": "dry, low of 70F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "brentwood",
               "monday": "raining, low of 90F, high of 100F",
               "tuesday": "drizzle, low of 70F, high of 90F",
-              "friday": "windy, low of 70F, high of 80F",
               "wednesday": "dew, low of 50F, high of 70F",
               "thursday": "foggy, low of 20F, high of 40F",
-              "sunday": "rain, low of 80F, high of 100F",
-              "location": "brentwood",
+              "friday": "windy, low of 70F, high of 80F",
               "saturday": "dry, low of 20F, high of 30F",
+              "sunday": "rain, low of 80F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "inglewood",
               "monday": "raining, low of 40F, high of 60F",
               "tuesday": "snow, low of 30F, high of 50F",
-              "friday": "cloudy, low of 90F, high of 100F",
               "wednesday": "windy, low of 60F, high of 70F",
               "thursday": "overcast, low of 70F, high of 80F",
-              "sunday": "humid, low of 90F, high of 100F",
-              "location": "inglewood",
+              "friday": "cloudy, low of 90F, high of 100F",
               "saturday": "overcast, low of 30F, high of 40F",
+              "sunday": "humid, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "mountain view",
               "monday": "windy, low of 60F, high of 70F",
               "tuesday": "misty, low of 60F, high of 70F",
-              "friday": "foggy, low of 90F, high of 100F",
               "wednesday": "cloudy, low of 80F, high of 90F",
               "thursday": "hail, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 60F, high of 70F",
-              "location": "mountain view",
+              "friday": "foggy, low of 90F, high of 100F",
               "saturday": "misty, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 60F, high of 70F",
               "today": "monday"
             },
             {
+              "location": "menlo park",
               "monday": "foggy, low of 30F, high of 40F",
               "tuesday": "rain, low of 20F, high of 40F",
-              "friday": "drizzle, low of 90F, high of 100F",
               "wednesday": "misty, low of 70F, high of 90F",
               "thursday": "clear skies, low of 30F, high of 50F",
-              "sunday": "windy, low of 20F, high of 30F",
-              "location": "menlo park",
+              "friday": "drizzle, low of 90F, high of 100F",
               "saturday": "drizzle, low of 80F, high of 90F",
+              "sunday": "windy, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "compton",
               "monday": "humid, low of 60F, high of 70F",
               "tuesday": "stormy, low of 70F, high of 90F",
-              "friday": "cloudy, low of 80F, high of 90F",
               "wednesday": "dry, low of 30F, high of 40F",
               "thursday": "foggy, low of 70F, high of 90F",
-              "sunday": "foggy, low of 60F, high of 80F",
-              "location": "compton",
+              "friday": "cloudy, low of 80F, high of 90F",
               "saturday": "hail, low of 70F, high of 80F",
+              "sunday": "foggy, low of 60F, high of 80F",
               "today": "monday"
             }
           ]
@@ -2186,80 +2186,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "cleveland",
               "monday": "hail, low of 90F, high of 100F",
               "tuesday": "foggy, low of 60F, high of 80F",
-              "friday": "drizzle, low of 60F, high of 70F",
               "wednesday": "raining, low of 80F, high of 90F",
               "thursday": "snow, low of 30F, high of 50F",
-              "sunday": "drizzle, low of 80F, high of 90F",
-              "location": "cleveland",
+              "friday": "drizzle, low of 60F, high of 70F",
               "saturday": "raining, low of 40F, high of 60F",
+              "sunday": "drizzle, low of 80F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "new york",
               "monday": "rain, low of 60F, high of 80F",
               "tuesday": "stormy, low of 90F, high of 100F",
-              "friday": "foggy, low of 70F, high of 90F",
               "wednesday": "windy, low of 50F, high of 70F",
               "thursday": "windy, low of 70F, high of 80F",
-              "sunday": "dry, low of 70F, high of 90F",
-              "location": "new york",
+              "friday": "foggy, low of 70F, high of 90F",
               "saturday": "dry, low of 40F, high of 60F",
+              "sunday": "dry, low of 70F, high of 90F",
               "today": "monday"
             },
             {
+              "location": "brentwood",
               "monday": "raining, low of 90F, high of 100F",
               "tuesday": "drizzle, low of 70F, high of 90F",
-              "friday": "windy, low of 70F, high of 80F",
               "wednesday": "dew, low of 50F, high of 70F",
               "thursday": "foggy, low of 20F, high of 40F",
-              "sunday": "rain, low of 80F, high of 100F",
-              "location": "brentwood",
+              "friday": "windy, low of 70F, high of 80F",
               "saturday": "dry, low of 20F, high of 30F",
+              "sunday": "rain, low of 80F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "inglewood",
               "monday": "raining, low of 40F, high of 60F",
               "tuesday": "snow, low of 30F, high of 50F",
-              "friday": "cloudy, low of 90F, high of 100F",
               "wednesday": "windy, low of 60F, high of 70F",
               "thursday": "overcast, low of 70F, high of 80F",
-              "sunday": "humid, low of 90F, high of 100F",
-              "location": "inglewood",
+              "friday": "cloudy, low of 90F, high of 100F",
               "saturday": "overcast, low of 30F, high of 40F",
+              "sunday": "humid, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "mountain view",
               "monday": "windy, low of 60F, high of 70F",
               "tuesday": "misty, low of 60F, high of 70F",
-              "friday": "foggy, low of 90F, high of 100F",
               "wednesday": "cloudy, low of 80F, high of 90F",
               "thursday": "hail, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 60F, high of 70F",
-              "location": "mountain view",
+              "friday": "foggy, low of 90F, high of 100F",
               "saturday": "misty, low of 90F, high of 100F",
+              "sunday": "cloudy, low of 60F, high of 70F",
               "today": "monday"
             },
             {
+              "location": "menlo park",
               "monday": "foggy, low of 30F, high of 40F",
               "tuesday": "rain, low of 20F, high of 40F",
-              "friday": "drizzle, low of 90F, high of 100F",
               "wednesday": "misty, low of 70F, high of 90F",
               "thursday": "clear skies, low of 30F, high of 50F",
-              "sunday": "windy, low of 20F, high of 30F",
-              "location": "menlo park",
+              "friday": "drizzle, low of 90F, high of 100F",
               "saturday": "drizzle, low of 80F, high of 90F",
+              "sunday": "windy, low of 20F, high of 30F",
               "today": "monday"
             },
             {
+              "location": "compton",
               "monday": "humid, low of 60F, high of 70F",
               "tuesday": "stormy, low of 70F, high of 90F",
-              "friday": "cloudy, low of 80F, high of 90F",
               "wednesday": "dry, low of 30F, high of 40F",
               "thursday": "foggy, low of 70F, high of 90F",
-              "sunday": "foggy, low of 60F, high of 80F",
-              "location": "compton",
+              "friday": "cloudy, low of 80F, high of 90F",
               "saturday": "hail, low of 70F, high of 80F",
+              "sunday": "foggy, low of 60F, high of 80F",
               "today": "monday"
             }
           ]
@@ -2335,80 +2335,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "brentwood",
               "monday": "dry, low of 40F, high of 60F",
               "tuesday": "overcast, low of 30F, high of 40F",
-              "friday": "dry, low of 20F, high of 40F",
               "wednesday": "raining, low of 30F, high of 50F",
               "thursday": "cloudy, low of 50F, high of 60F",
-              "sunday": "humid, low of 90F, high of 100F",
-              "location": "brentwood",
+              "friday": "dry, low of 20F, high of 40F",
               "saturday": "cloudy, low of 70F, high of 90F",
+              "sunday": "humid, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "corona",
               "monday": "foggy, low of 80F, high of 90F",
               "tuesday": "dry, low of 40F, high of 60F",
-              "friday": "dry, low of 60F, high of 70F",
               "wednesday": "clear skies, low of 80F, high of 100F",
               "thursday": "stormy, low of 40F, high of 60F",
-              "sunday": "blizzard, low of 40F, high of 50F",
-              "location": "corona",
+              "friday": "dry, low of 60F, high of 70F",
               "saturday": "hail, low of 50F, high of 60F",
+              "sunday": "blizzard, low of 40F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "danville",
               "monday": "dew, low of 60F, high of 70F",
               "tuesday": "windy, low of 90F, high of 100F",
-              "friday": "misty, low of 60F, high of 70F",
               "wednesday": "raining, low of 70F, high of 90F",
               "thursday": "cloudy, low of 70F, high of 80F",
-              "sunday": "hail, low of 60F, high of 70F",
-              "location": "danville",
+              "friday": "misty, low of 60F, high of 70F",
               "saturday": "hot, low of 60F, high of 80F",
+              "sunday": "hail, low of 60F, high of 70F",
               "today": "monday"
             },
             {
+              "location": "seattle",
               "monday": "dry, low of 40F, high of 60F",
               "tuesday": "raining, low of 80F, high of 90F",
-              "friday": "raining, low of 20F, high of 40F",
               "wednesday": "hail, low of 20F, high of 30F",
               "thursday": "frost, low of 20F, high of 40F",
-              "sunday": "humid, low of 80F, high of 100F",
-              "location": "seattle",
+              "friday": "raining, low of 20F, high of 40F",
               "saturday": "clear skies, low of 70F, high of 80F",
+              "sunday": "humid, low of 80F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "inglewood",
               "monday": "dry, low of 80F, high of 90F",
               "tuesday": "overcast, low of 20F, high of 40F",
-              "friday": "blizzard, low of 40F, high of 60F",
               "wednesday": "cloudy, low of 60F, high of 70F",
               "thursday": "misty, low of 80F, high of 100F",
-              "sunday": "blizzard, low of 30F, high of 40F",
-              "location": "inglewood",
+              "friday": "blizzard, low of 40F, high of 60F",
               "saturday": "drizzle, low of 30F, high of 50F",
+              "sunday": "blizzard, low of 30F, high of 40F",
               "today": "monday"
             },
             {
+              "location": "oakland",
               "monday": "foggy, low of 80F, high of 100F",
               "tuesday": "dew, low of 30F, high of 40F",
-              "friday": "cloudy, low of 40F, high of 60F",
               "wednesday": "frost, low of 30F, high of 40F",
               "thursday": "rain, low of 90F, high of 100F",
-              "sunday": "windy, low of 30F, high of 40F",
-              "location": "oakland",
+              "friday": "cloudy, low of 40F, high of 60F",
               "saturday": "cloudy, low of 60F, high of 80F",
+              "sunday": "windy, low of 30F, high of 40F",
               "today": "monday"
             },
             {
+              "location": "mountain view",
               "monday": "clear skies, low of 60F, high of 80F",
               "tuesday": "stormy, low of 70F, high of 80F",
-              "friday": "warm, low of 70F, high of 90F",
               "wednesday": "foggy, low of 20F, high of 30F",
               "thursday": "warm, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 80F, high of 100F",
-              "location": "mountain view",
+              "friday": "warm, low of 70F, high of 90F",
               "saturday": "clear skies, low of 60F, high of 80F",
+              "sunday": "cloudy, low of 80F, high of 100F",
               "today": "monday"
             }
           ]
@@ -2443,80 +2443,80 @@
         "db_results": {
           "weather": [
             {
+              "location": "brentwood",
               "monday": "dry, low of 40F, high of 60F",
               "tuesday": "overcast, low of 30F, high of 40F",
-              "friday": "dry, low of 20F, high of 40F",
               "wednesday": "raining, low of 30F, high of 50F",
               "thursday": "cloudy, low of 50F, high of 60F",
-              "sunday": "humid, low of 90F, high of 100F",
-              "location": "brentwood",
+              "friday": "dry, low of 20F, high of 40F",
               "saturday": "cloudy, low of 70F, high of 90F",
+              "sunday": "humid, low of 90F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "corona",
               "monday": "foggy, low of 80F, high of 90F",
               "tuesday": "dry, low of 40F, high of 60F",
-              "friday": "dry, low of 60F, high of 70F",
               "wednesday": "clear skies, low of 80F, high of 100F",
               "thursday": "stormy, low of 40F, high of 60F",
-              "sunday": "blizzard, low of 40F, high of 50F",
-              "location": "corona",
+              "friday": "dry, low of 60F, high of 70F",
               "saturday": "hail, low of 50F, high of 60F",
+              "sunday": "blizzard, low of 40F, high of 50F",
               "today": "monday"
             },
             {
+              "location": "danville",
               "monday": "dew, low of 60F, high of 70F",
               "tuesday": "windy, low of 90F, high of 100F",
-              "friday": "misty, low of 60F, high of 70F",
               "wednesday": "raining, low of 70F, high of 90F",
               "thursday": "cloudy, low of 70F, high of 80F",
-              "sunday": "hail, low of 60F, high of 70F",
-              "location": "danville",
+              "friday": "misty, low of 60F, high of 70F",
               "saturday": "hot, low of 60F, high of 80F",
+              "sunday": "hail, low of 60F, high of 70F",
               "today": "monday"
             },
             {
+              "location": "seattle",
               "monday": "dry, low of 40F, high of 60F",
               "tuesday": "raining, low of 80F, high of 90F",
-              "friday": "raining, low of 20F, high of 40F",
               "wednesday": "hail, low of 20F, high of 30F",
               "thursday": "frost, low of 20F, high of 40F",
-              "sunday": "humid, low of 80F, high of 100F",
-              "location": "seattle",
+              "friday": "raining, low of 20F, high of 40F",
               "saturday": "clear skies, low of 70F, high of 80F",
+              "sunday": "humid, low of 80F, high of 100F",
               "today": "monday"
             },
             {
+              "location": "inglewood",
               "monday": "dry, low of 80F, high of 90F",
               "tuesday": "overcast, low of 20F, high of 40F",
-              "friday": "blizzard, low of 40F, high of 60F",
               "wednesday": "cloudy, low of 60F, high of 70F",
               "thursday": "misty, low of 80F, high of 100F",
-              "sunday": "blizzard, low of 30F, high of 40F",
-              "location": "inglewood",
+              "friday": "blizzard, low of 40F, high of 60F",
               "saturday": "drizzle, low of 30F, high of 50F",
+              "sunday": "blizzard, low of 30F, high of 40F",
               "today": "monday"
             },
             {
+              "location": "oakland",
               "monday": "foggy, low of 80F, high of 100F",
               "tuesday": "dew, low of 30F, high of 40F",
-              "friday": "cloudy, low of 40F, high of 60F",
               "wednesday": "frost, low of 30F, high of 40F",
               "thursday": "rain, low of 90F, high of 100F",
-              "sunday": "windy, low of 30F, high of 40F",
-              "location": "oakland",
+              "friday": "cloudy, low of 40F, high of 60F",
               "saturday": "cloudy, low of 60F, high of 80F",
+              "sunday": "windy, low of 30F, high of 40F",
               "today": "monday"
             },
             {
+              "location": "mountain view",
               "monday": "clear skies, low of 60F, high of 80F",
               "tuesday": "stormy, low of 70F, high of 80F",
-              "friday": "warm, low of 70F, high of 90F",
               "wednesday": "foggy, low of 20F, high of 30F",
               "thursday": "warm, low of 80F, high of 100F",
-              "sunday": "cloudy, low of 80F, high of 100F",
-              "location": "mountain view",
+              "friday": "warm, low of 70F, high of 90F",
               "saturday": "clear skies, low of 60F, high of 80F",
+              "sunday": "cloudy, low of 80F, high of 100F",
               "today": "monday"
             }
           ]
