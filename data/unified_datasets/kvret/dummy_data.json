@@ -7,11 +7,6 @@
     "domains": [
       "navigate"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -308,11 +303,6 @@
     "domains": [
       "navigate"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -599,11 +589,6 @@
     "domains": [
       "navigate"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -896,11 +881,6 @@
     "domains": [
       "schedule"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -976,11 +956,6 @@
     "domains": [
       "schedule"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1166,11 +1141,6 @@
     "domains": [
       "schedule"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1283,11 +1253,6 @@
     "domains": [
       "weather"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1653,11 +1618,6 @@
     "domains": [
       "weather"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1910,11 +1870,6 @@
     "domains": [
       "weather"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -2275,11 +2230,6 @@
     "domains": [
       "weather"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",

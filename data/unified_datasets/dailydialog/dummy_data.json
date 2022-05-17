@@ -7,11 +7,6 @@
     "domains": [
       "Attitude & Emotion"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -28,8 +23,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -46,8 +40,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -64,8 +57,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -82,8 +74,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -100,8 +91,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -118,8 +108,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -136,8 +125,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "state": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "system",
@@ -154,8 +142,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "user",
@@ -172,8 +159,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "state": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "system",
@@ -190,8 +176,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       }
     ]
   },
@@ -203,11 +188,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -224,8 +204,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -242,8 +221,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -260,8 +238,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "surprise",
-        "state": {}
+        "emotion": "surprise"
       },
       {
         "speaker": "system",
@@ -278,8 +255,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -296,8 +272,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -314,8 +289,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       }
     ]
   },
@@ -327,11 +301,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -348,8 +317,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -366,8 +334,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -384,8 +351,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -402,8 +368,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -420,8 +385,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       }
     ]
   },
@@ -433,11 +397,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -454,8 +413,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -472,8 +430,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -490,8 +447,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -508,8 +464,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       }
     ]
   },
@@ -521,11 +476,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -542,8 +492,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -560,8 +509,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -578,8 +526,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -596,8 +543,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -614,8 +560,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -632,8 +577,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "surprise",
-        "db_results": {}
+        "emotion": "surprise"
       },
       {
         "speaker": "user",
@@ -650,8 +594,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -668,8 +611,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "surprise",
-        "db_results": {}
+        "emotion": "surprise"
       },
       {
         "speaker": "user",
@@ -686,8 +628,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       }
     ]
   },
@@ -699,11 +640,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -720,8 +656,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -738,8 +673,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "user",
@@ -756,8 +690,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -774,8 +707,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -792,8 +724,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -810,8 +741,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "user",
@@ -828,8 +758,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -846,8 +775,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -864,8 +792,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -882,8 +809,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       }
     ]
   },
@@ -895,11 +821,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -916,8 +837,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -934,8 +854,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "surprise",
-        "db_results": {}
+        "emotion": "surprise"
       },
       {
         "speaker": "user",
@@ -952,8 +871,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -970,8 +888,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -988,8 +905,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1006,8 +922,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1024,8 +939,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       }
     ]
   },
@@ -1037,11 +951,6 @@
     "domains": [
       "Relationship"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1058,8 +967,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1076,8 +984,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1094,8 +1001,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1112,8 +1018,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "user",
@@ -1130,8 +1035,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "state": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "system",
@@ -1148,8 +1052,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "user",
@@ -1166,8 +1069,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "state": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "system",
@@ -1184,8 +1086,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1202,8 +1103,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "state": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "system",
@@ -1220,8 +1120,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1238,8 +1137,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1256,8 +1154,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       },
       {
         "speaker": "user",
@@ -1274,8 +1171,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "state": {}
+        "emotion": "happiness"
       }
     ]
   },
@@ -1287,11 +1183,6 @@
     "domains": [
       "Attitude & Emotion"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1308,8 +1199,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1326,8 +1216,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1344,8 +1233,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1362,8 +1250,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1380,8 +1267,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1398,8 +1284,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1416,8 +1301,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1434,8 +1318,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1452,8 +1335,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1470,8 +1352,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1488,8 +1369,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1506,8 +1386,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "happiness",
-        "db_results": {}
+        "emotion": "happiness"
       }
     ]
   },
@@ -1519,11 +1398,6 @@
     "domains": [
       "Attitude & Emotion"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -1540,8 +1414,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1558,8 +1431,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1576,8 +1448,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1594,8 +1465,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "user",
@@ -1612,8 +1482,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "state": {}
+        "emotion": "no emotion"
       },
       {
         "speaker": "system",
@@ -1630,8 +1499,7 @@
           "categorical": [],
           "non-categorical": []
         },
-        "emotion": "no emotion",
-        "db_results": {}
+        "emotion": "no emotion"
       }
     ]
   }

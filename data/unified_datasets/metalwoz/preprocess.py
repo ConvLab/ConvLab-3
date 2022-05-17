@@ -72,16 +72,7 @@ def preprocess():
                                 'speaker': speaker,
                                 'utterance': utt,
                                 'utt_idx': utt_idx,
-                                'dialogue_acts': {
-                                    'categorical': [],
-                                    'non-categorical': [],
-                                    'binary': [],
-                                }
                             }
-                            if speaker == 'system':
-                                turn['db_results'] = {}
-                            else:
-                                turn['state'] = {}
                             dialogue['turns'].append(turn)
 
                         dialogues_by_split[split].append(dialogue)

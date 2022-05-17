@@ -925,7 +925,6 @@ def preprocess():
                             _, slot, value = normalize_domain_slot_value(domain, slot, value)
                             cur_state[domain][slot] = value
                 dialogue['turns'][-2]['state'] = cur_state
-                dialogue['turns'][-1]['db_results'] = {}
                 entity_booked_dict, booked = fix_entity_booked_info(entity_booked_dict, booked)
                 dialogue['turns'][-1]['booked'] = booked
         dialogues_by_split[split].append(dialogue)

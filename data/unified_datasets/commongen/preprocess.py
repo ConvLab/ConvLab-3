@@ -52,23 +52,11 @@ def preprocess():
                         'data_split': data_split,
                         'dialogue_id': dialogue_id,
                         'original_id': f'{data_split}-{len(dialogues_by_split[data_split])}',
-                        'domains': [],
-                        'goal': {
-                            'description': '',
-                            'inform': {},
-                            'request': {}
-                        },
                         'turns': [{
                             'speaker': speaker,
                             'utterance': scene.strip(),
                             'utt_idx': 0,
-                            'dialogue_acts': {
-                                'binary': [],
-                                'categorical': [],
-                                'non-categorical': [],
-                            },
                             'concepts': concepts,
-                            'db_results': {}
                         }]
                     }
 

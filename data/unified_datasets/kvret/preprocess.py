@@ -124,11 +124,6 @@ def preprocess():
                     'dialogue_id': dialogue_id,
                     'original_id': f'{data_split}-{len(dialogues_by_split[data_split])}',
                     'domains': [domain],
-                    'goal': {
-                        'description': '',
-                        'inform': {},
-                        'request': {}
-                    },
                     'turns': []
                 }
                 init_state = {domain: {}}
@@ -207,7 +202,7 @@ def preprocess():
     with ZipFile('data.zip', 'w', ZIP_DEFLATED) as zf:
         for filename in os.listdir(new_data_dir):
             zf.write(f'{new_data_dir}/{filename}')
-    # rmtree(new_data_dir)
+    rmtree(new_data_dir)
     return dialogues, ontology
 
 

@@ -112,7 +112,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -215,7 +214,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -331,7 +329,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -434,7 +431,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -520,7 +516,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -655,7 +650,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -752,7 +746,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -832,7 +825,6 @@
           "non-categorical": [],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -918,7 +910,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1003,7 +994,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1153,7 +1143,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1242,7 +1231,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1355,7 +1343,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1453,7 +1440,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1549,7 +1535,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1634,7 +1619,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1752,7 +1736,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1843,7 +1826,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -1961,7 +1943,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2076,7 +2057,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2162,7 +2142,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2242,7 +2221,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2380,7 +2358,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2487,7 +2464,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2601,7 +2577,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2698,7 +2673,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2825,7 +2799,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -2929,7 +2902,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3035,7 +3007,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3156,7 +3127,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3242,7 +3212,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3385,7 +3354,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3491,7 +3459,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3595,7 +3562,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3751,7 +3717,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3853,7 +3818,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -3970,7 +3934,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4044,7 +4007,6 @@
           "non-categorical": [],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4130,7 +4092,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4227,7 +4188,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4336,7 +4296,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4422,7 +4381,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4565,7 +4523,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4670,7 +4627,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4765,7 +4721,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -4875,7 +4830,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5023,7 +4977,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5136,7 +5089,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5227,7 +5179,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5337,7 +5288,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5426,7 +5376,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5512,7 +5461,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5672,7 +5620,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5787,7 +5734,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -5903,7 +5849,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -6053,7 +5998,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -6195,7 +6139,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -6291,7 +6234,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -6415,7 +6357,6 @@
           ],
           "binary": []
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],
@@ -6511,7 +6452,6 @@
             }
           ]
         },
-        "db_results": {},
         "booked": {
           "taxi": [],
           "restaurant": [],

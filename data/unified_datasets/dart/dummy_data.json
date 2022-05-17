@@ -7,21 +7,11 @@
     "domains": [
       "WikiTableQuestions_mturk"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "First Clearing\tbased on Callicoon, New York and location at On NYS 52 1 Mi. Youngsville",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "First Clearing",
@@ -34,8 +24,7 @@
             "Callicoon, New York"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   },
@@ -47,21 +36,11 @@
     "domains": [
       "WikiTableQuestions_mturk"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "Old Turnpike is a Historic Marker in Sullivan County, New York.",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "[TABLECONTEXT]",
@@ -74,8 +53,7 @@
             "List of New York State Historic Markers in Sullivan County, New York"
           ]
         ],
-        "subtree_was_extended": true,
-        "db_results": {}
+        "subtree_was_extended": true
       }
     ]
   },
@@ -87,21 +65,11 @@
     "domains": [
       "WikiTableQuestions_mturk"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "Tereza Martincová",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "Antalya 15, Turkey",
@@ -124,8 +92,7 @@
             "Antalya 15, Turkey"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   },
@@ -137,21 +104,11 @@
     "domains": [
       "WikiTableQuestions_mturk"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "Beatriz Haddad Maia played on 2 April 2012\tin Ribeirão Preto, Brazil\ton a hard surface.",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "2 April 2012",
@@ -164,8 +121,7 @@
             "Hard"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   },
@@ -177,21 +133,11 @@
     "domains": [
       "WikiSQL_decl_sents"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "The week 5 game is played in Shea Stadium.",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "5",
@@ -199,8 +145,7 @@
             "shea stadium"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   },
@@ -212,21 +157,11 @@
     "domains": [
       "WikiSQL_decl_sents"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "The team whose nickname is red raiders is located in the orange city, iowa",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "Northwestern College",
@@ -239,8 +174,7 @@
             "Orange City, Iowa"
           ]
         ],
-        "subtree_was_extended": true,
-        "db_results": {}
+        "subtree_was_extended": true
       }
     ]
   },
@@ -252,21 +186,11 @@
     "domains": [
       "WikiSQL_decl_sents"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "University of mississippi was in the selc new conference.",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "University of Mississippi",
@@ -274,8 +198,7 @@
             "SELC"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   },
@@ -287,21 +210,11 @@
     "domains": [
       "WikiSQL_decl_sents"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "The years that the new classification was MCLA division i are 2008-2009.",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "University of Mississippi",
@@ -314,8 +227,7 @@
             "2008-2009"
           ]
         ],
-        "subtree_was_extended": true,
-        "db_results": {}
+        "subtree_was_extended": true
       }
     ]
   },
@@ -327,21 +239,11 @@
     "domains": [
       "WikiSQL_decl_sents"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "The nickname of the  team of University of Nebraska at Omaha is mavericks.",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "University of Nebraska at Omaha",
@@ -349,8 +251,7 @@
             "Mavericks"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   },
@@ -362,21 +263,11 @@
     "domains": [
       "WikiSQL_decl_sents"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
         "utterance": "William Wasmund scored 5.0 points",
         "utt_idx": 0,
-        "dialogue_acts": {
-          "binary": [],
-          "categorical": [],
-          "non-categorical": []
-        },
         "tripleset": [
           [
             "William Wasmund",
@@ -399,8 +290,7 @@
             "1"
           ]
         ],
-        "subtree_was_extended": false,
-        "db_results": {}
+        "subtree_was_extended": false
       }
     ]
   }

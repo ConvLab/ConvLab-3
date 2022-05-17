@@ -80,8 +80,7 @@
             }
           ],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -139,8 +138,7 @@
               "end": 36
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -182,8 +180,7 @@
               "end": 75
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -225,8 +222,7 @@
               "end": 18
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -253,8 +249,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -329,8 +324,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -396,8 +390,7 @@
               "end": 29
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -439,8 +432,7 @@
               "end": 34
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -480,8 +472,7 @@
             }
           ],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -508,8 +499,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -589,8 +579,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -635,8 +624,7 @@
               "end": 77
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -678,8 +666,7 @@
               "end": 33
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -706,8 +693,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -788,8 +774,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -853,8 +838,7 @@
               "end": 7
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -896,8 +880,7 @@
               "end": 34
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -924,8 +907,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -1014,8 +996,7 @@
               "end": 10
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1059,8 +1040,7 @@
               "end": 29
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1102,8 +1082,7 @@
               "end": 46
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1130,8 +1109,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -1205,8 +1183,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1253,8 +1230,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1325,8 +1301,7 @@
               "end": 138
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1353,8 +1328,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -1443,8 +1417,7 @@
               "end": 94
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1510,8 +1483,7 @@
               "end": 17
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1561,8 +1533,7 @@
               "end": 47
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1589,8 +1560,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -1685,8 +1655,7 @@
               "end": 23
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1749,8 +1718,7 @@
               "end": 90
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1794,8 +1762,7 @@
               "end": 33
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1822,8 +1789,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -1899,8 +1865,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1969,8 +1934,7 @@
               "end": 59
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2033,8 +1997,7 @@
               "end": 16
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2061,8 +2024,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -2163,8 +2125,7 @@
               "end": 41
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2240,8 +2201,7 @@
               "end": 105
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2268,8 +2228,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   }

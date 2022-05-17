@@ -209,18 +209,12 @@ def preprocess():
             cur_domains = [normalize_domain_name(d["instruction_id"].split('-', 1)[0])]
             assert len(cur_domains) == 1 and cur_domains[0] in ontology['domains']
             domain = cur_domains[0]
-            goal = {
-                'description': '',
-                'inform': {},
-                'request': {}
-            }
             dialogue = {
                 'dataset': dataset,
                 'data_split': data_split,
                 'dialogue_id': dialogue_id,
                 'original_id': d["conversation_id"],
                 'domains': cur_domains,
-                'goal': goal,
                 'turns': []
             }
             turns = format_turns(d['utterances'])
@@ -300,8 +294,6 @@ def preprocess():
                 
                 if speaker == 'user':
                     turn['state'] = copy.deepcopy(prev_state)
-                else:
-                    turn['db_results'] = {}
 
                 dialogue['turns'].append(turn)
             dialogues_by_split[data_split].append(dialogue)

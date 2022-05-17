@@ -132,13 +132,14 @@ def check_dialogues(name, dialogues, ontology):
         assert dialogue_id not in all_id, f'multiple dialogue id: {dialogue_id}'
         all_id.add(dialogue_id)
 
-        cur_domains = dialogue['domains']
-        assert isinstance(cur_domains, list), f'{dialogue_id}\t`domains` is expected to be list type, '
-        assert len(set(cur_domains)) == len(cur_domains), f'{dialogue_id}\trepeated domains'
-        cur_stat['domains'] += len(cur_domains)
-        cur_domains = set(cur_domains)
-        for domain_name in cur_domains:
-            assert domain_name in ontology['domains'], f'{dialogue_id}\tundefined current domain: {domain_name}'
+        if 'domains' in dialogue:
+            cur_domains = dialogue['domains']
+            assert isinstance(cur_domains, list), f'{dialogue_id}\t`domains` is expected to be list type, '
+            assert len(set(cur_domains)) == len(cur_domains), f'{dialogue_id}\trepeated domains'
+            cur_stat['domains'] += len(cur_domains)
+            cur_domains = set(cur_domains)
+            for domain_name in cur_domains:
+                assert domain_name in ontology['domains'], f'{dialogue_id}\tundefined current domain: {domain_name}'
 
         # check domain-slot-value
         # prefix: error prefix
@@ -167,18 +168,19 @@ def check_dialogues(name, dialogues, ontology):
             assert da['intent'] in ontology['intents'], f'{dialogue_id}:{turn_id}:da\tundefined intent {da["intent"]}'
             check_dsv(da['domain'], da['slot'], da['value'], 'dialogue act', categorical, f'{dialogue_id}:{turn_id}:da')
         
-        goal = dialogue['goal']
-        assert isinstance(goal['description'], str), f'{dialogue_id}\tgoal description {goal["description"]} should be string'
-        assert isinstance(goal['inform'], dict), f'{dialogue_id}\tgoal inform {goal["inform"]} should be dict'
-        assert isinstance(goal['request'], dict), f'{dialogue_id}\tgoal request {goal["request"]} should be dict'
-        for domain_name, domain in goal['inform'].items():
-            for slot_name, value in domain.items():
-                check_dsv(domain_name, slot_name, value, 'goal', prefix=f'{dialogue_id}:goal:inform')
-                assert value != "", f'{dialogue_id}\tshould set non-empty value in goal inform {goal["inform"]}'
-        for domain_name, domain in goal['request'].items():
-            for slot_name, value in domain.items():
-                check_dsv(domain_name, slot_name, value, 'goal', prefix=f'{dialogue_id}:goal:request')
-                assert value == "", f'{dialogue_id}\tshould set empty value in goal request {goal["request"]}'
+        if 'goal' in dialogue:
+            goal = dialogue['goal']
+            assert isinstance(goal['description'], str), f'{dialogue_id}\tgoal description {goal["description"]} should be string'
+            assert isinstance(goal['inform'], dict), f'{dialogue_id}\tgoal inform {goal["inform"]} should be dict'
+            assert isinstance(goal['request'], dict), f'{dialogue_id}\tgoal request {goal["request"]} should be dict'
+            for domain_name, domain in goal['inform'].items():
+                for slot_name, value in domain.items():
+                    check_dsv(domain_name, slot_name, value, 'goal', prefix=f'{dialogue_id}:goal:inform')
+                    assert value != "", f'{dialogue_id}\tshould set non-empty value in goal inform {goal["inform"]}'
+            for domain_name, domain in goal['request'].items():
+                for slot_name, value in domain.items():
+                    check_dsv(domain_name, slot_name, value, 'goal', prefix=f'{dialogue_id}:goal:request')
+                    assert value == "", f'{dialogue_id}\tshould set empty value in goal request {goal["request"]}'
 
         turns = dialogue['turns']
         cur_stat['utterances'] += len(turns)
@@ -193,47 +195,48 @@ def check_dialogues(name, dialogues, ontology):
             utterance = turn['utterance']
             cur_stat['tokens'] += len(utterance.strip().split(' '))
 
-            dialogue_acts = turn['dialogue_acts']
-            assert isinstance(dialogue_acts['categorical'], list), f'{dialogue_id}:{turn_id}\tcategorical dialogue_acts should be a list'
-            assert isinstance(dialogue_acts['non-categorical'], list), f'{dialogue_id}:{turn_id}\tnon-categorical dialogue_acts should be a list'
-            assert isinstance(dialogue_acts['binary'], list), f'{dialogue_id}:{turn_id}\tbinary dialogue_acts should be a list'
-            for da in dialogue_acts['categorical']:
-                check_da(da, True)
-            for da in dialogue_acts['non-categorical']:
-                check_da(da, False)
-                # values only match after .strip() in some case, it's the issue of pre-processing
-                if da['value'] not in special_values:
-                    stat[split][f'non-cat slot span(dialogue act)'][1] += 1
-                    assert ('start' in da) == ('end' in da), \
-                        f'{dialogue_id}:{turn_id}\tstart and end field in da should both present or neither not present'
-                    if 'start' in da:
-                        value = utterance[da['start']:da['end']]
-                        assert da['value'] == value, f'{dialogue_id}:{turn_id}\tspan({value}) and value{da["value"]} not match' 
-                        stat[split][f'non-cat slot span(dialogue act)'][0] += 1
+            if 'dialogue_acts' in turn:
+                dialogue_acts = turn['dialogue_acts']
+                assert isinstance(dialogue_acts['categorical'], list), f'{dialogue_id}:{turn_id}\tcategorical dialogue_acts should be a list'
+                assert isinstance(dialogue_acts['non-categorical'], list), f'{dialogue_id}:{turn_id}\tnon-categorical dialogue_acts should be a list'
+                assert isinstance(dialogue_acts['binary'], list), f'{dialogue_id}:{turn_id}\tbinary dialogue_acts should be a list'
+                for da in dialogue_acts['categorical']:
+                    check_da(da, True)
+                for da in dialogue_acts['non-categorical']:
+                    check_da(da, False)
+                    # values only match after .strip() in some case, it's the issue of pre-processing
+                    if da['value'] not in special_values:
+                        stat[split][f'non-cat slot span(dialogue act)'][1] += 1
+                        assert ('start' in da) == ('end' in da), \
+                            f'{dialogue_id}:{turn_id}\tstart and end field in da should both present or neither not present'
+                        if 'start' in da:
+                            value = utterance[da['start']:da['end']]
+                            assert da['value'] == value, f'{dialogue_id}:{turn_id}\tspan({value}) and value{da["value"]} not match' 
+                            stat[split][f'non-cat slot span(dialogue act)'][0] += 1
 
-            for da_type in dialogue_acts:
-                for da in dialogue_acts[da_type]:
-                    assert ontology['da_dict'][da_type][(da['intent'], da['domain'], da['slot'])][turn['speaker']] == True
-                    if da_type == 'binary':
-                        assert 'value' not in da, f'{dialogue_id}:{turn_id}\tbinary dialogue act should not have value'
+                for da_type in dialogue_acts:
+                    for da in dialogue_acts[da_type]:
+                        assert ontology['da_dict'][da_type][(da['intent'], da['domain'], da['slot'])][turn['speaker']] == True
+                        if da_type == 'binary':
+                            assert 'value' not in da, f'{dialogue_id}:{turn_id}\tbinary dialogue act should not have value'
 
             if turn['speaker'] == 'user':
                 assert 'db_results' not in turn
-                assert 'state' in turn, f"{dialogue_id}:{turn_id}\tstate must present in user's role, but could be empty"
-                state = turn['state']
-                assert isinstance(state, dict), f'{dialogue_id}:{turn_id}\tstate should be a dict'
-                for domain_name, domain in state.items():
-                    for slot_name, value in domain.items():
-                        check_dsv(domain_name, slot_name, value, 'state', prefix=f'{dialogue_id}:{turn_id}:state')
+                if 'state' in turn:
+                    state = turn['state']
+                    assert isinstance(state, dict), f'{dialogue_id}:{turn_id}\tstate should be a dict'
+                    for domain_name, domain in state.items():
+                        for slot_name, value in domain.items():
+                            check_dsv(domain_name, slot_name, value, 'state', prefix=f'{dialogue_id}:{turn_id}:state')
 
             else:
                 assert 'state' not in turn, f"{dialogue_id}:{turn_id}\tstate cannot present in system's role"
-                assert 'db_results' in turn
-                db_results = turn['db_results']
-                assert isinstance(db_results, dict), f'{dialogue_id}:{turn_id}\db_results should be a dict'
-                for domain_name, results in db_results.items():
-                    assert domain_name in cur_domains, f'{dialogue_id}:{turn_id}:db_results\t{domain_name} not presented in current domains'
-                    assert isinstance(results, list)
+                if 'db_results' in turn:
+                    db_results = turn['db_results']
+                    assert isinstance(db_results, dict), f'{dialogue_id}:{turn_id}\db_results should be a dict'
+                    for domain_name, results in db_results.items():
+                        assert domain_name in cur_domains, f'{dialogue_id}:{turn_id}:db_results\t{domain_name} not presented in current domains'
+                        assert isinstance(results, list)
 
     for _, value_match in match_rate.items():
         for anno_type, (match, total) in value_match.items():

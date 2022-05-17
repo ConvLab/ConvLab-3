@@ -103,11 +103,6 @@ def preprocess():
                     'dialogue_id': dialogue_id,
                     'original_id': f'{data_split}-{len(dialogues_by_split[data_split])}',
                     'domains': [domain],
-                    'goal': {
-                        'description': '',
-                        'inform': {},
-                        'request': {}
-                    },
                     'turns': []
                 }
 
@@ -133,10 +128,6 @@ def preprocess():
                         },
                         'emotion': emotion,
                     })
-                    if speaker == 'system':
-                        dialogue['turns'][-1]['db_results'] = {}
-                    else:
-                        dialogue['turns'][-1]['state'] = {}
 
                     ontology["dialogue_acts"]['binary'].setdefault((intent, '', ''), {})
                     ontology["dialogue_acts"]['binary'][(intent, '', '')][speaker] = True
