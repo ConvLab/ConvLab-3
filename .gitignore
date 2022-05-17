@@ -15,11 +15,17 @@ __pycache__
 
 # data
 data/unified_datasets/multiwoz21/MultiWOZ_2.1.zip
+data/unified_datasets/sgd/dstc8-schema-guided-dialogue-master.zip
 data/unified_datasets/tm1/master.zip
+data/unified_datasets/tm2/master.zip
 data/unified_datasets/dailydialog/ijcnlp_dailydialog.zip
 data/unified_datasets/dart/dart-v1.1.1-*.json
 data/unified_datasets/commongen/commongen_data.zip
 data/unified_datasets/kvret/kvret_*
+data/unified_datasets/metalwoz/metalwoz-*.zip
+data/unified_datasets/personachat/original_data
+data/unified_datasets/**/stat.txt
+data/unified_datasets/**/data
 data/**/train.json
 data/**/val.json
 data/**/test.json
