@@ -15,9 +15,8 @@ from convlab2.policy.ppo import PPO
 from convlab2.policy.rlmodule import Memory
 from torch import multiprocessing as mp
 from argparse import ArgumentParser
-from convlab2.policy.ppo.config import get_config
 from convlab2.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
-    eval_policy, log_start_args, save_best, load_config_file
+    eval_policy, log_start_args, save_best, load_config_file, get_config
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(
