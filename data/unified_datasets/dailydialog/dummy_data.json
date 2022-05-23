@@ -1,0 +1,1638 @@
+[
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-0",
+    "original_id": "train-0",
+    "domains": [
+      "Attitude & Emotion"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Say , Jim , how about going for a few beers after dinner ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "directive",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "You know that is tempting but is really not good for our fitness .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "commissive",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What do you mean ? It will help us to relax .",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Do you really think so ? I don't . It will just make us fat and act silly . Remember last time ?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "I guess you are right.But what shall we do ? I don't feel like sitting at home .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "I suggest a walk over to the gym where we can play singsong and meet some of our friends .",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "directive",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's a good idea . I hear Mary and Sally often go there to play pingpong.Perhaps we can make a foursome with them .",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "commissive",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Sounds great to me ! If they are willing , we could ask them to go dancing with us.That is excellent exercise and fun , too .",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Good.Let ' s go now .",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "directive",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "All right .",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "commissive",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-1",
+    "original_id": "train-1",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Can you do push-ups ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Of course I can . It's a piece of cake ! Believe it or not , I can do 30 push-ups a minute .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Really ? I think that's impossible !",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "surprise",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "You mean 30 push-ups ?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yeah !",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "It's easy . If you do exercise everyday , you can make it , too .",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-2",
+    "original_id": "train-2",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Can you study with the radio on ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "No , I listen to background music .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What is the difference ?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "The radio has too many comerials .",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That's true , but then you have to buy a record player .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-3",
+    "original_id": "train-3",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Are you all right ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "I will be all right soon . I was terrified when I watched them fall from the wire .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Don't worry.He is an acrobat 。",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "I see .",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-4",
+    "original_id": "train-4",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hey John , nice skates . Are they new ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yeah , I just got them . I started playing ice hockey in a community league . So , I finally got myself new skates .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What position do you play ?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "I ’ m a defender . It ’ s a lot of fun . You don ’ t have to be able to skate as fast on defense .",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yeah , you ’ re a pretty big guy . I play goalie , myself .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Oh , yeah ? Which team ?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "surprise",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "The Rockets .",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Really ? I think we play you guys next week . Well , I have to go to practice . See you later .",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "directive",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "surprise",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "All right , see you later .",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "commissive",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-5",
+    "original_id": "train-5",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hey Lydia , what are you reading ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "I ’ m looking at my horoscope for this month ! My outlook is very positive . It says that I should take a vacation to someplace exotic , and that I will have a passionate summer fling !",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What are you talking about ? Let me see that ... What are horoscopes ?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "It ’ s a prediction of your month , based on your zodiac sign . You have a different sign for the month and date you were born in . I was born on April 15th , so I ’ m an Aries . When were you born ?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "January 5th .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Let ’ s see . . . you ’ re a Capricorn . It says that you will be feeling stress at work , but you could see new , exciting developments in your love life . Looks like we ’ ll both have interesting summers !",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That ’ s bogus . I don't feel any stress at work , and my love life is practically nonexistent . This zodiac stuff is all a bunch of nonsense .",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "No , it ’ s not , your astrology sign can tell you a lot about your personality . See ? It says that an Aries is energetic and loves to socialize .",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Well , you certainly match those criteria , but they ’ re so broad they could apply to anyone . What does it say about me ?",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "A Capricorn is serious-minded and practical . She likes to do things in conventional ways . That sounds just like you !",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-6",
+    "original_id": "train-6",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Frank ’ s getting married , do you believe this ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Is he really ?",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "surprise",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Yes , he is . He loves the girl very much .",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Who is he marring ?",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "A girl he met on holiday in Spain , I think .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Have they set a date for the wedding ?",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Not yet .",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-7",
+    "original_id": "train-7",
+    "domains": [
+      "Relationship"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "I hear you bought a new house in the northern suburbs .",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "That ’ s right , we bought it the same day we came on the market .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What kind of house is it ?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "It ’ s a wonderful Spanish style .",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Oh , I love the roof tiles on Spanish style houses .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "And it ’ s a bargaining . A house like this in river side costs double the price .",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Great , is it a two bedroom house ?",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "No , it has three bedrooms and three beds , and has a living room with a twelve-foot ceiling . There ’ s a two-car garage .",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "That ’ s a nice area too . It ’ ll be a good investment for you .",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Yeas , when will you buy a house ?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Not untill the end of this year , you know , just before my wedding .",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Right , congratulations .",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Thank you .",
+        "utt_idx": 12,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Relationship",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "state": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-8",
+    "original_id": "train-8",
+    "domains": [
+      "Attitude & Emotion"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "Hi , Becky , what's up ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Not much , except that my mother-in-law is driving me up the wall .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "What's the problem ?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "She loves to nit-pick and criticizes everything that I do . I can never do anything right when she's around .",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "For example ?",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "Well , last week I invited her over to dinner . My husband and I had no problem with the food , but if you listened to her , then it would seem like I fed her old meat and rotten vegetables . There's just nothing can please her .",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "No , I can't see that happening . I know you're a good cook and nothing like that would ever happen .",
+        "utt_idx": 6,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "It's not just that . She also criticizes how we raise the kids .",
+        "utt_idx": 7,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "My mother-in-law used to do the same thing to us . If it wasn't disciplining them enough , then we were disciplining them too much . She also complained about the food we fed them , the schools we sent them too , and everything else under the sun .",
+        "utt_idx": 8,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "You said she used to ? How did you stop her ?",
+        "utt_idx": 9,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "We basically sat her down and told her how we felt about her constant criticizing , and how we welcomed her advice but hoped she'd let us do our things . She understood , and now everything is a lot more peaceful .",
+        "utt_idx": 10,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "That sounds like a good idea . I'll have to try that .",
+        "utt_idx": 11,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "happiness",
+        "db_results": {}
+      }
+    ]
+  },
+  {
+    "dataset": "dailydialog",
+    "data_split": "train",
+    "dialogue_id": "dailydialog-train-9",
+    "original_id": "train-9",
+    "domains": [
+      "Attitude & Emotion"
+    ],
+    "goal": {
+      "description": "",
+      "inform": {},
+      "request": {}
+    },
+    "turns": [
+      {
+        "speaker": "user",
+        "utterance": "How are Zina's new programmers working out ?",
+        "utt_idx": 0,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "I hate to admit it , but they're good . And fast . The Filipino kid is a genius .",
+        "utt_idx": 1,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "So you'll make the Stars.com deadline , and have us up and running next week ?",
+        "utt_idx": 2,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "question",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "It'll be close , but we'll make it .",
+        "utt_idx": 3,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      },
+      {
+        "speaker": "user",
+        "utterance": "Good . After Stars.com starts paying us , we won't need Vikam's cash anymore .",
+        "utt_idx": 4,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "state": {}
+      },
+      {
+        "speaker": "system",
+        "utterance": "And if we don't need them , we won't need Zina , either .",
+        "utt_idx": 5,
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "inform",
+              "domain": "Attitude & Emotion",
+              "slot": ""
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        },
+        "emotion": "no emotion",
+        "db_results": {}
+      }
+    ]
+  }
+]

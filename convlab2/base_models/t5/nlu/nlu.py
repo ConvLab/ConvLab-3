@@ -32,6 +32,7 @@ class T5NLU(NLU):
         if self.use_context:
             if len(context) > 0 and type(context[0]) is list and len(context[0]) > 1:
                 context = [item[1] for item in context]
+            context = context[-self.context_window_size:]
             utts = context + [utterance]
         else:
             utts = [utterance]
@@ -60,13 +61,15 @@ if __name__ == '__main__':
         [],
         ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
         "What time do you want to leave and what time do you want to arrive by?"],
-        ["What time do you want to leave and what time do you want to arrive by?",
+        ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
+        "What time do you want to leave and what time do you want to arrive by?",
         "I want to leave after 17:15.",
         "Booking completed! your taxi will be blue honda Contact number is 07218068540"],
         [],
         ["Please find a restaurant called Nusha.",
         "I don't seem to be finding anything called Nusha.  What type of food does the restaurant serve?"],
-        ["I don't seem to be finding anything called Nusha.  What type of food does the restaurant serve?",
+        ["Please find a restaurant called Nusha.",
+        "I don't seem to be finding anything called Nusha.  What type of food does the restaurant serve?",
         "I am not sure of the type of food but could you please check again and see if you can find it? Thank you.",
         "Could you double check that you've spelled the name correctly? The closest I can find is Nandos."]
     ]

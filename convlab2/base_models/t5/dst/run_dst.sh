@@ -24,14 +24,12 @@ gradient_accumulation_steps=2
 lr=1e-3
 num_train_epochs=10
 
-python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size} -l t5-small
+python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size}
 
-python -m torch.distributed.launch \
-    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
+python ../run_seq2seq.py \
     --task_name ${task_name} \
     --train_file ${train_file} \
     --validation_file ${validation_file} \
-    --test_file ${test_file} \
     --source_column ${source_column} \
     --target_column ${target_column} \
     --max_source_length ${max_source_length} \
@@ -40,9 +38,9 @@ python -m torch.distributed.launch \
     --model_name_or_path ${model_name_or_path} \
     --do_train \
     --do_eval \
-    --do_predict \
     --save_strategy epoch \
     --evaluation_strategy epoch \
+    --save_total_limit 3 \
     --prediction_loss_only \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
@@ -58,8 +56,7 @@ python -m torch.distributed.launch \
     --adafactor \
     --gradient_checkpointing
 
-python -m torch.distributed.launch \
-    --nproc_per_node ${n_gpus} ../run_seq2seq.py \
+python ../run_seq2seq.py \
     --task_name ${task_name} \
     --test_file ${test_file} \
     --source_column ${source_column} \
@@ -76,7 +73,14 @@ python -m torch.distributed.launch \
     --logging_dir ${logging_dir} \
     --overwrite_output_dir \
     --preprocessing_num_workers 4 \
-    --per_device_eval_batch_size ${per_device_eval_batch_size}
+    --per_device_train_batch_size ${per_device_train_batch_size} \
+    --per_device_eval_batch_size ${per_device_eval_batch_size} \
+    --gradient_accumulation_steps ${gradient_accumulation_steps} \
+    --learning_rate ${lr} \
+    --num_train_epochs ${num_train_epochs} \
+    --debug underflow_overflow \
+    --adafactor \
+    --gradient_checkpointing
 
 python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
 
