@@ -16,3 +16,21 @@ The interfaces for dialog policy are defined in policy.Policy:
 and outputs the next system action.
 
 - **init_session** reset the model variables for a new dialog session.
+
+## Rule based simulator results
+
+| Model | Complete rate | Success rate | Average return | Turns | Average actions |
+|-------|---------------|--------------|----------------|-------|-----------------|
+| MLE   |               |              |                |       |                 |
+| PG    |               |              |                |       |                 |
+| GDPL  |               |              |                |       |                 |
+| PPO   |               |              |                |       |                 |
+
+## Transformer based user simulator (TUS) results
+
+| Model | Complete rate | Success rate | Average return | Turns | Average actions |
+|-------|---------------|--------------|----------------|-------|-----------------|
+| MLE   |               |              |                |       |                 |
+| PG    |               |              |                |       |                 |
+| GDPL  |               |              |                |       |                 |
+| PPO   |               |              |                |       |                 |
