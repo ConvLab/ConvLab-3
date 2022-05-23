@@ -7,7 +7,6 @@ import json
 import zipfile
 import numpy as np
 import torch
-from datasets import load_dataset
 from tensorboardX import SummaryWriter
 from convlab2.util.file_util import cached_path
 from convlab2.policy.evaluate_distributed import evaluate_distributed
