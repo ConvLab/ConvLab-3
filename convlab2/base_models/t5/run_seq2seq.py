@@ -25,6 +25,8 @@ import sys
 import json
 from dataclasses import dataclass, field
 from typing import Optional
+from itertools import zip_longest
+from functools import reduce
 
 import datasets
 import numpy as np
@@ -39,6 +41,7 @@ from transformers import (
     HfArgumentParser,
     Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
+    EarlyStoppingCallback,
     set_seed,
 )
 from transformers.trainer_utils import EvalPrediction, get_last_checkpoint
@@ -214,6 +217,9 @@ class DataTrainingArguments:
     )
     source_prefix: Optional[str] = field(
         default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+    )
+    early_stopping_patience: Optional[int] = field(
+        default=10, metadata={"help": "early stopping patience, set to 0 if you do not want to use early stopping."},
     )
 
     def __post_init__(self):
@@ -439,8 +445,14 @@ def main():
                 inputs.append(examples[source_column][i])
                 targets.append(examples[target_column][i])
 
-        inputs = [prefix + inp for inp in inputs]
-        model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+        inputs = [prefix + '\n\n' + inp for inp in inputs]
+        if padding:
+            model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+        else:
+            # truncate each part separated by \n\n respectively
+            split_inputs = [inp.split('\n\n') for inp in inputs]
+            split_model_inputs = [tokenizer(x, max_length=data_args.max_source_length, padding=False, truncation=True) for x in split_inputs]
+            model_inputs = {k: [reduce(lambda x, y: x[:-1]+y, item[k]) for item in split_model_inputs] for k in split_model_inputs[0]}
 
         # Setup the tokenizer for targets
         with tokenizer.as_target_tokenizer():
@@ -553,6 +565,8 @@ def main():
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
+    if data_args.early_stopping_patience > 0:
+        trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=data_args.early_stopping_patience))
 
     # Training
     if training_args.do_train:

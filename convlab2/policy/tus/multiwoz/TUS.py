@@ -402,7 +402,10 @@ class UserActionPolicy(Policy):
 
 class UserPolicy(Policy):
     def __init__(self, config):
-        self.config = config
+        if isinstance(config, str):
+            self.config = json.load(open(config))
+        else:
+            self.config = config
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),
