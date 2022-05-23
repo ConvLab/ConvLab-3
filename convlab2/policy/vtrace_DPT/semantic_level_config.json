@@ -1,4 +1,5 @@
-{
+{"goals": {"single_domains": false, "allowed_domains": null},
+
 	"model": {
 		"load_path": "",
 		"use_pretrained_initialisation": false,

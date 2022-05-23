@@ -87,6 +87,15 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
         sampled_num += 1
 
 
+def log_train_configs():
+    logging.info('Train seed is ' + str(seed))
+    logging.info("Start of Training: " +
+                 time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+    logging.info(f"Number of processes for training: {train_processes}")
+    logging.info(f"Number of new dialogues per update: {new_dialogues}")
+    logging.info(f"Number of total dialogues: {total_dialogues}")
+
+
 if __name__ == '__main__':
 
     time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
@@ -117,7 +126,6 @@ if __name__ == '__main__':
 
     conf = get_config(path, args)
     seed = conf['model']['seed']
-    logging.info('Train seed is ' + str(seed))
     set_seed(seed)
 
     policy_sys = VTRACE(is_train=True, seed=seed, vectorizer=conf['vectorizer_sys_activated'],
@@ -138,9 +146,15 @@ if __name__ == '__main__':
         except:
             logging.info('Uncertainty threshold not set.')
 
+    single_domains = conf['goals']['single_domains']
+    allowed_domains = conf['goals']['allowed_domains']
+    logging.info(f"Single domains only: {single_domains}")
+    logging.info(f"Allowed domains {allowed_domains}")
+
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
-    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path,
+                            single_domain_goals=single_domains, allowed_domains=allowed_domains)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
 
     for key in eval_dict:
@@ -148,10 +162,7 @@ if __name__ == '__main__':
     best_complete_rate = eval_dict['complete_rate']
     best_success_rate = eval_dict['success_rate_strict']
 
-    logging.info("Start of Training: " +
-                 time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
     train_processes = conf['model']["process_num_train"]
-    logging.info(f"Number of processes for training: {train_processes}")
 
     if train_processes > 1:
         # We use multiprocessing
@@ -164,12 +175,13 @@ if __name__ == '__main__':
     num_dialogues = 0
     new_dialogues = conf['model']["new_dialogues"]
     total_dialogues = conf['model']["total_dialogues"]
-    logging.info(f"Number of new dialogues per update: {new_dialogues}")
-    logging.info(f"Number of total dialogues: {total_dialogues}")
+
+    log_train_configs()
 
     while num_dialogues < total_dialogues:
 
-        goals = create_goals(goal_generator, new_dialogues)
+        goals = create_goals(goal_generator, new_dialogues, single_domains=single_domains,
+                             allowed_domains=allowed_domains)
         if train_processes > 1:
             time_now, metrics = submit_jobs(new_dialogues, queues, episode_queues, train_processes, memory, goals,
                                             online_metric_queue)
@@ -180,12 +192,14 @@ if __name__ == '__main__':
         for r in range(conf['model']['update_rounds']):
             if num_dialogues > 50:
                 policy_sys.update(memory)
+                torch.cuda.empty_cache()
 
         if num_dialogues % conf['model']['eval_frequency'] == 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
             logging.info(f"Evaluating after Dialogues: {num_dialogues} - {time_now}" + '-' * 60)
 
-            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
+            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path,
+                                    single_domain_goals=single_domains, allowed_domains=allowed_domains)
 
             best_complete_rate, best_success_rate = \
                 save_best(policy_sys, best_complete_rate, best_success_rate,
