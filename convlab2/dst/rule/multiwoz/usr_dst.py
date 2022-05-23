@@ -1,12 +1,16 @@
 import json
 import os
 
-from convlab2.util.multiwoz.state import default_state
+from convlab2.util.multiwoz.state import default_state_old as default_state
 from convlab2.dst.rule.multiwoz.dst_util import normalize_value
 from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab2.policy.tus.multiwoz.Da2Goal import SysDa2Goal, UsrDa2Goal
+from data.unified_datasets.multiwoz21.preprocess import normalize_domain_slot_value, reverse_da
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from pprint import pprint
+from copy import deepcopy
+from convlab2.util import load_ontology
 
 SLOT2SEMI = {
     "arriveby": "arriveBy",
@@ -25,8 +29,14 @@ class UserRuleDST(RuleDST):
             It helps check whether ``user_act`` has correct content.
     """
 
-    def __init__(self):
+    def __init__(self, dataset_name='multiwoz21'):
         super().__init__()
+
+        self.state = default_state()
+        path = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        path = os.path.join(path, 'data/multiwoz/value_dict.json')
+        self.value_dict = json.load(open(path))
         self.mentioned_domain = []
 
     def update(self, sys_act=None):
@@ -35,6 +45,9 @@ class UserRuleDST(RuleDST):
         :param sys_act:
         :return:
         """
+        sys_act = unified_format(sys_act)
+        sys_act = reverse_da(sys_act)
+        sys_act = act_dict_to_flat_tuple(sys_act)
         # print("dst", user_act)
         self.update_mentioned_domain(sys_act)
         for intent, domain, slot, value in sys_act:
@@ -75,7 +88,7 @@ class UserRuleDST(RuleDST):
             assert domain in self.state['belief_state']
         except:
             raise Exception(
-                'Error: domain <{}> not in new belief state'.format(domain))
+                f'Error: domain <{domain}> not in new belief state')
         domain_dic = self.state['belief_state'][domain]
         assert 'semi' in domain_dic
         assert 'book' in domain_dic
