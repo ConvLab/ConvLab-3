@@ -12,14 +12,13 @@ import torch
 
 from torch import multiprocessing as mp
 from argparse import ArgumentParser
-from convlab2.policy.ppo.config import get_config
 from convlab2.policy.vtrace_DPT import VTRACE
 from convlab2.policy.vtrace_DPT.memory import Memory
 from convlab2.policy.vtrace_DPT.multiprocessing_helper import get_queues, start_processes, submit_jobs, \
     terminate_processes
 from convlab2.task.multiwoz.goal_generator import GoalGenerator
 from convlab2.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
-    eval_policy, log_start_args, save_best, load_config_file, create_goals
+    eval_policy, log_start_args, save_best, load_config_file, create_goals, get_config
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(
@@ -161,6 +160,7 @@ if __name__ == '__main__':
         tb_writer.add_scalar(key, eval_dict[key], 0)
     best_complete_rate = eval_dict['complete_rate']
     best_success_rate = eval_dict['success_rate_strict']
+    best_return = eval_dict['avg_return']
 
     train_processes = conf['model']["process_num_train"]
 
@@ -201,9 +201,11 @@ if __name__ == '__main__':
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path,
                                     single_domain_goals=single_domains, allowed_domains=allowed_domains)
 
-            best_complete_rate, best_success_rate = \
-                save_best(policy_sys, best_complete_rate, best_success_rate,
-                          eval_dict["complete_rate"], eval_dict["success_rate_strict"], save_path)
+            best_complete_rate, best_success_rate, best_return = \
+                save_best(policy_sys, best_complete_rate, best_success_rate, best_return,
+                          eval_dict["complete_rate"], eval_dict["success_rate_strict"],
+                          eval_dict["avg_return"], save_path)
+            policy_sys.save(save_path, "last")
             for key in eval_dict:
                 tb_writer.add_scalar(key, eval_dict[key], num_dialogues)
 
