@@ -118,18 +118,22 @@ def log_start_args(conf):
         f"We use {conf['model']['num_eval_dialogues']} dialogues for evaluation.")
 
 
-def save_best(policy_sys, best_complete_rate, best_success_rate, complete_rate, success_rate, save_path):
+def save_best(policy_sys, best_complete_rate, best_success_rate, best_return, complete_rate, success_rate, avg_return,
+              save_path):
     # policy_sys.save(save_path, "best")
-    if success_rate > best_success_rate:
+    if avg_return > best_return:
         logging.info("Saving best policy.")
         policy_sys.save(save_path, "best")
+        best_return = avg_return
+    if success_rate > best_success_rate:
         best_success_rate = success_rate
     if complete_rate > best_complete_rate:
         best_complete_rate = complete_rate
         # policy_sys.save(save_path, "best")
     logging.info(
-        f"Best Complete Rate: {best_complete_rate}, Best Success Rate: {best_success_rate}")
-    return best_complete_rate, best_success_rate
+        f"Best Complete Rate: {best_complete_rate}, Best Success Rate: {best_success_rate}, "
+        f"Best Average Return: {best_return}")
+    return best_complete_rate, best_success_rate, best_return
 
 
 def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):

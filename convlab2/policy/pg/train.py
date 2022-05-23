@@ -245,6 +245,7 @@ if __name__ == '__main__':
         tb_writer.add_scalar(key, eval_dict[key], 0)
     best_complete_rate = eval_dict['complete_rate']
     best_success_rate = eval_dict['success_rate_strict']
+    best_return = eval_dict['avg_return']
 
     logging.info("Start of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
@@ -260,9 +261,11 @@ if __name__ == '__main__':
 
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
-            best_complete_rate, best_success_rate = \
-                save_best(policy_sys, best_complete_rate, best_success_rate,
-                          eval_dict["complete_rate"], eval_dict["success_rate_strict"], save_path)
+            best_complete_rate, best_success_rate, best_return = \
+                save_best(policy_sys, best_complete_rate, best_success_rate, best_return,
+                          eval_dict["complete_rate"], eval_dict["success_rate_strict"],
+                          eval_dict["avg_return"], save_path)
+            policy_sys.save(save_path, "last")
             for key in eval_dict:
                 tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
 

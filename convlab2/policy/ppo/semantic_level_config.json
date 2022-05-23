@@ -1,6 +1,6 @@
 {
 	"model": {
-		"load_path": "convlab2/policy/mle/experiments/experiment_2022-03-10-11-44-08/save/supervised",
+		"load_path": "convlab2/policy/mle/experiments/experiment_2022-05-23-14-08-43/save/supervised",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,
@@ -20,7 +20,7 @@
 		"uncertainty_vector_mul": {
 			"class_path": "convlab2.policy.vector.vector_binary.VectorBinary",
 			"ini_params": {
-				"use_masking": false,
+				"use_masking": true,
 				"manually_add_entity_names": false,
 				"seed": 0
 			}
