@@ -458,6 +458,17 @@ def create_goals(goal_generator, num_goals, single_domains=False, allowed_domain
     return collected_goals
 
 
+def build_domains_goal(goal_generator, domains=None):
+    found = False
+    while not found:
+        goal = Goal(goal_generator)
+        if domains is None:
+            found = True
+        if set(goal.domain_goals) == domains:
+            found = True
+    return goal
+
+
 def map_class(cls_path: str):
     """
     Map to class via package text path

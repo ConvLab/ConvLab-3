@@ -9,16 +9,20 @@ import os
 import logging
 import time
 import torch
+import numpy as np
 
+from copy import deepcopy
 from torch import multiprocessing as mp
 from argparse import ArgumentParser
 from convlab2.policy.vtrace_DPT import VTRACE
 from convlab2.policy.vtrace_DPT.memory import Memory
 from convlab2.policy.vtrace_DPT.multiprocessing_helper import get_queues, start_processes, submit_jobs, \
     terminate_processes
+from convlab2.policy.vtrace_DPT.ocl.ocl_helper import load_budget, check_setup, log_used_budget, get_goals, \
+    update_online_metrics
 from convlab2.task.multiwoz.goal_generator import GoalGenerator
 from convlab2.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
-    eval_policy, save_best, load_config_file, create_goals, get_config
+    eval_policy, load_config_file, get_config
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(
@@ -37,10 +41,12 @@ except RuntimeError:
 def create_episodes(environment, policy, num_episodes, memory, goals):
     sampled_num = 0
     traj_len = 40
+    metrics = []
 
     while sampled_num < num_episodes:
         goal = goals.pop()
         s = environment.reset(goal)
+        rl_return = 0
 
         user_act_list, sys_act_list, s_vec_list, action_list, reward_list, small_act_list, action_mask_list, mu_list, \
         trajectory_list, vector_mask_list, critic_value_list, description_idx_list, value_list, current_domain_mask, \
@@ -70,6 +76,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
 
             # interact with env
             next_s, r, done = environment.step(a)
+            rl_return += r
             reward_list.append(torch.Tensor([r]))
 
             next_s_vec, next_mask = policy.vector.state_vectorize(next_s)
@@ -78,12 +85,16 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             s = next_s
 
             if done:
+                metrics.append({"success": environment.evaluator.success_strict, "return": rl_return,
+                                  "avg_actions": torch.stack(action_list).sum(dim=-1).mean().item(),
+                                  "turns": t})
                 memory.update_episode(description_idx_list, action_list, reward_list, small_act_list, mu_list,
                                       action_mask_list, critic_value_list, description_idx_list, value_list,
                                       current_domain_mask, non_current_domain_mask)
                 break
 
         sampled_num += 1
+    return metrics
 
 
 def log_train_configs():
@@ -91,8 +102,6 @@ def log_train_configs():
     logging.info("Start of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
     logging.info(f"Number of processes for training: {train_processes}")
-    logging.info(f"Number of new dialogues per update: {new_dialogues}")
-    logging.info(f"Number of total dialogues: {total_dialogues}")
 
 
 if __name__ == '__main__':
@@ -101,7 +110,7 @@ if __name__ == '__main__':
 
     begin_time = datetime.now()
     parser = ArgumentParser()
-    parser.add_argument("--path", type=str, default='convlab2/policy/vtrace_DPT/semantic_level_config.json',
+    parser.add_argument("--path", type=str, default='convlab2/policy/vtrace_DPT/ocl/semantic_level_config_ocl.json',
                         help="Load path for config file")
     parser.add_argument("--seed", type=int, default=0,
                         help="Seed for the policy parameter initialization")
@@ -145,22 +154,20 @@ if __name__ == '__main__':
         except:
             logging.info('Uncertainty threshold not set.')
 
-    single_domains = conf['goals']['single_domains']
-    allowed_domains = conf['goals']['allowed_domains']
-    logging.info(f"Single domains only: {single_domains}")
-    logging.info(f"Allowed domains {allowed_domains}")
+    # the timeline will decide how many dialogues are needed until a domain appears
+    timeline, budget = load_budget(conf['model']['budget_path'])
+    start_budget = deepcopy(budget)
+    logging.info(f"Timeline: {timeline}")
+    logging.info(f"Budget: {budget}")
+    check_setup(timeline, budget)
 
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
-    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path,
-                            single_domain_goals=single_domains, allowed_domains=allowed_domains)
+    policy_sys.policy.action_embedder.forbidden_domains = []
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
-
     for key in eval_dict:
         tb_writer.add_scalar(key, eval_dict[key], 0)
-    best_complete_rate = eval_dict['complete_rate']
-    best_success_rate = eval_dict['success_rate_strict']
-    best_return = eval_dict['avg_return']
 
     train_processes = conf['model']["process_num_train"]
 
@@ -168,56 +175,81 @@ if __name__ == '__main__':
         # We use multiprocessing
         queues, episode_queues = get_queues(train_processes)
         online_metric_queue = mp.SimpleQueue()
-        processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, seed,
-                                    online_metric_queue)
-    goal_generator = GoalGenerator()
 
+    metric_keys = ["success", "return", "avg_actions", "turns"]
+    online_metrics = {key: [] for key in metric_keys}
     num_dialogues = 0
     new_dialogues = conf['model']["new_dialogues"]
-    total_dialogues = conf['model']["total_dialogues"]
+    training_done = False
 
     log_train_configs()
+    goal_generator = GoalGenerator()
 
-    while num_dialogues < total_dialogues:
+    while not training_done:
+        allowed_domains = [key for key, value in timeline.items() if value <= num_dialogues]
+        forbidden_domains = [domain for domain in list(timeline.keys()) if domain not in allowed_domains]
+        new_domain_introduced = len(allowed_domains) > len([key for key, value in timeline.items()
+                                                            if value <= num_dialogues - new_dialogues])
 
-        goals = create_goals(goal_generator, new_dialogues, single_domains=single_domains,
-                             allowed_domains=allowed_domains)
-        if train_processes > 1:
+        # we disable regularization for the first domain we see
+        if len(allowed_domains) == 1:
+            policy_sys.use_regularization = False
+        else:
+            policy_sys.use_regularization = True
+        policy_sys.policy.action_embedder.forbidden_domains = forbidden_domains
+
+        policy_sys.is_train = True
+        if new_domain_introduced:
+            # we sample a batch of goals until the next domain is introduced
+            number_goals_required = min([value - num_dialogues for key, value in timeline.items()
+                                         if value - num_dialogues > 0])
+            log_used_budget(start_budget, budget)
+
+            logging.info(f"Creating {number_goals_required} goals..")
+            goals, budget = get_goals(goal_generator, allowed_domains, budget, number_goals_required)
+            logging.info("Goals created.")
+            if train_processes > 1:
+                # this means a new domain has appeared and the policy in the processes should be updated
+                if len(allowed_domains) > 1:
+                    # a new domain is introduced, first kill old processes before starting new
+                    terminate_processes(processes, queues)
+
+                processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, args.seed,
+                                            online_metric_queue)
+
+        if train_processes == 1:
+            metrics = create_episodes(env, policy_sys, new_dialogues, memory, goals)
+        else:
+            # create dialogues using the spawned processes
             time_now, metrics = submit_jobs(new_dialogues, queues, episode_queues, train_processes, memory, goals,
                                             online_metric_queue)
-        else:
-            create_episodes(env, policy_sys, new_dialogues, memory, goals)
         num_dialogues += new_dialogues
+        update_online_metrics(online_metrics, metrics, log_save_path, tb_writer)
 
         for r in range(conf['model']['update_rounds']):
             if num_dialogues > 50:
                 policy_sys.update(memory)
-                torch.cuda.empty_cache()
+
+        if num_dialogues % 1000 == 0:
+            logging.info(f"Online Metric" + '-' * 60)
+            for key in online_metrics:
+                logging.info(f"{key}: {np.mean(online_metrics[key])}")
 
         if num_dialogues % conf['model']['eval_frequency'] == 0:
-            time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-            logging.info(f"Evaluating after Dialogues: {num_dialogues} - {time_now}" + '-' * 60)
 
-            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path,
-                                    single_domain_goals=single_domains, allowed_domains=allowed_domains)
-
-            best_complete_rate, best_success_rate, best_return = \
-                save_best(policy_sys, best_complete_rate, best_success_rate, best_return,
-                          eval_dict["complete_rate"], eval_dict["success_rate_strict"],
-                          eval_dict["avg_return"], save_path)
-            policy_sys.save(save_path, "last")
+            # run evaluation
+            policy_sys.is_train = False
+            policy_sys.policy.action_embedder.forbidden_domains = []
+            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
             for key in eval_dict:
                 tb_writer.add_scalar(key, eval_dict[key], num_dialogues)
+            policy_sys.policy.action_embedder.forbidden_domains = forbidden_domains
 
-    logging.info("End of Training: " +
-                 time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+        # if budget is empty and goals are used, training stops
+        if sum([pair[1] for pair in budget]) == 0 and goals.empty():
+            training_done = True
 
-    if train_processes > 1:
-        terminate_processes(processes, queues)
+    policy_sys.save(save_path, f"end")
 
-    f = open(os.path.join(dir_path, "time.txt"), "a")
-    f.write(str(datetime.now() - begin_time))
-    f.close()
-
-    move_finished_training(dir_path, os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))
+    logging.info("End of Training: " + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+    move_finished_training(dir_path, os.path.join(os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))

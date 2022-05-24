@@ -1,3 +1,14 @@
+import logging
+import json
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+
+from queue import Queue
+
+from convlab2.util.custom_util import build_domains_goal
+
+
 def log_used_budget(start_budget, budget):
     used_budget = []
 
@@ -16,9 +27,21 @@ def load_budget(load_path):
         timeline = budget_info['timeline']
         budget = budget_info['budget']
         timeline['end'] = sum([pair[1] for pair in budget])
-        name = args.budget_path.split("/")[-1].split(".")[0]
-        save_budget_plot(budget, os.path.join(os.path.dirname(args.budget_path), f"{name}.pdf"))
+        name = load_path.split("/")[-1].split(".")[0]
+        save_budget_plot(budget, os.path.join(os.path.dirname(load_path), f"{name}.pdf"))
     return timeline, budget
+
+
+def get_goals(goal_generator, allowed_domains, budget, num_goals):
+
+    collected_goals = []
+    while len(collected_goals) != num_goals:
+        domains, budget = sample_domains(allowed_domains, budget)
+        domains = set(domains.split("-"))
+        goal = build_domains_goal(goal_generator, domains)
+        collected_goals.append(goal)
+
+    return collected_goals, budget
 
 
 def check_setup(timeline, budget):
@@ -42,7 +65,6 @@ def check_setup(timeline, budget):
 
 
 def save_budget_plot(budget, save_path):
-    import matplotlib.pyplot as plt
     x = [pair[0] for pair in budget]
     y = [pair[1] for pair in budget]
     plt.style.use('ggplot')
