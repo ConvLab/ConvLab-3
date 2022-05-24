@@ -11,7 +11,8 @@ from convlab2.dialog_agent.agent import PipelineAgent
 from convlab2.dialog_agent.session import BiSession
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.util.custom_util import set_seed, get_config, env_config
+from convlab2.task.multiwoz.goal_generator import GoalGenerator
+from convlab2.util.custom_util import set_seed, get_config, env_config, create_goals
 
 
 def init_logging(log_dir_path, path_suffix=None):
@@ -66,9 +67,14 @@ def evaluate(config_path, model_name, verbose=False):
 
     task_success = {'Complete': [], 'Success': [],
                     'Success strict': [], 'total_return': [], 'turns': []}
-    for seed in range(1000, 1400):
+
+    dialogues = 500
+    goal_generator = GoalGenerator()
+    goals = create_goals(goal_generator, num_goals=dialogues, single_domains=False, allowed_domains=None)
+
+    for seed in range(1000, 1000 + dialogues):
         set_seed(seed)
-        sess.init_session()
+        sess.init_session(goal=goals[seed-1000])
         sys_response = []
         actions = 0.0
         total_return = 0.0
