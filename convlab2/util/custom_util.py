@@ -18,6 +18,8 @@ from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.policy.rule.multiwoz import RulePolicy
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab2.util import load_dataset
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
+
 import shutil
 
 
@@ -433,6 +435,19 @@ def act_dict_to_flat_tuple(acts):
         for slot, value in svs:
             domain, intent = domain_intent.split('-')
             tuples.append([intent, domain, slot, value])
+
+
+def create_goals(goal_generator, num_goals, single_domains=False, allowed_domains=None):
+
+    collected_goals = []
+    while len(collected_goals) != num_goals:
+        goal = Goal(goal_generator)
+        if single_domains and len(goal.domain_goals) > 1:
+            continue
+        if allowed_domains is not None and not set(goal.domain_goals).issubset(set(allowed_domains)):
+            continue
+        collected_goals.append(goal)
+    return collected_goals
 
 
 def map_class(cls_path: str):
