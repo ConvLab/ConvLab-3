@@ -8,6 +8,21 @@ from convlab2.evaluator.evaluator import Evaluator
 from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab2.util.multiwoz.dbquery import Database
 from data.unified_datasets.multiwoz21.preprocess import reverse_da
+from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
+
+
+# import reflect table
+REF_SYS_DA_M = {}
+for dom, ref_slots in REF_SYS_DA.items():
+    dom = dom.lower()
+    REF_SYS_DA_M[dom] = {}
+    for slot_a, slot_b in ref_slots.items():
+        if slot_a == 'Ref':
+            slot_b = 'ref'
+        REF_SYS_DA_M[dom][slot_a.lower()] = slot_b
+    REF_SYS_DA_M[dom]['none'] = 'none'
+REF_SYS_DA_M['taxi']['phone'] = 'phone'
+REF_SYS_DA_M['taxi']['car'] = 'car type'
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -36,6 +51,14 @@ mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'na
 time_re = re.compile(r'^(([01]\d|2[0-4]):([0-5]\d)|24:00)$')
 NUL_VALUE = ["", "dont care", 'not mentioned',
              "don't care", "dontcare", "do n't care"]
+
+# Not sure values in inform
+DEF_VAL_UNK = '?'  # Unknown
+DEF_VAL_DNC = 'dontcare'  # Do not care
+DEF_VAL_NUL = 'none'  # for none
+DEF_VAL_BOOKED = 'yes'  # for booked
+DEF_VAL_NOBOOK = 'no'  # for booked
+NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
 
 
 class MultiWozEvaluator(Evaluator):
@@ -590,3 +613,26 @@ class MultiWozEvaluator(Evaluator):
                     self.successful_domains.append(self.cur_domain)
 
         return reward
+
+    def evaluate_dialog(self, goal, user_acts, system_acts, system_states):
+
+        self.add_goal(goal)
+        for sys_act, sys_state, user_act in zip(system_acts, system_states, user_acts):
+            self.add_sys_da(sys_act, sys_state)
+            self.add_usr_da(user_act)
+
+        self.task_success()
+        return {"complete": self.complete, "success": self.success, "success_strict": self.success_strict}
+
+    def update_goal(self, goal, system_action):
+        for intent, domain, slot, val in system_action:
+            if intent.lower() in ['inform', 'recommend']:
+                if domain.lower() in goal:
+                    if 'reqt' in goal[domain.lower()]:
+                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) in goal[domain.lower()][
+                            'reqt']:
+                            if val in NOT_SURE_VALS:
+                                val = '\"' + val + '\"'
+                            goal[domain.lower()]['reqt'][
+                                REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower())] = val
+        return goal
