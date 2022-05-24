@@ -5,26 +5,21 @@ Build up an pipeline agent with nlu, dst, policy and nlg.
 @author: Chris Geishauser
 '''
 
-from convlab2.dialog_agent.agent import DialogueAgent
-from convlab2.dst.setsumbt.multiwoz import SetSUMBTTracker
-from convlab2.policy.vector.vector_nodes import VectorNodes
+from convlab2.dialcrowd_server.agents.base_agent import BaseAgent
 from convlab2.policy.vtrace_DPT import VTRACE
-from convlab2.nlg.scgpt.multiwoz.scgpt import SCGPT
+from convlab2.util.custom_util import get_config
 
 
-class Agent(DialogueAgent):
+class DDPTAgent(BaseAgent):
 
     def __init__(self):
 
-        nlu = None
-        dst = SetSUMBTTracker(model_path="end")
+        config_path = ""
+        conf = get_config(config_path, [])
 
-        vectorizer = VectorNodes(use_masking=True, manually_add_entity_names=True)
-        policy_path = ""
-        policy = VTRACE(load_path=policy_path, vectorizer=vectorizer)
+        policy = VTRACE(vectorizer=conf['vectorizer_sys_activated'])
+        policy.load(conf['model']['load_path'])
 
-        nlg_path = "scgpt"
-        nlg = SCGPT(is_user=False, model_file=nlg_path)
-        super().__init__(nlu, dst, policy, nlg)
+        super().__init__(conf, policy)
 
         self.agent_name = "DDPT"
