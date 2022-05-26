@@ -445,7 +445,7 @@ def main():
                 inputs.append(examples[source_column][i])
                 targets.append(examples[target_column][i])
 
-        inputs = [prefix + '\n\n' + inp for inp in inputs]
+        inputs = [prefix + inp for inp in inputs]
         if padding:
             model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
         else:
@@ -566,7 +566,8 @@ def main():
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
     if training_args.load_best_model_at_end:
-        trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=data_args.early_stopping_patience))
+        if data_args.early_stopping_patience > 0:
+            trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=data_args.early_stopping_patience))
 
     # Training
     if training_args.do_train:

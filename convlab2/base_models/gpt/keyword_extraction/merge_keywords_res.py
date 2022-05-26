@@ -6,9 +6,9 @@ def main(args):
     dialogs = []
     for i in range(len(filename2data[first_filename])):
         turns = []
-        for j in range(len(filename2data[first_filename][i])):
+        for j in range(min([len(filename2data[filename][i]) for filename in filename2data])):
             utt = filename2data[first_filename][i][j]['utterance']
-            keywords = {filename.split('_')[2]+'_nonstopword'+filename.split('_')[-1]: ' | '.join([x[0] for x in filename2data[filename][i][j]['keywords']]) for filename in filename2data}
+            keywords = {filename.split('_')[3]+'_nonstopword'+filename.split('_')[-1]: ' | '.join(filename2data[filename][i][j]['keywords']) for filename in filename2data}
             turns.append({
                 "utterance": utt,
                 **keywords

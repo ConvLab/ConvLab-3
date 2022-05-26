@@ -1,7 +1,7 @@
 set -e
-n_gpus=4
-master_port=23457
-task_name="key2gen_noisy"
+n_gpus=2
+master_port=23456
+task_name="rg"
 dataset_name="dailydialog+metalwoz+sgd+tm1+tm2+tm3"
 model_type="gpt"
 data_dir="data/${task_name}/${model_type}/${dataset_name}"
@@ -16,16 +16,18 @@ target_column="target"
 truncation_side="left"
 max_source_length=512
 max_target_length=128
-model_name_or_path="output/${task_name}/${model_type}/dailydialog+metalwoz+sgd+tm1+tm2+tm3"
+model_name_or_path="t5-small"
 per_device_train_batch_size=128
 per_device_eval_batch_size=128
-gradient_accumulation_steps=2
+gradient_accumulation_steps=4
 lr=1e-3
 num_train_epochs=3
 
 python -m torch.distributed.launch --master_port ${master_port} \
     --nproc_per_node ${n_gpus} ../../t5/run_seq2seq.py \
     --task_name ${task_name} \
+    --train_file ${train_file} \
+    --validation_file ${validation_file} \
     --test_file ${test_file} \
     --source_column ${source_column} \
     --target_column ${target_column} \
@@ -33,8 +35,13 @@ python -m torch.distributed.launch --master_port ${master_port} \
     --max_target_length ${max_target_length} \
     --truncation_side ${truncation_side} \
     --model_name_or_path ${model_name_or_path} \
+    --do_train \
+    --do_eval \
     --do_predict \
-    --predict_with_generate \
+    --save_strategy epoch \
+    --evaluation_strategy epoch \
+    --load_best_model_at_end \
+    --prediction_loss_only \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
     --logging_dir ${logging_dir} \

@@ -41,7 +41,7 @@ def merge_tokens(tokens, losses):
                 res[-1][0].append(token)
                 res[-1][1].append(loss)
             else:
-                res.append([token, loss])
+                res.append([[token], [loss]])
         i += 1
     return res
 

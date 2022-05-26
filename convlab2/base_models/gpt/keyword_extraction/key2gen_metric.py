@@ -48,14 +48,6 @@ Returns:
     bleu: corpus-bleu score
     positive_keywords_recall: how many keywords in the ground truth response are generated, micro-averaged
     negative_keywords_recall: how many keywords in the random sampled response are generated, micro-averaged
-Examples:
-
-    >>> key2gen_metric = datasets.load_metric("key2gen_metric.py")
-    >>> predictions = ["hello there general kenobi", "foo bar foobar"]
-    >>> references = ["hello there kenobi", "foo bar foobar"]
-    >>> results = nlg_metric.compute(predictions=predictions, references=references)
-    >>> print(results)
-    {'bleu': 35.35533905932737}
 """
 
 
@@ -77,6 +69,7 @@ class Key2GenMetrics(datasets.Metric):
 
     def _compute(self, predictions, references, positive_keywords, negative_keywords=None):
         """Returns the scores: bleu, positive_keywords_recall, negative_keywords_recall"""
+        # rouge-1/2/L bleu-1/2 distinct-1/2
         if not negative_keywords:
             negative_keywords = [[]] * len(positive_keywords)
         bleu = sacrebleu.corpus_bleu(predictions, [references], lowercase=True).score
