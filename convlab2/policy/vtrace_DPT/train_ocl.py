@@ -214,7 +214,7 @@ if __name__ == '__main__':
                     # a new domain is introduced, first kill old processes before starting new
                     terminate_processes(processes, queues)
 
-                processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, args.seed,
+                processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, seed,
                                             online_metric_queue)
 
         if train_processes == 1:
@@ -229,15 +229,17 @@ if __name__ == '__main__':
         for r in range(conf['model']['update_rounds']):
             if num_dialogues > 50:
                 policy_sys.update(memory)
+                torch.cuda.empty_cache()
 
         if num_dialogues % 1000 == 0:
-            logging.info(f"Online Metric" + '-' * 60)
+            logging.info(f"Online Metric" + '-' * 15 + f'Dialogues done: {num_dialogues}' + 15 * '-')
             for key in online_metrics:
                 logging.info(f"{key}: {np.mean(online_metrics[key])}")
 
         if num_dialogues % conf['model']['eval_frequency'] == 0:
 
             # run evaluation
+            logging.info(f"Evaluating - " + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '-' * 60)
             policy_sys.is_train = False
             policy_sys.policy.action_embedder.forbidden_domains = []
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
@@ -246,7 +248,7 @@ if __name__ == '__main__':
             policy_sys.policy.action_embedder.forbidden_domains = forbidden_domains
 
         # if budget is empty and goals are used, training stops
-        if sum([pair[1] for pair in budget]) == 0 and goals.empty():
+        if sum([pair[1] for pair in budget]) == 0 and not goals:
             training_done = True
 
     policy_sys.save(save_path, f"end")
