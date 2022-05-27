@@ -18,6 +18,7 @@ DailyDialog is a high-quality multi-turn dialog dataset. It is intriguing in sev
   - Retain emotion annotation in the `emotion` field of each turn.
   - Use nltk to remove space before punctuation: `utt = ' '.join([detokenizer.detokenize(word_tokenize(s)) for s in sent_tokenize(utt)])`.
   - Replace `" ’ "` with `"'"`: `utt = utt.replace(' ’ ', "'")`.
+  - Add space after full-stop
 - **Annotations:**
   - intent, emotion
 
@@ -33,10 +34,10 @@ English
 
 | split      |   dialogues |   utterances |   avg_utt |   avg_tokens |   avg_domains | cat slot match(state)   | cat slot match(goal)   | cat slot match(dialogue act)   | non-cat slot span(dialogue act)   |
 |------------|-------------|--------------|-----------|--------------|---------------|-------------------------|------------------------|--------------------------------|-----------------------------------|
-| train      |       11118 |        87170 |      7.84 |        11.18 |             1 | -                       | -                      | -                              | -                                 |
-| validation |        1000 |         8069 |      8.07 |        11.14 |             1 | -                       | -                      | -                              | -                                 |
-| test       |        1000 |         7740 |      7.74 |        11.33 |             1 | -                       | -                      | -                              | -                                 |
-| all        |       13118 |       102979 |      7.85 |        11.19 |             1 | -                       | -                      | -                              | -                                 |
+| train      |       11118 |        87170 |      7.84 |        11.22 |             1 | -                       | -                      | -                              | -                                 |
+| validation |        1000 |         8069 |      8.07 |        11.16 |             1 | -                       | -                      | -                              | -                                 |
+| test       |        1000 |         7740 |      7.74 |        11.36 |             1 | -                       | -                      | -                              | -                                 |
+| all        |       13118 |       102979 |      7.85 |        11.22 |             1 | -                       | -                      | -                              | -                                 |
 
 10 domains: ['Ordinary Life', 'School Life', 'Culture & Education', 'Attitude & Emotion', 'Relationship', 'Tourism', 'Health', 'Work', 'Politics', 'Finance']
 - **cat slot match**: how many values of categorical slots are in the possible values of ontology in percentage.

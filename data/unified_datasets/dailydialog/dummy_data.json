@@ -78,7 +78,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "I guess you are right.But what shall we do? I don't feel like sitting at home.",
+        "utterance": "I guess you are right. But what shall we do? I don't feel like sitting at home.",
         "utt_idx": 4,
         "dialogue_acts": {
           "binary": [
@@ -112,7 +112,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "That's a good idea. I hear Mary and Sally often go there to play pingpong.Perhaps we can make a foursome with them.",
+        "utterance": "That's a good idea. I hear Mary and Sally often go there to play pingpong. Perhaps we can make a foursome with them.",
         "utt_idx": 6,
         "dialogue_acts": {
           "binary": [
@@ -129,7 +129,7 @@
       },
       {
         "speaker": "system",
-        "utterance": "Sounds great to me! If they are willing, we could ask them to go dancing with us.That is excellent exercise and fun, too.",
+        "utterance": "Sounds great to me! If they are willing, we could ask them to go dancing with us. That is excellent exercise and fun, too.",
         "utt_idx": 7,
         "dialogue_acts": {
           "binary": [
@@ -146,7 +146,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Good.Let' s go now.",
+        "utterance": "Good. Let' s go now.",
         "utt_idx": 8,
         "dialogue_acts": {
           "binary": [
@@ -434,7 +434,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "Don't worry.He is an acrobat 。",
+        "utterance": "Don't worry. He is an acrobat 。",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [
@@ -677,7 +677,7 @@
       },
       {
         "speaker": "user",
-        "utterance": "What are you talking about? Let me see that...What are horoscopes?",
+        "utterance": "What are you talking about? Let me see that... What are horoscopes?",
         "utt_idx": 2,
         "dialogue_acts": {
           "binary": [

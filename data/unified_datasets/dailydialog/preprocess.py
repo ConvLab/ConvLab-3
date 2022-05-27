@@ -7,6 +7,7 @@ from collections import Counter
 from pprint import pprint
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+import re
 
 topic_map = {
     1: "Ordinary Life", 
@@ -110,8 +111,12 @@ def preprocess():
                     speaker = 'user' if len(dialogue['turns']) % 2 == 0 else 'system'
                     intent = act_map[int(act)]
                     emotion = emotion_map[int(emotion)]
+                    # re-tokenize
                     utt = ' '.join([detokenizer.detokenize(word_tokenize(s)) for s in sent_tokenize(utt)])
+                    # replace with common apostrophe
                     utt = utt.replace(' ’ ', "'")
+                    # add space after full-stop
+                    utt = re.sub('\.(?!com)(\w)', lambda x: '. '+x.group(1), utt)
 
                     dialogue['turns'].append({
                         'speaker': speaker,
