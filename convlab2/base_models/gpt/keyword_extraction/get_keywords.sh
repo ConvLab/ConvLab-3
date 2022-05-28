@@ -4,7 +4,7 @@ model_type="gpt"
 data_dir="data/${task_name}/${dataset_name}/${model_type}"
 model_name_or_path="gpt2-large"
 keywords_num=100
-keywords_ratio=0.3
+keywords_ratio=0.4
 keywords_th_ratio=0
 stopwords=True
 for data_split in validation test train

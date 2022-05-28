@@ -4,46 +4,51 @@ from tabulate import tabulate
 
 def main(predict_result):
     data = {
-        "keywords": {
+        "grounded keywords": {
             "positive_keywords": [], "negative_keywords": None,
             "predictions": [], "references": []
         },
-        "possible keywords": {
+        "all keywords": {
             "positive_keywords": [], "negative_keywords": [],
+            "predictions": [], "references": []
+        },
+        "no keywords": {
+            "positive_keywords": None, "negative_keywords": None,
             "predictions": [], "references": []
         }
     }
     with open(predict_result) as f:
         for line in f:
             item = json.loads(line)
-            if item["keywords+context"].startswith("keywords"):
-                data["keywords"]["predictions"].append(item['predictions'].strip())
-                data["keywords"]["references"].append(item['response'].strip())
-                positive_keywords = [k.strip() for k in item['keywords+context'].split('\n\n')[0][len("keywords: "):].split('|')[1].split(' : ') if len(k) > 0]
-                data["keywords"]["positive_keywords"].append(positive_keywords)
-            elif item["keywords+context"].startswith("possible keywords"):
-                data["possible keywords"]["predictions"].append(item['predictions'].strip())
-                data["possible keywords"]["references"].append(item['response'].strip())
-                possible_keywords = [k.strip() for ks in item['keywords+context'].split('\n\n')[0][len("possible keywords: "):].split('|') for k in ks.split(' : ') if len(k) > 0]
-                has_positive = True
+            prediction = item['predictions'].strip()
+            reference = item['target'].strip()
+            if 'all_keywords' in item and item['all_keywords']:
+                sample_type = 'all keywords'
+
+                positive_keywords = [k for g in item['keywords'] for k in g]
+                data[sample_type]["positive_keywords"].append(positive_keywords)
+
+                all_keywords = [k for g in item['all_keywords'] for k in g]
                 for keyword in positive_keywords:
-                    if keyword in possible_keywords:
-                        possible_keywords.remove(keyword)
-                    else:
-                        has_positive = False
-                        break
-                if has_positive:
-                    data["possible keywords"]["positive_keywords"].append(positive_keywords)
-                else:
-                    data["possible keywords"]["positive_keywords"].append([])
-                data["possible keywords"]["negative_keywords"].append(possible_keywords)
-            # print(data)
-            # if len(data["possible keywords"]["positive_keywords"])>0:
-            #     break
+                    all_keywords.remove(keyword)
+                data[sample_type]["negative_keywords"].append(all_keywords)
+
+            elif 'keywords' in item and item['keywords']:
+                sample_type = 'grounded keywords'
+
+                positive_keywords = [k for g in item['keywords'] for k in g]
+                data[sample_type]["positive_keywords"].append(positive_keywords)
+            
+            else:
+                sample_type = 'no keywords'
+
+            data[sample_type]["predictions"].append(prediction)
+            data[sample_type]["references"].append(reference)
+
     metric = datasets.load_metric('./key2gen_metric.py')
-    table = [{'prompt': "keywords", **metric.compute(**data["keywords"])}]
-    if len(data["possible keywords"]["predictions"]) > 0:
-        table.append({'prompt': "possible keywords", **metric.compute(**data["possible keywords"])})
+    table = []
+    for sample_type in data:
+        table.append({'sample_type': sample_type, **metric.compute(**data[sample_type])})
     print(tabulate(table, headers='keys', tablefmt='github'))
 
 

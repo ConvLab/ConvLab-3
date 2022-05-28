@@ -12,7 +12,7 @@ def main(args):
         fout = open(os.path.join(args.output_dir, f"{filename.split('/')[-1].split('_')[1]}.json"), 'w', encoding='utf-8')
         for dial in tqdm(data):
             context = []
-            turn_keywords = [turn['keywords'] for turn in dial]
+            turns_keywords = [turn['keywords'] for turn in dial]
             for i, turn in enumerate(dial):
                 speaker = 'user' if i % 2 == 0 else 'system'
                 utt = turn['utterance']
@@ -27,21 +27,22 @@ def main(args):
                     continue
 
                 random.shuffle(turn['keywords'])
-                keywords = ' : '.join(turn['keywords'])
+                for j in range(len(turn['keywords'])):
+                    random.shuffle(turn['keywords'][j])
+                keywords = ' | '.join([' : '.join(sent_keywords) for sent_keywords in turn['keywords']])
                 input_seq = f'generate a response: grounded knowledge: | {keywords} | context:\n\n{context_seq}'
-                fout.write(json.dumps({'source': input_seq, 'target': utt}, ensure_ascii=False)+'\n')
+                fout.write(json.dumps({'source': input_seq, 'target': utt, 'keywords': turn['keywords']}, ensure_ascii=False)+'\n')
                 if args.mode == 'key2gen':
                     continue
 
-                possible_keywords_turns = [turn['keywords']]
-                num_possible_keywords_turns = min(random.randint(1, 5), len(turn_keywords) - 1)
-                possible_keywords_turns += random.sample(turn_keywords[:i] + turn_keywords[i+1:], num_possible_keywords_turns)
-                random.shuffle(possible_keywords_turns)
-                for possible_keywords_turn in possible_keywords_turns:
-                    random.shuffle(possible_keywords_turn)
-                possible_keywords = ' | '.join([' : '.join(possible_keywords_turn) for possible_keywords_turn in possible_keywords_turns])
+                possible_keywords_sents = turn['keywords'][:]
+                num_possible_keywords_turns = min(random.randint(1, 5), len(turns_keywords) - 1)
+                for turn_keywords in random.sample(turns_keywords[:i] + turns_keywords[i+1:], num_possible_keywords_turns):
+                    possible_keywords_sents.extend(turn_keywords)
+                random.shuffle(possible_keywords_sents)
+                possible_keywords = ' | '.join([' : '.join(sent_keywords) for sent_keywords in possible_keywords_sents])
                 input_seq = f'generate a response: all knowledge: | {possible_keywords} | context:\n\n{context_seq}'
-                fout.write(json.dumps({'source': input_seq, 'target': utt}, ensure_ascii=False)+'\n')
+                fout.write(json.dumps({'source': input_seq, 'target': utt, 'keywords': turn['keywords'], 'all_keywords': possible_keywords_sents}, ensure_ascii=False)+'\n')
                 if args.mode == 'key2gen_noisy':
                     continue
     

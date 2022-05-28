@@ -1,5 +1,5 @@
 task_name="key2gen_noisy"
-dataset_name="dailydialog+metalwoz+sgd+tm1+tm2+tm3"
+dataset_name="dailydialog+metalwoz+tm1+tm2+tm3"
 names=$(echo ${dataset_name} | tr "+" "\n")
 model_type="gpt"
 data_dir=data/${task_name}/${model_type}/${name}/${dataset_name}

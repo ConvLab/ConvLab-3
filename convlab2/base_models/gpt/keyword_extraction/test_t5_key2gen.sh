@@ -1,8 +1,8 @@
 set -e
-n_gpus=4
+n_gpus=2
 master_port=23457
 task_name="key2gen_noisy"
-dataset_name="dailydialog+metalwoz+sgd+tm1+tm2+tm3"
+dataset_name=$1
 model_type="gpt"
 data_dir="data/${task_name}/${model_type}/${dataset_name}"
 output_dir="output/${task_name}/${model_type}/${dataset_name}"
@@ -16,7 +16,7 @@ target_column="target"
 truncation_side="left"
 max_source_length=512
 max_target_length=128
-model_name_or_path="output/${task_name}/${model_type}/dailydialog+metalwoz+sgd+tm1+tm2+tm3"
+model_name_or_path="output/${task_name}/${model_type}/dailydialog+metalwoz+tm1+tm2+tm3"
 per_device_train_batch_size=128
 per_device_eval_batch_size=128
 gradient_accumulation_steps=2
@@ -39,7 +39,7 @@ python -m torch.distributed.launch --master_port ${master_port} \
     --output_dir ${output_dir} \
     --logging_dir ${logging_dir} \
     --overwrite_output_dir \
-    --preprocessing_num_workers 4 \
+    --preprocessing_num_workers 16 \
     --per_device_train_batch_size ${per_device_train_batch_size} \
     --per_device_eval_batch_size ${per_device_eval_batch_size} \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \

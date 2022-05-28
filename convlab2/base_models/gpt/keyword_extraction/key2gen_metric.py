@@ -69,25 +69,25 @@ class Key2GenMetrics(datasets.Metric):
 
     def _compute(self, predictions, references, positive_keywords, negative_keywords=None):
         """Returns the scores: bleu, positive_keywords_recall, negative_keywords_recall"""
-        # rouge-1/2/L bleu-1/2 distinct-1/2
-        if not negative_keywords:
-            negative_keywords = [[]] * len(positive_keywords)
         bleu = sacrebleu.corpus_bleu(predictions, [references], lowercase=True).score
         cnt = {'pos': 0, 'neg': 0, 'pos_recall': 0, 'neg_recall': 0}
-        for poskeys, negkeys, prediction in zip(positive_keywords, negative_keywords, predictions):
-            cnt['pos'] += len(poskeys)
-            cnt['neg'] += len(negkeys)
+        if positive_keywords:
+            if not negative_keywords:
+                negative_keywords = [[]] * len(positive_keywords)
+            for poskeys, negkeys, prediction in zip(positive_keywords, negative_keywords, predictions):
+                cnt['pos'] += len(poskeys)
+                cnt['neg'] += len(negkeys)
 
-            prediction = prediction.lower()
-            for key in poskeys:
-                key = key.lower()
-                if key in prediction:
-                    cnt['pos_recall'] += 1
-            
-            for key in negkeys:
-                key = key.lower()
-                if key in prediction:
-                    cnt['neg_recall'] += 1
+                prediction = prediction.lower()
+                for key in poskeys:
+                    key = key.lower()
+                    if key in prediction:
+                        cnt['pos_recall'] += 1
+                
+                for key in negkeys:
+                    key = key.lower()
+                    if key in prediction:
+                        cnt['neg_recall'] += 1
             
         return {
             "bleu": bleu,
