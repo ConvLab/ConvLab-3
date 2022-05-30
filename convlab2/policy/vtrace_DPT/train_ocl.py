@@ -185,7 +185,8 @@ if __name__ == '__main__':
     training_done = False
 
     log_train_configs()
-    goal_generator = GoalGenerator()
+    goal_generator = GoalGenerator(domain_ordering_dist=dict((tuple(pair[0].split("-")), pair[1] / timeline['end'])
+                                   for pair in start_budget))
 
     while not training_done:
         allowed_domains = [key for key, value in timeline.items() if value <= num_dialogues]

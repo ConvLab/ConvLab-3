@@ -1,6 +1,6 @@
 {"goals": {"single_domains": false, "allowed_domains": null},
 	"model": {
-		"budget_path": "convlab2/policy/vtrace_DPT/ocl/budgets/budget_multiwoz.json",
+		"budget_path": "convlab2/policy/vtrace_DPT/ocl/budgets/budget_balanced.json",
 		"load_path": "",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
@@ -19,7 +19,7 @@
 			"class_path": "convlab2.policy.vector.vector_nodes.VectorNodes",
 			"ini_params": {
 				"use_masking": true,
-				"manually_add_entity_names": false,
+				"manually_add_entity_names": true,
 				"seed": 0
 			}
 		}
