@@ -36,7 +36,7 @@ def init_logging(log_dir_path, path_suffix=None):
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(config_path, model_name, verbose=False):
+def evaluate(config_path, model_name, verbose=False, model_path=""):
     seed = 0
     set_seed(seed)
 
@@ -58,7 +58,10 @@ def evaluate(config_path, model_name, verbose=False):
         policy_sys = GDPL(vectorizer=conf['vectorizer_sys_activated'])
 
     try:
-        policy_sys.load(conf['model']['load_path'])
+        if model_path:
+            policy_sys.load(model_path)
+        else:
+            policy_sys.load(conf['model']['load_path'])
     except Exception as e:
         logging.info(f"Could not load a policy: {e}")
 
@@ -140,7 +143,10 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str,
                         default="PPO", help="name of model")
     parser.add_argument("--config_path", type=str,
-                        default='', help="path of model")
+                        default='', help="config path defining the environment for simulation and system pipeline")
+    parser.add_argument("--model_path", type=str,
+                        default='', help="if this is set, tries to load the model weights from this path"
+                                         ", otherwise from config")
     parser.add_argument("--verbose", action='store_true',
                         help="whether to output utterances")
     parser.add_argument("--log_path_suffix", type=str,
@@ -152,4 +158,4 @@ if __name__ == "__main__":
 
     init_logging(log_dir_path=args.log_dir_path,
                  path_suffix=args.log_path_suffix)
-    evaluate(config_path=args.config_path, model_name=args.model_name, verbose=args.verbose)
+    evaluate(config_path=args.config_path, model_name=args.model_name, verbose=args.verbose, model_path=args.model_path)
