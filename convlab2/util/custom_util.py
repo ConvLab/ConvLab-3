@@ -85,9 +85,9 @@ def load_config_file(filepath: str = None) -> dict:
     return conf
 
 
-def save_config(terminal_args, config_file_args, config_save_path):
+def save_config(terminal_args, config_file_args, config_save_path, policy_config=None):
     config_save_path = os.path.join(config_save_path, f'config_saved.json')
-    args_dict = {"args": terminal_args, "config": config_file_args}
+    args_dict = {"args": terminal_args, "config": config_file_args, "policy_config": policy_config}
     json.dump(args_dict, open(config_save_path, 'w'))
 
 

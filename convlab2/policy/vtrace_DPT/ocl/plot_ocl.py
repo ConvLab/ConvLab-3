@@ -82,9 +82,9 @@ def plot_algorithms(dir_path, alg_names, timeline_path=""):
 
     for key in performances[0].keys():
         max_value = -sys.maxsize
+        plt.clf()
         for i, performance in enumerate(performances):
             with sns.axes_style("darkgrid"):
-                plt.clf()
 
                 mean = performance[key]['mean']
                 std = performance[key]['std']
@@ -141,6 +141,6 @@ def lifetime_progress(metric):
 if __name__ == '__main__':
 
     args = arg_parser()
-    print(args.algs)
+    print("Algorithms compared:", args.algs)
 
     plot_algorithms(args.dir_path, args.algs, args.timeline)

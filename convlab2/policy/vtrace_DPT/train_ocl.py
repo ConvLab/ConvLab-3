@@ -10,6 +10,7 @@ import logging
 import time
 import torch
 import numpy as np
+import json
 
 from copy import deepcopy
 from torch import multiprocessing as mp
@@ -130,7 +131,8 @@ if __name__ == '__main__':
     args = [('model', 'seed', seed)]
 
     environment_config = load_config_file(path)
-    save_config(vars(parser.parse_args()), environment_config, config_save_path)
+    save_config(vars(parser.parse_args()), environment_config, config_save_path,
+                json.load(open(os.path.dirname(__file__) + "/config.json", "r")))
 
     conf = get_config(path, args)
     seed = conf['model']['seed']
