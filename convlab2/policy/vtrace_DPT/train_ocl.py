@@ -88,7 +88,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             if done:
                 metrics.append({"success": environment.evaluator.success_strict, "return": rl_return,
                                   "avg_actions": torch.stack(action_list).sum(dim=-1).mean().item(),
-                                  "turns": t})
+                                  "turns": t, "goal": goal.domain_goals})
                 memory.update_episode(description_idx_list, action_list, reward_list, small_act_list, mu_list,
                                       action_mask_list, critic_value_list, description_idx_list, value_list,
                                       current_domain_mask, non_current_domain_mask)
@@ -166,10 +166,10 @@ if __name__ == '__main__':
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
     policy_sys.policy.action_embedder.forbidden_domains = []
-    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
+    #eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
-    for key in eval_dict:
-        tb_writer.add_scalar(key, eval_dict[key], 0)
+    #for key in eval_dict:
+    #    tb_writer.add_scalar(key, eval_dict[key], 0)
 
     train_processes = conf['model']["process_num_train"]
 
@@ -178,7 +178,7 @@ if __name__ == '__main__':
         queues, episode_queues = get_queues(train_processes)
         online_metric_queue = mp.SimpleQueue()
 
-    metric_keys = ["success", "return", "avg_actions", "turns"]
+    metric_keys = ["success", "return", "avg_actions", "turns", "goal"]
     online_metrics = {key: [] for key in metric_keys}
     num_dialogues = 0
     new_dialogues = conf['model']["new_dialogues"]

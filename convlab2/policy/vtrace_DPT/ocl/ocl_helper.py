@@ -82,7 +82,8 @@ def update_online_metrics(online_metrics, metrics, log_save_path, tb_writer):
     for metric in metrics:
         for key in online_metrics:
             online_metrics[key].append(metric[key])
-            tb_writer.add_scalar(f"lifetime_{key}", np.mean(online_metrics[key]), len(online_metrics[key]))
+            if key != "goal":
+                tb_writer.add_scalar(f"lifetime_{key}", np.mean(online_metrics[key]), len(online_metrics[key]))
     json.dump(online_metrics, open(os.path.join(log_save_path, 'online_metrics.json'), 'w'))
 
 
