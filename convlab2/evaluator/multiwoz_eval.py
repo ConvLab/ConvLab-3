@@ -7,7 +7,7 @@ from copy import deepcopy
 from convlab2.evaluator.evaluator import Evaluator
 from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab2.util.multiwoz.dbquery import Database
-from data.unified_datasets.multiwoz21.preprocess import reverse_da
+from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
 from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 
 
@@ -425,12 +425,10 @@ class MultiWozEvaluator(Evaluator):
         """
         booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
-        #book_constraint_sess = self.book_rate_constrains(ref2goal)
-        book_constraint_sess = 1
+        book_constraint_sess = self.book_rate_constrains(ref2goal)
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
-        #goal_sess = 1
-        # book rate == 1 & inform recall == 1
+
         if ((book_sess == 1 and inform_sess[1] == 1)
             or (book_sess == 1 and inform_sess[1] is None)
             or (book_sess is None and inform_sess[1] == 1)) \
@@ -616,16 +614,23 @@ class MultiWozEvaluator(Evaluator):
 
     def evaluate_dialog(self, goal, user_acts, system_acts, system_states):
 
-        self.add_goal(goal)
+        self.add_goal(goal.domain_goals)
         for sys_act, sys_state, user_act in zip(system_acts, system_states, user_acts):
+            #self.goal = self.update_goal(self.goal, sys_act)
             self.add_sys_da(sys_act, sys_state)
             self.add_usr_da(user_act)
-
         self.task_success()
         return {"complete": self.complete, "success": self.success, "success_strict": self.success_strict}
 
     def update_goal(self, goal, system_action):
         for intent, domain, slot, val in system_action:
+            # need to reverse slot to old representation
+            if slot in reverse_da_slot_name_map:
+                slot = reverse_da_slot_name_map[slot]
+            elif domain in reverse_da_slot_name_map and slot in reverse_da_slot_name_map[domain]:
+                slot = reverse_da_slot_name_map[domain][slot]
+            else:
+                slot = slot.capitalize()
             if intent.lower() in ['inform', 'recommend']:
                 if domain.lower() in goal:
                     if 'reqt' in goal[domain.lower()]:

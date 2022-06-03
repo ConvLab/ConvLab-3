@@ -355,7 +355,6 @@ class AgentFactory(object):
             system_acts.append(turn['output_action'])
             user_acts.append(turn['state']['user_action'])
             belief_states.append(turn['state']['belief_state'])
-            goal = evaluator.update_goal(goal, turn['output_action'])
         performance_dict = evaluator.evaluate_dialog(goal, user_acts, system_acts, belief_states)
 
         return performance_dict
