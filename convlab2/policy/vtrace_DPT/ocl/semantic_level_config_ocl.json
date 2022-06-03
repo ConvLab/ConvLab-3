@@ -1,14 +1,14 @@
 {"goals": {"single_domains": false, "allowed_domains": null},
-
 	"model": {
+		"budget_path": "convlab2/policy/vtrace_DPT/ocl/budgets/budget_balanced.json",
 		"load_path": "",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"seed": 0,
-        "process_num": 4,
+        "process_num": 2,
 		"eval_frequency": 1000,
         "num_eval_dialogues": 500,
-        "process_num_train": 1,
+        "process_num_train": 2,
         "total_dialogues": 10000,
         "update_rounds": 1,
 		"new_dialogues": 2,

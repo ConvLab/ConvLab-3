@@ -80,7 +80,7 @@ def create_episodes_process(do_queue, put_queue, environment, policy, seed, metr
                     if done:
                         metric_queue.put({"success": environment.evaluator.success_strict, "return": rl_return,
                                           "avg_actions": torch.stack(action_list).sum(dim=-1).mean().item(),
-                                          "turns": t})
+                                          "turns": t, "goal": item.domain_goals})
                         put_queue.put((description_idx_list, action_list, reward_list, small_act_list, mu_list,
                                        action_mask_list, critic_value_list, description_idx_list, value_list,
                                        current_domain_mask, non_current_domain_mask))
