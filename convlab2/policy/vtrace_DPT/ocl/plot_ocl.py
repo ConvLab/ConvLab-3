@@ -25,6 +25,50 @@ def load_json(load_path):
     return output
 
 
+def plot_bars(pair_list, save_path, x_label, y_label, title):
+
+    x = [pair[0] for pair in pair_list]
+    y = [pair[1] for pair in pair_list]
+    plt.clf()
+    plt.style.use('ggplot')
+    x_pos = [i for i, _ in enumerate(x)]
+    plt.bar(x_pos, y, color='green')
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.xticks(x_pos, x, rotation='vertical')
+    plt.tight_layout()
+    plt.savefig(save_path)
+
+
+def plot_goal_success_bars(dir_path, alg_names):
+
+    alg_paths = [os.path.join(dir_path, algorithm_name) for algorithm_name in alg_names]
+
+    for alg_path in alg_paths:
+        metrics_list = read_dir(alg_path)
+        goal_list = []
+        success_list = []
+        for online_metric in metrics_list:
+            if "goal" in online_metric:
+                goals = online_metric['goal']
+                success = online_metric['success']
+                # for every domain-combination, collect all success and fails
+                for goal, succ in zip(goals, success):
+                    if set(goal) in goal_list:
+                        goal_index = goal_list.index(set(goal))
+                        success_list[goal_index].append(succ)
+                    else:
+                        goal_list.append(set(goal))
+                        success_list.append([succ])
+
+        x = ["-".join(list(goal)) for goal in goal_list]
+        y = [np.mean(el) for el in success_list]
+
+        save_path = os.path.join(alg_path, "success_bar_plot.pdf")
+        plot_bars(list(zip(x, y)), save_path, "Domain combinations", "Average success", "Success per domain combination")
+
+
 def read_dir(algorithm_dir_path):
 
     seed_dir_paths = [f.path for f in os.scandir(algorithm_dir_path) if f.is_dir()]
@@ -44,11 +88,16 @@ def aggregate_across_seeds(algorithm_dir_path):
 
     metrics_per_seed = read_dir(algorithm_dir_path)
     metrics_aggregated = metrics_per_seed[0]
+    del metrics_aggregated["goal"]
     for key in metrics_aggregated:
         for seed_metric in metrics_per_seed[1:]:
             metrics_aggregated[key] = np.concatenate([metrics_aggregated[key], seed_metric[key]])
     for key in metrics_aggregated:
-        metrics_aggregated[key] = metrics_aggregated[key].reshape(len(metrics_per_seed), -1)
+        if len(metrics_per_seed) > 1:
+            metrics_aggregated[key] = metrics_aggregated[key].reshape(len(metrics_per_seed), -1)
+        else:
+            # if we only have one seed, just cast to numpy array
+            metrics_aggregated[key] = np.array(metrics_aggregated[key]).reshape(1, -1)
 
     return metrics_aggregated
 
@@ -144,3 +193,4 @@ if __name__ == '__main__':
     print("Algorithms compared:", args.algs)
 
     plot_algorithms(args.dir_path, args.algs, args.timeline)
+    plot_goal_success_bars(args.dir_path, args.algs)

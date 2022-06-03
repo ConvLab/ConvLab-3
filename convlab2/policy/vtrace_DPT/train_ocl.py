@@ -166,10 +166,10 @@ if __name__ == '__main__':
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
     policy_sys.policy.action_embedder.forbidden_domains = []
-    #eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
-    #for key in eval_dict:
-    #    tb_writer.add_scalar(key, eval_dict[key], 0)
+    for key in eval_dict:
+        tb_writer.add_scalar(key, eval_dict[key], 0)
 
     train_processes = conf['model']["process_num_train"]
 
