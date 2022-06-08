@@ -206,7 +206,6 @@ if __name__ == '__main__':
             # we sample a batch of goals until the next domain is introduced
             number_goals_required = min([value - num_dialogues for key, value in timeline.items()
                                          if value - num_dialogues > 0])
-            log_used_budget(start_budget, budget)
 
             logging.info(f"Creating {number_goals_required} goals..")
             goals, budget = get_goals(goal_generator, allowed_domains, budget, number_goals_required)
@@ -237,7 +236,10 @@ if __name__ == '__main__':
         if num_dialogues % 1000 == 0:
             logging.info(f"Online Metric" + '-' * 15 + f'Dialogues done: {num_dialogues}' + 15 * '-')
             for key in online_metrics:
+                if key == "goal":
+                    continue
                 logging.info(f"{key}: {np.mean(online_metrics[key])}")
+            log_used_budget(start_budget, budget)
 
         if num_dialogues % conf['model']['eval_frequency'] == 0:
 

@@ -88,7 +88,8 @@ def aggregate_across_seeds(algorithm_dir_path):
 
     metrics_per_seed = read_dir(algorithm_dir_path)
     metrics_aggregated = metrics_per_seed[0]
-    del metrics_aggregated["goal"]
+    if "goal" in metrics_aggregated:
+        del metrics_aggregated["goal"]
     for key in metrics_aggregated:
         for seed_metric in metrics_per_seed[1:]:
             metrics_aggregated[key] = np.concatenate([metrics_aggregated[key], seed_metric[key]])
