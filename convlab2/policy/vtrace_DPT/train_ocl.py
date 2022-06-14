@@ -44,7 +44,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
     traj_len = 40
     metrics = []
 
-    while sampled_num < num_episodes:
+    while sampled_num < num_episodes and goals:
         goal = goals.pop()
         s = environment.reset(goal)
         rl_return = 0
@@ -219,6 +219,7 @@ if __name__ == '__main__':
                 processes = start_processes(train_processes, queues, episode_queues, env, policy_sys, seed,
                                             online_metric_queue)
 
+        new_dialogues = conf['model']["new_dialogues"] if len(goals) > conf['model']["new_dialogues"] - 1 else len(goals)
         if train_processes == 1:
             metrics = create_episodes(env, policy_sys, new_dialogues, memory, goals)
         else:
