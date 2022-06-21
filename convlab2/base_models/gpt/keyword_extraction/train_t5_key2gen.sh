@@ -2,7 +2,7 @@ set -e
 n_gpus=2
 master_port=23457
 task_name="key2gen_noisy"
-dataset_name="dailydialog+metalwoz+tm1+tm2+tm3"
+dataset_name="dailydialog+metalwoz+tm1+tm2+tm3+wikidialog"
 model_type="gpt"
 data_dir="data/${task_name}/${model_type}/${dataset_name}"
 output_dir="output/${task_name}/${model_type}/${dataset_name}"
