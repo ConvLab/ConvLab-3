@@ -2,7 +2,6 @@
 
 import argparse
 import datetime
-import json
 import logging
 import os
 
@@ -10,12 +9,10 @@ import numpy as np
 import torch
 from convlab2.dialog_agent.agent import PipelineAgent
 from convlab2.dialog_agent.session import BiSession
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.dst.rule.multiwoz.usr_dst import UserRuleDST
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
-from convlab2.policy.tus.multiwoz.TUS import UserPolicy
 from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.util.custom_util import set_seed
+from convlab2.task.multiwoz.goal_generator import GoalGenerator
+from convlab2.util.custom_util import set_seed, get_config, env_config, create_goals
 
 
 def init_logging(log_dir_path, path_suffix=None):
@@ -39,68 +36,45 @@ def init_logging(log_dir_path, path_suffix=None):
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(args, model_name, load_path, verbose=False):
+def evaluate(config_path, model_name, verbose=False):
     seed = 0
     set_seed(seed)
 
-    dst_sys = RuleDST()
+    conf = get_config(config_path, [])
 
     if model_name == "PPO":
         from convlab2.policy.ppo import PPO
-        if load_path:
-            policy_sys = PPO(False)
-            policy_sys.load(load_path)
-        else:
-            policy_sys = PPO.from_pretrained()
+        policy_sys = PPO(vectorizer=conf['vectorizer_sys_activated'])
     elif model_name == "RULE":
         policy_sys = RulePolicy()
     elif model_name == "PG":
         from convlab2.policy.pg import PG
-        if load_path:
-            policy_sys = PG(False)
-            policy_sys.load(load_path)
-        else:
-            policy_sys = PG.from_pretrained()
+        policy_sys = PG(vectorizer=conf['vectorizer_sys_activated'])
     elif model_name == "MLE":
         from convlab2.policy.mle import MLE
-        if load_path:
-            policy_sys = MLE()
-            policy_sys.load(load_path)
-        else:
-            policy_sys = MLE.from_pretrained()
+        policy_sys = MLE()
     elif model_name == "GDPL":
         from convlab2.policy.gdpl import GDPL
-        if load_path:
-            policy_sys = GDPL(False)
-            policy_sys.load(load_path)
-        else:
-            policy_sys = GDPL.from_pretrained()
-    user_type = args.user.lower()
-    if user_type == "rule":
-        dst_usr = None
-        policy_usr = RulePolicy(character='usr')
-    elif user_type == "tus":
-        dst_usr = UserRuleDST()
-        user_config = json.load(open(args.user_config))
-        policy_usr = UserPolicy(user_config)
-    elif user_type == "vhus":
-        from convlab2.policy.vhus.multiwoz import UserPolicyVHUS
-        dst_usr = None
-        policy_usr = UserPolicyVHUS(
-            load_from_zip=True, model_file="/home/linh/convlab-2/vhus_simulator_multiwoz.zip")
+        policy_sys = GDPL(vectorizer=conf['vectorizer_sys_activated'])
 
-    simulator = PipelineAgent(None, dst_usr, policy_usr, None, 'user')
-    agent_sys = PipelineAgent(None, dst_sys, policy_sys, None, 'sys')
+    try:
+        policy_sys.load(conf['model']['load_path'])
+    except Exception as e:
+        logging.info(f"Could not load a policy: {e}")
 
-    evaluator = MultiWozEvaluator()
-    sess = BiSession(agent_sys, simulator, None, evaluator)
-
+    env, sess = env_config(conf, policy_sys)
     action_dict = {}
 
-    task_success = {'Complete': [], 'Success': [], 'Success strict': [], 'total_return': [], 'turns': []}
-    for seed in range(1000, 1400):
+    task_success = {'Complete': [], 'Success': [],
+                    'Success strict': [], 'total_return': [], 'turns': []}
+
+    dialogues = 500
+    goal_generator = GoalGenerator()
+    goals = create_goals(goal_generator, num_goals=dialogues, single_domains=False, allowed_domains=None)
+
+    for seed in range(1000, 1000 + dialogues):
         set_seed(seed)
-        sess.init_session()
+        sess.init_session(goal=goals[seed-1000])
         sys_response = []
         actions = 0.0
         total_return = 0.0
@@ -133,7 +107,7 @@ def evaluate(args, model_name, load_path, verbose=False):
 
             # logging.info(f"Actions in turn: {len(sys_response)}")
             turns += 1
-            total_return += evaluator.get_reward(session_over)
+            total_return += sess.evaluator.get_reward(session_over)
 
             if session_over:
                 task_succ = sess.evaluator.task_success()
@@ -158,31 +132,24 @@ def evaluate(args, model_name, load_path, verbose=False):
     for key in task_success:
         logging.info(
             f'{key} {len(task_success[key])} {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}')
+    logging.info(f"Average actions: {actions / turns}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str,
                         default="PPO", help="name of model")
-    parser.add_argument("--load_path", type=str,
+    parser.add_argument("--config_path", type=str,
                         default='', help="path of model")
+    parser.add_argument("--verbose", action='store_true',
+                        help="whether to output utterances")
     parser.add_argument("--log_path_suffix", type=str,
                         default="", help="suffix of path of log file")
     parser.add_argument("--log_dir_path", type=str,
                         default="log", help="path of log directory")
-    parser.add_argument("--user_config", type=str,
-                        default="convlab2/policy/tus/multiwoz/exp/default.json")
-    parser.add_argument("--user_mode", type=str, default="")
-    parser.add_argument("--user", type=str, default="rule")
-    parser.add_argument("--verbose", action='store_true', help="whether to output utterances")
 
     args = parser.parse_args()
 
     init_logging(log_dir_path=args.log_dir_path,
                  path_suffix=args.log_path_suffix)
-    evaluate(
-        args=args,
-        model_name=args.model_name,
-        load_path=args.load_path,
-        verbose=args.verbose
-    )
+    evaluate(config_path=args.config_path, model_name=args.model_name, verbose=args.verbose)
