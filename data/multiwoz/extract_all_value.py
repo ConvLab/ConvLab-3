@@ -3,7 +3,7 @@ extract all value appear in dialog act and state, for translation.
 """
 import json
 import zipfile
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
+from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 
 
 def read_zipped_json(filepath, filename):

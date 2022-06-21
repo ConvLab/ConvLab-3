@@ -4,7 +4,7 @@ import copy
 import zipfile
 from tqdm import tqdm
 import re
-from convlab2.util.file_util import read_zipped_json, write_zipped_json
+from convlab.util.file_util import read_zipped_json, write_zipped_json
 from pprint import pprint
 
 descriptions = {

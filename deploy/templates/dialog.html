@@ -343,7 +343,7 @@
                 // this.update_vals();
                 // var b = e.srcElement;
                 // b.setAttribute("disabled", true);
-                var token = localStorage.getItem('convlab2_token');
+                var token = localStorage.getItem('convlab_token');
                 {#alert(token);#}
                 if (token === null) {
                     {#alert('register');#}
@@ -380,7 +380,7 @@
                 var m = target.id.substring(0, target.id.length - 7);
                 alert('Recall: ' + m);
 
-                var token = localStorage.getItem('convlab2_token');
+                var token = localStorage.getItem('convlab_token');
                 var sent = this.input_text;
                 var self = this;
                 {#var nlu_modify = document.getElementById('nlu_output').textContent;#}
@@ -405,7 +405,7 @@
                 {#alert(JSON.stringify(this.nlu_output))#}
                 $.ajax({
                     type: 'POST',
-                    url: '/convlab2/modify_last',
+                    url: '/convlab/modify_last',
                     dataType: 'json',
                     headers: {
                         "Content-Type": "application/json;charset=utf-8"
@@ -465,13 +465,13 @@
             },
             response: function() {
                 // alert('response')
-                var token = localStorage.getItem('convlab2_token');
+                var token = localStorage.getItem('convlab_token');
                 var sent = this.input_text;
                 var self = this;
                 // alert('response start')
                 $.ajax({
                     type: 'POST',
-                    url: '/convlab2/response',
+                    url: '/convlab/response',
                     dataType: 'json',
                     headers: {
                         "Content-Type": "application/json;charset=utf-8"
@@ -521,7 +521,7 @@
                 {#    }))#}
                 return $.ajax({
                     type: 'POST',
-                    url: '/convlab2/register',
+                    url: '/convlab/register',
                     dataType: 'json',
                     headers: {
                         "Content-Type": "application/json;charset=utf-8"
@@ -538,7 +538,7 @@
                         var status = data.status;
                         if (status === 'ok') {
                             var token = data.token;
-                            localStorage.setItem('convlab2_token', token);
+                            localStorage.setItem('convlab_token', token);
                             // alert('register ok');
                         } else {
                             alert(data.error_msg);
@@ -553,7 +553,7 @@
             close: function() {
                 // alert('close')
                 var self = this;
-                var token = localStorage.getItem('convlab2_token');
+                var token = localStorage.getItem('convlab_token');
                 if (token === null) {
                     // alert(1);
                     var self = this;
@@ -568,7 +568,7 @@
                     // alert(2)
                     $.ajax({
                         type: 'POST',
-                        url: '/convlab2/close',
+                        url: '/convlab/close',
                         dataType: 'json',
                         headers: {
                             "Content-Type": "application/json;charset=utf-8"
@@ -602,7 +602,7 @@
                 var self = this;
                 $.ajax({
                     type: 'POST',
-                    url: '/convlab2/models',
+                    url: '/convlab/models',
                     dataType: 'json',
                     headers: {
                         "Content-Type": "application/json;charset=utf-8"

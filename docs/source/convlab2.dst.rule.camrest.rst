@@ -1,13 +1,13 @@
-convlab2.dst.rule.camrest package
+convlab.dst.rule.camrest package
 =================================
 
 Submodules
 ----------
 
-convlab2.dst.rule.camrest.dst module
+convlab.dst.rule.camrest.dst module
 ------------------------------------
 
-.. automodule:: convlab2.dst.rule.camrest.dst
+.. automodule:: convlab.dst.rule.camrest.dst
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.dst.rule.camrest.dst module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.rule.camrest
+.. automodule:: convlab.dst.rule.camrest
    :members:
    :undoc-members:
    :show-inheritance:

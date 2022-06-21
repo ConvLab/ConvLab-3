@@ -1,0 +1,1 @@
+from convlab.nlu.jointBERT.camrest.nlu import BERTNLU

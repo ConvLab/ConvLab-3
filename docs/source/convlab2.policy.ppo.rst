@@ -1,4 +1,4 @@
-convlab2.policy.ppo package
+convlab.policy.ppo package
 ===========================
 
 Subpackages
@@ -6,23 +6,23 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.ppo.multiwoz
+   convlab.policy.ppo.multiwoz
 
 Submodules
 ----------
 
-convlab2.policy.ppo.ppo module
+convlab.policy.ppo.ppo module
 ------------------------------
 
-.. automodule:: convlab2.policy.ppo.ppo
+.. automodule:: convlab.policy.ppo.ppo
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.ppo.train module
+convlab.policy.ppo.train module
 --------------------------------
 
-.. automodule:: convlab2.policy.ppo.train
+.. automodule:: convlab.policy.ppo.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ convlab2.policy.ppo.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.ppo
+.. automodule:: convlab.policy.ppo
    :members:
    :undoc-members:
    :show-inheritance:

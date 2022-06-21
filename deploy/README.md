@@ -33,7 +33,7 @@
   "net":
   {
     "port": 8787,
-    "app_name": "convlab2",
+    "app_name": "convlab",
     "session_time_out": 300
   }
   ```
@@ -60,7 +60,7 @@
    "nlu":
    {
      "svm-cam": {
-      "class_path": "convlab2.nlu.svm.camrest.nlu.SVMNLU",
+      "class_path": "convlab.nlu.svm.camrest.nlu.SVMNLU",
       "data_set": "camrest",
       "ini_params": {"mode": "usr"},
       "model_name": "svm-cam",
@@ -69,7 +69,7 @@
       "enable": true
     },
     "svm-mul": {
-      "class_path": "convlab2.nlu.svm.multiwoz.nlu.SVMNLU",
+      "class_path": "convlab.nlu.svm.multiwoz.nlu.SVMNLU",
       "data_set": "multiwoz",
       "ini_params": {"mode": "usr"},
       "model_name": "svm-mul",

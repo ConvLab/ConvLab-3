@@ -1,69 +1,69 @@
-convlab2.e2e.damd.multiwoz package
+convlab.e2e.damd.multiwoz package
 ==================================
 
 Submodules
 ----------
 
-convlab2.e2e.damd.multiwoz.clean\_dataset module
+convlab.e2e.damd.multiwoz.clean\_dataset module
 ------------------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.clean_dataset
+.. automodule:: convlab.e2e.damd.multiwoz.clean_dataset
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.config module
+convlab.e2e.damd.multiwoz.config module
 ----------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.config
+.. automodule:: convlab.e2e.damd.multiwoz.config
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.damd module
+convlab.e2e.damd.multiwoz.damd module
 --------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.damd
+.. automodule:: convlab.e2e.damd.multiwoz.damd
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.damd\_net module
+convlab.e2e.damd.multiwoz.damd\_net module
 -------------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.damd_net
+.. automodule:: convlab.e2e.damd.multiwoz.damd_net
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.db\_ops module
+convlab.e2e.damd.multiwoz.db\_ops module
 -----------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.db_ops
+.. automodule:: convlab.e2e.damd.multiwoz.db_ops
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.ontology module
+convlab.e2e.damd.multiwoz.ontology module
 ------------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.ontology
+.. automodule:: convlab.e2e.damd.multiwoz.ontology
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.reader module
+convlab.e2e.damd.multiwoz.reader module
 ----------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.reader
+.. automodule:: convlab.e2e.damd.multiwoz.reader
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.damd.multiwoz.utils module
+convlab.e2e.damd.multiwoz.utils module
 ---------------------------------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz.utils
+.. automodule:: convlab.e2e.damd.multiwoz.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -72,7 +72,7 @@ convlab2.e2e.damd.multiwoz.utils module
 Module contents
 ---------------
 
-.. automodule:: convlab2.e2e.damd.multiwoz
+.. automodule:: convlab.e2e.damd.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

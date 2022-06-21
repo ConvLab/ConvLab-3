@@ -1,10 +1,10 @@
-from convlab2.nlu.jointBERT.multiwoz import BERTNLU
-from convlab2.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
-from convlab2.policy.vtrace_rnn_action_embedding import VTRACE_RNN
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.nlg.template.multiwoz import TemplateNLG
-from convlab2.dialog_agent import PipelineAgent
-from convlab2.util.analysis_tool.analyzer import Analyzer
+from convlab.nlu.jointBERT.multiwoz import BERTNLU
+from convlab.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
+from convlab.policy.vtrace_rnn_action_embedding import VTRACE_RNN
+from convlab.policy.rule.multiwoz import RulePolicy
+from convlab.nlg.template.multiwoz import TemplateNLG
+from convlab.dialog_agent import PipelineAgent
+from convlab.util.analysis_tool.analyzer import Analyzer
 import random
 import os
 import json

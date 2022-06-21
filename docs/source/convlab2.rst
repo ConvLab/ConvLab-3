@@ -1,4 +1,4 @@
-convlab2 package
+convlab package
 ================
 
 Subpackages
@@ -6,20 +6,20 @@ Subpackages
 
 .. toctree::
 
-   convlab2.dialog_agent
-   convlab2.dst
-   convlab2.e2e
-   convlab2.evaluator
-   convlab2.nlg
-   convlab2.nlu
-   convlab2.policy
-   convlab2.task
-   convlab2.util
+   convlab.dialog_agent
+   convlab.dst
+   convlab.e2e
+   convlab.evaluator
+   convlab.nlg
+   convlab.nlu
+   convlab.policy
+   convlab.task
+   convlab.util
 
 Module contents
 ---------------
 
-.. automodule:: convlab2
+.. automodule:: convlab
    :members:
    :undoc-members:
    :show-inheritance:

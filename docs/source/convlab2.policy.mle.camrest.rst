@@ -1,29 +1,29 @@
-convlab2.policy.mle.camrest package
+convlab.policy.mle.camrest package
 ===================================
 
 Submodules
 ----------
 
-convlab2.policy.mle.camrest.loader module
+convlab.policy.mle.camrest.loader module
 -----------------------------------------
 
-.. automodule:: convlab2.policy.mle.camrest.loader
+.. automodule:: convlab.policy.mle.camrest.loader
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.mle.camrest.mle module
+convlab.policy.mle.camrest.mle module
 --------------------------------------
 
-.. automodule:: convlab2.policy.mle.camrest.mle
+.. automodule:: convlab.policy.mle.camrest.mle
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.mle.camrest.train module
+convlab.policy.mle.camrest.train module
 ----------------------------------------
 
-.. automodule:: convlab2.policy.mle.camrest.train
+.. automodule:: convlab.policy.mle.camrest.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.policy.mle.camrest.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.mle.camrest
+.. automodule:: convlab.policy.mle.camrest
    :members:
    :undoc-members:
    :show-inheritance:

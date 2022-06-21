@@ -1,4 +1,4 @@
-convlab2.policy.mle package
+convlab.policy.mle package
 ===========================
 
 Subpackages
@@ -6,33 +6,33 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.mle.camrest
-   convlab2.policy.mle.crosswoz
-   convlab2.policy.mle.multiwoz
+   convlab.policy.mle.camrest
+   convlab.policy.mle.crosswoz
+   convlab.policy.mle.multiwoz
 
 Submodules
 ----------
 
-convlab2.policy.mle.loader module
+convlab.policy.mle.loader module
 ---------------------------------
 
-.. automodule:: convlab2.policy.mle.loader
+.. automodule:: convlab.policy.mle.loader
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.mle.mle module
+convlab.policy.mle.mle module
 ------------------------------
 
-.. automodule:: convlab2.policy.mle.mle
+.. automodule:: convlab.policy.mle.mle
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.mle.train module
+convlab.policy.mle.train module
 --------------------------------
 
-.. automodule:: convlab2.policy.mle.train
+.. automodule:: convlab.policy.mle.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -41,7 +41,7 @@ convlab2.policy.mle.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.mle
+.. automodule:: convlab.policy.mle
    :members:
    :undoc-members:
    :show-inheritance:

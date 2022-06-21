@@ -10,7 +10,7 @@ E.g:
   "net":
   {
     "port": 8787,           // (not default), Backend service open port
-    "app_name": "convlab2"      // (not default), Service access interface path name
+    "app_name": "convlab"      // (not default), Service access interface path name
     "session_time_out": 300 // (default as 600), The longest life cycle (seconds) in which a session is idle
   },
 
@@ -18,7 +18,7 @@ E.g:
   {
     "svm-cam":              // The uniquely identifies of an nlu model. User named.
     {
-      "class_path": "convlab2.nlu.svm.camrest.nlu.SVMNLU",  // (not default), Target model class relative path
+      "class_path": "convlab.nlu.svm.camrest.nlu.SVMNLU",  // (not default), Target model class relative path
       "data_set": "camrest",                            // (not default), The data set used by the model
       "ini_params": {"mode": "usr"},                    // (default as {}), The parameters required for the class to be instantiated
       "model_name": "svm",                              // (default as model key), Model name displayed on the front end
@@ -30,7 +30,7 @@ E.g:
 
     "my-model":
     {
-      "class_path": "convlab2.nlu.svm.multiwoz.nlu.xxx",
+      "class_path": "convlab.nlu.svm.multiwoz.nlu.xxx",
       "data_set": "multiwoz"
     }
   },
@@ -107,8 +107,8 @@ def load_config_file(filepath: str = None) -> dict:
 def map_class(cls_path: str):
     """
     Map to class via package text path
-    :param cls_path: str, path with `convlab2` project directory as relative path, separator with `,`
-                            E.g  `convlab2.nlu.svm.camrest.nlu.SVMNLU`
+    :param cls_path: str, path with `convlab` project directory as relative path, separator with `,`
+                            E.g  `convlab.nlu.svm.camrest.nlu.SVMNLU`
     :return: class
     """
     pkgs = cls_path.split('.')
@@ -132,9 +132,9 @@ def get_config(filepath: str = None) -> dict:
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
     # reflect class
-    from convlab2.util.module import Module
+    from convlab.util.module import Module
     # NLU
-    from convlab2.nlu import NLU
+    from convlab.nlu import NLU
     for (model, infos) in conf['nlu'].items():
         cls_path = infos.get('class_path', '')
         cls = map_class(cls_path)
@@ -143,7 +143,7 @@ def get_config(filepath: str = None) -> dict:
         conf['nlu'][model]['class'] = cls
 
     # DST
-    from convlab2.dst import DST
+    from convlab.dst import DST
     for (model, infos) in conf['dst'].items():
         cls_path = infos.get('class_path', '')
         cls = map_class(cls_path)
@@ -152,7 +152,7 @@ def get_config(filepath: str = None) -> dict:
         conf['dst'][model]['class'] = cls
 
     # Policy
-    from convlab2.policy import Policy
+    from convlab.policy import Policy
     for (model, infos) in conf['policy'].items():
         cls_path = infos.get('class_path', '')
         cls = map_class(cls_path)
@@ -161,7 +161,7 @@ def get_config(filepath: str = None) -> dict:
         conf['policy'][model]['class'] = cls
 
     # NLG
-    from convlab2.nlg import NLG
+    from convlab.nlg import NLG
     for (model, infos) in conf['nlg'].items():
         cls_path = infos.get('class_path', '')
         cls = map_class(cls_path)

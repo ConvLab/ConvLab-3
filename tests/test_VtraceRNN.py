@@ -1,9 +1,9 @@
 
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.policy.vtrace_rnn_action_embedding import VTRACE_RNN
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.dialog_agent import PipelineAgent
-from convlab2.util.analysis_tool.analyzer import Analyzer
+from convlab.dst.rule.multiwoz import RuleDST
+from convlab.policy.vtrace_rnn_action_embedding import VTRACE_RNN
+from convlab.policy.rule.multiwoz import RulePolicy
+from convlab.dialog_agent import PipelineAgent
+from convlab.util.analysis_tool.analyzer import Analyzer
 import random
 import numpy as np
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
@@ -21,7 +21,7 @@ def test_end2end(seed=20200202, n_dialogues=1000):
     sys_dst = RuleDST()
     sys_policy = VTRACE_RNN(is_train=False, seed=seed, use_masking=True, shrink=False,
                             noisy=True, action_embedding=True, full_noise=False)
-    sys_policy.load('/gpfs/project/niekerk/src/Convlab/convlab2/policy/vtrace_rnn_action_embedding/experiment_2021-03-11-17-52-28/save/vtrace_rnn')
+    sys_policy.load('/gpfs/project/niekerk/src/Convlab/convlab/policy/vtrace_rnn_action_embedding/experiment_2021-03-11-17-52-28/save/vtrace_rnn')
     sys_nlg = None
     sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
 

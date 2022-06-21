@@ -4,7 +4,7 @@
 We transform different datasets into a unified format under `data/unified_datasets` directory. To import a unified datasets:
 
 ```python
-from convlab2.util import load_dataset, load_ontology, load_database
+from convlab.util import load_dataset, load_ontology, load_database
 
 dataset = load_dataset('multiwoz21')
 ontology = load_ontology('multiwoz21')
@@ -16,7 +16,7 @@ database = load_database('multiwoz21')
 We provide a function `load_unified_data` to transform the dialogues into turns as samples. By passing different arguments to `load_unified_data`, we provide functions to load data for different components:
 
 ```python
-from convlab2.util import load_unified_data, load_nlu_data, load_dst_data, load_policy_data, load_nlg_data, load_e2e_data
+from convlab.util import load_unified_data, load_nlu_data, load_dst_data, load_policy_data, load_nlg_data, load_e2e_data
 
 nlu_data = load_nlu_data(dataset, data_split='test', speaker='user')
 dst_data = load_dst_data(dataset, data_split='test', speaker='user', context_window_size=5)
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 Datasets that require database interaction should also include the following file:
 - `database.py`: load the database and define the query function:
 ```python
-from convlab2.util.unified_datasets_util import BaseDatabase
+from convlab.util.unified_datasets_util import BaseDatabase
 
 class Database(BaseDatabase):
     def __init__(self):

@@ -1,44 +1,44 @@
 # available NLU models
-# from convlab2.nlu.svm.multiwoz import SVMNLU
-# from convlab2.policy.tus.multiwoz.TUS import UserPolicy
-from convlab2.dst.rule.multiwoz.usr_dst import UserRuleDST
+# from convlab.nlu.svm.multiwoz import SVMNLU
+# from convlab.policy.tus.multiwoz.TUS import UserPolicy
+from convlab.dst.rule.multiwoz.usr_dst import UserRuleDST
 import torch
 import numpy as np
 import json
 import random
 from pprint import pprint
 from argparse import ArgumentParser
-from convlab2.nlu.jointBERT.multiwoz import BERTNLU
-# from convlab2.nlu.milu.multiwoz import MILU
+from convlab.nlu.jointBERT.multiwoz import BERTNLU
+# from convlab.nlu.milu.multiwoz import MILU
 # available DST models
-from convlab2.dst.rule.multiwoz import RuleDST
-# from convlab2.dst.mdbt.multiwoz import MDBT
-# from convlab2.dst.sumbt.multiwoz import SUMBT
-from convlab2.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
-# from convlab2.dst.trippy.multiwoz import TRIPPY
-# from convlab2.dst.trade.multiwoz import TRADE
-# from convlab2.dst.comer.multiwoz import COMER
+from convlab.dst.rule.multiwoz import RuleDST
+# from convlab.dst.mdbt.multiwoz import MDBT
+# from convlab.dst.sumbt.multiwoz import SUMBT
+from convlab.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
+# from convlab.dst.trippy.multiwoz import TRIPPY
+# from convlab.dst.trade.multiwoz import TRADE
+# from convlab.dst.comer.multiwoz import COMER
 # available Policy models
-from convlab2.policy.rule.multiwoz import RulePolicy
-# from convlab2.policy.ppo.multiwoz import PPOPolicy
-# from convlab2.policy.pg.multiwoz import PGPolicy。
-# from convlab2.policy.mle.multiwoz import MLEPolicy
-# from convlab2.policy.gdpl.multiwoz import GDPLPolicy
-# from convlab2.policy.vhus.multiwoz import UserPolicyVHUS
-# from convlab2.policy.mdrg.multiwoz import MDRGWordPolicy
-# from convlab2.policy.hdsa.multiwoz import HDSA
-# from convlab2.policy.larl.multiwoz import LaRL
-from convlab2.policy.lava.multiwoz import LAVA
+from convlab.policy.rule.multiwoz import RulePolicy
+# from convlab.policy.ppo.multiwoz import PPOPolicy
+# from convlab.policy.pg.multiwoz import PGPolicy。
+# from convlab.policy.mle.multiwoz import MLEPolicy
+# from convlab.policy.gdpl.multiwoz import GDPLPolicy
+# from convlab.policy.vhus.multiwoz import UserPolicyVHUS
+# from convlab.policy.mdrg.multiwoz import MDRGWordPolicy
+# from convlab.policy.hdsa.multiwoz import HDSA
+# from convlab.policy.larl.multiwoz import LaRL
+from convlab.policy.lava.multiwoz import LAVA
 # available NLG models
-from convlab2.nlg.template.multiwoz import TemplateNLG
-from convlab2.nlg.sclstm.multiwoz import SCLSTM
+from convlab.nlg.template.multiwoz import TemplateNLG
+from convlab.nlg.sclstm.multiwoz import SCLSTM
 # available E2E models
-# from convlab2.e2e.sequicity.multiwoz import Sequicity
-# from convlab2.e2e.damd.multiwoz import Damd
-from convlab2.dialog_agent import PipelineAgent, BiSession
-from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
+# from convlab.e2e.sequicity.multiwoz import Sequicity
+# from convlab.e2e.damd.multiwoz import Damd
+from convlab.dialog_agent import PipelineAgent, BiSession
+from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 import pdb  # ;pdb.set_trace()
-from convlab2.util.analysis_tool.analyzer import Analyzer
+from convlab.util.analysis_tool.analyzer import Analyzer
 from argparse import ArgumentParser
 from pprint import pprint
 import random
@@ -47,8 +47,8 @@ import numpy as np
 import os
 import torch
 # Lin's US
-# from convlab2.dst.rule.multiwoz.usr_dst import UserRuleDST
-# from convlab2.policy.tus.multiwoz.NUS import UserPolicy
+# from convlab.dst.rule.multiwoz.usr_dst import UserRuleDST
+# from convlab.policy.tus.multiwoz.NUS import UserPolicy
 
 
 def set_seed(r_seed):
@@ -79,7 +79,7 @@ def test_end2end(args, model_dir):
 
 
     # where the models are saved from training
-    lava_dir = "/gpfs/project/lubis/ConvLab-3/convlab2/policy/lava/multiwoz/experiments_woz/sys_config_log_model/"
+    lava_dir = "/gpfs/project/lubis/ConvLab-3/convlab/policy/lava/multiwoz/experiments_woz/sys_config_log_model/"
 
     if "rl" in model_dir:
         # lava_path = "{}/{}/reward_best.model".format(lava_dir, model_path[args.lava_model_type])

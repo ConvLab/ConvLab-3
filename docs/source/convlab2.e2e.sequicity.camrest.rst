@@ -1,13 +1,13 @@
-convlab2.e2e.sequicity.camrest package
+convlab.e2e.sequicity.camrest package
 ======================================
 
 Submodules
 ----------
 
-convlab2.e2e.sequicity.camrest.sequicity module
+convlab.e2e.sequicity.camrest.sequicity module
 -----------------------------------------------
 
-.. automodule:: convlab2.e2e.sequicity.camrest.sequicity
+.. automodule:: convlab.e2e.sequicity.camrest.sequicity
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.e2e.sequicity.camrest.sequicity module
 Module contents
 ---------------
 
-.. automodule:: convlab2.e2e.sequicity.camrest
+.. automodule:: convlab.e2e.sequicity.camrest
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,9 +1,9 @@
 
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.policy.ppo import PPO
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.dialog_agent import PipelineAgent
-from convlab2.util.analysis_tool.analyzer import Analyzer
+from convlab.dst.rule.multiwoz import RuleDST
+from convlab.policy.ppo import PPO
+from convlab.policy.rule.multiwoz import RulePolicy
+from convlab.dialog_agent import PipelineAgent
+from convlab.util.analysis_tool.analyzer import Analyzer
 import random
 import numpy as np
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
@@ -20,7 +20,7 @@ def test_end2end(seed=20200202, n_dialogues=1000):
     sys_nlu = None
     sys_dst = RuleDST()
     sys_policy = PPO(False, seed=seed, use_action_mask=True, shrink=False)
-    sys_policy.load('/home/vniekerk.carel/niekerk/src/Convlab/convlab2/policy/ppo/best_supervised')
+    sys_policy.load('/home/vniekerk.carel/niekerk/src/Convlab/convlab/policy/ppo/best_supervised')
     sys_nlg = None
     sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
 

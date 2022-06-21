@@ -1,4 +1,4 @@
-convlab2.policy.vhus package
+convlab.policy.vhus package
 ============================
 
 Subpackages
@@ -6,40 +6,40 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.vhus.camrest
-   convlab2.policy.vhus.multiwoz
+   convlab.policy.vhus.camrest
+   convlab.policy.vhus.multiwoz
 
 Submodules
 ----------
 
-convlab2.policy.vhus.train module
+convlab.policy.vhus.train module
 ---------------------------------
 
-.. automodule:: convlab2.policy.vhus.train
+.. automodule:: convlab.policy.vhus.train
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.vhus.usermodule module
+convlab.policy.vhus.usermodule module
 --------------------------------------
 
-.. automodule:: convlab2.policy.vhus.usermodule
+.. automodule:: convlab.policy.vhus.usermodule
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.vhus.util module
+convlab.policy.vhus.util module
 --------------------------------
 
-.. automodule:: convlab2.policy.vhus.util
+.. automodule:: convlab.policy.vhus.util
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.vhus.vhus module
+convlab.policy.vhus.vhus module
 --------------------------------
 
-.. automodule:: convlab2.policy.vhus.vhus
+.. automodule:: convlab.policy.vhus.vhus
    :members:
    :undoc-members:
    :show-inheritance:
@@ -48,7 +48,7 @@ convlab2.policy.vhus.vhus module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.vhus
+.. automodule:: convlab.policy.vhus
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,35 +1,35 @@
 # available NLU models
-# from convlab2.nlu.svm.multiwoz import SVMNLU
+# from convlab.nlu.svm.multiwoz import SVMNLU
 from logging import raiseExceptions
 from re import U
-from convlab2.nlu.jointBERT.multiwoz import BERTNLU
-# from convlab2.nlu.milu.multiwoz import MILU
+from convlab.nlu.jointBERT.multiwoz import BERTNLU
+# from convlab.nlu.milu.multiwoz import MILU
 # available DST models
-from convlab2.dst.rule.multiwoz import RuleDST
-# from convlab2.dst.mdbt.multiwoz import MDBT
-# from convlab2.dst.sumbt.multiwoz import SUMBT
-# from convlab2.dst.trade.multiwoz import TRADE
-# from convlab2.dst.comer.multiwoz import COMER
+from convlab.dst.rule.multiwoz import RuleDST
+# from convlab.dst.mdbt.multiwoz import MDBT
+# from convlab.dst.sumbt.multiwoz import SUMBT
+# from convlab.dst.trade.multiwoz import TRADE
+# from convlab.dst.comer.multiwoz import COMER
 # available Policy models
-from convlab2.policy.rule.multiwoz import RulePolicy
-# from convlab2.policy.ppo.multiwoz import PPOPolicy
-# from convlab2.policy.pg.multiwoz import PGPolicy
-# from convlab2.policy.mle.multiwoz import MLEPolicy
-# from convlab2.policy.gdpl.multiwoz import GDPLPolicy
-# from convlab2.policy.vhus.multiwoz import UserPolicyVHUS
-# from convlab2.policy.mdrg.multiwoz import MDRGWordPolicy
-# from convlab2.policy.hdsa.multiwoz import HDSA
-# from convlab2.policy.larl.multiwoz import LaRL
+from convlab.policy.rule.multiwoz import RulePolicy
+# from convlab.policy.ppo.multiwoz import PPOPolicy
+# from convlab.policy.pg.multiwoz import PGPolicy
+# from convlab.policy.mle.multiwoz import MLEPolicy
+# from convlab.policy.gdpl.multiwoz import GDPLPolicy
+# from convlab.policy.vhus.multiwoz import UserPolicyVHUS
+# from convlab.policy.mdrg.multiwoz import MDRGWordPolicy
+# from convlab.policy.hdsa.multiwoz import HDSA
+# from convlab.policy.larl.multiwoz import LaRL
 # available NLG models
-from convlab2.nlg.template.multiwoz import TemplateNLG
-from convlab2.nlg.sclstm.multiwoz import SCLSTM
-from convlab2.nlg.scgpt.multiwoz import SCGPT, scgpt
+from convlab.nlg.template.multiwoz import TemplateNLG
+from convlab.nlg.sclstm.multiwoz import SCLSTM
+from convlab.nlg.scgpt.multiwoz import SCGPT, scgpt
 # available E2E models
-# from convlab2.e2e.sequicity.multiwoz import Sequicity
-# from convlab2.e2e.damd.multiwoz import Damd
-from convlab2.dialog_agent import PipelineAgent, BiSession
-from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
-from convlab2.util.analysis_tool.analyzer import Analyzer
+# from convlab.e2e.sequicity.multiwoz import Sequicity
+# from convlab.e2e.damd.multiwoz import Damd
+from convlab.dialog_agent import PipelineAgent, BiSession
+from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
+from convlab.util.analysis_tool.analyzer import Analyzer
 from pprint import pprint
 import random
 import numpy as np
@@ -75,7 +75,7 @@ def test_end2end(seed=20200202, n_dialogues=1000, nlg='TemplateNLG'):
     elif nlg == 'SCLSTM':
         sys_nlg = SCLSTM(is_user=False, use_cuda=True)
     elif nlg == 'SCGPT':
-        sys_nlg = SCGPT(is_user=False, model_file='../convlab2/nlg/scgpt/trained_output/multiwoz/')
+        sys_nlg = SCGPT(is_user=False, model_file='../convlab/nlg/scgpt/trained_output/multiwoz/')
     else:
         return ('Cannot find module '+ nlg)
 

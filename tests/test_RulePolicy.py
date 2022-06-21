@@ -1,8 +1,8 @@
 
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.dialog_agent import PipelineAgent
-from convlab2.util.analysis_tool.analyzer import Analyzer
+from convlab.dst.rule.multiwoz import RuleDST
+from convlab.policy.rule.multiwoz import RulePolicy
+from convlab.dialog_agent import PipelineAgent
+from convlab.util.analysis_tool.analyzer import Analyzer
 import random
 import numpy as np
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser

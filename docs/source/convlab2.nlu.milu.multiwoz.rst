@@ -1,13 +1,13 @@
-convlab2.nlu.milu.multiwoz package
+convlab.nlu.milu.multiwoz package
 ==================================
 
 Submodules
 ----------
 
-convlab2.nlu.milu.multiwoz.nlu module
+convlab.nlu.milu.multiwoz.nlu module
 -------------------------------------
 
-.. automodule:: convlab2.nlu.milu.multiwoz.nlu
+.. automodule:: convlab.nlu.milu.multiwoz.nlu
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.nlu.milu.multiwoz.nlu module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlu.milu.multiwoz
+.. automodule:: convlab.nlu.milu.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

@@ -5,7 +5,7 @@ from fuzzywuzzy import fuzz
 from itertools import chain
 from zipfile import ZipFile
 from copy import deepcopy
-from convlab2.util.unified_datasets_util import BaseDatabase
+from convlab.util.unified_datasets_util import BaseDatabase
 
 
 class Database(BaseDatabase):

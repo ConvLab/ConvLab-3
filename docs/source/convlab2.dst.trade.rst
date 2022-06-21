@@ -1,13 +1,13 @@
-convlab2.dst.trade package
+convlab.dst.trade package
 ==========================
 
 Submodules
 ----------
 
-convlab2.dst.trade.trade module
+convlab.dst.trade.trade module
 -------------------------------
 
-.. automodule:: convlab2.dst.trade.trade
+.. automodule:: convlab.dst.trade.trade
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.dst.trade.trade module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.trade
+.. automodule:: convlab.dst.trade
    :members:
    :undoc-members:
    :show-inheritance:

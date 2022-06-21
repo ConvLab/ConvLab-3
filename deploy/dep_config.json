@@ -1,12 +1,12 @@
 {
   "net": {
     "port": 8787,
-    "app_name": "convlab2",
+    "app_name": "convlab",
     "session_time_out": 300
   },
   "nlu": {
     "svm-cam": {
-      "class_path": "convlab2.nlu.svm.camrest.nlu.SVMNLU",
+      "class_path": "convlab.nlu.svm.camrest.nlu.SVMNLU",
       "data_set": "camrest",
       "ini_params": {
         "mode": "usr"
@@ -17,7 +17,7 @@
       "enable": true
     },
     "svm-mul": {
-      "class_path": "convlab2.nlu.svm.multiwoz.nlu.SVMNLU",
+      "class_path": "convlab.nlu.svm.multiwoz.nlu.SVMNLU",
       "data_set": "multiwoz",
       "ini_params": {
         "mode": "usr"
@@ -28,7 +28,7 @@
       "enable": true
     },
     "bert-cro": {
-      "class_path": "convlab2.nlu.jointBERT.crosswoz.nlu.BERTNLU",
+      "class_path": "convlab.nlu.jointBERT.crosswoz.nlu.BERTNLU",
       "data_set": "crosswoz",
       "ini_params": {
         "mode": "all",
@@ -41,7 +41,7 @@
       "enable": true
     },
     "bert-mul": {
-      "class_path": "convlab2.nlu.jointBERT.multiwoz.nlu.BERTNLU",
+      "class_path": "convlab.nlu.jointBERT.multiwoz.nlu.BERTNLU",
       "data_set": "multiwoz",
       "ini_params": {
         "mode": "all",
@@ -56,7 +56,7 @@
   },
   "dst": {
     "rule-cam": {
-      "class_path": "convlab2.dst.rule.camrest.dst.RuleDST",
+      "class_path": "convlab.dst.rule.camrest.dst.RuleDST",
       "data_set": "camrest",
       "ini_params": {},
       "model_name": "rule-cam",
@@ -65,7 +65,7 @@
       "enable": true
     },
     "rule-mul": {
-      "class_path": "convlab2.dst.rule.multiwoz.dst.RuleDST",
+      "class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
       "data_set": "multiwoz",
       "ini_params": {},
       "model_name": "rule-mul",
@@ -74,7 +74,7 @@
       "enable": true
     },
     "rule-cro": {
-      "class_path": "convlab2.dst.rule.crosswoz.dst.RuleDST",
+      "class_path": "convlab.dst.rule.crosswoz.dst.RuleDST",
       "data_set": "crosswoz",
       "ini_params": {},
       "model_name": "rule-cro",
@@ -83,7 +83,7 @@
       "enable": true
     },
     "trade-mul": {
-      "class_path": "convlab2.dst.trade.multiwoz.trade.MultiWOZTRADE",
+      "class_path": "convlab.dst.trade.multiwoz.trade.MultiWOZTRADE",
       "data_set": "multiwoz",
       "ini_params": {},
       "model_name": "trade-mul",
@@ -94,7 +94,7 @@
   },
   "policy": {
     "mle-cam": {
-      "class_path": "convlab2.policy.mle.camrest.mle.MLE",
+      "class_path": "convlab.policy.mle.camrest.mle.MLE",
       "data_set": "camrest",
       "ini_params": {},
       "model_name": "mle-cam",
@@ -103,7 +103,7 @@
       "enable": true
     },
     "mle-mul": {
-      "class_path": "convlab2.policy.mle.multiwoz.mle.MLE",
+      "class_path": "convlab.policy.mle.multiwoz.mle.MLE",
       "data_set": "multiwoz",
       "ini_params": {},
       "model_name": "mle-mul",
@@ -112,7 +112,7 @@
       "enable": true
     },
     "rule-cam": {
-      "class_path": "convlab2.policy.rule.camrest.rule_based_camrest_bot.RuleBasedCamrestBot",
+      "class_path": "convlab.policy.rule.camrest.rule_based_camrest_bot.RuleBasedCamrestBot",
       "data_set": "camrest",
       "ini_params": {},
       "model_name": "rule-cam",
@@ -121,7 +121,7 @@
       "enable": true
     },
     "rule-mul": {
-      "class_path": "convlab2.policy.rule.multiwoz.rule_based_multiwoz_bot.RuleBasedMultiwozBot",
+      "class_path": "convlab.policy.rule.multiwoz.rule_based_multiwoz_bot.RuleBasedMultiwozBot",
       "data_set": "multiwoz",
       "ini_params": {},
       "model_name": "rule-mul",
@@ -130,7 +130,7 @@
       "enable": true
     },
     "mle-cro": {
-      "class_path": "convlab2.policy.mle.crosswoz.mle.MLE",
+      "class_path": "convlab.policy.mle.crosswoz.mle.MLE",
       "data_set": "crosswoz",
       "ini_params": {},
       "model_name": "mle-cro",
@@ -141,7 +141,7 @@
   },
   "nlg": {
     "tmp-manual-cam": {
-      "class_path": "convlab2.nlg.template.camrest.nlg.TemplateNLG",
+      "class_path": "convlab.nlg.template.camrest.nlg.TemplateNLG",
       "data_set": "camrest",
       "ini_params": {
         "is_user": false
@@ -152,7 +152,7 @@
       "enable": true
     },
     "tmp-auto_manual-cam": {
-      "class_path": "convlab2.nlg.template.camrest.nlg.TemplateNLG",
+      "class_path": "convlab.nlg.template.camrest.nlg.TemplateNLG",
       "data_set": "camrest",
       "ini_params": {
         "is_user": false,
@@ -164,7 +164,7 @@
       "enable": true
     },
     "tmp-auto_manual-mul": {
-      "class_path": "convlab2.nlg.template.multiwoz.nlg.TemplateNLG",
+      "class_path": "convlab.nlg.template.multiwoz.nlg.TemplateNLG",
       "data_set": "multiwoz",
       "ini_params": {
         "is_user": false,
@@ -177,7 +177,7 @@
 
     },
     "tmp-auto_manual-cro": {
-      "class_path": "convlab2.nlg.template.crosswoz.nlg.TemplateNLG",
+      "class_path": "convlab.nlg.template.crosswoz.nlg.TemplateNLG",
       "data_set": "crosswoz",
       "ini_params": {
         "is_user": false,

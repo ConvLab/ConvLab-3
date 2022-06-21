@@ -39,32 +39,32 @@ data/schema/dstc8-schema-guided-dialogue-master
 data/mdbt/data
 data/mdbt/models
 data/mdbt/word-vectors
-convlab2/**/data
-convlab2/**/output
-convlab2/**/cache
-convlab2/nlg/sclstm/**/resource/*
-convlab2/nlg/sclstm/**/resource_usr/*
-convlab2/nlg/sclstm/**/sclstm.pt
-convlab2/nlg/sclstm/**/sclstm.res
-convlab2/nlg/sclstm/**/sclstm.log
-convlab2/nlg/sclstm/**/sclstm_usr.pt
-convlab2/nlg/sclstm/**/sclstm_usr.res
-convlab2/nlg/sclstm/**/sclstm_usr.log
-convlab2/dst/sumbt/multiwoz/output/
-convlab2/nlg/sclstm/**/generated_sens_sys.json
-convlab2/nlg/template/**/generated_sens_sys.json
-convlab2/nlu/jointBERT/crosswoz/**/data
-convlab2/nlu/jointBERT/multiwoz/**/data
-convlab2/nlu/jointBERT/**/output/
-convlab2/nlu/jointBERT_new/crosswoz/**/data
-convlab2/nlu/jointBERT_new/multiwoz/**/data
-convlab2/nlu/jointBERT_new/crosswoz/**/log
-convlab2/nlu/jointBERT_new/multiwoz/**/log
-convlab2/nlu/jointBERT_new/**/output/
-convlab2/nlu/milu/09*
-convlab2/nlu/jointBERT/multiwoz/configs/multiwoz_new_usr_context.json
-convlab2/nlu/milu/multiwoz/configs/system_without_context.jsonnet
-convlab2/nlu/milu/multiwoz/configs/user_without_context.jsonnet
+convlab/**/data
+convlab/**/output
+convlab/**/cache
+convlab/nlg/sclstm/**/resource/*
+convlab/nlg/sclstm/**/resource_usr/*
+convlab/nlg/sclstm/**/sclstm.pt
+convlab/nlg/sclstm/**/sclstm.res
+convlab/nlg/sclstm/**/sclstm.log
+convlab/nlg/sclstm/**/sclstm_usr.pt
+convlab/nlg/sclstm/**/sclstm_usr.res
+convlab/nlg/sclstm/**/sclstm_usr.log
+convlab/dst/sumbt/multiwoz/output/
+convlab/nlg/sclstm/**/generated_sens_sys.json
+convlab/nlg/template/**/generated_sens_sys.json
+convlab/nlu/jointBERT/crosswoz/**/data
+convlab/nlu/jointBERT/multiwoz/**/data
+convlab/nlu/jointBERT/**/output/
+convlab/nlu/jointBERT_new/crosswoz/**/data
+convlab/nlu/jointBERT_new/multiwoz/**/data
+convlab/nlu/jointBERT_new/crosswoz/**/log
+convlab/nlu/jointBERT_new/multiwoz/**/log
+convlab/nlu/jointBERT_new/**/output/
+convlab/nlu/milu/09*
+convlab/nlu/jointBERT/multiwoz/configs/multiwoz_new_usr_context.json
+convlab/nlu/milu/multiwoz/configs/system_without_context.jsonnet
+convlab/nlu/milu/multiwoz/configs/user_without_context.jsonnet
 
 # test script
 *_test.py
@@ -82,7 +82,7 @@ convlab2/nlu/milu/multiwoz/configs/user_without_context.jsonnet
 # compile files
 build
 dist
-convlab2.egg-info
+convlab.egg-info
 
 # configs
 
@@ -91,17 +91,17 @@ convlab2.egg-info
 .ipynb_checkpoints
 
 ## dst files
-convlab2/dst/trade/crosswoz/data/
-convlab2/dst/trade/crosswoz/model/
-convlab2/dst/trade/crosswoz_config/
-convlab2/dst/trade/multiwoz/data/
-convlab2/dst/trade/multiwoz/model/
-convlab2/dst/trade/multiwoz_config/
+convlab/dst/trade/crosswoz/data/
+convlab/dst/trade/crosswoz/model/
+convlab/dst/trade/crosswoz_config/
+convlab/dst/trade/multiwoz/data/
+convlab/dst/trade/multiwoz/model/
+convlab/dst/trade/multiwoz_config/
 deploy/bert_multiwoz_all.zip
 deploy/templates/dialog_eg.html
 test.py
 
-*convlab2/policy/vector/action_dicts
+*convlab/policy/vector/action_dicts
 *.egg-info
 pre-trained-models/
 venv
