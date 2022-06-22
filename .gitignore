@@ -28,6 +28,8 @@ data/unified_datasets/personachat/original_data
 data/unified_datasets/wow/wizard_of_wikipedia
 data/unified_datasets/**/stat.txt
 data/unified_datasets/**/data
+data/*/dstc9*.json.zip
+data/crosswoz_en/.gitignore
 data/**/train.json
 data/**/val.json
 data/**/test.json
