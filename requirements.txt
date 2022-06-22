@@ -119,7 +119,7 @@ patternfork-nosql==3.6
 pdfminer.six==20211012
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow==8.4.0
+Pillow==9.0.1
 pipdeptree==2.2.0
 pluggy==1.0.0
 portalocker==2.3.2
