@@ -1,4 +1,2 @@
-
 include LICENSE.txt
 include README.md
-prune convlab/*/__pycache__

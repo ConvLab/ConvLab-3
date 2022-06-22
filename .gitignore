@@ -97,8 +97,8 @@ convlab/dst/trade/crosswoz_config/
 convlab/dst/trade/multiwoz/data/
 convlab/dst/trade/multiwoz/model/
 convlab/dst/trade/multiwoz_config/
-deploy/bert_multiwoz_all.zip
-deploy/templates/dialog_eg.html
+convlab/deploy/bert_multiwoz_all.zip
+convlab/deploy/templates/dialog_eg.html
 test.py
 
 *convlab/policy/vector/action_dicts
