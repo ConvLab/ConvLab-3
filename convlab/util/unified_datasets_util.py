@@ -81,20 +81,44 @@ def load_database(dataset_name:str):
     return database
 
 def load_unified_data(
-    dataset, 
-    data_split='all', 
-    speaker='all', 
-    utterance=False, 
-    dialogue_acts=False, 
-    state=False, 
-    db_results=False,
-    use_context=False, 
-    context_window_size=0, 
-    terminated=False, 
-    goal=False, 
-    active_domains=False,
-    split_to_turn=True
-):
+        dataset, 
+        data_split='all', 
+        speaker='all', 
+        utterance=False, 
+        dialogue_acts=False, 
+        state=False, 
+        db_results=False,
+        use_context=False, 
+        context_window_size=0, 
+        terminated=False, 
+        goal=False, 
+        active_domains=False,
+        split_to_turn=True
+    ):
+    """
+    > This function takes in a dataset, and returns a dictionary of data splits, where each data split
+    is a list of samples
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: which split of the data to load. Can be 'train', 'validation', 'test', or 'all',
+    defaults to all (optional)
+    :param speaker: 'user', 'system', or 'all', defaults to all (optional)
+    :param utterance: whether to include the utterance text, defaults to False (optional)
+    :param dialogue_acts: whether to include dialogue acts in the data, defaults to False (optional)
+    :param state: whether to include the state of the dialogue, defaults to False (optional)
+    :param db_results: whether to include the database results in the context, defaults to False
+    (optional)
+    :param use_context: whether to include the context of the current turn in the data, defaults to
+    False (optional)
+    :param context_window_size: the number of previous turns to include in the context, defaults to 0
+    (optional)
+    :param terminated: whether to include the terminated signal, defaults to False (optional)
+    :param goal: whether to include the goal of the dialogue in the data, defaults to False (optional)
+    :param active_domains: whether to include the active domains of the dialogue, defaults to False
+    (optional)
+    :param split_to_turn: If True, each turn is a sample. If False, each dialogue is a sample, defaults
+    to True (optional)
+    """
     data_splits = dataset.keys() if data_split == 'all' else [data_split]
     assert speaker in ['user', 'system', 'all']
     assert not use_context or context_window_size > 0
@@ -134,6 +158,18 @@ def load_unified_data(
 
 
 def load_nlu_data(dataset, data_split='all', speaker='user', use_context=False, context_window_size=0, **kwargs):
+    """
+    It loads the data from the specified dataset, and returns it in a format that is suitable for
+    training a NLU model
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
+    :param speaker: 'user' or 'system', defaults to user (optional)
+    :param use_context: whether to use context or not, defaults to False (optional)
+    :param context_window_size: the number of previous utterances to include as context, defaults to 0
+    (optional)
+    :return: A list of dictionaries, each dictionary contains the utterance, dialogue acts, and context.
+    """
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
     kwargs.setdefault('use_context', use_context)
@@ -144,6 +180,17 @@ def load_nlu_data(dataset, data_split='all', speaker='user', use_context=False, 
 
 
 def load_dst_data(dataset, data_split='all', speaker='user', context_window_size=100, **kwargs):
+    """
+    It loads the data from the specified dataset, with the specified data split, speaker, context window
+    size, suitable for training a DST model
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
+    :param speaker: 'user' or 'system', defaults to user (optional)
+    :param context_window_size: the number of utterances to include in the context window, defaults to
+    100 (optional)
+    :return: A list of dictionaries, each dictionary contains the utterance, dialogue state, and context.
+    """
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
     kwargs.setdefault('use_context', True)
@@ -153,6 +200,18 @@ def load_dst_data(dataset, data_split='all', speaker='user', context_window_size
     return load_unified_data(dataset, **kwargs)
 
 def load_policy_data(dataset, data_split='all', speaker='system', context_window_size=1, **kwargs):
+    """
+    It loads the data from the specified dataset, and returns it in a format that is suitable for
+    training a policy
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
+    :param speaker: 'system' or 'user', defaults to system (optional)
+    :param context_window_size: the number of previous turns to include as context, defaults to 1
+    (optional)
+    :return: A list of dictionaries, each dictionary contains the utterance, dialogue state, db results, 
+    dialogue acts, terminated, and context.
+    """
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
     kwargs.setdefault('use_context', True)
@@ -165,6 +224,18 @@ def load_policy_data(dataset, data_split='all', speaker='system', context_window
     return load_unified_data(dataset, **kwargs)
 
 def load_nlg_data(dataset, data_split='all', speaker='system', use_context=False, context_window_size=0, **kwargs):
+    """
+    It loads the data from the specified dataset, and returns it in a format that is suitable for
+    training a NLG model
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
+    :param speaker: 'system' or 'user', defaults to system (optional)
+    :param use_context: whether to use context (i.e. previous utterances), defaults to False (optional)
+    :param context_window_size: the number of previous utterances to include as context, defaults to 0
+    (optional)
+    :return: A list of dictionaries, each dictionary contains the utterance, dialogue acts, and context
+    """
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
     kwargs.setdefault('use_context', use_context)
@@ -174,6 +245,18 @@ def load_nlg_data(dataset, data_split='all', speaker='system', use_context=False
     return load_unified_data(dataset, **kwargs)
 
 def load_e2e_data(dataset, data_split='all', speaker='system', context_window_size=100, **kwargs):
+    """
+    It loads the data from the specified dataset, and returns it in a format that is suitable for
+    training an End2End model
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
+    :param speaker: 'system' or 'user', defaults to system (optional)
+    :param context_window_size: the number of utterances to include in the context window, defaults to
+    100 (optional)
+    :return: A list of dictionaries, each dictionary contains the utterance, state, db results, 
+    dialogue acts, and context
+    """
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
     kwargs.setdefault('use_context', True)
@@ -185,6 +268,17 @@ def load_e2e_data(dataset, data_split='all', speaker='system', context_window_si
     return load_unified_data(dataset, **kwargs)
 
 def load_rg_data(dataset, data_split='all', speaker='system', context_window_size=100, **kwargs):
+    """
+    It loads the data from the dataset, and returns it in a format that is suitable for training a 
+    response generation model
+    
+    :param dataset: dataset object from `load_dataset`
+    :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
+    :param speaker: 'system' or 'user', defaults to system (optional)
+    :param context_window_size: the number of words to include in the context window, defaults to 100
+    (optional)
+    :return: A list of dictionaries, each dictionary contains the utterance and context
+    """
     kwargs.setdefault('data_split', data_split)
     kwargs.setdefault('speaker', speaker)
     kwargs.setdefault('use_context', True)
@@ -198,9 +292,19 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
     delex_func: function that return the placeholder (e.g. "[(domain_name)-(slot_name)]") given (domain, slot, value)
     ignore_values: ignored values when delexicalizing using the categorical acts and states
     """
-    # 
-
     def delex_inplace(texts_placeholders, value_pattern):
+        """
+        It takes a list of strings and placeholders, and a regex pattern. If the pattern matches exactly
+        one string, it replaces that string with a placeholder and returns True. Otherwise, it returns
+        False
+        
+        :param texts_placeholders: a list of tuples, each tuple is a string and a boolean. The boolean
+        indicates whether the string is a placeholder or not
+        :param value_pattern: a regular expression that matches the value to be delexicalized
+        :return: A list of tuples. Each tuple contains a string and a boolean. The string is either a
+        placeholder or a piece of text. The boolean is True if the string is a placeholder, False
+        otherwise.
+        """
         res = []
         for substring, is_placeholder in texts_placeholders:
             if not is_placeholder:
