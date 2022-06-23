@@ -22,6 +22,7 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
+    setup_requires=['setuptools-git'],
     install_requires=[
         'matplotlib',
         'tabulate',
