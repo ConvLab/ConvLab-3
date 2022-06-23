@@ -8,7 +8,7 @@ from tqdm import tqdm
 from collections import Counter
 from pprint import pprint
 from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
-from data.unified_datasets.multiwoz21.booking_remapper import BookingActRemapper
+from .booking_remapper import BookingActRemapper
 
 ontology = {
     "domains": {  # descriptions are adapted from multiwoz22, but is_categorical may be different
