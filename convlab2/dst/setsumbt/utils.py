@@ -15,14 +15,10 @@
 # limitations under the License.
 """SetSUMBT utils"""
 
-import re
 import os
 import shutil
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
-from glob import glob
 from datetime import datetime
-
-from google.cloud import storage
 
 
 def get_args(MODELS):
