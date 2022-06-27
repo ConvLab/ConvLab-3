@@ -1,4 +1,4 @@
-convlab2.dst.comer package
+convlab.dst.comer package
 ==========================
 
 Subpackages
@@ -6,12 +6,12 @@ Subpackages
 
 .. toctree::
 
-   convlab2.dst.comer.multiwoz
+   convlab.dst.comer.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.comer
+.. automodule:: convlab.dst.comer
    :members:
    :undoc-members:
    :show-inheritance:

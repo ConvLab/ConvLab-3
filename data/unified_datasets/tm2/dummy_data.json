@@ -7,11 +7,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -102,8 +97,7 @@
               "end": 50
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -152,8 +146,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -260,8 +253,7 @@
               "end": 92
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -336,8 +328,7 @@
               "end": 14
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -427,8 +418,7 @@
               "end": 153
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -477,8 +467,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -553,8 +542,7 @@
               "end": 18
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -612,8 +600,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -671,8 +658,7 @@
               "end": 34
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -721,8 +707,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -773,11 +758,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -843,8 +823,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -910,8 +889,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -994,8 +972,7 @@
               "end": 45
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1050,8 +1027,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1100,8 +1076,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1152,11 +1127,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
@@ -1166,8 +1136,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1242,8 +1211,7 @@
               "end": 94
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1292,8 +1260,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1376,8 +1343,7 @@
               "end": 48
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1460,8 +1426,7 @@
               "end": 49
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1519,8 +1484,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1594,8 +1558,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1670,8 +1633,7 @@
               "end": 61
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1737,8 +1699,7 @@
               "end": 78
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1787,8 +1748,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1854,8 +1814,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -1969,8 +1928,7 @@
               "end": 196
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2019,8 +1977,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2110,8 +2067,7 @@
               "end": 103
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2166,8 +2122,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2216,8 +2171,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2266,8 +2220,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -2279,11 +2232,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
@@ -2293,8 +2241,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2377,8 +2324,7 @@
               "end": 5
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2445,8 +2391,7 @@
               "end": 10
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2545,8 +2490,7 @@
               "end": 34
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2629,8 +2573,7 @@
               "end": 53
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2688,8 +2631,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2747,8 +2689,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2812,8 +2753,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2862,8 +2802,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -2914,11 +2853,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
@@ -2928,8 +2862,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3003,8 +2936,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3070,8 +3002,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3154,8 +3085,7 @@
               "end": 49
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3230,8 +3160,7 @@
               "end": 33
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3314,8 +3243,7 @@
               "end": 115
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3373,8 +3301,7 @@
               "end": 23
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3425,11 +3352,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -3503,8 +3425,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3578,8 +3499,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3628,8 +3548,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3687,8 +3606,7 @@
               "end": 79
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3763,8 +3681,7 @@
               "end": 30
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3831,8 +3748,7 @@
               "end": 25
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3890,8 +3806,7 @@
               "end": 44
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -3949,8 +3864,7 @@
               "end": 41
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4033,8 +3947,7 @@
               "end": 55
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4083,8 +3996,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4133,8 +4045,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -4146,11 +4057,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
@@ -4160,8 +4066,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4219,8 +4124,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4278,8 +4182,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4345,8 +4248,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4404,8 +4306,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4463,8 +4364,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4513,8 +4413,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4604,8 +4503,7 @@
               "end": 100
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4654,8 +4552,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4710,8 +4607,7 @@
           ],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4760,8 +4656,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -4773,11 +4668,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "user",
@@ -4859,8 +4749,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -4959,8 +4848,7 @@
               "end": 90
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5009,8 +4897,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5076,8 +4963,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5135,8 +5021,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5226,8 +5111,7 @@
               "end": 172
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5285,8 +5169,7 @@
               "end": 19
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5344,8 +5227,7 @@
               "end": 30
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5403,8 +5285,7 @@
               "end": 50
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5453,8 +5334,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   },
@@ -5466,11 +5346,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
@@ -5480,8 +5355,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5579,8 +5453,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5655,8 +5528,7 @@
               "end": 33
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5755,8 +5627,7 @@
               "end": 150
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5807,11 +5678,6 @@
     "domains": [
       "flights"
     ],
-    "goal": {
-      "description": "",
-      "inform": {},
-      "request": {}
-    },
     "turns": [
       {
         "speaker": "system",
@@ -5821,8 +5687,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5871,8 +5736,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5939,8 +5803,7 @@
               "end": 36
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -5998,8 +5861,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6057,8 +5919,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6124,8 +5985,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6174,8 +6034,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6233,8 +6092,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6292,8 +6150,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6351,8 +6208,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6410,8 +6266,7 @@
               "end": 38
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6534,8 +6389,7 @@
               "end": 131
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6602,8 +6456,7 @@
               "end": 31
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6685,8 +6538,7 @@
               "end": 57
             }
           ]
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6735,8 +6587,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       },
       {
         "speaker": "user",
@@ -6785,8 +6636,7 @@
           "binary": [],
           "categorical": [],
           "non-categorical": []
-        },
-        "db_results": {}
+        }
       }
     ]
   }

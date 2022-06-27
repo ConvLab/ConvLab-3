@@ -1,4 +1,4 @@
-convlab2.nlu.milu package
+convlab.nlu.milu package
 =========================
 
 Subpackages
@@ -6,55 +6,55 @@ Subpackages
 
 .. toctree::
 
-   convlab2.nlu.milu.multiwoz
+   convlab.nlu.milu.multiwoz
 
 Submodules
 ----------
 
-convlab2.nlu.milu.dai\_f1\_measure module
+convlab.nlu.milu.dai\_f1\_measure module
 -----------------------------------------
 
-.. automodule:: convlab2.nlu.milu.dai_f1_measure
+.. automodule:: convlab.nlu.milu.dai_f1_measure
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.milu.dataset\_reader module
+convlab.nlu.milu.dataset\_reader module
 ----------------------------------------
 
-.. automodule:: convlab2.nlu.milu.dataset_reader
+.. automodule:: convlab.nlu.milu.dataset_reader
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.milu.evaluate module
+convlab.nlu.milu.evaluate module
 ---------------------------------
 
-.. automodule:: convlab2.nlu.milu.evaluate
+.. automodule:: convlab.nlu.milu.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.milu.model module
+convlab.nlu.milu.model module
 ------------------------------
 
-.. automodule:: convlab2.nlu.milu.model
+.. automodule:: convlab.nlu.milu.model
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.milu.multilabel\_f1\_measure module
+convlab.nlu.milu.multilabel\_f1\_measure module
 ------------------------------------------------
 
-.. automodule:: convlab2.nlu.milu.multilabel_f1_measure
+.. automodule:: convlab.nlu.milu.multilabel_f1_measure
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.milu.train module
+convlab.nlu.milu.train module
 ------------------------------
 
-.. automodule:: convlab2.nlu.milu.train
+.. automodule:: convlab.nlu.milu.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -63,7 +63,7 @@ convlab2.nlu.milu.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlu.milu
+.. automodule:: convlab.nlu.milu
    :members:
    :undoc-members:
    :show-inheritance:

@@ -50,7 +50,7 @@ pip install -e .
 - [Interactive Tool](https://github.com/thu-coai/ConvLab-2/blob/master/deploy) [[demo video]](https://youtu.be/00VWzbcx26E)
 
 ## Documents
-Our documents are on https://thu-coai.github.io/ConvLab-2_docs/convlab2.html.
+Our documents are on https://thu-coai.github.io/ConvLab-2_docs/convlab.html.
 
 ## Models
 
@@ -63,7 +63,7 @@ We provide following models:
 - NLG: Template, SCLSTM
 - End2End: Sequicity, DAMD, RNN_rollout
 
-For  more details about these models, You can refer to `README.md` under `convlab2/$module/$model/$dataset` dir such as `convlab2/nlu/jointBERT/multiwoz/README.md`.
+For  more details about these models, You can refer to `README.md` under `convlab/$module/$model/$dataset` dir such as `convlab/nlu/jointBERT/multiwoz/README.md`.
 
 ## Supported Datasets
 
@@ -104,7 +104,7 @@ set_seed(20200202)
 analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name='sys_agent', total_dialog=1000)
 ```
 
-Main metrics (refer to `convlab2/evaluator/multiwoz_eval.py` for more details):
+Main metrics (refer to `convlab/evaluator/multiwoz_eval.py` for more details):
 
 - Complete: whether complete the goal. Judged by the Agenda policy instead of external evaluator.
 - Success: whether all user requests have been informed and the booked entities satisfy the constraints.
@@ -136,7 +136,7 @@ Performance (the first row is the default config for each module. Empty entries 
 
 ### NLU
 
-By running `convlab2/nlu/evaluate.py MultiWOZ $model all`:
+By running `convlab/nlu/evaluate.py MultiWOZ $model all`:
 
 |         | Precision | Recall | F1    |
 | ------- | --------- | ------ | ----- |
@@ -146,7 +146,7 @@ By running `convlab2/nlu/evaluate.py MultiWOZ $model all`:
 
 ### DST 
 
-By running `convlab2/dst/evaluate.py MultiWOZ $model`:
+By running `convlab/dst/evaluate.py MultiWOZ $model`:
 
 |             |  Joint accuracy  | Slot accuracy | Joint F1  |
 | --------    |   -------------   | -------------  | --------|
@@ -158,7 +158,7 @@ By running `convlab2/dst/evaluate.py MultiWOZ $model`:
 
 *Notice*: The results are for commits before [`bdc9dba`](https://github.com/thu-coai/ConvLab-2/commit/bdc9dba72c957d97788e533f9458ed03a4b0137b) (inclusive). We will update the results after improving user policy.
 
-By running `convlab2/policy/evalutate.py --model_name $model`
+By running `convlab/policy/evalutate.py --model_name $model`
 
 |           | Task Success Rate |
 | --------- | ----------------- |
@@ -169,7 +169,7 @@ By running `convlab2/policy/evalutate.py --model_name $model`
 
 ### NLG
 
-By running `convlab2/nlg/evaluate.py MultiWOZ $model sys`
+By running `convlab/nlg/evaluate.py MultiWOZ $model sys`
 
 |          | corpus BLEU-4 |
 | -------- | ------------- |
@@ -193,11 +193,11 @@ if __name__ == "__main__":
         exit(1)
     assert argv[1] in ['multiwoz', 'crosswoz']
 
-    from convlab2.dst.sumbt.multiwoz_zh.sumbt import SUMBT_PATH
+    from convlab.dst.sumbt.multiwoz_zh.sumbt import SUMBT_PATH
     if argv[1] == 'multiwoz':
-        from convlab2.dst.sumbt.multiwoz_zh.sumbt import SUMBTTracker as SUMBT
+        from convlab.dst.sumbt.multiwoz_zh.sumbt import SUMBTTracker as SUMBT
     elif argv[1] == 'crosswoz':
-        from convlab2.dst.sumbt.crosswoz_en.sumbt import SUMBTTracker as SUMBT
+        from convlab.dst.sumbt.crosswoz_en.sumbt import SUMBTTracker as SUMBT
 
     sumbt = SUMBT()
     sumbt.train(True)
@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
 ### Evaluate
 
-Execute `evaluate.py` (under `convlab2/dst/`) with following command:
+Execute `evaluate.py` (under `convlab/dst/`) with following command:
 
 ```bash
 python3 evaluate.py [CrossWOZ-en|MultiWOZ-zh] [val|test|human_val]
@@ -236,7 +236,7 @@ Without modifying any code, you could:
 
   - [trained on CrossWOZ-en](https://convlab.blob.core.windows.net/convlab-2/crosswoz_en-pytorch_model.bin.zip)
   - [trained on MultiWOZ-zh](https://convlab.blob.core.windows.net/convlab-2/multiwoz_zh-pytorch_model.bin.zip)
-  - Say the data set is CrossWOZ (English), (after extraction) just save the pre-trained model under `./convlab2/dst/sumbt/crosswoz_en/pre-trained` and name it with `pytorch_model.bin`. 
+  - Say the data set is CrossWOZ (English), (after extraction) just save the pre-trained model under `./convlab/dst/sumbt/crosswoz_en/pre-trained` and name it with `pytorch_model.bin`. 
 
 ## Issues
 
@@ -264,7 +264,7 @@ Yan Fang, Zhuoer Feng, Jianfeng Gao, Qihan Guo, Kaili Huang, Minlie Huang, Sungj
 If you use ConvLab-2 in your research, please cite:
 
 ```
-@inproceedings{zhu2020convlab2,
+@inproceedings{zhu2020convlab,
     title={ConvLab-2: An Open-Source Toolkit for Building, Evaluating, and Diagnosing Dialogue Systems},
     author={Qi Zhu and Zheng Zhang and Yan Fang and Xiang Li and Ryuichi Takanobu and Jinchao Li and Baolin Peng and Jianfeng Gao and Xiaoyan Zhu and Minlie Huang},
     year={2020},

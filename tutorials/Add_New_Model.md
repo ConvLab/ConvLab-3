@@ -12,7 +12,7 @@ we will take BERTNLU as an example to show how to add new NLU model to **ConvLab
 
 ### NLU interface
 
-To make the new model consistent with **ConvLab-2**, we should follow the NLU interface definition in `convlab2/nlu/nlu.py`. The key function is `predict` which takes an utterance (str) and context (list of str) as inputs and return the dialog act. The format of dialog act is depended on specific dataset. For MultiWOZ dataset, it looks like `[["Inform", "Restaurant", "Food", "brazilian"], ["Inform", "Restaurant", "Area","north"]]`.
+To make the new model consistent with **ConvLab-2**, we should follow the NLU interface definition in `convlab/nlu/nlu.py`. The key function is `predict` which takes an utterance (str) and context (list of str) as inputs and return the dialog act. The format of dialog act is depended on specific dataset. For MultiWOZ dataset, it looks like `[["Inform", "Restaurant", "Food", "brazilian"], ["Inform", "Restaurant", "Area","north"]]`.
 
 
 ```python
@@ -58,7 +58,7 @@ we will take RuleDST as an example to show how to add new DST model to **ConvLab
 
 ### DST interface
 
-To make the new model consistent with **ConvLab-2**, we should follow the DST interface definition in `convlab2/dst/dst.py`. The key function is `update` which takes dialog_act or user utterance as input, update the `state` attribute and return it. The state format is depended on specific dataset. For MultiWOZ dataset, it is defined in `convlab2/util/multiwoz/state.py`. Note that the DST could take dialogue history from its attribute `state` as input too.
+To make the new model consistent with **ConvLab-2**, we should follow the DST interface definition in `convlab/dst/dst.py`. The key function is `update` which takes dialog_act or user utterance as input, update the `state` attribute and return it. The state format is depended on specific dataset. For MultiWOZ dataset, it is defined in `convlab/util/multiwoz/state.py`. Note that the DST could take dialogue history from its attribute `state` as input too.
 
 
 ```python
@@ -84,7 +84,7 @@ In order to add new Model to **ConvLab-2**, we should inherit the `DST` class ab
 
 
 ```python
-from convlab2.util.multiwoz.state import default_state
+from convlab.util.multiwoz.state import default_state
 
 class RuleDST(DST):
     def __init__(self):
@@ -108,7 +108,7 @@ we will take RulePolicy as an example to show how to add new Policy model to **C
 
 ### Policy interface
 
-To make the new model consistent with **ConvLab-2**, we should follow the Policy interface definition in `convlab2/policy/policy.py`. The key function is `predict` which takes state(dict) as input and outputs dialog act. The state format is depended on specific dataset. For MultiWOZ dataset, it is defined in `convlab2/util/multiwoz/state.py`. 
+To make the new model consistent with **ConvLab-2**, we should follow the Policy interface definition in `convlab/policy/policy.py`. The key function is `predict` which takes state(dict) as input and outputs dialog act. The state format is depended on specific dataset. For MultiWOZ dataset, it is defined in `convlab/util/multiwoz/state.py`. 
 
 
 ```python
@@ -157,7 +157,7 @@ we will take TemplateNLG as an example to show how to add new NLG model to **Con
 
 ### NLG interface
 
-To make the new model consistent with **ConvLab-2**, we should follow the NLG interface definition in `convlab2/nlg/nlg.py`. The key function is `generate` which takes the dialog act as input and return an utterance(str). The dialog act format is depended on specific dataset. For MultiWOZ dataset, it looks like `[["Inform", "Restaurant", "Food", "brazilian"], ["Inform", "Restaurant", "Area","north"]]`.
+To make the new model consistent with **ConvLab-2**, we should follow the NLG interface definition in `convlab/nlg/nlg.py`. The key function is `generate` which takes the dialog act as input and return an utterance(str). The dialog act format is depended on specific dataset. For MultiWOZ dataset, it looks like `[["Inform", "Restaurant", "Food", "brazilian"], ["Inform", "Restaurant", "Area","north"]]`.
 
 
 ```python
@@ -200,7 +200,7 @@ we will take Sequicity as an example to show how to add new End-to-End model to 
 
 ### End2End interface
 
-To make the new model consistent with **ConvLab-2**, we should follow the `Agent` interface definition in `convlab2/dialog_agent/agent.py`. The key function is `response` which takes an utterance(str) as input and return an utterance(str). 
+To make the new model consistent with **ConvLab-2**, we should follow the `Agent` interface definition in `convlab/dialog_agent/agent.py`. The key function is `response` which takes an utterance(str) as input and return an utterance(str). 
 
 
 ```python

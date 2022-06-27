@@ -1,21 +1,21 @@
-convlab2.nlg.template.camrest package
+convlab.nlg.template.camrest package
 =====================================
 
 Submodules
 ----------
 
-convlab2.nlg.template.camrest.evaluate module
+convlab.nlg.template.camrest.evaluate module
 ---------------------------------------------
 
-.. automodule:: convlab2.nlg.template.camrest.evaluate
+.. automodule:: convlab.nlg.template.camrest.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlg.template.camrest.nlg module
+convlab.nlg.template.camrest.nlg module
 ----------------------------------------
 
-.. automodule:: convlab2.nlg.template.camrest.nlg
+.. automodule:: convlab.nlg.template.camrest.nlg
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ convlab2.nlg.template.camrest.nlg module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlg.template.camrest
+.. automodule:: convlab.nlg.template.camrest
    :members:
    :undoc-members:
    :show-inheritance:

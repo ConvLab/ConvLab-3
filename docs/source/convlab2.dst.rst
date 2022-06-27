@@ -1,4 +1,4 @@
-convlab2.dst package
+convlab.dst package
 ====================
 
 Subpackages
@@ -6,27 +6,27 @@ Subpackages
 
 .. toctree::
 
-   convlab2.dst.comer
-   convlab2.dst.mdbt
-   convlab2.dst.rule
-   convlab2.dst.sumbt
-   convlab2.dst.trade
+   convlab.dst.comer
+   convlab.dst.mdbt
+   convlab.dst.rule
+   convlab.dst.sumbt
+   convlab.dst.trade
 
 Submodules
 ----------
 
-convlab2.dst.dst module
+convlab.dst.dst module
 -----------------------
 
-.. automodule:: convlab2.dst.dst
+.. automodule:: convlab.dst.dst
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.dst.evaluate module
+convlab.dst.evaluate module
 ----------------------------
 
-.. automodule:: convlab2.dst.evaluate
+.. automodule:: convlab.dst.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
@@ -35,7 +35,7 @@ convlab2.dst.evaluate module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst
+.. automodule:: convlab.dst
    :members:
    :undoc-members:
    :show-inheritance:

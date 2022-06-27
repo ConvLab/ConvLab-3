@@ -1,4 +1,4 @@
-convlab2.nlu.jointBERT package
+convlab.nlu.jointBERT package
 ==============================
 
 Subpackages
@@ -6,41 +6,41 @@ Subpackages
 
 .. toctree::
 
-   convlab2.nlu.jointBERT.camrest
-   convlab2.nlu.jointBERT.crosswoz
-   convlab2.nlu.jointBERT.multiwoz
+   convlab.nlu.jointBERT.camrest
+   convlab.nlu.jointBERT.crosswoz
+   convlab.nlu.jointBERT.multiwoz
 
 Submodules
 ----------
 
-convlab2.nlu.jointBERT.dataloader module
+convlab.nlu.jointBERT.dataloader module
 ----------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.dataloader
+.. automodule:: convlab.nlu.jointBERT.dataloader
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.jointBERT module
+convlab.nlu.jointBERT.jointBERT module
 ---------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.jointBERT
+.. automodule:: convlab.nlu.jointBERT.jointBERT
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.test module
+convlab.nlu.jointBERT.test module
 ----------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.test
+.. automodule:: convlab.nlu.jointBERT.test
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.train module
+convlab.nlu.jointBERT.train module
 -----------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.train
+.. automodule:: convlab.nlu.jointBERT.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -49,7 +49,7 @@ convlab2.nlu.jointBERT.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlu.jointBERT
+.. automodule:: convlab.nlu.jointBERT
    :members:
    :undoc-members:
    :show-inheritance:

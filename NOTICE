@@ -1,6 +1,26 @@
 This project may include a number of subcomponents with separate copyright notices
 and license terms.
 
+This product includes software from https://github.com/thu-coai/Convlab-2 under Apache License 2.0
+
+This product includes software from https://github.com/pengbaolin/soloist under MIT License
+
+This product includes software from https://gitlab.cs.uni-duesseldorf.de/general/dsml/tus_public under Apache License 2.0
+
+This product includes software from https://gitlab.cs.uni-duesseldorf.de/general/dsml/setsumbt-public under Apache License 2.0
+
+This product includes software from https://github.com/twbs/bootstrap under MIT License
+
+This product includes software from https://github.com/chakki-works/seqeval under MIT License
+
+This product includes software from https://github.com/huggingface/transformers under Apache License 2.0
+
+This product includes software from https://github.com/lexmen318/MultiWOZ-coref
+
+This product includes software from https://github.com/pengbaolin/SC-GPT
+
+This product includes software from https://github.com/thu-coai/LAUG under Apache License 2.0
+
 This product includes software from https://github.com/budzianowski/multiwoz under Apache License 2.0
 
 This product includes software from https://github.com/thu-coai/CrossWOZ under Apache License 2.0

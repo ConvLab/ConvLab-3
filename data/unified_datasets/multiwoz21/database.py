@@ -5,13 +5,14 @@ from fuzzywuzzy import fuzz
 from itertools import chain
 from zipfile import ZipFile
 from copy import deepcopy
-from convlab2.util.unified_datasets_util import BaseDatabase
+from convlab.util.unified_datasets_util import BaseDatabase, download_unified_datasets
 
 
 class Database(BaseDatabase):
     def __init__(self):
         """extract data.zip and load the database."""
-        archive = ZipFile(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.zip'))
+        data_path = download_unified_datasets('multiwoz21', 'data.zip', os.path.dirname(os.path.abspath(__file__)))
+        archive = ZipFile(data_path)
         self.domains = ['restaurant', 'hotel', 'attraction', 'train', 'hospital', 'police']
         self.dbs = {}
         for domain in self.domains:

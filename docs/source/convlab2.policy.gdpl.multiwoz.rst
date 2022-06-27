@@ -1,13 +1,13 @@
-convlab2.policy.gdpl.multiwoz package
+convlab.policy.gdpl.multiwoz package
 =====================================
 
 Submodules
 ----------
 
-convlab2.policy.gdpl.multiwoz.gdpl\_policy module
+convlab.policy.gdpl.multiwoz.gdpl\_policy module
 -------------------------------------------------
 
-.. automodule:: convlab2.policy.gdpl.multiwoz.gdpl_policy
+.. automodule:: convlab.policy.gdpl.multiwoz.gdpl_policy
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.policy.gdpl.multiwoz.gdpl\_policy module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.gdpl.multiwoz
+.. automodule:: convlab.policy.gdpl.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

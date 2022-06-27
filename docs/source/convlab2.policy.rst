@@ -1,4 +1,4 @@
-convlab2.policy package
+convlab.policy package
 =======================
 
 Subpackages
@@ -6,46 +6,46 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.gdpl
-   convlab2.policy.mdrg
-   convlab2.policy.mle
-   convlab2.policy.pg
-   convlab2.policy.ppo
-   convlab2.policy.rule
-   convlab2.policy.vector
-   convlab2.policy.vhus
+   convlab.policy.gdpl
+   convlab.policy.mdrg
+   convlab.policy.mle
+   convlab.policy.pg
+   convlab.policy.ppo
+   convlab.policy.rule
+   convlab.policy.vector
+   convlab.policy.vhus
 
 Submodules
 ----------
 
-convlab2.policy.evaluate module
+convlab.policy.evaluate module
 -------------------------------
 
-.. automodule:: convlab2.policy.evaluate
+.. automodule:: convlab.policy.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.policy module
+convlab.policy.policy module
 -----------------------------
 
-.. automodule:: convlab2.policy.policy
+.. automodule:: convlab.policy.policy
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.rlmodule module
+convlab.policy.rlmodule module
 -------------------------------
 
-.. automodule:: convlab2.policy.rlmodule
+.. automodule:: convlab.policy.rlmodule
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.vec module
+convlab.policy.vec module
 --------------------------
 
-.. automodule:: convlab2.policy.vec
+.. automodule:: convlab.policy.vec
    :members:
    :undoc-members:
    :show-inheritance:
@@ -54,7 +54,7 @@ convlab2.policy.vec module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy
+.. automodule:: convlab.policy
    :members:
    :undoc-members:
    :show-inheritance:

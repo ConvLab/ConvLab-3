@@ -1,4 +1,4 @@
-convlab2.nlg.sclstm package
+convlab.nlg.sclstm package
 ===========================
 
 Subpackages
@@ -6,17 +6,17 @@ Subpackages
 
 .. toctree::
 
-   convlab2.nlg.sclstm.camrest
-   convlab2.nlg.sclstm.crosswoz
-   convlab2.nlg.sclstm.multiwoz
+   convlab.nlg.sclstm.camrest
+   convlab.nlg.sclstm.crosswoz
+   convlab.nlg.sclstm.multiwoz
 
 Submodules
 ----------
 
-convlab2.nlg.sclstm.bleu module
+convlab.nlg.sclstm.bleu module
 -------------------------------
 
-.. automodule:: convlab2.nlg.sclstm.bleu
+.. automodule:: convlab.nlg.sclstm.bleu
    :members:
    :undoc-members:
    :show-inheritance:
@@ -25,7 +25,7 @@ convlab2.nlg.sclstm.bleu module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlg.sclstm
+.. automodule:: convlab.nlg.sclstm
    :members:
    :undoc-members:
    :show-inheritance:

@@ -8,15 +8,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 import numpy as np
 import torch
 from torch import multiprocessing as mp
-from convlab2.dialog_agent.agent import PipelineAgent
-from convlab2.dialog_agent.env import Environment
-from convlab2.nlu.svm.multiwoz import SVMNLU
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.policy.ppo import PPO
-from convlab2.policy.rlmodule import Memory, Transition
-from convlab2.nlg.template.multiwoz import TemplateNLG
-from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
+from convlab.dialog_agent.agent import PipelineAgent
+from convlab.dialog_agent.env import Environment
+from convlab.nlu.svm.multiwoz import SVMNLU
+from convlab.dst.rule.multiwoz import RuleDST
+from convlab.policy.rule.multiwoz import RulePolicy
+from convlab.policy.ppo import PPO
+from convlab.policy.rlmodule import Memory, Transition
+from convlab.nlg.template.multiwoz import TemplateNLG
+from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from argparse import ArgumentParser
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")

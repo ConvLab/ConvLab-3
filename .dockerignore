@@ -1,0 +1,111 @@
+.git
+
+# extras
+Pipfile*
+results*
+
+*.pyc
+__pycache__
+
+.DS_Store
+
+# pycharm
+.idea
+
+# vscode
+.vscode
+
+# data
+data/unified_datasets/multiwoz21/MultiWOZ_2.1.zip
+data/unified_datasets/sgd/dstc8-schema-guided-dialogue-master.zip
+data/unified_datasets/tm1/master.zip
+data/unified_datasets/tm2/master.zip
+data/unified_datasets/dailydialog/ijcnlp_dailydialog.zip
+data/unified_datasets/dart/dart-v1.1.1-*.json
+data/unified_datasets/commongen/commongen_data.zip
+data/unified_datasets/kvret/kvret_*
+data/unified_datasets/metalwoz/metalwoz-*.zip
+data/unified_datasets/woz/woz
+data/unified_datasets/personachat/original_data
+data/unified_datasets/wow/wizard_of_wikipedia
+data/unified_datasets/**/stat.txt
+data/unified_datasets/**/data
+data/*/dstc9*.json.zip
+data/crosswoz_en/.gitignore
+data/**/train.json
+data/**/val.json
+data/**/test.json
+data/**/human_val.json
+data/camrest/CamRest676_v2.json
+data/multiwoz/annotated_user_da_with_span_full.json
+data/schema/dstc8-schema-guided-dialogue-master
+**/processed_data/*
+data/mdbt/data
+data/mdbt/models
+data/mdbt/word-vectors
+convlab/**/data
+convlab/**/output
+convlab/**/cache
+convlab/nlg/sclstm/**/resource/*
+convlab/nlg/sclstm/**/resource_usr/*
+convlab/nlg/sclstm/**/sclstm.pt
+convlab/nlg/sclstm/**/sclstm.res
+convlab/nlg/sclstm/**/sclstm.log
+convlab/nlg/sclstm/**/sclstm_usr.pt
+convlab/nlg/sclstm/**/sclstm_usr.res
+convlab/nlg/sclstm/**/sclstm_usr.log
+convlab/dst/sumbt/multiwoz/output/
+convlab/nlg/sclstm/**/generated_sens_sys.json
+convlab/nlg/template/**/generated_sens_sys.json
+convlab/nlu/jointBERT/crosswoz/**/data
+convlab/nlu/jointBERT/multiwoz/**/data
+convlab/nlu/jointBERT/**/output/
+convlab/nlu/jointBERT_new/crosswoz/**/data
+convlab/nlu/jointBERT_new/multiwoz/**/data
+convlab/nlu/jointBERT_new/crosswoz/**/log
+convlab/nlu/jointBERT_new/multiwoz/**/log
+convlab/nlu/jointBERT_new/**/output/
+convlab/nlu/milu/09*
+convlab/nlu/jointBERT/multiwoz/configs/multiwoz_new_usr_context.json
+convlab/nlu/milu/multiwoz/configs/system_without_context.jsonnet
+convlab/nlu/milu/multiwoz/configs/user_without_context.jsonnet
+
+# test script
+*_test.py
+
+# log
+**/log/**
+*.log
+
+# save
+**/save/**
+
+# .bak.py
+*.bak.py
+
+# compile files
+build
+dist
+convlab.egg-info
+
+# configs
+
+*experiment*
+*pretrained_models*
+.ipynb_checkpoints
+
+## dst files
+convlab/dst/trade/crosswoz/data/
+convlab/dst/trade/crosswoz/model/
+convlab/dst/trade/crosswoz_config/
+convlab/dst/trade/multiwoz/data/
+convlab/dst/trade/multiwoz/model/
+convlab/dst/trade/multiwoz_config/
+convlab/deploy/bert_multiwoz_all.zip
+convlab/deploy/templates/dialog_eg.html
+test.py
+
+*convlab/policy/vector/action_dicts
+*.egg-info
+pre-trained-models/
+venv

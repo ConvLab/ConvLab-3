@@ -1,13 +1,13 @@
-convlab2.policy.ppo.multiwoz package
+convlab.policy.ppo.multiwoz package
 ====================================
 
 Submodules
 ----------
 
-convlab2.policy.ppo.multiwoz.ppo\_policy module
+convlab.policy.ppo.multiwoz.ppo\_policy module
 -----------------------------------------------
 
-.. automodule:: convlab2.policy.ppo.multiwoz.ppo_policy
+.. automodule:: convlab.policy.ppo.multiwoz.ppo_policy
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.policy.ppo.multiwoz.ppo\_policy module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.ppo.multiwoz
+.. automodule:: convlab.policy.ppo.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

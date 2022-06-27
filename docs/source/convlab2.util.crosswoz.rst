@@ -1,29 +1,29 @@
-convlab2.util.crosswoz package
+convlab.util.crosswoz package
 ==============================
 
 Submodules
 ----------
 
-convlab2.util.crosswoz.dbquery module
+convlab.util.crosswoz.dbquery module
 -------------------------------------
 
-.. automodule:: convlab2.util.crosswoz.dbquery
+.. automodule:: convlab.util.crosswoz.dbquery
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.crosswoz.lexicalize module
+convlab.util.crosswoz.lexicalize module
 ----------------------------------------
 
-.. automodule:: convlab2.util.crosswoz.lexicalize
+.. automodule:: convlab.util.crosswoz.lexicalize
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.crosswoz.state module
+convlab.util.crosswoz.state module
 -----------------------------------
 
-.. automodule:: convlab2.util.crosswoz.state
+.. automodule:: convlab.util.crosswoz.state
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.util.crosswoz.state module
 Module contents
 ---------------
 
-.. automodule:: convlab2.util.crosswoz
+.. automodule:: convlab.util.crosswoz
    :members:
    :undoc-members:
    :show-inheritance:
