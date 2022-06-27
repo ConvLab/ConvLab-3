@@ -15,8 +15,15 @@ from convlab.policy.policy import Policy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
 from convlab.util.custom_util import model_downloader
-from data.unified_datasets.multiwoz21.preprocess import normalize_domain_slot_value, reverse_da
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
+import importlib
+
+module_spec = importlib.util.spec_from_file_location('preprocess', \
+    os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../../../data/unified_datasets/multiwoz21/preprocess.py')))
+module = importlib.util.module_from_spec(module_spec)
+module_spec.loader.exec_module(module)
+reverse_da = module.reverse_da
+normalize_domain_slot_value = module.normalize_domain_slot_value
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")

@@ -7,7 +7,14 @@ from copy import deepcopy
 from convlab.evaluator.evaluator import Evaluator
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
-from data.unified_datasets.multiwoz21.preprocess import reverse_da
+import os
+import importlib
+
+module_spec = importlib.util.spec_from_file_location('preprocess', \
+    os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/multiwoz21/preprocess.py')))
+module = importlib.util.module_from_spec(module_spec)
+module_spec.loader.exec_module(module)
+reverse_da = module.reverse_da
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],

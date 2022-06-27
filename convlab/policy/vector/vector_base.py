@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import logging
 
-from data.unified_datasets.multiwoz21.database import Database
 from copy import deepcopy
 from convlab.policy.vec import Vector
 from convlab.util.custom_util import flatten_acts
@@ -27,8 +26,8 @@ class VectorBase(Vector):
         self.set_seed(seed)
         self.ontology = load_ontology(dataset_name)
         try:
-            #self.db = load_database(dataset_name)
-            self.db = Database()
+            self.db = load_database(dataset_name)
+            # self.db = Database()
             self.db_domains = self.db.domains
         except Exception as e:
             self.db = None

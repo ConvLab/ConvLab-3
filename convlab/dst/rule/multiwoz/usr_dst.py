@@ -6,11 +6,17 @@ from convlab.dst.rule.multiwoz.dst_util import normalize_value
 from convlab.dst.rule.multiwoz import RuleDST
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.policy.tus.multiwoz.Da2Goal import SysDa2Goal, UsrDa2Goal
-from data.unified_datasets.multiwoz21.preprocess import normalize_domain_slot_value, reverse_da
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
+import importlib
 from pprint import pprint
 from copy import deepcopy
 from convlab.util import load_ontology
+
+module_spec = importlib.util.spec_from_file_location('preprocess', \
+    os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../../../data/unified_datasets/multiwoz21/preprocess.py')))
+module = importlib.util.module_from_spec(module_spec)
+module_spec.loader.exec_module(module)
+reverse_da = module.reverse_da
 
 SLOT2SEMI = {
     "arriveby": "arriveBy",

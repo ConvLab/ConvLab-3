@@ -1,8 +1,14 @@
 from copy import deepcopy
 
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
-from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
+import os
+import importlib
 
+module_spec = importlib.util.spec_from_file_location('preprocess', \
+    os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../../data/unified_datasets/multiwoz21/preprocess.py')))
+module = importlib.util.module_from_spec(module_spec)
+module_spec.loader.exec_module(module)
+reverse_da_slot_name_map = module.reverse_da_slot_name_map
 
 def delexicalize_da(da, requestable):
     delexicalized_da = []
