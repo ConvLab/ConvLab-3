@@ -8,13 +8,9 @@ from convlab.evaluator.evaluator import Evaluator
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
 import os
-import importlib
+from convlab.util import relative_import_module_from_unified_datasets
 
-module_spec = importlib.util.spec_from_file_location('preprocess', \
-    os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/multiwoz21/preprocess.py')))
-module = importlib.util.module_from_spec(module_spec)
-module_spec.loader.exec_module(module)
-reverse_da = module.reverse_da
+reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],

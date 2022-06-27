@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 from pprint import pprint
 from convlab.util.file_util import cached_path
 import shutil
+import importlib
 
 
 class BaseDatabase(ABC):
@@ -20,13 +21,13 @@ class BaseDatabase(ABC):
     def query(self, domain:str, state:dict, topk:int, **kwargs)->list:
         """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
 
-def load_from_hf_datasets(dataset_name, filename, data_dir):
+def download_unified_datasets(dataset_name, filename, data_dir):
     """
-    It downloads the file from the Hugging Face if it doesn't exist in the data directory
+    It downloads the file of unified datasets from HuggingFace's datasets if it doesn't exist in the data directory
     
     :param dataset_name: The name of the dataset
     :param filename: the name of the file you want to download
-    :param data_dir: the directory where the data will be downloaded to
+    :param data_dir: the directory where the file will be downloaded to
     :return: The data path
     """
     data_path = os.path.join(data_dir, filename)
@@ -37,6 +38,32 @@ def load_from_hf_datasets(dataset_name, filename, data_dir):
         cache_path = cached_path(data_url)
         shutil.move(cache_path, data_path)
     return data_path
+
+def relative_import_module_from_unified_datasets(dataset_name, filename, names2import):
+    """
+    It downloads a file from the unified datasets repository, imports it as a module, and returns the
+    variable(s) you want from that module
+    
+    :param dataset_name: the name of the dataset, e.g. 'multiwoz21'
+    :param filename: the name of the file to download, e.g. 'preprocess.py'
+    :param names2import: a string or a list of strings. If it's a string, it's the name of the variable
+    to import. If it's a list of strings, it's the names of the variables to import
+    :return: the variable(s) that are being imported from the module.
+    """
+    data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
+    assert filename.endswith('.py')
+    assert isinstance(names2import, str) or (isinstance(names2import, list) and len(names2import) > 0)
+    data_path = download_unified_datasets(dataset_name, filename, data_dir)
+    module_spec = importlib.util.spec_from_file_location(filename[:-3], data_path)
+    module = importlib.util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(module)
+    if isinstance(names2import, str):
+        return eval(f'module.{names2import}')
+    else:
+        variables = []
+        for name in names2import:
+            variables.append(eval(f'module.{name}'))
+        return variables
 
 def load_dataset(dataset_name:str, dial_ids_order=None) -> Dict:
     """load unified dataset from `data/unified_datasets/$dataset_name`
@@ -49,14 +76,14 @@ def load_dataset(dataset_name:str, dial_ids_order=None) -> Dict:
         dataset (dict): keys are data splits and the values are lists of dialogues
     """
     data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
-    data_path = load_from_hf_datasets(dataset_name, 'data.zip', data_dir)
+    data_path = download_unified_datasets(dataset_name, 'data.zip', data_dir)
 
     archive = ZipFile(data_path)
     with archive.open('data/dialogues.json') as f:
         dialogues = json.loads(f.read())
     dataset = {}
     if dial_ids_order is not None:
-        data_path = load_from_hf_datasets(dataset_name, 'shuffled_dial_ids.json', data_dir)
+        data_path = download_unified_datasets(dataset_name, 'shuffled_dial_ids.json', data_dir)
         dial_ids = json.load(open(data_path))[dial_ids_order]
         for data_split in dial_ids:
             dataset[data_split] = [dialogues[i] for i in dial_ids[data_split]]
@@ -78,7 +105,7 @@ def load_ontology(dataset_name:str) -> Dict:
         ontology (dict): dataset ontology
     """
     data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
-    data_path = load_from_hf_datasets(dataset_name, 'data.zip', data_dir)
+    data_path = download_unified_datasets(dataset_name, 'data.zip', data_dir)
 
     archive = ZipFile(data_path)
     with archive.open('data/ontology.json') as f:
@@ -95,11 +122,11 @@ def load_database(dataset_name:str):
         database: an instance of BaseDatabase
     """
     data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
-    data_path = load_from_hf_datasets(dataset_name, 'database.py', data_dir)
+    data_path = download_unified_datasets(dataset_name, 'database.py', data_dir)
     module_spec = importlib.util.spec_from_file_location('database', data_path)
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
-    Database = module.Database
+    Database = relative_import_module_from_unified_datasets(dataset_name, 'database.py', 'Database')
     assert issubclass(Database, BaseDatabase)
     database = Database()
     assert isinstance(database, BaseDatabase)

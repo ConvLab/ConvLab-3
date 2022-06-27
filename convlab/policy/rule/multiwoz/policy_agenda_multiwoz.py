@@ -16,14 +16,9 @@ import logging
 from convlab.policy.policy import Policy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA, REF_SYS_DA
-import importlib
+from convlab.util import relative_import_module_from_unified_datasets
 
-module_spec = importlib.util.spec_from_file_location('preprocess', \
-    os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../../../data/unified_datasets/multiwoz21/preprocess.py')))
-module = importlib.util.module_from_spec(module_spec)
-module_spec.loader.exec_module(module)
-reverse_da = module.reverse_da
-normalize_domain_slot_value = module.normalize_domain_slot_value
+reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
 def unified_format(acts):
     new_acts = {'categorical': []}
