@@ -1,4 +1,1 @@
-
-include LICENSE.txt
-include README.md
-prune convlab2/*/__pycache__
+prune data

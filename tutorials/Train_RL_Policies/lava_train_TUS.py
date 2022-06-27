@@ -3,26 +3,26 @@
 Created on Sun Jul 14 16:14:07 2019
 @author: lubis@hhu.de
 """
-from convlab2.policy.tus.multiwoz.NUS import UserPolicy
-from convlab2.dst.rule.multiwoz.usr_dst import UserRuleDST
+from convlab.policy.tus.multiwoz.NUS import UserPolicy
+from convlab.dst.rule.multiwoz.usr_dst import UserRuleDST
 import json
 import random
 import pdb
 from tqdm import tqdm
 import torch as th
 from argparse import ArgumentParser
-from convlab2.util.analysis_tool.analyzer import Analyzer
-from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
-from convlab2.nlg.template.multiwoz import TemplateNLG
-from convlab2.policy.rlmodule import Memory_LAVA, Transition_LAVA
-from convlab2.policy.lava.multiwoz import LAVA
-from convlab2.policy.ppo import PPO
-from convlab2.policy.rule.multiwoz import RulePolicy
-from convlab2.dst.rule.multiwoz import RuleDST
-from convlab2.nlu.jointBERT.multiwoz import BERTNLU
-from convlab2.nlu.svm.multiwoz import SVMNLU
-from convlab2.dialog_agent.env import Environment
-from convlab2.dialog_agent.agent import PipelineAgent
+from convlab.util.analysis_tool.analyzer import Analyzer
+from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
+from convlab.nlg.template.multiwoz import TemplateNLG
+from convlab.policy.rlmodule import Memory_LAVA, Transition_LAVA
+from convlab.policy.lava.multiwoz import LAVA
+from convlab.policy.ppo import PPO
+from convlab.policy.rule.multiwoz import RulePolicy
+from convlab.dst.rule.multiwoz import RuleDST
+from convlab.nlu.jointBERT.multiwoz import BERTNLU
+from convlab.nlu.svm.multiwoz import SVMNLU
+from convlab.dialog_agent.env import Environment
+from convlab.dialog_agent.agent import PipelineAgent
 from torch import multiprocessing as mp
 import torch
 import numpy as np

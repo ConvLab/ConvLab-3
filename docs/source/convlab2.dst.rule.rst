@@ -1,4 +1,4 @@
-convlab2.dst.rule package
+convlab.dst.rule package
 =========================
 
 Subpackages
@@ -6,14 +6,14 @@ Subpackages
 
 .. toctree::
 
-   convlab2.dst.rule.camrest
-   convlab2.dst.rule.crosswoz
-   convlab2.dst.rule.multiwoz
+   convlab.dst.rule.camrest
+   convlab.dst.rule.crosswoz
+   convlab.dst.rule.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.rule
+.. automodule:: convlab.dst.rule
    :members:
    :undoc-members:
    :show-inheritance:

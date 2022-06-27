@@ -1,21 +1,21 @@
-convlab2.evaluator package
+convlab.evaluator package
 ==========================
 
 Submodules
 ----------
 
-convlab2.evaluator.evaluator module
+convlab.evaluator.evaluator module
 -----------------------------------
 
-.. automodule:: convlab2.evaluator.evaluator
+.. automodule:: convlab.evaluator.evaluator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.evaluator.multiwoz\_eval module
+convlab.evaluator.multiwoz\_eval module
 ----------------------------------------
 
-.. automodule:: convlab2.evaluator.multiwoz_eval
+.. automodule:: convlab.evaluator.multiwoz_eval
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ convlab2.evaluator.multiwoz\_eval module
 Module contents
 ---------------
 
-.. automodule:: convlab2.evaluator
+.. automodule:: convlab.evaluator
    :members:
    :undoc-members:
    :show-inheritance:

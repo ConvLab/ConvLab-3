@@ -1,4 +1,4 @@
-convlab2.nlg.template package
+convlab.nlg.template package
 =============================
 
 Subpackages
@@ -6,14 +6,14 @@ Subpackages
 
 .. toctree::
 
-   convlab2.nlg.template.camrest
-   convlab2.nlg.template.crosswoz
-   convlab2.nlg.template.multiwoz
+   convlab.nlg.template.camrest
+   convlab.nlg.template.crosswoz
+   convlab.nlg.template.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlg.template
+.. automodule:: convlab.nlg.template
    :members:
    :undoc-members:
    :show-inheritance:

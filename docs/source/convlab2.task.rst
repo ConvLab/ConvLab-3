@@ -1,4 +1,4 @@
-convlab2.task package
+convlab.task package
 =====================
 
 Subpackages
@@ -6,14 +6,14 @@ Subpackages
 
 .. toctree::
 
-   convlab2.task.camrest
-   convlab2.task.crosswoz
-   convlab2.task.multiwoz
+   convlab.task.camrest
+   convlab.task.crosswoz
+   convlab.task.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.task
+.. automodule:: convlab.task
    :members:
    :undoc-members:
    :show-inheritance:

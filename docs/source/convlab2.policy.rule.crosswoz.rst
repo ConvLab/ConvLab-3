@@ -1,21 +1,21 @@
-convlab2.policy.rule.crosswoz package
+convlab.policy.rule.crosswoz package
 =====================================
 
 Submodules
 ----------
 
-convlab2.policy.rule.crosswoz.evaluate module
+convlab.policy.rule.crosswoz.evaluate module
 ---------------------------------------------
 
-.. automodule:: convlab2.policy.rule.crosswoz.evaluate
+.. automodule:: convlab.policy.rule.crosswoz.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.rule.crosswoz.rule\_simulator module
+convlab.policy.rule.crosswoz.rule\_simulator module
 ----------------------------------------------------
 
-.. automodule:: convlab2.policy.rule.crosswoz.rule_simulator
+.. automodule:: convlab.policy.rule.crosswoz.rule_simulator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ convlab2.policy.rule.crosswoz.rule\_simulator module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.rule.crosswoz
+.. automodule:: convlab.policy.rule.crosswoz
    :members:
    :undoc-members:
    :show-inheritance:

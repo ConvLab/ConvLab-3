@@ -1,13 +1,13 @@
-convlab2.task.camrest package
+convlab.task.camrest package
 =============================
 
 Submodules
 ----------
 
-convlab2.task.camrest.goal\_generator module
+convlab.task.camrest.goal\_generator module
 --------------------------------------------
 
-.. automodule:: convlab2.task.camrest.goal_generator
+.. automodule:: convlab.task.camrest.goal_generator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.task.camrest.goal\_generator module
 Module contents
 ---------------
 
-.. automodule:: convlab2.task.camrest
+.. automodule:: convlab.task.camrest
    :members:
    :undoc-members:
    :show-inheritance:

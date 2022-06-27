@@ -1,29 +1,29 @@
-convlab2.util.camrest package
+convlab.util.camrest package
 =============================
 
 Submodules
 ----------
 
-convlab2.util.camrest.dbquery module
+convlab.util.camrest.dbquery module
 ------------------------------------
 
-.. automodule:: convlab2.util.camrest.dbquery
+.. automodule:: convlab.util.camrest.dbquery
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.camrest.lexicalize module
+convlab.util.camrest.lexicalize module
 ---------------------------------------
 
-.. automodule:: convlab2.util.camrest.lexicalize
+.. automodule:: convlab.util.camrest.lexicalize
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.camrest.state module
+convlab.util.camrest.state module
 ----------------------------------
 
-.. automodule:: convlab2.util.camrest.state
+.. automodule:: convlab.util.camrest.state
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.util.camrest.state module
 Module contents
 ---------------
 
-.. automodule:: convlab2.util.camrest
+.. automodule:: convlab.util.camrest
    :members:
    :undoc-members:
    :show-inheritance:

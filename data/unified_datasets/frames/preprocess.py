@@ -5,7 +5,7 @@ from pprint import pprint
 from copy import deepcopy
 from collections import Counter
 from tqdm import tqdm
-from convlab2.util.file_util import read_zipped_json, write_zipped_json
+from convlab.util.file_util import read_zipped_json, write_zipped_json
 import re
 self_dir = os.path.dirname(os.path.abspath(__file__))
 

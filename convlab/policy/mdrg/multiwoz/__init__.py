@@ -1,0 +1,1 @@
+from convlab.policy.mdrg.multiwoz.policy import MDRGWordPolicy

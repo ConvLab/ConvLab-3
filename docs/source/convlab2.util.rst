@@ -1,4 +1,4 @@
-convlab2.util package
+convlab.util package
 =====================
 
 Subpackages
@@ -6,42 +6,42 @@ Subpackages
 
 .. toctree::
 
-   convlab2.util.camrest
-   convlab2.util.crosswoz
-   convlab2.util.dataloader
-   convlab2.util.multiwoz
+   convlab.util.camrest
+   convlab.util.crosswoz
+   convlab.util.dataloader
+   convlab.util.multiwoz
 
 Submodules
 ----------
 
-convlab2.util.allennlp\_file\_utils module
+convlab.util.allennlp\_file\_utils module
 ------------------------------------------
 
-.. automodule:: convlab2.util.allennlp_file_utils
+.. automodule:: convlab.util.allennlp_file_utils
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.file\_util module
+convlab.util.file\_util module
 -------------------------------
 
-.. automodule:: convlab2.util.file_util
+.. automodule:: convlab.util.file_util
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.module module
+convlab.util.module module
 ---------------------------
 
-.. automodule:: convlab2.util.module
+.. automodule:: convlab.util.module
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.util.train\_util module
+convlab.util.train\_util module
 --------------------------------
 
-.. automodule:: convlab2.util.train_util
+.. automodule:: convlab.util.train_util
    :members:
    :undoc-members:
    :show-inheritance:
@@ -50,7 +50,7 @@ convlab2.util.train\_util module
 Module contents
 ---------------
 
-.. automodule:: convlab2.util
+.. automodule:: convlab.util
    :members:
    :undoc-members:
    :show-inheritance:

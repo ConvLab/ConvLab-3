@@ -1,29 +1,29 @@
-convlab2.policy.mle.multiwoz package
+convlab.policy.mle.multiwoz package
 ====================================
 
 Submodules
 ----------
 
-convlab2.policy.mle.multiwoz.loader module
+convlab.policy.mle.multiwoz.loader module
 ------------------------------------------
 
-.. automodule:: convlab2.policy.mle.multiwoz.loader
+.. automodule:: convlab.policy.mle.multiwoz.loader
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.mle.multiwoz.mle module
+convlab.policy.mle.multiwoz.mle module
 ---------------------------------------
 
-.. automodule:: convlab2.policy.mle.multiwoz.mle
+.. automodule:: convlab.policy.mle.multiwoz.mle
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.mle.multiwoz.train module
+convlab.policy.mle.multiwoz.train module
 -----------------------------------------
 
-.. automodule:: convlab2.policy.mle.multiwoz.train
+.. automodule:: convlab.policy.mle.multiwoz.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.policy.mle.multiwoz.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.mle.multiwoz
+.. automodule:: convlab.policy.mle.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

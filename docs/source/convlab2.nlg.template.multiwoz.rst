@@ -1,13 +1,13 @@
-convlab2.nlg.template.multiwoz package
+convlab.nlg.template.multiwoz package
 ======================================
 
 Submodules
 ----------
 
-convlab2.nlg.template.multiwoz.nlg module
+convlab.nlg.template.multiwoz.nlg module
 -----------------------------------------
 
-.. automodule:: convlab2.nlg.template.multiwoz.nlg
+.. automodule:: convlab.nlg.template.multiwoz.nlg
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.nlg.template.multiwoz.nlg module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlg.template.multiwoz
+.. automodule:: convlab.nlg.template.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

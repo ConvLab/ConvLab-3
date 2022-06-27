@@ -3,15 +3,15 @@ import json
 import pickle
 import torch
 import torch.utils.data as data
-from convlab2.policy.vector.dataset import ActDataset
+from convlab.policy.vector.dataset import ActDataset
 from abc import ABC, abstractmethod
 from collections import Counter
 import numpy as np
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
 
-from convlab2.policy.vector.vector_binary import VectorBinary
-from convlab2.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
+from convlab.policy.vector.vector_binary import VectorBinary
+from convlab.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
 
 PAD = '<pad>'
 UNK = '<unk>'

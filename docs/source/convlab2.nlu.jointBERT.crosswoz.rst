@@ -1,37 +1,37 @@
-convlab2.nlu.jointBERT.crosswoz package
+convlab.nlu.jointBERT.crosswoz package
 =======================================
 
 Submodules
 ----------
 
-convlab2.nlu.jointBERT.crosswoz.analyse module
+convlab.nlu.jointBERT.crosswoz.analyse module
 ----------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.crosswoz.analyse
+.. automodule:: convlab.nlu.jointBERT.crosswoz.analyse
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.crosswoz.nlu module
+convlab.nlu.jointBERT.crosswoz.nlu module
 ------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.crosswoz.nlu
+.. automodule:: convlab.nlu.jointBERT.crosswoz.nlu
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.crosswoz.postprocess module
+convlab.nlu.jointBERT.crosswoz.postprocess module
 --------------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.crosswoz.postprocess
+.. automodule:: convlab.nlu.jointBERT.crosswoz.postprocess
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.crosswoz.preprocess module
+convlab.nlu.jointBERT.crosswoz.preprocess module
 -------------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.crosswoz.preprocess
+.. automodule:: convlab.nlu.jointBERT.crosswoz.preprocess
    :members:
    :undoc-members:
    :show-inheritance:
@@ -40,7 +40,7 @@ convlab2.nlu.jointBERT.crosswoz.preprocess module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlu.jointBERT.crosswoz
+.. automodule:: convlab.nlu.jointBERT.crosswoz
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,0 +1,182 @@
+[
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-0",
+    "original_id": "train-0",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Skier skis down the mountain",
+        "utt_idx": 0,
+        "concepts": [
+          "ski",
+          "mountain",
+          "skier"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-1",
+    "original_id": "train-1",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "A skier is skiing down a mountain.",
+        "utt_idx": 0,
+        "concepts": [
+          "ski",
+          "mountain",
+          "skier"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-2",
+    "original_id": "train-2",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "Three skiers are skiing on a snowy mountain.",
+        "utt_idx": 0,
+        "concepts": [
+          "ski",
+          "mountain",
+          "skier"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-3",
+    "original_id": "train-3",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "The dog is wagging his tail.",
+        "utt_idx": 0,
+        "concepts": [
+          "wag",
+          "tail",
+          "dog"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-4",
+    "original_id": "train-4",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "A dog wags his tail at the boy.",
+        "utt_idx": 0,
+        "concepts": [
+          "wag",
+          "tail",
+          "dog"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-5",
+    "original_id": "train-5",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "a dog wags its tail with its heart",
+        "utt_idx": 0,
+        "concepts": [
+          "wag",
+          "tail",
+          "dog"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-6",
+    "original_id": "train-6",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "woman paddling canoe on a lake",
+        "utt_idx": 0,
+        "concepts": [
+          "lake",
+          "paddle",
+          "canoe"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-7",
+    "original_id": "train-7",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "paddle an open canoe along lake .",
+        "utt_idx": 0,
+        "concepts": [
+          "lake",
+          "paddle",
+          "canoe"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-8",
+    "original_id": "train-8",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "a man paddles his canoe on the lake.",
+        "utt_idx": 0,
+        "concepts": [
+          "lake",
+          "paddle",
+          "canoe"
+        ]
+      }
+    ]
+  },
+  {
+    "dataset": "commongen",
+    "data_split": "train",
+    "dialogue_id": "commongen-train-9",
+    "original_id": "train-9",
+    "turns": [
+      {
+        "speaker": "system",
+        "utterance": "a train pulls into station",
+        "utt_idx": 0,
+        "concepts": [
+          "station",
+          "train",
+          "pull"
+        ]
+      }
+    ]
+  }
+]

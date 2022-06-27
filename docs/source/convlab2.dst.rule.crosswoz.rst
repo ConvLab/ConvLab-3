@@ -1,21 +1,21 @@
-convlab2.dst.rule.crosswoz package
+convlab.dst.rule.crosswoz package
 ==================================
 
 Submodules
 ----------
 
-convlab2.dst.rule.crosswoz.dst module
+convlab.dst.rule.crosswoz.dst module
 -------------------------------------
 
-.. automodule:: convlab2.dst.rule.crosswoz.dst
+.. automodule:: convlab.dst.rule.crosswoz.dst
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.dst.rule.crosswoz.evaluate module
+convlab.dst.rule.crosswoz.evaluate module
 ------------------------------------------
 
-.. automodule:: convlab2.dst.rule.crosswoz.evaluate
+.. automodule:: convlab.dst.rule.crosswoz.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ convlab2.dst.rule.crosswoz.evaluate module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.rule.crosswoz
+.. automodule:: convlab.dst.rule.crosswoz
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,69 +1,69 @@
-convlab2.task.crosswoz package
+convlab.task.crosswoz package
 ==============================
 
 Submodules
 ----------
 
-convlab2.task.crosswoz.attraction\_generator module
+convlab.task.crosswoz.attraction\_generator module
 ---------------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.attraction_generator
+.. automodule:: convlab.task.crosswoz.attraction_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.goal\_generator module
+convlab.task.crosswoz.goal\_generator module
 ---------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.goal_generator
+.. automodule:: convlab.task.crosswoz.goal_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.hotel\_generator module
+convlab.task.crosswoz.hotel\_generator module
 ----------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.hotel_generator
+.. automodule:: convlab.task.crosswoz.hotel_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.metro\_generator module
+convlab.task.crosswoz.metro\_generator module
 ----------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.metro_generator
+.. automodule:: convlab.task.crosswoz.metro_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.reorder module
+convlab.task.crosswoz.reorder module
 -------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.reorder
+.. automodule:: convlab.task.crosswoz.reorder
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.restaurant\_generator module
+convlab.task.crosswoz.restaurant\_generator module
 ---------------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.restaurant_generator
+.. automodule:: convlab.task.crosswoz.restaurant_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.sentence\_generator module
+convlab.task.crosswoz.sentence\_generator module
 -------------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.sentence_generator
+.. automodule:: convlab.task.crosswoz.sentence_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.task.crosswoz.taxi\_generator module
+convlab.task.crosswoz.taxi\_generator module
 ---------------------------------------------
 
-.. automodule:: convlab2.task.crosswoz.taxi_generator
+.. automodule:: convlab.task.crosswoz.taxi_generator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -72,7 +72,7 @@ convlab2.task.crosswoz.taxi\_generator module
 Module contents
 ---------------
 
-.. automodule:: convlab2.task.crosswoz
+.. automodule:: convlab.task.crosswoz
    :members:
    :undoc-members:
    :show-inheritance:

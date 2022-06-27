@@ -1,37 +1,37 @@
-convlab2.e2e.rnn\_rollout.engines package
+convlab.e2e.rnn\_rollout.engines package
 =========================================
 
 Submodules
 ----------
 
-convlab2.e2e.rnn\_rollout.engines.engine module
+convlab.e2e.rnn\_rollout.engines.engine module
 -----------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.engines.engine
+.. automodule:: convlab.e2e.rnn_rollout.engines.engine
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.engines.latent\_clustering\_engine module
+convlab.e2e.rnn\_rollout.engines.latent\_clustering\_engine module
 -------------------------------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.engines.latent_clustering_engine
+.. automodule:: convlab.e2e.rnn_rollout.engines.latent_clustering_engine
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.engines.rnn\_engine module
+convlab.e2e.rnn\_rollout.engines.rnn\_engine module
 ----------------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.engines.rnn_engine
+.. automodule:: convlab.e2e.rnn_rollout.engines.rnn_engine
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.engines.selection\_engine module
+convlab.e2e.rnn\_rollout.engines.selection\_engine module
 ----------------------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.engines.selection_engine
+.. automodule:: convlab.e2e.rnn_rollout.engines.selection_engine
    :members:
    :undoc-members:
    :show-inheritance:
@@ -40,7 +40,7 @@ convlab2.e2e.rnn\_rollout.engines.selection\_engine module
 Module contents
 ---------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.engines
+.. automodule:: convlab.e2e.rnn_rollout.engines
    :members:
    :undoc-members:
    :show-inheritance:

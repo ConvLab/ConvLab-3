@@ -1,0 +1,1446 @@
+[
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-0",
+    "original_id": 0,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "Are there any eritrean restaurants in town?",
+        "state": {
+          "restaurant": {
+            "food": "eritrean",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "eritrean",
+              "start": 14,
+              "end": 22
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "No, there are no eritrean restaurants in town. Would you like a different restaurant?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "How about Chinese food?",
+        "state": {
+          "restaurant": {
+            "food": "chinese",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Chinese",
+              "start": 10,
+              "end": 17
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "There is a wide variety of Chinese restaurants, do you have an area preference or a price preference to narrow it down?"
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "I would like the East part of town.",
+        "state": {
+          "restaurant": {
+            "food": "chinese",
+            "area": "east",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "east"
+            }
+          ],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "Yu Garden is a chinese restaurant in the east area."
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "Could I get the address, phone number, and postcode of Yu Garden?",
+        "state": {
+          "restaurant": {
+            "food": "chinese",
+            "area": "east",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "postcode"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 7,
+        "speaker": "system",
+        "utterance": "Phone is 01223 248882, address and postcode are 529 Newmarket Road Fen Ditton C.B 5, 8 P.A"
+      },
+      {
+        "utt_idx": 8,
+        "speaker": "user",
+        "utterance": "Thank you.  That is all the information I needed.  Bye bye!",
+        "state": {
+          "restaurant": {
+            "food": "chinese",
+            "area": "east",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-1",
+    "original_id": 1,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "Hi, I'm looking for a nice German restaurant.",
+        "state": {
+          "restaurant": {
+            "food": "german",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "German",
+              "start": 27,
+              "end": 33
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "There are no German restaurants listed, do you have another preference?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "How about European yeah?",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "European",
+              "start": 10,
+              "end": 18
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "Which area of town?"
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "I don't care.",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "dontcare"
+            }
+          ],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "There are ten restaurants that fit that description. Do you have a price preference?"
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "Can I have the address, phone number, and area for the most expensive one?",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "expensive",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 7,
+        "speaker": "system",
+        "utterance": "Cambridge Lodge Restaurant is listed as expensive in the west area located at \t Cambridge Lodge Hotel 139 Huntingdon Road City Centre. Their phone number is\t 01223 355166."
+      },
+      {
+        "utt_idx": 8,
+        "speaker": "user",
+        "utterance": "Thank you goodbye",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "expensive",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-2",
+    "original_id": 2,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "I am looking for a restaurant in the expensive price range that serves Australasian food.",
+        "state": {
+          "restaurant": {
+            "food": "australasian",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "expensive",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "expensive"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Australasian",
+              "start": 71,
+              "end": 83
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "There are no restaurants matching your requests.  May I help you find a different type of restaurant?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "I'd like to find some Mediterranean food and need to know their address and phone number.",
+        "state": {
+          "restaurant": {
+            "food": "mediterranean",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "expensive",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Mediterranean",
+              "start": 22,
+              "end": 35
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "There is an expensive restaurant that serves mediterranean food located at Thompsons Lane Fen Ditton. Their phone number is 01223 362525."
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "Thank you!",
+        "state": {
+          "restaurant": {
+            "food": "mediterranean",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "expensive",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-3",
+    "original_id": 3,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "I am looking for a moderately priced restaurant.",
+        "state": {
+          "restaurant": {
+            "food": "",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "moderate",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "moderate"
+            }
+          ],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "What type of food would you like?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "Turkish food.",
+        "state": {
+          "restaurant": {
+            "food": "turkish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "moderate",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Turkish",
+              "start": 0,
+              "end": 7
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "I have two restaurants in the Centre area of town. Would you like the information for both?"
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "Yes, please give me the one Turkish food restaurant's phone number and address please.",
+        "state": {
+          "restaurant": {
+            "food": "turkish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "moderate",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Turkish",
+              "start": 28,
+              "end": 35
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "Anatolia is located at 30 Bridge Street City Centre, phone number is 01223 362372"
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "thank you.",
+        "state": {
+          "restaurant": {
+            "food": "turkish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "moderate",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-4",
+    "original_id": 4,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "Hi I am looking for a persian restaurant in the west part of town.",
+        "state": {
+          "restaurant": {
+            "food": "persian",
+            "area": "west",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "west"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "persian",
+              "start": 22,
+              "end": 29
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "I'm sorry I do not have any Persian restaurants listed on the west side.  Should I try Persian restaurants in all locations?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "No thank you.  Is there a restaurant with italian food?",
+        "state": {
+          "restaurant": {
+            "food": "italian",
+            "area": "west",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "italian",
+              "start": 42,
+              "end": 49
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "Prezzo is on the west side."
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "Great! May I have the phone number please?",
+        "state": {
+          "restaurant": {
+            "food": "italian",
+            "area": "west",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "The phone number is  01799 521260"
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "Thanks, good night!",
+        "state": {
+          "restaurant": {
+            "food": "italian",
+            "area": "west",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-5",
+    "original_id": 5,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "I don't care about the price range. Just recommend me a restaurant that serves European food. I would also like to get the phone number and directions.",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "dontcare",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            }
+          ],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "dontcare"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "European",
+              "start": 79,
+              "end": 87
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "What area of town would you like?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "I don't care about the area.  Anywhere.",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "dontcare",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "dontcare"
+            }
+          ],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "the cambridge lodge restaurant is located at Cambridge Lodge Hotel 139 Huntingdon Road City Centre and their phone number is 01223 355166."
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "Thank you, goodbye",
+        "state": {
+          "restaurant": {
+            "food": "european",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "dontcare",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-6",
+    "original_id": 6,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "Can you find me a cheap Spanish restaurant?",
+        "state": {
+          "restaurant": {
+            "food": "spanish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "cheap",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "price range",
+              "value": "cheap"
+            }
+          ],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Spanish",
+              "start": 24,
+              "end": 31
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "there are two spanish restaurants in total, what price range do you want ?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "I am looking for a cheap restaurant.",
+        "state": {
+          "restaurant": {
+            "food": "spanish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "cheap",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "la raza is a spanish restaurant, in the cheap price range and in the centre part of town."
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "can you please give me the address?",
+        "state": {
+          "restaurant": {
+            "food": "spanish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "cheap",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "The address is 4 - 6 Rose Crescent. Can I help you with anything else?"
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "What is the area?",
+        "state": {
+          "restaurant": {
+            "food": "spanish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "cheap",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "area"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 7,
+        "speaker": "system",
+        "utterance": "la raza's area is in the centre part of town"
+      },
+      {
+        "utt_idx": 8,
+        "speaker": "user",
+        "utterance": "Thank you. Good bye",
+        "state": {
+          "restaurant": {
+            "food": "spanish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "cheap",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-7",
+    "original_id": 7,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "hello, i'm looking for a restaurant that serves moroccan food",
+        "state": {
+          "restaurant": {
+            "food": "moroccan",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "moroccan",
+              "start": 48,
+              "end": 56
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "Sorry, we don't have a restaurant that fits that description."
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "How about british food?",
+        "state": {
+          "restaurant": {
+            "food": "british",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "british",
+              "start": 10,
+              "end": 17
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "There is a cotto restaurant that has british food"
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "Could you provide me with price range of Cotto?  I also need their address and phone.  Thank you.",
+        "state": {
+          "restaurant": {
+            "food": "british",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "price range"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "Yes, the number is 01223 302010.  The address is 183 East Road City Centre.  Anything else?"
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "That will do - thank you again.",
+        "state": {
+          "restaurant": {
+            "food": "british",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-8",
+    "original_id": 8,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "Hi, could you tell me the phone number and address of the nearest Mexican restaurant?",
+        "state": {
+          "restaurant": {
+            "food": "mexican",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Mexican",
+              "start": 66,
+              "end": 73
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "Chiquito restaurant bar is at 2G Cambridge Leisure Park Cherry Hinton Road Cherry Hinton and their phone number is 01223 400170."
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "Thank you, goodbye.",
+        "state": {
+          "restaurant": {
+            "food": "mexican",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "woz",
+    "data_split": "train",
+    "dialogue_id": "woz-train-9",
+    "original_id": 9,
+    "domains": [
+      "restaurant"
+    ],
+    "turns": [
+      {
+        "utt_idx": 0,
+        "speaker": "user",
+        "utterance": "Where can I go for swedish food?",
+        "state": {
+          "restaurant": {
+            "food": "swedish",
+            "area": "",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "swedish",
+              "start": 19,
+              "end": 26
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 1,
+        "speaker": "system",
+        "utterance": "We have a number of swedish options, do you have a location you'd like to look in?"
+      },
+      {
+        "utt_idx": 2,
+        "speaker": "user",
+        "utterance": "anywhere will do.",
+        "state": {
+          "restaurant": {
+            "food": "swedish",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "area",
+              "value": "dontcare"
+            }
+          ],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 3,
+        "speaker": "system",
+        "utterance": "My apologies, there must have been a glitch in the system. I show no Swedish restaurants; may I help with somewhere else?"
+      },
+      {
+        "utt_idx": 4,
+        "speaker": "user",
+        "utterance": "How about Vietnamese?",
+        "state": {
+          "restaurant": {
+            "food": "vietnamese",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": [
+            {
+              "intent": "inform",
+              "domain": "restaurant",
+              "slot": "food",
+              "value": "Vietnamese",
+              "start": 10,
+              "end": 20
+            }
+          ]
+        }
+      },
+      {
+        "utt_idx": 5,
+        "speaker": "system",
+        "utterance": "there is one Vietnamese restaurant on the west side. Would you like this information?"
+      },
+      {
+        "utt_idx": 6,
+        "speaker": "user",
+        "utterance": "I need the address and phone number please.",
+        "state": {
+          "restaurant": {
+            "food": "vietnamese",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "phone"
+            },
+            {
+              "intent": "request",
+              "domain": "restaurant",
+              "slot": "address"
+            }
+          ],
+          "categorical": [],
+          "non-categorical": []
+        }
+      },
+      {
+        "utt_idx": 7,
+        "speaker": "system",
+        "utterance": "Sure, the phone number is 01223 362456 and the address is 17 Magdalene Street City Centre.  Anything else I can help with?"
+      },
+      {
+        "utt_idx": 8,
+        "speaker": "user",
+        "utterance": "No, that's it.  Thank you, good bye.",
+        "state": {
+          "restaurant": {
+            "food": "vietnamese",
+            "area": "dontcare",
+            "postcode": "",
+            "phone": "",
+            "address": "",
+            "price range": "",
+            "name": ""
+          }
+        },
+        "dialogue_acts": {
+          "binary": [],
+          "categorical": [],
+          "non-categorical": []
+        }
+      }
+    ]
+  }
+]

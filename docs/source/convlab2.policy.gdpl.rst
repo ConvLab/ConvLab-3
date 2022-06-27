@@ -1,4 +1,4 @@
-convlab2.policy.gdpl package
+convlab.policy.gdpl package
 ============================
 
 Subpackages
@@ -6,31 +6,31 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.gdpl.multiwoz
+   convlab.policy.gdpl.multiwoz
 
 Submodules
 ----------
 
-convlab2.policy.gdpl.estimator module
+convlab.policy.gdpl.estimator module
 -------------------------------------
 
-.. automodule:: convlab2.policy.gdpl.estimator
+.. automodule:: convlab.policy.gdpl.estimator
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.gdpl.gdpl module
+convlab.policy.gdpl.gdpl module
 --------------------------------
 
-.. automodule:: convlab2.policy.gdpl.gdpl
+.. automodule:: convlab.policy.gdpl.gdpl
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.gdpl.train module
+convlab.policy.gdpl.train module
 ---------------------------------
 
-.. automodule:: convlab2.policy.gdpl.train
+.. automodule:: convlab.policy.gdpl.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -39,7 +39,7 @@ convlab2.policy.gdpl.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.gdpl
+.. automodule:: convlab.policy.gdpl
    :members:
    :undoc-members:
    :show-inheritance:

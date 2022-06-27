@@ -1,44 +1,35 @@
 '''
 setup.py for ConvLab-3
 '''
-import sys
-import os
 from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
-
-
-class LibTest(TestCommand):
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        ret = os.system("pytest --cov=ConvLab-3 tests/ --cov-report term-missing")
-        sys.exit(ret >> 8)
-
 
 setup(
-    name='ConvLab',
+    name='convlab',
     version='3.0.0',
-    packages=find_packages(exclude=[]),
+    packages=find_packages(),
     license='Apache',
-    description='An Open-source Dialog System Toolkits',
+    description='An Open-source Dialog System Platform',
     long_description=open('README.md', encoding='UTF-8').read(),
     long_description_content_type="text/markdown",
     classifiers=[
-                'Development Status :: 3 - Alpha',
-                'License :: OSI Approved :: Apache Software License',
-                'Programming Language :: Python :: 3.6',
-                'Programming Language :: Python :: 3.7',
-                'Programming Language :: Python :: 3.8',
-                'Programming Language :: Python :: 3.9',
-                'Intended Audience :: Science/Research',
-                'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
     ],
+    setup_requires=['setuptools-git'],
     install_requires=[
+        'boto3',
         'matplotlib',
         'tabulate',
         'python-Levenshtein',
         'requests',
-        'numpy',
+        'numpy>=1.22',
         'nltk',
         'scipy',
         'tensorboard',
@@ -72,12 +63,12 @@ setup(
             "lxml",
         ]
     },
-    cmdclass={'test': LibTest},
+    cmdclass={},
     entry_points={},
     include_package_data=True,
     url='https://github.com/ConvLab/ConvLab-3',
-    author='thu-coai',
-    author_email='thu-coai-developer@googlegroups.com',
+    author='convlab',
+    author_email='convlab@googlegroups.com',
     python_requires='>=3.6',
     zip_safe=False
 )

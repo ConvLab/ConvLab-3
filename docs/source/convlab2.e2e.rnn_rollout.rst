@@ -1,4 +1,4 @@
-convlab2.e2e.rnn\_rollout package
+convlab.e2e.rnn\_rollout package
 =================================
 
 Subpackages
@@ -6,129 +6,129 @@ Subpackages
 
 .. toctree::
 
-   convlab2.e2e.rnn_rollout.deal_or_not
-   convlab2.e2e.rnn_rollout.engines
-   convlab2.e2e.rnn_rollout.models
+   convlab.e2e.rnn_rollout.deal_or_not
+   convlab.e2e.rnn_rollout.engines
+   convlab.e2e.rnn_rollout.models
 
 Submodules
 ----------
 
-convlab2.e2e.rnn\_rollout.agent module
+convlab.e2e.rnn\_rollout.agent module
 --------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.agent
+.. automodule:: convlab.e2e.rnn_rollout.agent
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.avg\_rank module
+convlab.e2e.rnn\_rollout.avg\_rank module
 ------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.avg_rank
+.. automodule:: convlab.e2e.rnn_rollout.avg_rank
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.chat module
+convlab.e2e.rnn\_rollout.chat module
 -------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.chat
+.. automodule:: convlab.e2e.rnn_rollout.chat
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.config module
+convlab.e2e.rnn\_rollout.config module
 ---------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.config
+.. automodule:: convlab.e2e.rnn_rollout.config
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.data module
+convlab.e2e.rnn\_rollout.data module
 -------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.data
+.. automodule:: convlab.e2e.rnn_rollout.data
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.dialog module
+convlab.e2e.rnn\_rollout.dialog module
 ---------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.dialog
+.. automodule:: convlab.e2e.rnn_rollout.dialog
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.domain module
+convlab.e2e.rnn\_rollout.domain module
 ---------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.domain
+.. automodule:: convlab.e2e.rnn_rollout.domain
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.eval\_selfplay module
+convlab.e2e.rnn\_rollout.eval\_selfplay module
 -----------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.eval_selfplay
+.. automodule:: convlab.e2e.rnn_rollout.eval_selfplay
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.metric module
+convlab.e2e.rnn\_rollout.metric module
 ---------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.metric
+.. automodule:: convlab.e2e.rnn_rollout.metric
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.reinforce module
+convlab.e2e.rnn\_rollout.reinforce module
 ------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.reinforce
+.. automodule:: convlab.e2e.rnn_rollout.reinforce
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.rnn\_model module
+convlab.e2e.rnn\_rollout.rnn\_model module
 -------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.rnn_model
+.. automodule:: convlab.e2e.rnn_rollout.rnn_model
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.rnnrollout module
+convlab.e2e.rnn\_rollout.rnnrollout module
 -------------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.rnnrollout
+.. automodule:: convlab.e2e.rnn_rollout.rnnrollout
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.split module
+convlab.e2e.rnn\_rollout.split module
 --------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.split
+.. automodule:: convlab.e2e.rnn_rollout.split
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.utils module
+convlab.e2e.rnn\_rollout.utils module
 --------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.utils
+.. automodule:: convlab.e2e.rnn_rollout.utils
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.e2e.rnn\_rollout.vis module
+convlab.e2e.rnn\_rollout.vis module
 ------------------------------------
 
-.. automodule:: convlab2.e2e.rnn_rollout.vis
+.. automodule:: convlab.e2e.rnn_rollout.vis
    :members:
    :undoc-members:
    :show-inheritance:
@@ -137,7 +137,7 @@ convlab2.e2e.rnn\_rollout.vis module
 Module contents
 ---------------
 
-.. automodule:: convlab2.e2e.rnn_rollout
+.. automodule:: convlab.e2e.rnn_rollout
    :members:
    :undoc-members:
    :show-inheritance:
