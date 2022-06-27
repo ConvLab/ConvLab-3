@@ -24,6 +24,7 @@ setup(
     ],
     setup_requires=['setuptools-git'],
     install_requires=[
+        'boto3',
         'matplotlib',
         'tabulate',
         'python-Levenshtein',
