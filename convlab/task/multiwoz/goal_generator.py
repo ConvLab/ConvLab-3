@@ -151,7 +151,7 @@ class GoalGenerator:
                  boldify=False,
                  sample_info_from_trainset=True,
                  sample_reqt_from_trainset=False,
-                 seed = 0):
+                 seed = 0, domain_ordering_dist=None):
         """
         Args:
             goal_model_path: path to a goal model
@@ -174,6 +174,8 @@ class GoalGenerator:
         else:
             self._build_goal_model()
             print('Building goal model is done')
+        if domain_ordering_dist is not None:
+            self.domain_ordering_dist = domain_ordering_dist
         np.random.seed(seed)
         random.seed(seed)
         # remove some slot

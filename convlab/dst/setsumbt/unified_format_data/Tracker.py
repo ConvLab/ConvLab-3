@@ -10,11 +10,20 @@ from transformers import (BertModel, BertConfig, BertTokenizer,
 from convlab.dst.setsumbt.modeling import (RobertaSetSUMBT,
                                             BertSetSUMBT)
 
+<<<<<<<< HEAD:convlab/dst/setsumbt/multiwoz/Tracker.py
 from convlab.dst.dst import DST
 from convlab.util.multiwoz.state import default_state
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
 from convlab.dst.rule.multiwoz import normalize_value
 from convlab.util.custom_util import model_downloader
+========
+from convlab2.dst.dst import DST
+from convlab2.util.multiwoz.state import default_state
+from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
+from convlab2.dst.rule.multiwoz import normalize_value
+from convlab2.util.custom_util import model_downloader
+from convlab2.dst.setsumbt.modeling.training import set_ontology_embeddings
+>>>>>>>> setsumbt_unifiedformat:convlab2/dst/setsumbt/unified_format_data/Tracker.py
 
 USE_CUDA = torch.cuda.is_available()
 
@@ -87,12 +96,9 @@ class SetSUMBTTracker(DST):
     def load_weights(self):
         # Load tokenizer and model checkpoints
         logging.info('Loading SetSUMBT pretrained model.')
-        self.tokenizer = self.tokenizer.from_pretrained(
-            self.config.tokenizer_name)
-        logging.info(
-            f'Model tokenizer loaded from {self.config.tokenizer_name}.')
-        self.model = self.model.from_pretrained(
-            self.model_path, config=self.config)
+        self.tokenizer = self.tokenizer.from_pretrained(self.config.tokenizer_name)
+        logging.info(f'Model tokenizer loaded from {self.config.tokenizer_name}.')
+        self.model = self.model.from_pretrained(self.model_path, config=self.config)
         logging.info(f'Model loaded from {self.model_path}.')
 
         # Transfer model to compute device and setup eval environment
@@ -101,20 +107,16 @@ class SetSUMBTTracker(DST):
         logging.info(f'Model transferred to device: {self.device}')
 
         logging.info('Loading model ontology')
-        f = open(os.path.join(self.model_path, 'ontology.json'), 'r')
+        if os.path.isfile(os.path.join(self.model_path, 'ontology.json')):
+            ontology_dir = self.model_path
+        else:
+            ontology_dir = os.path.join(self.model_path, 'database')
+        f = open(os.path.join(ontology_dir, 'test.json'), 'r')
         self.ontology = json.load(f)
         f.close()
 
-        db = torch.load(os.path.join(self.model_path, 'ontology.db'))
-        # Get slot and value embeddings
-        slots = {slot: db[slot] for slot in db}
-        values = {slot: db[slot][1] for slot in db}
-        del db
-
-        # Load model ontology
-        self.model.add_slot_candidates(slots)
-        for slot in values:
-            self.model.add_value_candidates(slot, values[slot], replace=True)
+        db = torch.load(os.path.join(ontology_dir, 'test.db'))
+        set_ontology_embeddings(self.model, db)
 
         if self.get_confidence_scores:
             logging.info('Model will output action and state confidence scores.')
@@ -135,6 +137,7 @@ class SetSUMBTTracker(DST):
                 self.det_dic[key.lower()] = key + '-' + domain
                 self.det_dic[value.lower()] = key + '-' + domain
 
+    #TODO
     def get_thresholds(self, threshold='auto'):
         self.thresholds = {}
         for slot, value_candidates in self.ontology.items():
@@ -155,7 +158,12 @@ class SetSUMBTTracker(DST):
         return self.thresholds
 
     def init_session(self):
-        self.state = default_state()
+        self.state = {"belief_state": {domain: {slot: '' for slot, slot_info in substate.items()
+                                                if slot_info['possible_values'] and slot_info['possible_values'] != ['?']}
+                                       for domain, substate in self.ontology.items()}}
+        self.state['history'] = []
+        self.state['system_action'] = []
+        self.state['user_action'] = []
         self.active_domains = {}
         self.hidden_states = None
         self.info_dict = {}
@@ -241,53 +249,32 @@ class SetSUMBTTracker(DST):
 
         new_belief_state = copy.deepcopy(prev_state['belief_state'])
         # user_acts = []
-        for state, value in pred_states.items():
-            domain, slot = state.split('-', 1)
-            value = '' if value == 'none' else value
-            value = 'dontcare' if value == 'do not care' else value
-            value = 'guesthouse' if value == 'guest house' else value
-            if slot not in ['name', 'book']:
+        for domain, substate in pred_states.items():
+            for slot, value in substate.items():
+                value = '' if value == 'none' else value
+                value = 'dontcare' if value == 'do not care' else value
+                value = 'guesthouse' if value == 'guest house' else value
+
                 if domain not in new_belief_state:
                     if domain == 'bus':
                         continue
                     else:
                         logging.debug(
                             'Error: domain <{}> not in belief state'.format(domain))
-            slot = REF_SYS_DA[domain.capitalize()].get(slot, slot)
-            assert 'semi' in new_belief_state[domain]
-            assert 'book' in new_belief_state[domain]
-            if 'book' in slot:
-                assert slot.startswith('book ')
-                slot = slot.strip().split()[1]
-            slot = SLOT_MAP.get(slot, slot)
 
-            # Uncertainty clipping of state
-            if belief_state is not None:
-                if bs_probs[domain][slot].get('inform', 1.0) < self.thresholds[domain][slot]:
-                    value = ''
+                # Uncertainty clipping of state
+                if belief_state is not None:
+                    if bs_probs[domain][slot].get('inform', 1.0) < self.thresholds[domain][slot]:
+                        value = ''
 
-            domain_dic = new_belief_state[domain]
-            value = normalize_value(self.value_dict, domain, slot, value)
-            if slot in domain_dic['semi']:
-                new_belief_state[domain]['semi'][slot] = value
-                if prev_state['belief_state'][domain]['semi'][slot] != value:
-                    user_acts.append(['Inform', domain.capitalize(
-                    ), REF_USR_DA[domain.capitalize()].get(slot, slot), value])
-            elif slot in domain_dic['book']:
-                new_belief_state[domain]['book'][slot] = value
-                if prev_state['belief_state'][domain]['book'][slot] != value:
-                    user_acts.append(['Inform', domain.capitalize(
-                    ), REF_USR_DA[domain.capitalize()].get(slot, slot), value])
-            elif slot.lower() in domain_dic['book']:
-                new_belief_state[domain]['book'][slot.lower()] = value
-                if prev_state['belief_state'][domain]['book'][slot.lower()] != value:
-                    user_acts.append(['Inform', domain.capitalize(
-                    ), REF_USR_DA[domain.capitalize()].get(slot.lower(), slot.lower()), value])
-            else:
-                logging.debug(
-                    'unknown slot name <{}> with value <{}> of domain <{}>\nitem: {}\n\n'.format(
-                        slot, value, domain, state)
-                )
+                new_belief_state[domain][slot] = value
+                if prev_state['belief_state'][domain][slot] != value:
+                    user_acts.append(['Inform', domain, slot, value])
+                else:
+                    logging.debug(
+                        'unknown slot name <{}> with value <{}> of domain <{}>\nitem: {}\n\n'.format(
+                            slot, value, domain, state)
+                    )
 
         new_state = copy.deepcopy(dict(prev_state))
         new_state['belief_state'] = new_belief_state
@@ -299,10 +286,10 @@ class SetSUMBTTracker(DST):
         if mutual_info is not None:
             new_state['mutual_information'] = mutual_info
 
+        user_acts = [act for act in user_acts if act not in new_state['system_action']]
         new_state['user_action'] = user_acts
 
-        user_requests = [[a, d, s, v]
-                         for a, d, s, v in user_acts if a == 'Request']
+        user_requests = [[a, d, s, v] for a, d, s, v in user_acts if a == 'Request']
         for act, domain, slot, value in user_requests:
             k = REF_SYS_DA[domain].get(slot, slot)
             domain = domain.lower()
@@ -351,11 +338,14 @@ class SetSUMBTTracker(DST):
                                                                                         get_turn_pooled_representation=False)
 
         # Convert belief state into dialog state
-        predictions = {slot: state[0, 0, :].argmax().item()
-                       for slot, state in belief_state.items()}
-        predictions = {slot: self.ontology[slot][idx]
-                       for slot, idx in predictions.items()}
-        predictions = {s: v for s, v in predictions.items() if v != 'none'}
+        predictions = {}
+        for slot, state in belief_state.items():
+            dom, slot = slot.split('-', 1)
+            if dom not in predictions:
+                predictions[dom] = {}
+            pred = self.ontology[dom][slot]['possible_values'][state[0, 0, :].argmax().item()]
+            if pred != 'none':
+                predictions[dom][slot] = pred
 
         if self.store_full_belief_state:
             self.full_belief_state = belief_state
@@ -425,8 +415,9 @@ class SetSUMBTTracker(DST):
             system_act = ''
 
         # Tokenize dialog
-        features = self.tokenizer.encode_plus(user_act, system_act, add_special_tokens=True, max_length=self.config.max_turn_len,
-                                              padding='max_length', truncation='longest_first')
+        features = self.tokenizer.encode_plus(user_act, system_act, add_special_tokens=True,
+                                              max_length=self.config.max_turn_len, padding='max_length',
+                                              truncation='longest_first')
 
         input_ids = torch.tensor(features['input_ids']).reshape(
             1, 1, -1).to(self.device) if 'input_ids' in features else None
@@ -434,22 +425,22 @@ class SetSUMBTTracker(DST):
             1, 1, -1).to(self.device) if 'token_type_ids' in features else None
         attention_mask = torch.tensor(features['attention_mask']).reshape(
             1, 1, -1).to(self.device) if 'attention_mask' in features else None
-        features = {'input_ids': input_ids,
-                    'token_type_ids': token_type_ids, 'attention_mask': attention_mask}
+        features = {'input_ids': input_ids, 'token_type_ids': token_type_ids, 'attention_mask': attention_mask}
 
         return features
 
 
-# if __name__ == "__main__":
-#     tracker = SetSUMBTTracker(model_type='roberta', model_path='/gpfs/project/niekerk/results/nbt/convlab_setsumbt_acts')
-#                         # nlu_path='/gpfs/project/niekerk/data/bert_multiwoz_all_context.zip')
-#     tracker.init_session()
-#     state = tracker.update('hey. I need a cheap restaurant.')
-#     # tracker.state['history'].append(['usr', 'hey. I need a cheap restaurant.'])
-#     # tracker.state['history'].append(['sys', 'There are many cheap places, which food do you like?'])
-#     # state = tracker.update('If you have something Asian that would be great.')
-#     # tracker.state['history'].append(['usr', 'If you have something Asian that would be great.'])
-#     # tracker.state['history'].append(['sys', 'The Golden Wok is a nice cheap chinese restaurant.'])
-#     # state = tracker.update('Great. Where are they located?')
-#     # tracker.state['history'].append(['usr', 'Great. Where are they located?'])
-#     print(tracker.state)
+if __name__ == "__main__":
+    tracker = SetSUMBTTracker(model_path='models/SetSUMBT-Acts-multiwoz21-10%-roberta-gru-cosine-labelsmoothing-Seed20222202-20-04-22-16-04')
+    tracker.init_session()
+    state = tracker.update('hey. I need a cheap restaurant.')
+    tracker.state['history'].append(['usr', 'hey. I need a cheap restaurant.'])
+    tracker.state['history'].append(['sys', 'There are many cheap places, which food do you like?'])
+    state = tracker.update('If you have something Asian that would be great.')
+    tracker.state['history'].append(['usr', 'If you have something Asian that would be great.'])
+    tracker.state['history'].append(['sys', 'The Golden Wok is a nice cheap chinese restaurant.'])
+    tracker.state['system_action'] = [['Inform', 'restaurant', 'food', 'chinese'],
+                                      ['Inform', 'restaurant', 'name', 'the golden wok']]
+    state = tracker.update('Great. Where are they located?')
+    tracker.state['history'].append(['usr', 'Great. Where are they located?'])
+    print(tracker.state)
