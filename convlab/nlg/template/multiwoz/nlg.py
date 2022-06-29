@@ -10,7 +10,9 @@ import numpy as np
 from convlab.nlg import NLG
 from convlab.nlg.template.multiwoz.noise_functions import delete_random_token, random_token_permutation, spelling_noise
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
+from convlab.util import relative_import_module_from_unified_datasets
 
+reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
 
 def lower_keys(x):
     if isinstance(x, list):
@@ -164,6 +166,9 @@ class TemplateNLG(NLG):
         Returns:
             generated sentence
         """
+        if isinstance(dialog_acts, dict):
+            # dialog acts are in the unified format
+            dialog_acts = reverse_da(dialog_acts)
         dialog_acts = self.noisy_dialog_acts(
             dialog_acts) if self.is_user else dialog_acts
         dialog_acts = self.sorted_dialog_act(dialog_acts)
