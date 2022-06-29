@@ -19,7 +19,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
 from copy import deepcopy
 
-from convlab2.dst.setsumbt.unified_format_data.dataset.utils import (load_dataset, get_ontology_slots,
+from convlab.dst.setsumbt.unified_format_data.dataset.utils import (load_dataset, get_ontology_slots,
                                             ontology_add_values, get_values_from_data, ontology_add_requestable_slots,
                                             get_requestable_slots, load_dst_data, extract_dialogues)
 

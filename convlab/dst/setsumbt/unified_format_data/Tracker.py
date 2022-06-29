@@ -10,20 +10,11 @@ from transformers import (BertModel, BertConfig, BertTokenizer,
 from convlab.dst.setsumbt.modeling import (RobertaSetSUMBT,
                                             BertSetSUMBT)
 
-<<<<<<<< HEAD:convlab/dst/setsumbt/multiwoz/Tracker.py
 from convlab.dst.dst import DST
 from convlab.util.multiwoz.state import default_state
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
 from convlab.dst.rule.multiwoz import normalize_value
 from convlab.util.custom_util import model_downloader
-========
-from convlab2.dst.dst import DST
-from convlab2.util.multiwoz.state import default_state
-from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
-from convlab2.dst.rule.multiwoz import normalize_value
-from convlab2.util.custom_util import model_downloader
-from convlab2.dst.setsumbt.modeling.training import set_ontology_embeddings
->>>>>>>> setsumbt_unifiedformat:convlab2/dst/setsumbt/unified_format_data/Tracker.py
 
 USE_CUDA = torch.cuda.is_available()
 

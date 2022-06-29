@@ -15,7 +15,7 @@
 # limitations under the License.
 """Convlab3 Unified dataset data processing utilities"""
 
-from convlab2.util import load_dataset, load_ontology, load_dst_data, load_nlu_data
+from convlab.util import load_dataset, load_ontology, load_dst_data, load_nlu_data
 
 # MultiWOZ specific label map to avoid duplication and typos in values
 VALUE_MAP = {'guesthouse': 'guest house', 'belfry': 'belfray', '-': ' ', '&': 'and', 'b and b': 'bed and breakfast',

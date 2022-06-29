@@ -29,7 +29,7 @@ setup(
         'tabulate',
         'python-Levenshtein',
         'requests',
-        'numpy>=1.22',
+        'numpy',
         'nltk',
         'scipy',
         'tensorboard',
