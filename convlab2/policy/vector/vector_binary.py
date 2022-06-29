@@ -65,10 +65,10 @@ class VectorBinary(VectorBase):
         return state_vec, mask
 
     def get_mask(self, domain_active_dict, number_entities_dict):
-        domain_mask = self.compute_domain_mask(domain_active_dict)
+        #domain_mask = self.compute_domain_mask(domain_active_dict)
         entity_mask = self.compute_entity_mask(number_entities_dict)
         general_mask = self.compute_general_mask()
-        mask = domain_mask + entity_mask + general_mask
+        mask = entity_mask + general_mask
         return mask
 
     def vectorize_booked(self, state):

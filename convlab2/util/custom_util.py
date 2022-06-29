@@ -7,7 +7,6 @@ import json
 import zipfile
 import numpy as np
 import torch
-from datasets import load_dataset
 from tensorboardX import SummaryWriter
 from convlab2.util.file_util import cached_path
 from convlab2.policy.evaluate_distributed import evaluate_distributed
@@ -19,6 +18,9 @@ from convlab2.dst.rule.multiwoz import RuleDST
 from convlab2.policy.rule.multiwoz import RulePolicy
 from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab2.util import load_dataset
+from convlab2.task.multiwoz.goal_generator import GoalGenerator
+from convlab2.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
+
 import shutil
 
 
@@ -83,17 +85,20 @@ def load_config_file(filepath: str = None) -> dict:
     return conf
 
 
-def save_config(terminal_args, config_file_args, config_save_path):
+def save_config(terminal_args, config_file_args, config_save_path, policy_config=None):
     config_save_path = os.path.join(config_save_path, f'config_saved.json')
-    args_dict = {"args": terminal_args, "config": config_file_args}
+    args_dict = {"args": terminal_args, "config": config_file_args, "policy_config": policy_config}
     json.dump(args_dict, open(config_save_path, 'w'))
 
 
 def set_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
+    torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
 
 def init_logging(root_dir, mode):
@@ -119,22 +124,34 @@ def log_start_args(conf):
         f"We use {conf['model']['num_eval_dialogues']} dialogues for evaluation.")
 
 
-def save_best(policy_sys, best_complete_rate, best_success_rate, complete_rate, success_rate, save_path):
+def save_best(policy_sys, best_complete_rate, best_success_rate, best_return, complete_rate, success_rate, avg_return,
+              save_path):
     # policy_sys.save(save_path, "best")
-    if success_rate > best_success_rate:
+    if avg_return > best_return:
         logging.info("Saving best policy.")
         policy_sys.save(save_path, "best")
+        best_return = avg_return
+    if success_rate > best_success_rate:
         best_success_rate = success_rate
     if complete_rate > best_complete_rate:
         best_complete_rate = complete_rate
         # policy_sys.save(save_path, "best")
     logging.info(
-        f"Best Complete Rate: {best_complete_rate}, Best Success Rate: {best_success_rate}")
-    return best_complete_rate, best_success_rate
+        f"Best Complete Rate: {best_complete_rate}, Best Success Rate: {best_success_rate}, "
+        f"Best Average Return: {best_return}")
+    return best_complete_rate, best_success_rate, best_return
 
 
-def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
+def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_domain_goals=False, allowed_domains=None):
     policy_sys.is_train = False
+
+    goal_generator = GoalGenerator()
+    goals = []
+    for seed in range(1000, 1000 + conf['model']['num_eval_dialogues']):
+        set_seed(seed)
+        goal = create_goals(goal_generator, 1, single_domain_goals, allowed_domains)
+        goals.append(goal[0])
+
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
@@ -142,14 +159,14 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
                                                 num_dialogues=conf['model']['num_eval_dialogues'],
                                                 sys_semantic_to_usr=conf['model'][
                                                     'sys_semantic_to_usr'],
-                                                save_flag=save_eval, save_path=log_save_path)
+                                                save_flag=save_eval, save_path=log_save_path, goals=goals)
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
         avg_actions, task_success, book_acts, inform_acts, request_acts, \
         select_acts, offer_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
-                                 conf['model']['process_num'])
+                                 conf['model']['process_num'], goals)
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
 
         task_success_gathered = {}
@@ -259,12 +276,7 @@ def create_env(args, policy_sys):
     return env, sess
 
 
-def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None):
-    seed = 0
-    random.seed(seed)
-    np.random.seed(seed)
-
-    # sess = BiSession(agent_sys, simulator, None, evaluator)
+def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
 
     eval_save = {}
     turn_counter_dict = {}
@@ -277,7 +289,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
-        sess.init_session()
+        goal = goals.pop()
+        sess.init_session(goal=goal)
         sys_response = [] if sess.sys_agent.nlg is None else ''
         sys_response = [] if sys_semantic_to_usr else sys_response
         avg_actions = 0
@@ -430,6 +443,118 @@ def act_dict_to_flat_tuple(acts):
         for slot, value in svs:
             domain, intent = domain_intent.split('-')
             tuples.append([intent, domain, slot, value])
+
+
+def create_goals(goal_generator, num_goals, single_domains=False, allowed_domains=None):
+
+    collected_goals = []
+    while len(collected_goals) != num_goals:
+        goal = Goal(goal_generator)
+        if single_domains and len(goal.domain_goals) > 1:
+            continue
+        if allowed_domains is not None and not set(goal.domain_goals).issubset(set(allowed_domains)):
+            continue
+        collected_goals.append(goal)
+    return collected_goals
+
+
+def build_domains_goal(goal_generator, domains=None):
+    found = False
+    while not found:
+        goal = Goal(goal_generator)
+        if domains is None:
+            found = True
+        if set(goal.domain_goals) == domains:
+            found = True
+    return goal
+
+
+def map_class(cls_path: str):
+    """
+    Map to class via package text path
+    :param cls_path: str, path with `convlab2` project directory as relative path, separator with `,`
+                            E.g  `convlab2.nlu.svm.camrest.nlu.SVMNLU`
+    :return: class
+    """
+    pkgs = cls_path.split('.')
+    cls = __import__('.'.join(pkgs[:-1]))
+    for pkg in pkgs[1:]:
+        cls = getattr(cls, pkg)
+    return cls
+
+
+def get_config(filepath, args) -> dict:
+    """
+    The configuration file is used to create all the information needed for the deployment,
+    and the necessary security monitoring has been performed, including the mapping of the class.
+    :param filepath: str, dest config file path
+    :return: dict
+    """
+
+    conf = load_config_file(filepath)
+
+    # add project root dir
+    sys.path.append(os.path.abspath(os.path.join(
+        os.path.dirname(__file__), os.path.pardir)))
+
+    for arg in args:
+        if len(arg) == 3:
+            conf[arg[0]][arg[1]] = arg[2]
+        if len(arg) == 4:
+            conf[arg[0]][arg[1]][arg[2]] = arg[3]
+        if len(arg) == 5:
+            conf[arg[0]][arg[1]][arg[2]][arg[3]] = arg[4]
+
+    # Autoload uncertainty settings from policy based on the tracker used
+    dst_name = [model for model in conf['dst_sys']]
+    dst_name = dst_name[0] if dst_name else None
+    vec_name = [model for model in conf['vectorizer_sys']]
+    vec_name = vec_name[0] if vec_name else None
+    if dst_name and 'setsumbt' in dst_name.lower():
+        if 'get_confidence_scores' in conf['dst_sys'][dst_name]['ini_params']:
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = conf['dst_sys'][dst_name]['ini_params']['get_confidence_scores']
+        else:
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = False
+        if 'return_mutual_info' in conf['dst_sys'][dst_name]['ini_params']:
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_mutual_info'] = conf['dst_sys'][dst_name]['ini_params']['return_mutual_info']
+        else:
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_mutual_info'] = False
+        if 'return_entropy' in conf['dst_sys'][dst_name]['ini_params']:
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_entropy'] = conf['dst_sys'][dst_name]['ini_params']['return_entropy']
+        else:
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_entropy'] = False
+
+    from convlab2.nlu import NLU
+    from convlab2.dst import DST
+    from convlab2.policy import Policy
+    from convlab2.nlg import NLG
+
+    modules = ['vectorizer_sys', 'nlu_sys', 'dst_sys', 'sys_nlg',
+               'nlu_usr', 'dst_usr', 'policy_usr', 'usr_nlg']
+
+    # Syncronise all seeds
+    if 'seed' in conf['model']:
+        for module in modules:
+            module_name = [model for model in conf[module]]
+            module_name = module_name[0] if module_name else None
+            if conf[module] and module_name:
+                if 'ini_params' in conf[module][module_name]:
+                    if 'seed' in conf[module][module_name]['ini_params']:
+                        conf[module][module_name]['ini_params']['seed'] = conf['model']['seed']
+
+    # for each unit in modules above, create model save into conf
+    for unit in modules:
+        if conf[unit] == {}:
+            conf[unit + '_activated'] = None
+        else:
+            for (model, infos) in conf[unit].items():
+                cls_path = infos.get('class_path', '')
+                cls = map_class(cls_path)
+                conf[unit + '_class'] = cls
+                conf[unit + '_activated'] = conf[unit +
+                                                 '_class'](**conf[unit][model]['ini_params'])
+                print("Loaded " + model + " for " + unit)
+    return conf
 
 
 if __name__ == '__main__':

@@ -1,1 +1,0 @@
-CUDA_VISIBLE_DEVICES="6" python -m torch.distributed.launch --nproc_per_node 1 --master_port 3046 main.py --dataset multiwoz21

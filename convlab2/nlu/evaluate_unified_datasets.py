@@ -10,28 +10,43 @@ def evaluate(predict_result):
 
     for sample in predict_result:
         flag = True
-        for da_type in ['binary', 'categorical', 'non-categorical']:
-            if da_type == 'binary':
-                predicts = [(x['intent'], x['domain'], x['slot']) for x in sample['predictions']['dialogue_acts'][da_type]]
-                labels = [(x['intent'], x['domain'], x['slot']) for x in sample['dialogue_acts'][da_type]]
-            else:
-                predicts = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in sample['predictions']['dialogue_acts'][da_type]]
-                labels = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in sample['dialogue_acts'][da_type]]
-            predicts = sorted(list(set(predicts)))
-            labels = sorted(list(set(labels)))
-            for ele in predicts:
-                if ele in labels:
+        if isinstance(sample['predictions']['dialogue_acts'], dict):
+            for da_type in ['binary', 'categorical', 'non-categorical']:
+                if da_type == 'binary':
+                    predicts = [(x['intent'], x['domain'], x['slot']) for x in sample['predictions']['dialogue_acts'][da_type]]
+                    labels = [(x['intent'], x['domain'], x['slot']) for x in sample['dialogue_acts'][da_type]]
+                else:
+                    predicts = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in sample['predictions']['dialogue_acts'][da_type]]
+                    labels = [(x['intent'], x['domain'], x['slot'], ''.join(x['value'].split()).lower()) for x in sample['dialogue_acts'][da_type]]
+                predicts = sorted(list(set(predicts)))
+                labels = sorted(list(set(labels)))
+                for ele in predicts:
+                    if ele in labels:
+                        metrics['overall']['TP'] += 1
+                        metrics[da_type]['TP'] += 1
+                    else:
+                        metrics['overall']['FP'] += 1
+                        metrics[da_type]['FP'] += 1
+                for ele in labels:
+                    if ele not in predicts:
+                        metrics['overall']['FN'] += 1
+                        metrics[da_type]['FN'] += 1
+                flag &= (predicts==labels)
+            acc.append(flag)
+        elif isinstance(sample['predictions']['dialogue_acts'], list):
+            gold_da = sorted(list({(da['intent'], da['domain'], da['slot'], ''.join(da.get('value', '').split()).lower()) for da_type in ['binary', 'categorical', 'non-categorical'] for da in sample['dialogue_acts'][da_type]}))
+            pred_da = sorted(list({(da['intent'], da['domain'], da['slot'], ''.join(da.get('value', '').split()).lower()) for da in sample['predictions']['dialogue_acts']}))
+            acc.append(pred_da==gold_da)
+            for ele in pred_da:
+                if ele in gold_da:
                     metrics['overall']['TP'] += 1
-                    metrics[da_type]['TP'] += 1
                 else:
                     metrics['overall']['FP'] += 1
-                    metrics[da_type]['FP'] += 1
-            for ele in labels:
-                if ele not in predicts:
+            for ele in gold_da:
+                if ele not in pred_da:
                     metrics['overall']['FN'] += 1
-                    metrics[da_type]['FN'] += 1
-            flag &= (predicts==labels)
-        acc.append(flag)
+        else:
+            raise TypeError('type of predictions:dialogue_acts should be dict or list')
     
     for metric in metrics:
         TP = metrics[metric].pop('TP')

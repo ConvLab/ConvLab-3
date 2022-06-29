@@ -1,8 +1,6 @@
 import logging
 import os
-import json
 import torch
-from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoConfig
 from convlab2.nlu.nlu import NLU
 from convlab2.base_models.t5.nlu.serialization import deserialize_dialogue_acts
@@ -16,7 +14,6 @@ class T5NLU(NLU):
         self.opponent = 'system' if speaker == 'user' else 'user'
         self.context_window_size = context_window_size
         self.use_context = context_window_size > 0
-        self.prefix = "parse the dialogue action of the last utterance: "
 
         model_dir = os.path.dirname(os.path.abspath(__file__))
         if not os.path.exists(model_name_or_path):
@@ -35,10 +32,11 @@ class T5NLU(NLU):
         if self.use_context:
             if len(context) > 0 and type(context[0]) is list and len(context[0]) > 1:
                 context = [item[1] for item in context]
+            context = context[-self.context_window_size:]
             utts = context + [utterance]
         else:
             utts = [utterance]
-        input_seq = ' '.join([f"{self.opponent if (i % 2) == (len(utts) % 2) else self.speaker}: {utt}" for i, utt in enumerate(utts)])
+        input_seq = '\n'.join([f"{self.opponent if (i % 2) == (len(utts) % 2) else self.speaker}: {utt}" for i, utt in enumerate(utts)])
         # print(input_seq)
         input_seq = self.tokenizer(input_seq, return_tensors="pt").to(self.device)
         # print(input_seq)
@@ -63,13 +61,15 @@ if __name__ == '__main__':
         [],
         ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
         "What time do you want to leave and what time do you want to arrive by?"],
-        ["What time do you want to leave and what time do you want to arrive by?",
+        ["I would like a taxi from Saint John's college to Pizza Hut Fen Ditton.",
+        "What time do you want to leave and what time do you want to arrive by?",
         "I want to leave after 17:15.",
         "Booking completed! your taxi will be blue honda Contact number is 07218068540"],
         [],
         ["Please find a restaurant called Nusha.",
         "I don't seem to be finding anything called Nusha.  What type of food does the restaurant serve?"],
-        ["I don't seem to be finding anything called Nusha.  What type of food does the restaurant serve?",
+        ["Please find a restaurant called Nusha.",
+        "I don't seem to be finding anything called Nusha.  What type of food does the restaurant serve?",
         "I am not sure of the type of food but could you please check again and see if you can find it? Thank you.",
         "Could you double check that you've spelled the name correctly? The closest I can find is Nandos."]
     ]

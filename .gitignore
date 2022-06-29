@@ -14,6 +14,9 @@ __pycache__
 .vscode
 
 # data
+data/unified_datasets/multiwoz21/MultiWOZ_2.1.zip
+data/unified_datasets/tm1/master.zip
+data/unified_datasets/dailydialog/ijcnlp_dailydialog.zip
 data/**/train.json
 data/**/val.json
 data/**/test.json
@@ -25,6 +28,9 @@ data/schema/dstc8-schema-guided-dialogue-master
 data/mdbt/data
 data/mdbt/models
 data/mdbt/word-vectors
+convlab2/**/data
+convlab2/**/output
+convlab2/**/cache
 convlab2/nlg/sclstm/**/resource/*
 convlab2/nlg/sclstm/**/resource_usr/*
 convlab2/nlg/sclstm/**/sclstm.pt
@@ -85,6 +91,8 @@ deploy/templates/dialog_eg.html
 test.py
 convlab2/dst/setsumbt/models/*
 
+*budget*.pdf
+*convlab2/policy/vector/action_dicts
 *.egg-info
 pre-trained-models/
 venv

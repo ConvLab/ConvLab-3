@@ -6,6 +6,7 @@ Created on Wed Jul 17 14:27:34 2019
 """
 
 import pdb
+from copy import deepcopy
 
 
 class Environment():
@@ -18,8 +19,8 @@ class Environment():
         self.evaluator = evaluator
         self.use_semantic_acts = use_semantic_acts
 
-    def reset(self):
-        self.usr.init_session()
+    def reset(self, goal):
+        self.usr.init_session(goal=goal)
         self.sys_dst.init_session()
         if self.evaluator:
             self.evaluator.add_goal(self.usr.policy.get_goal())
@@ -47,10 +48,11 @@ class Environment():
             observation) if self.sys_nlu else observation
         self.sys_dst.state['user_action'] = dialog_act
         state = self.sys_dst.update(dialog_act)
-        dialog_act = self.sys_dst.state['user_action']
+        self.sys_dst.state['history'].append(["sys", model_response])
+        self.sys_dst.state['history'].append(["usr", observation])
 
-        state['history'].append(["sys", model_response])
-        state['history'].append(["usr", observation])
+        state = deepcopy(state)
+        dialog_act = self.sys_dst.state['user_action']
 
         terminated = self.usr.is_terminated()
 

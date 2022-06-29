@@ -23,7 +23,8 @@ def unified_format(acts):
     new_acts = {'categorical': []}
     for act in acts:
         intent, domain, slot, value = act
-        new_acts['categorical'].append({"intent": intent, "domain": domain, "slot": slot, "value": value})
+        new_acts['categorical'].append(
+            {"intent": intent, "domain": domain, "slot": slot, "value": value})
     return new_acts
 
 
@@ -84,13 +85,13 @@ class UserPolicyAgendaMultiWoz(Policy):
     def reset_turn(self):
         self.__turn = 0
 
-    def init_session(self, ini_goal=None):
+    def init_session(self, goal=None):
         """ Build new Goal and Agenda for next session """
         self.reset_turn()
-        if not ini_goal:
+        if not goal:
             self.goal = Goal(self.goal_generator)
         else:
-            self.goal = ini_goal
+            self.goal = goal
         self.domain_goals = self.goal.domain_goals
         self.agenda = Agenda(self.goal)
 
@@ -134,8 +135,8 @@ class UserPolicyAgendaMultiWoz(Policy):
         action = {}
         while len(action) == 0:
             # A -> A' + user_action
-            # action = self.agenda.get_action(random.randint(2, self.max_initiative))
-            action = self.agenda.get_action(self.max_initiative)
+            action = self.agenda.get_action(random.randint(1, self.max_initiative))
+            #action = self.agenda.get_action(self.max_initiative)
 
             # transform to DA
             action = self._transform_usract_out(action)
@@ -146,7 +147,8 @@ class UserPolicyAgendaMultiWoz(Policy):
             domain, intent = domain_intent.lower().split('-')
             for slot, value in svs:
                 try:
-                    domain, slot, value = normalize_domain_slot_value(domain, slot, value)
+                    domain, slot, value = normalize_domain_slot_value(
+                        domain, slot, value)
                 except:
                     pass
                 tuples.append([intent, domain, slot, value])

@@ -25,6 +25,8 @@ import sys
 import json
 from dataclasses import dataclass, field
 from typing import Optional
+from itertools import zip_longest
+from functools import reduce
 
 import datasets
 import numpy as np
@@ -39,6 +41,7 @@ from transformers import (
     HfArgumentParser,
     Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
+    EarlyStoppingCallback,
     set_seed,
 )
 from transformers.trainer_utils import EvalPrediction, get_last_checkpoint
@@ -212,8 +215,11 @@ class DataTrainingArguments:
             "help": "Whether to ignore the tokens corresponding to padded labels in the loss computation or not."
         },
     )
-    source_prefix_filepath: Optional[str] = field(
-        default=None, metadata={"help": "A file whose first line is the prefix to add before every source text (useful for T5 models)."}
+    source_prefix: Optional[str] = field(
+        default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+    )
+    early_stopping_patience: Optional[int] = field(
+        default=10, metadata={"help": "early stopping patience, set to 0 if you do not want to use early stopping."},
     )
 
     def __post_init__(self):
@@ -271,7 +277,7 @@ def main():
     )
     logger.info(f"Training/evaluation parameters {training_args}")
 
-    if data_args.source_prefix_filepath is None and model_args.model_name_or_path in [
+    if data_args.source_prefix is None and model_args.model_name_or_path in [
         "t5-small",
         "t5-base",
         "t5-large",
@@ -280,7 +286,7 @@ def main():
     ]:
         logger.warning(
             "You're running a t5 model but didn't provide a source prefix, which is the expected, e.g. with "
-            "`--source_prefix_filepath 'path_to_prefix_file' ` whose first line is the source prefix"
+            "`--source_prefix 'summarize: ' `"
         )
 
     # Detecting last checkpoint.
@@ -386,10 +392,7 @@ def main():
                 "resize the model's position encodings by passing `--resize_position_embeddings`."
             )
 
-    if data_args.source_prefix_filepath is not None:
-        prefix = open(data_args.source_prefix_filepath, 'r', encoding='utf-8').readline().strip('\n')
-    else:
-        prefix = ""
+    prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
     
     logger.info(f'source prefix: "{prefix}"')
 
@@ -442,8 +445,14 @@ def main():
                 inputs.append(examples[source_column][i])
                 targets.append(examples[target_column][i])
 
-        inputs = [prefix + inp for inp in inputs]
-        model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+        inputs = [prefix + '\n\n' + inp for inp in inputs]
+        if padding:
+            model_inputs = tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+        else:
+            # truncate each part separated by \n\n respectively
+            split_inputs = [inp.split('\n\n') for inp in inputs]
+            split_model_inputs = [tokenizer(x, max_length=data_args.max_source_length, padding=False, truncation=True) for x in split_inputs]
+            model_inputs = {k: [reduce(lambda x, y: x[:-1]+y, item[k]) for item in split_model_inputs] for k in split_model_inputs[0]}
 
         # Setup the tokenizer for targets
         with tokenizer.as_target_tokenizer():
@@ -556,6 +565,8 @@ def main():
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
     )
+    if data_args.early_stopping_patience > 0:
+        trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=data_args.early_stopping_patience))
 
     # Training
     if training_args.do_train:

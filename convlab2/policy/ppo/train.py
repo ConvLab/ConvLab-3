@@ -10,14 +10,14 @@ import logging
 import time
 import numpy as np
 import torch
+import random
 
 from convlab2.policy.ppo import PPO
 from convlab2.policy.rlmodule import Memory
 from torch import multiprocessing as mp
 from argparse import ArgumentParser
-from convlab2.policy.ppo.config import get_config
 from convlab2.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
-    eval_policy, log_start_args, save_best, load_config_file
+    eval_policy, log_start_args, save_best, load_config_file, get_config
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(
@@ -47,7 +47,7 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
     :return:
     """
 
-    buff = Memory(seed=train_seed)
+    buff = Memory()
     # we need to sample batchsz of (state, action, next_state, reward, mask)
     # each trajectory contains `trajectory_len` num of items, so we only need to sample
     # `batchsz//trajectory_len` num of trajectory totally
@@ -57,6 +57,8 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
     sampled_traj_num = 0
     traj_len = 50
     real_traj_len = 0
+
+    set_seed(train_seed)
 
     while sampled_num < batchsz:
         # for each trajectory, we reset the env and get initial state
@@ -121,6 +123,7 @@ def sample(env, policy, batchsz, process_num, seed):
     # batchsz will be splitted into each process,
     # final batchsz maybe larger than batchsz parameters
     process_batchsz = np.ceil(batchsz / process_num).astype(np.int32)
+    train_seeds = random.sample(range(0, 1000), process_num)
     # buffer to save all data
     queue = mp.Queue()
 
@@ -134,7 +137,7 @@ def sample(env, policy, batchsz, process_num, seed):
     evt = mp.Event()
     processes = []
     for i in range(process_num):
-        process_args = (i, queue, evt, env, policy, process_batchsz, seed)
+        process_args = (i, queue, evt, env, policy, process_batchsz, train_seeds[i])
         processes.append(mp.Process(target=sampler, args=process_args))
     for p in processes:
         # set the process as daemon, and it will be killed once the main process is stoped.
@@ -246,6 +249,7 @@ if __name__ == '__main__':
         tb_writer.add_scalar(key, eval_dict[key], 0)
     best_complete_rate = eval_dict['complete_rate']
     best_success_rate = eval_dict['success_rate_strict']
+    best_return = eval_dict['avg_return']
 
     logging.info("Start of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
@@ -261,9 +265,11 @@ if __name__ == '__main__':
 
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
-            best_complete_rate, best_success_rate = \
-                save_best(policy_sys, best_complete_rate, best_success_rate,
-                          eval_dict["complete_rate"], eval_dict["success_rate_strict"], save_path)
+            best_complete_rate, best_success_rate, best_return = \
+                save_best(policy_sys, best_complete_rate, best_success_rate, best_return,
+                          eval_dict["complete_rate"], eval_dict["success_rate_strict"],
+                          eval_dict["avg_return"], save_path)
+            policy_sys.save(save_path, "last")
             for key in eval_dict:
                 tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
 
