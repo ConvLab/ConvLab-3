@@ -19,7 +19,7 @@ class Environment():
         self.evaluator = evaluator
         self.use_semantic_acts = use_semantic_acts
 
-    def reset(self, goal):
+    def reset(self, goal=None):
         self.usr.init_session(goal=goal)
         self.sys_dst.init_session()
         if self.evaluator:
