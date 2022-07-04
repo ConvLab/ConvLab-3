@@ -1,12 +1,10 @@
 n_gpus=1
 task_name="nlg"
-dataset_name=$1
+dataset_name="sgd+tm1+tm2+tm3+multiwoz21"
 speaker="system"
-context_window_size=$2
-ratio=$3
-dial_ids_order=$4
-data_dir="data/${task_name}/${dataset_name}_${ratio}_order${dial_ids_order}/${speaker}/context_${context_window_size}"
-output_dir="output/${task_name}/${dataset_name}_${ratio}_order${dial_ids_order}/${speaker}/context_${context_window_size}"
+context_window_size=0
+data_dir="data/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
+output_dir="output/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 cache_dir="../cache"
 logging_dir="${output_dir}/runs"
 train_file="${data_dir}/train.json"
@@ -20,13 +18,22 @@ truncation_side="left"
 max_source_length=512
 max_target_length=512
 model_name_or_path="t5-small"
-per_device_train_batch_size=128
+per_device_train_batch_size=64
 per_device_eval_batch_size=64
-gradient_accumulation_steps=4
+gradient_accumulation_steps=8
 lr=1e-3
-num_train_epochs=100
+num_train_epochs=10
 
-python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size} -r ${ratio} -o ${dial_ids_order}
+names=$(echo ${dataset_name} | tr "+" "\n")
+rm -r ${data_dir}
+mkdir -p ${data_dir}
+for name in ${names};
+do
+    echo "preprocessing ${name}"
+    python ../create_data.py -t ${task_name} -d ${name} -s ${speaker} -c ${context_window_size}
+done
+
+python merge_data.py $(echo ${dataset_name} | tr "+" " ")
 
 python ../run_seq2seq.py \
     --task_name ${task_name} \
@@ -44,7 +51,6 @@ python ../run_seq2seq.py \
     --evaluation_strategy epoch \
     --save_total_limit 1 \
     --prediction_loss_only \
-    --load_best_model_at_end \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
     --logging_dir ${logging_dir} \
@@ -83,6 +89,6 @@ python ../run_seq2seq.py \
     --adafactor \
     --gradient_checkpointing
 
-python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json -o ${dial_ids_order}
+python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
 
-python ../../../nlg/evaluate_unified_datasets.py -p ${output_dir}/predictions.json --dataset_name ${dataset_name}
+# python ../../../nlg/evaluate_unified_datasets.py -p ${output_dir}/predictions.json --dataset_name ${dataset_name}

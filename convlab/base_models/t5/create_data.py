@@ -85,6 +85,9 @@ def create_nlg_data(dataset, data_dir, args):
         data = []
         for sample in tqdm(data_by_split[data_split], desc=f'{data_split} sample', leave=False):
             dialogue_acts_seq = serialize_dialogue_acts(sample['dialogue_acts'])
+            if len(dialogue_acts_seq) == 0:
+                # skip empty dialogue acts
+                continue
             if args.context_window_size>0:
                 context = '\n'.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['context']]+[f'{sample["speaker"]}: '])
                 context = f'{dialogue_acts_seq}\n\n{context}'
@@ -145,10 +148,10 @@ if __name__ == '__main__':
     if args.len_tokenizer:
         tokenizer = AutoTokenizer.from_pretrained(args.len_tokenizer)
     for dataset_name in tqdm(args.datasets, desc='datasets'):
-        dataset = load_dataset(dataset_name, args.dial_ids_order)
         if args.ratio:
-            dataset['train'] = dataset['train'][:round(len(dataset['train'])*args.ratio)]
-            dataset['validation'] = dataset['validation'][:round(len(dataset['validation'])*args.ratio)]
+            dataset = load_dataset(dataset_name, dial_ids_order=args.dial_ids_order, split2ratio={'train': args.ratio, 'validation': args.ratio})
+        else:
+            dataset = load_dataset(dataset_name, args.dial_ids_order)
         for task_name in tqdm(args.tasks, desc='tasks', leave=False):
             data_dir = os.path.join('data', task_name, (dataset_name if not args.ratio else f'{dataset_name}_{args.ratio}_order{args.dial_ids_order}'))
             data_by_split = eval(f"create_{task_name}_data")(dataset, data_dir, args)

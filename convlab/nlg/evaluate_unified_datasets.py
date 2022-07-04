@@ -36,6 +36,7 @@ def evaluate(predict_result, ontology):
         references.append(predict_result[i]['utterance'])
         candidates.append(predict_result[i]['predictions']['utterance'])
     # metrics['bleu'] = corpus_bleu(references, candidates)
+    references = [" " if ref=="" else ref for ref in references]
     metrics['bleu'] = sacrebleu.corpus_bleu(candidates, [references], lowercase=True).score
 
     # ERROR Rate

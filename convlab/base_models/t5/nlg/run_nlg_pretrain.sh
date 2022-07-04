@@ -31,12 +31,9 @@ for name in ${names};
 do
     echo "preprocessing ${name}"
     python ../create_data.py -t ${task_name} -d ${name} -s ${speaker} -c ${context_window_size}
-    if [ "${name}" != "${dataset_name}" ]; then
-        cat "data/${task_name}/${name}/${speaker}/context_${context_window_size}/train.json" >> ${train_file}
-        cat "data/${task_name}/${name}/${speaker}/context_${context_window_size}/validation.json" >> ${validation_file}
-        cat "data/${task_name}/${name}/${speaker}/context_${context_window_size}/test.json" >> ${test_file}
-    fi
 done
+
+python merge_data.py $(echo ${dataset_name} | tr "+" " ")
 
 python ../run_seq2seq.py \
     --task_name ${task_name} \
