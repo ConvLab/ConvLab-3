@@ -3,10 +3,8 @@ import os
 from convlab.util import load_dataset, load_nlg_data
 
 
-def merge(dataset_name, speaker, save_dir, context_window_size, predict_result):
+def merge(dataset_names, speaker, save_dir, context_window_size, predict_result):
     assert os.path.exists(predict_result)
-    dataset = load_dataset(dataset_name, args.dial_ids_order)
-    data = load_nlg_data(dataset, data_split='test', speaker=speaker, use_context=context_window_size>0, context_window_size=context_window_size)['test']
     
     if save_dir is None:
         save_dir = os.path.dirname(predict_result)
@@ -14,10 +12,20 @@ def merge(dataset_name, speaker, save_dir, context_window_size, predict_result):
         os.makedirs(save_dir, exist_ok=True)
     predict_result = [json.loads(x)['predictions'].strip() for x in open(predict_result)]
 
-    for sample, prediction in zip(data, predict_result):
-        sample['predictions'] = {'utterance': prediction}
+    merged = []
+    i = 0
+    for dataset_name in dataset_names.split('+'):
+        print(dataset_name)
+        dataset = load_dataset(dataset_name, args.dial_ids_order)
+        data = load_nlg_data(dataset, data_split='test', speaker=speaker, use_context=context_window_size>0, context_window_size=context_window_size)['test']
+    
+        for sample in data:
+            if all([len(sample['dialogue_acts'][da_type])==0 for da_type in sample['dialogue_acts']]):
+                continue
+            sample['predictions'] = {'utterance': predict_result[i]}
+            i += 1
 
-    json.dump(data, open(os.path.join(save_dir, 'predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(merged, open(os.path.join(save_dir, 'predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
 
 
 if __name__ == '__main__':
