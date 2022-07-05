@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,23 +23,22 @@ from torch.nn import (MultiheadAttention, GRU, LSTM, Linear, LayerNorm, Dropout,
                       Sequential, ReLU, Conv1d, GELU, BCEWithLogitsLoss)
 from torch.nn.init import (xavier_normal_, constant_)
 
-from convlab.dst.setsumbt.loss.bayesian import BayesianMatchingLoss, BinaryBayesianMatchingLoss, dirichlet
-from convlab.dst.setsumbt.loss.labelsmoothing import LabelSmoothingLoss, BinaryLabelSmoothingLoss
-from convlab.dst.setsumbt.loss.distillation import DistillationKL, BinaryDistillationKL
+from convlab.dst.setsumbt.loss import (BayesianMatchingLoss, BinaryBayesianMatchingLoss,
+                                       KLDistillationLoss, BinaryKLDistillationLoss,
+                                       LabelSmoothingLoss, BinaryLabelSmoothingLoss)
 from convlab.dst.setsumbt.loss.endd_loss import rkl_dirichlet_mediator_loss, logits_to_mutual_info
 
 
 # Default belief tracker model intialisation function
 def _initialise(self, config):
     # Slot Utterance matching attention
-    self.slot_attention = MultiheadAttention(
-        config.hidden_size, config.slot_attention_heads)
+    self.slot_attention = MultiheadAttention(config.hidden_size, config.slot_attention_heads)
 
     # Latent context tracker
     # Initial state prediction
     if not config.rnn_zero_init and config.nbt_type in ['gru', 'lstm']:
-        self.belief_init = Sequential(Linear(config.hidden_size, config.nbt_hidden_size),
-                                      ReLU(), Dropout(config.dropout_rate))
+        self.belief_init = Sequential(Linear(config.hidden_size, config.nbt_hidden_size), ReLU(),
+                                      Dropout(config.dropout_rate))
 
     # Recurrent context tracker setup
     if config.nbt_type == 'gru':
@@ -67,7 +66,7 @@ def _initialise(self, config):
     else:
         raise NameError('Not Implemented')
 
-    # Feature decoder and layer norm
+    # Intermediate feature mapping and layer normalisation
     self.intermediate = Linear(config.nbt_hidden_size, config.hidden_size)
     self.layer_norm = LayerNorm(config.hidden_size)
 
@@ -78,8 +77,7 @@ def _initialise(self, config):
     if self.config.set_similarity:
         # 1D convolutional set pooler
         if self.config.set_pooling == 'cnn':
-            self.conv_pooler = Conv1d(
-                self.config.hidden_size, self.config.hidden_size, 3)
+            self.conv_pooler = Conv1d(self.config.hidden_size, self.config.hidden_size, 3)
         # Deep averaging network set pooler
         elif self.config.set_pooling == 'dan':
             self.avg_net = Sequential(Linear(self.config.hidden_size, 2 * self.config.hidden_size), GELU(),
@@ -96,11 +94,11 @@ def _initialise(self, config):
     if config.distance_measure == 'cosine':
         self.distance = CosineSimilarity(dim=-1, eps=1e-8)
     elif config.distance_measure == 'euclidean':
-        self.distance = PairwiseDistance(p=2.0, eps=1e-06, keepdim=False)
+        self.distance = PairwiseDistance(p=2.0, eps=1e-6, keepdim=False)
     else:
         raise NameError('NotImplemented')
 
-    # Belief state loss function
+    # User goal prediction loss function
     if config.loss_function == 'crossentropy':
         self.loss = CrossEntropyLoss(ignore_index=-1)
     elif config.loss_function == 'bayesianmatching':
@@ -108,7 +106,7 @@ def _initialise(self, config):
     elif config.loss_function == 'labelsmoothing':
         self.loss = LabelSmoothingLoss(ignore_index=-1, label_smoothing=config.label_smoothing)
     elif config.loss_function == 'distillation':
-        self.loss = DistillationKL(ignore_index=-1, lamb=config.ensemble_smoothing)
+        self.loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
         self.temp = 1.0
     elif config.loss_function == 'distribution_distillation':
         self.loss = rkl_dirichlet_mediator_loss
@@ -139,9 +137,9 @@ def _initialise(self, config):
             self.goodbye_loss = BayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
             self.domain_loss = BinaryBayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
         elif config.loss_function == 'distillation':
-            self.request_loss = BinaryDistillationKL(ignore_index=-1, lamb=config.ensemble_smoothing)
-            self.goodbye_loss = DistillationKL(ignore_index=-1, lamb=config.ensemble_smoothing)
-            self.domain_loss = BinaryDistillationKL(ignore_index=-1, lamb=config.ensemble_smoothing)
+            self.request_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
+            self.goodbye_loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
+            self.domain_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
 
 
 # Default belief tracker forward pass.
@@ -165,8 +163,7 @@ def _nbt_forward(self, turn_embeddings,
     goodbye_probs = None
     if self.config.predict_actions:
         # General action prediction
-        goodbye_scores = self.goodbye_gate(
-            turn_pooled_representation.reshape(batch_size * dialogue_size, hidden_size))
+        goodbye_scores = self.goodbye_gate(turn_pooled_representation.reshape(batch_size * dialogue_size, hidden_size))
 
         # Compute loss for general action predictions (weighted loss)
         if goodbye_labels is not None:
@@ -184,7 +181,7 @@ def _nbt_forward(self, turn_embeddings,
         if self.config.loss_function in ['crossentropy', 'labelsmoothing', 'distillation', 'distribution_distillation']:
             goodbye_probs = torch.softmax(goodbye_scores, -1).reshape(batch_size, dialogue_size, -1)
         elif self.config.loss_function in ['bayesianmatching']:
-            goodbye_probs = dirichlet(goodbye_scores.reshape(batch_size, dialogue_size, -1))
+            goodbye_probs = torch.sigmoid(goodbye_scores.reshape(batch_size, dialogue_size, -1))
 
     # Slot utterance matching
     num_slots = self.slot_embeddings.size(0)
@@ -247,7 +244,7 @@ def _nbt_forward(self, turn_embeddings,
         # [batch_size, dialogue_size, nbt_hidden_size]
         belief_embedding, context = self.nbt(hidden, context)
 
-    # Decode features
+    # Intermediate feature transformation
     belief_embedding = belief_embedding.reshape(batch_size, slot_embeddings.size(0), dialogue_size, -1).transpose(1, 2)
     if self.config.set_similarity:
         belief_embedding = belief_embedding.reshape(batch_size, dialogue_size, num_slots, -1,
@@ -391,7 +388,7 @@ def _nbt_forward(self, turn_embeddings,
                                          'labelsmoothing', 'distillation', 'distribution_distillation']:
             probs_ = torch.softmax(scores.reshape(batch_size, dialogue_size, -1), -1)
         elif self.config.loss_function in ['bayesianmatching']:
-            probs_ = dirichlet(scores.reshape(batch_size, dialogue_size, -1))
+            probs_ = torch.sigmoid(scores.reshape(batch_size, dialogue_size, -1))
 
         # Compute knowledge uncertainty in the beleif states
         if calculate_inform_mutual_info and self.config.loss_function == 'distribution_distillation':
