@@ -24,6 +24,10 @@ setup(
     ],
     setup_requires=['setuptools-git'],
     install_requires=[
+        'accelerate',
+        'rouge-score',
+        'sacrebleu',
+        'tensorboardX',
         'boto3',
         'matplotlib',
         'tabulate',

@@ -2,7 +2,6 @@
 import os
 import sys
 import numpy as np
-import logging
 
 from copy import deepcopy
 from convlab.policy.vec import Vector
@@ -26,8 +25,11 @@ class VectorBase(Vector):
         self.set_seed(seed)
         self.ontology = load_ontology(dataset_name)
         try:
-            self.db = load_database(dataset_name)
-            # self.db = Database()
+            # execute to make sure that the database exists or is downloaded otherwise
+            load_database(dataset_name)
+            # the following two lines are needed for pickling correctly during multi-processing
+            exec(f'from data.unified_datasets.{dataset_name}.database import Database')
+            self.db = eval('Database()')
             self.db_domains = self.db.domains
         except Exception as e:
             self.db = None
