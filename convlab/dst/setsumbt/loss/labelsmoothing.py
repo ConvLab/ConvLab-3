@@ -85,7 +85,7 @@ class BinaryLabelSmoothingLoss(LabelSmoothingLoss):
             label_smoothing: Label smoothing constant
             ignore_index: Specifies a target value that is ignored and does not contribute to the input gradient.
         '''
-        super(LabelSmoothingLoss, self).__init__(label_smoothing, ignore_index)
+        super(BinaryLabelSmoothingLoss, self).__init__(label_smoothing, ignore_index)
 
     def forward(self, input: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
         '''
