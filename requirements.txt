@@ -79,7 +79,7 @@ s3transfer==0.6.0
 sacrebleu==2.1.0
 scikit-learn==1.1.1
 scipy==1.8.1
-sentence-transformers=2.2.2
+sentence-transformers==2.2.2
 seqeval==1.2.2
 simplejson==3.17.6
 six==1.16.0
