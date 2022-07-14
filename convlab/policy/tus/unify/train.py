@@ -208,12 +208,16 @@ if __name__ == "__main__":
     parser.add_argument("--force-read-data", '-f', action='store_true',
                         help="Force to read data from scratch")
     parser.add_argument("--dataset", type=str, default="multiwoz21")
+    parser.add_argument("--dial_ids_order", type=int, default=0)
+    parser.add_argument("--split2ratio", type=float, default=1)
 
     args = parser.parse_args()
     config_file = open(args.user_config)
     config = json.load(config_file)
     config_file.close()
-    raw_data = load_dataset(args.dataset)
+    raw_data = load_dataset(args.dataset,
+                            dial_ids_order=args.dial_ids_order,
+                            split2ratio={'train': args.split2ratio})
 
     batch_size = config["batch_size"]
 

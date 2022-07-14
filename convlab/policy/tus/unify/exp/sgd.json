@@ -1,5 +1,5 @@
 {
-    "model_dir": "convlab/policy/tus/multiwoz/default",
+    "model_dir": "convlab/policy/tus/unify/sgd",
     "model_name": "model",
     "num_epoch": 50,
     "batch_size": 128,
