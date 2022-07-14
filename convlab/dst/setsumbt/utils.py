@@ -21,22 +21,25 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from datetime import datetime
 
 
-def get_args(MODELS):
+def get_args(base_models: dict):
     # Get arguments
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 
     # Optional
     parser.add_argument('--tensorboard_path', help='Path to tensorboard', default='')
     parser.add_argument('--logging_path', help='Path for log file', default='')
-    parser.add_argument('--seed', help='Seed value for reproducability', default=0, type=int)
+    parser.add_argument('--seed', help='Seed value for reproducibility', default=0, type=int)
 
     # DATASET (Optional)
-    parser.add_argument('--dataset', help='Dataset Name: multiwoz21/simr', default='multiwoz21')
-    parser.add_argument('--dataset_train_ratio', help='Fraction of training set to use in training', default=1.0, type=float)
+    parser.add_argument('--dataset', help='Dataset Name (See Convlab 3 unified format for possible datasets',
+                        default='multiwoz21')
+    parser.add_argument('--dataset_train_ratio', help='Fraction of training set to use in training', default=1.0,
+                        type=float)
     parser.add_argument('--max_dialogue_len', help='Maximum number of turns per dialogue', default=12, type=int)
     parser.add_argument('--max_turn_len', help='Maximum number of tokens per turn', default=64, type=int)
     parser.add_argument('--max_slot_len', help='Maximum number of tokens per slot description', default=12, type=int)
-    parser.add_argument('--max_candidate_len', help='Maximum number of tokens per value candidate', default=12, type=int)
+    parser.add_argument('--max_candidate_len', help='Maximum number of tokens per value candidate', default=12,
+                        type=int)
     parser.add_argument('--force_processing', action='store_true', help='Force preprocessing of data.')
     parser.add_argument('--data_sampling_size', help='Resampled dataset size', default=-1, type=int)
     parser.add_argument('--no_descriptions', help='Do not use slot descriptions rather than slot names for embeddings',
@@ -64,26 +67,28 @@ def get_args(MODELS):
     parser.add_argument('--distance_measure', default='cosine',
                         help='Similarity measure for candidate scoring: cosine/euclidean')
     # parser.add_argument('--ensemble_size', help='Number of models in ensemble', default=-1, type=int)
-    parser.add_argument('--no_set_similarity', action='store_true',
-                        help='Set True to not use set similarity (Model tracks latent belief state as sequence and performs semantic similarity of sets)')
-    parser.add_argument('--set_pooling', help='Set pooling method for set similarity model using single embedding distances',
+    parser.add_argument('--no_set_similarity', action='store_true', help='Set True to not use set similarity')
+    parser.add_argument('--set_pooling',
+                        help='Set pooling method for set similarity model using single embedding distances',
                         default='cnn')
-    parser.add_argument('--candidate_pooling', help='Pooling approach for non set based candidate representations: cls/mean',
+    parser.add_argument('--candidate_pooling',
+                        help='Pooling approach for non set based candidate representations: cls/mean',
                         default='mean')
     parser.add_argument('--no_action_prediction', help='Model does not predicts user actions and active domain',
                         action='store_true')
 
     # Loss
-    parser.add_argument('--loss_function', help='Loss Function for training: crossentropy/bayesianmatching/labelsmoothing/distillation/distribution_distillation',
+    parser.add_argument('--loss_function',
+                        help='Loss Function for training: crossentropy/bayesianmatching/labelsmoothing/...',
                         default='labelsmoothing')
     parser.add_argument('--kl_scaling_factor', help='Scaling factor for KL divergence in bayesian matching loss',
                         type=float)
     parser.add_argument('--prior_constant', help='Constant parameter for prior in bayesian matching loss',
                         type=float)
     parser.add_argument('--ensemble_smoothing', help='Ensemble distribution smoothing constant', type=float)
-    parser.add_argument('--annealing_base_temp', help='Ensemble Distribution destillation temp annealing base temp',
+    parser.add_argument('--annealing_base_temp', help='Ensemble Distribution distillation temp annealing base temp',
                         type=float)
-    parser.add_argument('--annealing_cycle_len', help='Ensemble Distribution destillation temp annealing cycle length',
+    parser.add_argument('--annealing_cycle_len', help='Ensemble Distribution distillation temp annealing cycle length',
                         type=float)
     parser.add_argument('--label_smoothing', help='Label smoothing coefficient.', type=float)
     parser.add_argument('--user_goal_loss_weight', help='Weight of the user goal prediction loss. 0.0<weight<=1.0',
@@ -102,7 +107,7 @@ def get_args(MODELS):
                         help='Number of batches accumulated for one update step')
     parser.add_argument('--num_train_epochs', help='Number of training epochs', default=50, type=int)
     parser.add_argument('--patience', help='Number of training steps without improving model before stopping.',
-                        default=25, type=int)
+                        default=20, type=int)
     parser.add_argument('--weight_decay', help='Weight decay rate', default=0.01, type=float)
     parser.add_argument('--learning_rate', help='Initial Learning Rate', default=5e-5, type=float)
     parser.add_argument('--warmup_proportion', help='Warmup proportion for linear scheduler', default=0.2, type=float)
@@ -134,7 +139,7 @@ def get_args(MODELS):
     # RUN_NBT ACTIONS
     parser.add_argument('--do_train', help='Perform training', action='store_true')
     parser.add_argument('--do_eval', help='Perform model evaluation during training', action='store_true')
-    parser.add_argument('--do_test', help='Evaulate model on test data', action='store_true')
+    parser.add_argument('--do_test', help='Evaluate model on test data', action='store_true')
     args = parser.parse_args()
 
     # Simplify args
@@ -147,8 +152,8 @@ def get_args(MODELS):
         args.output_dir = os.path.dirname(os.path.abspath(__file__))
         args.output_dir = os.path.join(args.output_dir, 'models')
 
-        name = 'SetSUMBT'
-        name += '-Acts' if args.predict_actions else ''
+        name = 'SetSUMBT' if args.set_similarity else 'SUMBT'
+        name += '+ActPrediction' if args.predict_actions else ''
         name += '-' + args.dataset
         name += '-' + str(round(args.dataset_train_ratio*100)) + '%' if args.dataset_train_ratio != 1.0 else ''
         name += '-' + args.model_type
@@ -166,9 +171,6 @@ def get_args(MODELS):
             args.kl_scaling_factor = 0.001
         if not args.prior_constant:
             args.prior_constant = 1.0
-    if args.loss_function == 'inhibitedce':
-        if not args.inhibiting_factor:
-            args.inhibiting_factor = 1.0
     if args.loss_function == 'labelsmoothing':
         if not args.label_smoothing:
             args.label_smoothing = 0.05
@@ -191,10 +193,8 @@ def get_args(MODELS):
         if not args.active_domain_loss_weight:
             args.active_domain_loss_weight = 0.2
 
-    args.tensorboard_path = args.tensorboard_path if args.tensorboard_path else os.path.join(
-        args.output_dir, 'tb_logs')
-    args.logging_path = args.logging_path if args.logging_path else os.path.join(
-        args.output_dir, 'run.log')
+    args.tensorboard_path = args.tensorboard_path if args.tensorboard_path else os.path.join(args.output_dir, 'tb_logs')
+    args.logging_path = args.logging_path if args.logging_path else os.path.join(args.output_dir, 'run.log')
 
     # Default model_name's
     if not args.model_name_or_path:
@@ -208,28 +208,22 @@ def get_args(MODELS):
     if not args.candidate_embedding_model_name:
         args.candidate_embedding_model_name = args.model_name_or_path
 
-    if args.model_type in MODELS:
-        configClass = MODELS[args.model_type][-2]
+    if args.model_type in base_models:
+        config_class = base_models[args.model_type][-2]
     else:
         raise NameError('NotImplemented')
-    config = build_config(configClass, args)
+    config = build_config(config_class, args)
     return args, config
 
 
-def build_config(configClass, args):
-    if args.model_type == 'fasttext':
-        config = configClass.from_pretrained('bert-base-uncased')
-        config.model_type == 'fasttext'
-        config.fasttext_path = args.model_name_or_path
-        config.vocab_size = None
-    elif not os.path.exists(args.model_name_or_path):
-        config = configClass.from_pretrained(args.model_name_or_path)
+def build_config(config_class, args):
+    config = config_class.from_pretrained(args.model_name_or_path)
+    if not os.path.exists(args.model_name_or_path):
         config.tokenizer_name = args.model_name_or_path
-    elif 'tod-bert' in args.model_name_or_path.lower():
-        config = configClass.from_pretrained(args.model_name_or_path)
+    try:
+        config.tokenizer_name = config.tokenizer_name
+    except AttributeError:
         config.tokenizer_name = args.model_name_or_path
-    else:
-        config = configClass.from_pretrained(args.model_name_or_path)
     if args.candidate_embedding_model_name:
         config.candidate_embedding_model_name = args.candidate_embedding_model_name
     config.max_dialogue_len = args.max_dialogue_len

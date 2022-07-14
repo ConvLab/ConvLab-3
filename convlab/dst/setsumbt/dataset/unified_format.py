@@ -13,32 +13,38 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Convlab3 Unified Format Dialogue Dataset"""
+"""Convlab3 Unified Format Dialogue Datasets"""
 
 import torch
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
+from transformers.tokenization_utils import PreTrainedTokenizer
 from copy import deepcopy
 
-from convlab.dst.setsumbt.unified_format_data.dataset.utils import (load_dataset, get_ontology_slots,
-                                            ontology_add_values, get_values_from_data, ontology_add_requestable_slots,
-                                            get_requestable_slots, load_dst_data, extract_dialogues)
+from convlab.dst.setsumbt.dataset.utils import (load_dataset, get_ontology_slots, ontology_add_values,
+                                                get_values_from_data, ontology_add_requestable_slots,
+                                                get_requestable_slots, load_dst_data, extract_dialogues,
+                                                combine_value_sets)
 
 
 # Convert dialogue examples to model input features and labels
-def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turns: int=12, max_seq_len: int=64) -> dict:
-    '''
+def convert_examples_to_features(data: list,
+                                 ontology: dict,
+                                 tokenizer: PreTrainedTokenizer,
+                                 max_turns: int = 12,
+                                 max_seq_len: int = 64) -> dict:
+    """
     Convert dialogue examples to model input features and labels
-    Args:
+    Parameters:
         data (list): List of all extracted dialogues
         ontology (dict): Ontology dictionary containing slots, slot descriptions and
         possible value sets including requests
-        tokenizer (transformers tokenizer): Tokenizer for the encoder model used
+        tokenizer (PreTrainedTokenizer): Tokenizer for the encoder model used
         max_turns (int): Maximum numbers of turns in a dialogue
         max_seq_len (int): Maximum number of tokens in a dialogue turn
 
     Returns:
         features (dict): All inputs and labels required to train the model
-    '''
+    """
     features = dict()
     ontology = deepcopy(ontology)
 
@@ -58,20 +64,23 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
                 dial_feats.append(tokenizer.encode_plus(usr, sys, add_special_tokens=True,
                                                         max_length=max_seq_len, padding='max_length',
                                                         truncation='longest_first'))
-            # Trucate
+            # Truncate
             if len(dial_feats) >= max_turns:
                 break
         input_feats.append(dial_feats)
     del dial_feats
 
     # Perform turn level padding
-    input_ids = [[turn['input_ids'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial)) for dial in input_feats]
+    input_ids = [[turn['input_ids'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial))
+                 for dial in input_feats]
     if 'token_type_ids' in input_feats[0][0]:
-        token_type_ids = [[turn['token_type_ids'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial)) for dial in input_feats]
+        token_type_ids = [[turn['token_type_ids'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial))
+                          for dial in input_feats]
     else:
         token_type_ids = None
     if 'attention_mask' in input_feats[0][0]:
-        attention_mask = [[turn['attention_mask'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial)) for dial in input_feats]
+        attention_mask = [[turn['attention_mask'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial))
+                          for dial in input_feats]
     else:
         attention_mask = None
     del input_feats
@@ -109,7 +118,7 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
                 if value in ontology[domain][slot]['possible_values']:
                     value = ontology[domain][slot]['possible_values'].index(value)
                 else:
-                    value = -1 # If value is not in ontology then we do not penalise the model
+                    value = -1  # If value is not in ontology then we do not penalise the model
                 labs.append(value)
                 if len(labs) >= max_turns:
                     break
@@ -126,7 +135,8 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
             labs = []
             for turn in dial:
                 domain, slot = domslot.split('-', 1)
-                acts = [act['intent'] for act in turn['dialogue_acts'] if act['domain'] == domain and act['slot'] == slot]
+                acts = [act['intent'] for act in turn['dialogue_acts']
+                        if act['domain'] == domain and act['slot'] == slot]
                 if acts:
                     act_ = acts[0]
                     if act_ == 'request':
@@ -188,33 +198,54 @@ def convert_examples_to_features(data: list, ontology: dict, tokenizer, max_turn
 
 
 # Unified Dataset object
-class UnifiedDataset(Dataset):
-
-    def __init__(self, dataset_name: str, set_type: str, tokenizer, max_turns: int=12, max_seq_len:int =64,
-                 train_ratio: float=1.0):
-        '''
-        Build Unified Dataset object
-        Args:
+class UnifiedFormatDataset(Dataset):
+    """
+    Class for preprocessing, and storing data easily from the Convlab3 unified format.
+    Attributes:
+        dataset_dict (dict): Dictionary containing all the data in dataset
+        ontology (dict): Set of all domain-slot-value triplets in the ontology of the model
+        features (dict): Set of numeric features containing all inputs and labels formatted for the SetSUMBT model
+    """
+    def __init__(self,
+                 dataset_name: str,
+                 set_type: str,
+                 tokenizer: PreTrainedTokenizer,
+                 max_turns: int = 12,
+                 max_seq_len: int = 64,
+                 train_ratio: float = 1.0,
+                 seed: int = 0):
+        """
+        Parameters:
             dataset_name (str): Name of the dataset to load
             set_type (str): Subset of the dataset to load (train, validation or test)
             tokenizer (transformers tokenizer): Tokenizer for the encoder model used
             max_turns (int): Maximum numbers of turns in a dialogue
             max_seq_len (int): Maximum number of tokens in a dialogue turn
             train_ratio (float): Fraction of training data to use during training
-        '''
-        self.dataset_dict = load_dataset(dataset_name)
-        self.ontology = get_ontology_slots(dataset_name)
-        self.ontology = ontology_add_values(self.ontology, get_values_from_data(self.dataset_dict))
-        self.ontology = ontology_add_requestable_slots(self.ontology, get_requestable_slots(self.dataset_dict))
-
-        data = load_dst_data(self.dataset_dict, data_split=set_type, speaker='all', dialogue_acts=True, split_to_turn=False)
-
-        data = data[set_type]
+            seed (int): Seed governing random order of ids for subsampling
+        """
+        if '+' in dataset_name:
+            dataset_args = [{"dataset_name": name} for name in dataset_name.split('+')]
+        else:
+            dataset_args = [{"dataset_name": dataset_name}]
         if train_ratio != 1.0:
-            train_ratio = int(len(data) * train_ratio)
-            data = data[:train_ratio]
+            for dataset_args_ in dataset_args:
+                dataset_args_['dial_ids_order'] = seed
+                dataset_args_['split2ratio'] = {'train': train_ratio, 'validation': train_ratio}
+        self.dataset_dicts = [load_dataset(**dataset_args_) for dataset_args_ in dataset_args]
+        self.ontology = get_ontology_slots(dataset_name)
+        values = [get_values_from_data(dataset) for dataset in self.dataset_dicts]
+        self.ontology = ontology_add_values(self.ontology, combine_value_sets(values))
+        self.ontology = ontology_add_requestable_slots(self.ontology, get_requestable_slots(self.dataset_dicts))
 
-        data = extract_dialogues(data)
+        data = [load_dst_data(dataset_dict, data_split=set_type, speaker='all',
+                              dialogue_acts=True, split_to_turn=False)
+                for dataset_dict in self.dataset_dicts]
+        data_list = [data_[set_type] for data_ in data]
+
+        data = []
+        for data_ in data_list:
+            data += extract_dialogues(data_)
         self.features = convert_examples_to_features(data, self.ontology, tokenizer, max_turns, max_seq_len)
 
     def __getitem__(self, index):
@@ -272,7 +303,7 @@ def get_dataloader(dataset_name: str, set_type: str, batch_size: int, tokenizer,
     Returns:
         loader (torch dataloader): Dataloader to train and evaluate the setsumbt model
     '''
-    data = UnifiedDataset(dataset_name, set_type, tokenizer, max_turns, max_seq_len, train_ratio=train_ratio)
+    data = UnifiedFormatDataset(dataset_name, set_type, tokenizer, max_turns, max_seq_len, train_ratio=train_ratio)
     data.to(device)
 
     if resampled_size:

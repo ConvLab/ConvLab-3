@@ -29,9 +29,9 @@ from tensorboardX import SummaryWriter
 
 from convlab.dst.setsumbt.modeling.bert_nbt import BertSetSUMBT
 from convlab.dst.setsumbt.modeling.roberta_nbt import RobertaSetSUMBT
-from convlab.dst.setsumbt.unified_format_data import unified_format
+from convlab.dst.setsumbt.dataset import unified_format
 from convlab.dst.setsumbt.modeling import training
-from convlab.dst.setsumbt.unified_format_data.dataset import ontology as embeddings
+from convlab.dst.setsumbt.dataset import ontology as embeddings
 from convlab.dst.setsumbt.utils import get_args, update_args
 # from convlab.dst.setsumbt.modeling import ensemble_utils
 

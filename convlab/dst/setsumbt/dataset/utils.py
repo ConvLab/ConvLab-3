@@ -16,19 +16,7 @@
 """Convlab3 Unified dataset data processing utilities"""
 
 from convlab.util import load_dataset, load_ontology, load_dst_data, load_nlu_data
-
-# MultiWOZ specific label map to avoid duplication and typos in values
-VALUE_MAP = {'guesthouse': 'guest house', 'belfry': 'belfray', '-': ' ', '&': 'and', 'b and b': 'bed and breakfast',
-             'cityroomz': 'city roomz', '  ': ' ', 'acorn house': 'acorn guest house', 'marriot': 'marriott',
-             'worth house': 'the worth house', 'alesbray lodge guest house': 'aylesbray lodge',
-             'huntingdon hotel': 'huntingdon marriott hotel', 'huntingd': 'huntingdon marriott hotel',
-             'jamaicanchinese': 'chinese', 'barbequemodern european': 'modern european',
-             'north americanindian': 'north american', 'caribbeanindian': 'indian', 'sheeps': "sheep's"}
-
-# Generic value sets for quantity and time slots
-QUANTITIES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10 or more']
-TIME = [[(i, j) for i in range(24)] for j in range(0, 60, 5)]
-TIME = ['%02i:%02i' % t for l in TIME for t in l]
+from convlab.dst.setsumbt.dataset.value_maps import *
 
 
 # Load slots, descriptions and categorical slot values from dataset ontology
@@ -41,15 +29,23 @@ def get_ontology_slots(dataset_name: str) -> dict:
     Returns:
         ontology_slots (dict): Ontology dictionary containing slots, descriptions and categorical slot values
     '''
-    ontology = load_ontology(dataset_name)
-    ontology_slots = {domain: {} for domain in ontology['domains'] if domain not in ['booking', 'general']}
-    for domain in ontology_slots:
-        for slot, slot_info in ontology['domains'][domain]['slots'].items():
-            ontology_slots[domain][slot] = {'description': slot_info['description']}
-            if slot_info['is_categorical']:
-                ontology_slots[domain][slot]['possible_values'] = slot_info['possible_values']
-            else:
-                ontology_slots[domain][slot]['possible_values'] = []
+    dataset_names = dataset_name.split('+') if '+' in dataset_name else [dataset_name]
+    ontology_slots = dict()
+    for dataset_name in dataset_names:
+        ontology = load_ontology(dataset_name)
+        domains = [domain for domain in ontology['domains'] if domain not in ['booking', 'general']]
+        for domain in domains:
+            domain_name = DOMAINS_MAP.get(domain, domain.lower())
+            if domain_name not in ontology_slots:
+                ontology_slots[domain_name] = dict()
+            for slot, slot_info in ontology['domains'][domain]['slots'].items():
+                if slot not in ontology_slots[domain_name]:
+                    ontology_slots[domain_name][slot] = {'description': slot_info['description'],
+                                                         'possible_values': list()}
+                if slot_info['is_categorical']:
+                    ontology_slots[domain_name][slot]['possible_values'] += slot_info['possible_values']
+
+                ontology_slots[domain_name][slot]['possible_values'] = list(set(ontology_slots[domain_name][slot]['possible_values']))
 
     return ontology_slots
 
@@ -69,15 +65,31 @@ def get_values_from_data(dataset: dict) -> dict:
     for set_type, dataset in data.items():
         for turn in dataset:
             for domain, substate in turn['state'].items():
+                domain_name = DOMAINS_MAP.get(domain, domain.lower())
                 if domain not in value_sets:
-                    value_sets[domain] = {}
+                    value_sets[domain_name] = {}
                 for slot, value in substate.items():
-                    if slot not in value_sets[domain]:
-                        value_sets[domain][slot] = []
-                    if value and value not in value_sets[domain][slot]:
-                        value_sets[domain][slot].append(value)
+                    if slot not in value_sets[domain_name]:
+                        value_sets[domain_name][slot] = []
+                    if value and value not in value_sets[domain_name][slot]:
+                        value_sets[domain_name][slot].append(value)
 
     return clean_values(value_sets)
+
+
+def combine_value_sets(value_sets):
+    value_set = value_sets[0]
+    for _value_set in value_sets[1:]:
+        for domain, domain_info in _value_set.items():
+            for slot, possible_values in domain_info.items():
+                if domain not in value_set:
+                    value_set[domain] = dict()
+                if slot not in value_set[domain]:
+                    value_set[domain][slot] = list()
+                value_set[domain][slot] += _value_set[domain][slot]
+                value_set[domain][slot] = list(set(value_set[domain][slot]))
+
+    return value_set
 
 
 # Clean the possible values for the ontology
@@ -147,7 +159,7 @@ def ontology_add_values(ontology_slots: dict, value_sets: dict) -> dict:
 
 
 # Get set of requestable slots from the dataset action labels
-def get_requestable_slots(dataset: dict) -> dict:
+def get_requestable_slots(datasets: list) -> dict:
     '''
     Function to get set of requestable slots from the dataset action labels.
     Args:
@@ -156,19 +168,21 @@ def get_requestable_slots(dataset: dict) -> dict:
     Returns:
         slots (dict): Dictionary containing requestable domain-slot pairs
     '''
-    data = load_nlu_data(dataset, data_split='all', speaker='user')
+    datasets = [load_nlu_data(dataset, data_split='all', speaker='user') for dataset in datasets]
 
     slots = {}
-    for set_type, subset in data.items():
-        for turn in subset:
-            requests = [act for act in turn['dialogue_acts']['categorical'] if act['intent'] == 'request']
-            requests += [act for act in turn['dialogue_acts']['non-categorical'] if act['intent'] == 'request']
-            requests += [act for act in turn['dialogue_acts']['binary'] if act['intent'] == 'request']
-            requests = [(act['domain'], act['slot']) for act in requests]
-            for domain, slot in requests:
-                if domain not in slots:
-                    slots[domain] = []
-                slots[domain].append(slot)
+    for data in datasets:
+        for set_type, subset in data.items():
+            for turn in subset:
+                requests = [act for act in turn['dialogue_acts']['categorical'] if act['intent'] == 'request']
+                requests += [act for act in turn['dialogue_acts']['non-categorical'] if act['intent'] == 'request']
+                requests += [act for act in turn['dialogue_acts']['binary'] if act['intent'] == 'request']
+                requests = [(act['domain'], act['slot']) for act in requests]
+                for domain, slot in requests:
+                    domain_name = DOMAINS_MAP.get(domain, domain.lower())
+                    if domain_name not in slots:
+                        slots[domain_name] = []
+                    slots[domain_name].append(slot)
 
     slots = {domain: list(set(slot_list)) for domain, slot_list in slots.items()}
 
@@ -245,8 +259,14 @@ def clean_states(turns: list) -> list:
     clean_turns = []
     for turn in turns:
         clean_state = {}
+        clean_acts = []
+        for act in turn['dialogue_acts']:
+            domain = act['domain']
+            act['domain'] = DOMAINS_MAP.get(domain, domain.lower())
+            clean_acts.append(act)
         for domain, subset in turn['state'].items():
-            clean_state[domain] = {}
+            domain_name = DOMAINS_MAP.get(domain, domain.lower())
+            clean_state[domain_name] = {}
             for slot, value in subset.items():
                 # Remove pipe separated values
                 value = value.split('|', 1)[0]
@@ -311,8 +331,9 @@ def clean_states(turns: list) -> list:
                         elif True in [v in value.lower() for v in ['yes', 'no']]:
                             value = [v for v in ['yes', 'no'] if v in value][0]
 
-                clean_state[domain][slot] = value
+                clean_state[domain_name][slot] = value
         turn['state'] = clean_state
+        turn['dialogue_acts'] = clean_acts
         clean_turns.append(turn)
 
     return clean_turns
@@ -333,11 +354,13 @@ def get_active_domains(turns: list) -> list:
         if turn_id == 0:
             domains = [d for d, substate in turns[turn_id]['state'].items() for s, v in substate.items() if v != 'none']
             domains += [act['domain'] for act in turns[turn_id]['dialogue_acts'] if act['domain'] in turns[turn_id]['state']]
+            domains = [DOMAINS_MAP.get(domain, domain.lower()) for domain in domains]
             turns[turn_id]['active_domains'] = list(set(domains))
         else:
             # Use changes in domains to identify active domains
             domains = []
             for domain, substate in turns[turn_id]['state'].items():
+                domain_name = DOMAINS_MAP.get(domain, domain.lower())
                 for slot, value in substate.items():
                     if value != turns[turn_id - 1]['state'][domain][slot]:
                         val = value
@@ -346,7 +369,7 @@ def get_active_domains(turns: list) -> list:
                     if value == 'none':
                         val = 'none'
                     if val != 'none':
-                        domains.append(domain)
+                        domains.append(domain_name)
             # Add all domains activated by a user action
             domains += [act['domain'] for act in turns[turn_id]['dialogue_acts'] if act['domain'] in turns[turn_id]['state']]
             turns[turn_id]['active_domains'] = list(set(domains))

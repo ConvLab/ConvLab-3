@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ import transformers
 from torch.autograd import Variable
 from transformers import BertModel, BertPreTrainedModel
 
-from convlab.dst.setsumbt.modeling.functional import _initialise, _nbt_forward
+from convlab.dst.setsumbt.modeling.functional import initialize_setsumbt_model, nbt_forward
 
 
 class BertSetSUMBT(BertPreTrainedModel):
@@ -35,7 +35,7 @@ class BertSetSUMBT(BertPreTrainedModel):
             for p in self.bert.parameters():
                 p.requires_grad = False
 
-        _initialise(self, config)
+        initialize_setsumbt_model(self, config)
 
     # Add new slot candidates to the model
     def add_slot_candidates(self, slot_candidates):
@@ -103,9 +103,9 @@ class BertSetSUMBT(BertPreTrainedModel):
         turn_embeddings = turn_embeddings.reshape(batch_size * dialogue_size, turn_size, -1)
 
         if get_turn_pooled_representation:
-            return _nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
-                                dialogue_size, turn_size, hidden_state, inform_labels, request_labels, domain_labels,
+            return nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
+                                dialogue_size, hidden_state, inform_labels, request_labels, domain_labels,
                                 goodbye_labels, calculate_inform_mutual_info) + (bert_output.pooler_output,)
-        return _nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size, dialogue_size,
-                            turn_size, hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
+        return nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size, dialogue_size,
+                            hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
                             calculate_inform_mutual_info)

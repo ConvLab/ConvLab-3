@@ -29,8 +29,8 @@ from convlab.dst.setsumbt.loss import (BayesianMatchingLoss, BinaryBayesianMatch
 from convlab.dst.setsumbt.loss.endd_loss import rkl_dirichlet_mediator_loss, logits_to_mutual_info
 
 
-# Default belief tracker model intialisation function
-def _initialise(self, config):
+# Default belief tracker model initialization function
+def initialize_setsumbt_model(self, config):
     # Slot Utterance matching attention
     self.slot_attention = MultiheadAttention(config.hidden_size, config.slot_attention_heads)
 
@@ -143,18 +143,18 @@ def _initialise(self, config):
 
 
 # Default belief tracker forward pass.
-def _nbt_forward(self, turn_embeddings,
-                 turn_pooled_representation,
-                 attention_mask,
-                 batch_size,
-                 dialogue_size,
-                 turn_size,
-                 hidden_state,
-                 inform_labels,
-                 request_labels,
-                 domain_labels,
-                 goodbye_labels,
-                 calculate_inform_mutual_info):
+def nbt_forward(self,
+                turn_embeddings,
+                turn_pooled_representation,
+                attention_mask,
+                batch_size,
+                dialogue_size,
+                hidden_state,
+                inform_labels,
+                request_labels,
+                domain_labels,
+                goodbye_labels,
+                calculate_inform_mutual_info):
     hidden_size = turn_embeddings.size(-1)
     # Initialise loss
     loss = 0.0
@@ -196,7 +196,7 @@ def _nbt_forward(self, turn_embeddings,
     turn_embeddings = turn_embeddings.transpose(0, 1)
     # Compute key padding mask
     key_padding_mask = (attention_mask[:, :, 0] == 0.0)
-    key_padding_mask[key_padding_mask[:, 0] == True, :] = False
+    key_padding_mask[key_padding_mask[:, 0], :] = False
     # Multi head attention of slot over tokens
     hidden, _ = self.slot_attention(query=slot_embeddings,
                                     key=turn_embeddings,

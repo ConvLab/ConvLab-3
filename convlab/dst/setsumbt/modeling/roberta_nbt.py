@@ -20,7 +20,7 @@ import transformers
 from torch.autograd import Variable
 from transformers import RobertaModel, RobertaPreTrainedModel
 
-from convlab.dst.setsumbt.modeling.functional import _initialise, _nbt_forward
+from convlab.dst.setsumbt.modeling.functional import initialize_setsumbt_model, nbt_forward
 
 
 class RobertaSetSUMBT(RobertaPreTrainedModel):
@@ -35,7 +35,7 @@ class RobertaSetSUMBT(RobertaPreTrainedModel):
             for p in self.roberta.parameters():
                 p.requires_grad = False
 
-        _initialise(self, config)
+        initialize_setsumbt_model(self, config)
     
 
     # Add new slot candidates to the model
@@ -106,9 +106,9 @@ class RobertaSetSUMBT(RobertaPreTrainedModel):
         turn_embeddings = turn_embeddings.reshape(batch_size * dialogue_size, turn_size, -1)
         
         if get_turn_pooled_representation:
-            return _nbt_forward(self, turn_embeddings, roberta_output.pooler_output, attention_mask, batch_size, dialogue_size,
-                                turn_size, hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
+            return nbt_forward(self, turn_embeddings, roberta_output.pooler_output, attention_mask, batch_size, dialogue_size,
+                                hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
                                 calculate_inform_mutual_info) + (roberta_output.pooler_output,)
-        return _nbt_forward(self, turn_embeddings, roberta_output.pooler_output, attention_mask, batch_size, dialogue_size,
-                            turn_size, hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
+        return nbt_forward(self, turn_embeddings, roberta_output.pooler_output, attention_mask, batch_size, dialogue_size,
+                            hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
                             calculate_inform_mutual_info)

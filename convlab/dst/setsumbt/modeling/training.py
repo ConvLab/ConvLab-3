@@ -33,7 +33,7 @@ except:
     print('Apex not used')
 
 from convlab.dst.setsumbt.utils import clear_checkpoints
-from convlab.dst.setsumbt.modeling.temperature_scheduler import TemperatureScheduler
+from convlab.dst.setsumbt.modeling import LinearTemperatureScheduler
 
 
 # Load logger and tensorboard summary writer
