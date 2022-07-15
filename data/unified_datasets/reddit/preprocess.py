@@ -4,13 +4,14 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import os
 from shutil import rmtree
 from tqdm import tqdm
+import io
 
 def preprocess():
-    original_data_dir = 'WikiDialog-OQ'
+    original_data_dir = 'dstc8-reddit-corpus'
     new_data_dir = 'data'
     os.makedirs(new_data_dir, exist_ok=True)
 
-    dataset = 'wikidialog'
+    dataset = 'reddit'
     splits = ['train', 'validation']
     dialogues_by_split = {split:[] for split in splits}
 
@@ -31,15 +32,15 @@ def preprocess():
             'dataset': dataset,
             'data_split': data_split,
             'dialogue_id': dial_id,
-            'original_id': item['pid'],
-            'topic': item['title'],
+            'original_id': item['id'],
+            'topic': item['domain'],
             'turns': []
         }
-        for speaker, utterance in zip(item['author_num'], item['utterances']):
+        for i, utterance in enumerate(item['turns']):
             if len(utterance) > 256:
                 # remove dialogs that contain too long utterances
                 return None
-            speaker = 'system' if speaker == 0 else 'user'
+            speaker = 'system' if i % 2 == 1 else 'user'
             turn = {
                 'speaker': speaker,
                 'utterance': utterance.strip(),
@@ -48,26 +49,15 @@ def preprocess():
             dialogue['turns'].append(turn)
         return dialogue
             
-    data_split = 'train'
-    for shard in tqdm(range(99)):
-        with gzip.open(f'{original_data_dir}/data_train.jsonl-000{shard:02}-of-00099.gz','r') as fin:
-            for line in fin:
-                dial_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
-                dialogue = process_dial(line, dial_id, data_split)
-                if dialogue:
-                    dialogues_by_split[data_split].append(dialogue)
-                if len(dialogues_by_split[data_split]) >= 1e6:
-                    break
-        if len(dialogues_by_split[data_split]) >= 1e6:
-            break
-
-    data_split = 'validation'
-    with gzip.open(f'{original_data_dir}/data_validation.jsonl.gz','r') as fin:
-        for line in fin:
-            dial_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
-            dialogue = process_dial(line, dial_id, data_split)
-            if dialogue:
-                dialogues_by_split[data_split].append(dialogue)
+    for data_split, filename in zip(['train', 'validation'], ['training', 'validation_date_out_domain_out']):
+        with ZipFile(os.path.join(original_data_dir, f'{filename}.zip')) as zip_file:
+            for file in zip_file.namelist():
+                with io.TextIOWrapper(zip_file.open(file), encoding="utf-8") as f:
+                    for line in f:
+                        dial_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
+                        dialogue = process_dial(line, dial_id, data_split)
+                        if dialogue:
+                            dialogues_by_split[data_split].append(dialogue)
     
     dialogues = dialogues_by_split['train']+dialogues_by_split['validation']
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
