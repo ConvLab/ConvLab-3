@@ -148,8 +148,10 @@ def create_goal(dialog) -> list:
     # a list of {'intent': ..., 'domain': ..., 'slot': ..., 'value': ...}
     dicts = []
     for i, turn in enumerate(dialog['turns']):
-        assert (i % 2 == 0) == (turn['speaker'] == 'user')
-        if i % 2 == 0:
+        # print(turn['speaker'])
+        # assert (i % 2 == 0) == (turn['speaker'] == 'user')
+        # if i % 2 == 0:
+        if turn['speaker'] == 'user':
             dicts += turn['dialogue_acts']['categorical']
             dicts += turn['dialogue_acts']['binary']
             dicts += turn['dialogue_acts']['non-categorical']

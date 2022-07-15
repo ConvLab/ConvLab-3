@@ -75,7 +75,11 @@ class TUSDataManager(Dataset):
             sys_act = []
             self.feature_handler.initFeatureHandeler(user_goal)
 
-            for turn_id in range(0, turn_num, 2):
+            start = 0
+            if dialog["turns"][0]["speaker"] == "system":
+                start = 1
+
+            for turn_id in range(start, turn_num, 2):
                 # dialog start from user
                 action_list = user_goal.action_list(sys_act)
                 if turn_id > 0:
