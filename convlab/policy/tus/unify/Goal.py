@@ -1,4 +1,5 @@
 import json
+from convlab.policy.tus.unify.util import split_slot_name
 
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -93,7 +94,8 @@ class Goal(object):
                     slot_id += 1
 
     def insert_local_id(self, new_slot_name):
-        domain, slot = new_slot_name.split('-')
+        # domain, slot = new_slot_name.split('-')
+        domain, slot = split_slot_name(new_slot_name)
         if domain not in self.local_id:
             self._init_domain_id(domain)
             domain_id = len(self.domains) + 1
@@ -108,7 +110,9 @@ class Goal(object):
             self._update_slot_id(domain, slot, slot_id)
 
     def get_slot_id(self, slot_name):
-        domain, slot = slot_name.split('-')
+        # print(slot_name)
+        # domain, slot = slot_name.split('-')
+        domain, slot = split_slot_name(slot_name)
         if domain in self.local_id and slot in self.local_id[domain]["SLOT"]:
             return self.local_id[domain]["ID"], self.local_id[domain]["SLOT"][slot]
         else:  # a slot not in original user goal

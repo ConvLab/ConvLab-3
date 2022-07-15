@@ -4,7 +4,7 @@ from collections import Counter
 
 import torch
 from convlab.policy.tus.unify.Goal import Goal
-from convlab.policy.tus.unify.util import parse_dialogue_act, parse_user_goal, metadata2state, int2onehot, create_goal
+from convlab.policy.tus.unify.util import parse_dialogue_act, parse_user_goal, metadata2state, int2onehot, create_goal, split_slot_name
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
@@ -431,7 +431,8 @@ class BinaryFeature(Feature):
             vec[self.general_intent.index(intent)] = 1
 
     def _update_intent2act(self, feature_slot, intent2act, domain, intent, slot, value):
-        feature_domain, feature_slot = feature_slot.split('-')
+        feature_domain, feature_slot = split_slot_name(
+            feature_slot)  # .split('-')
         # intent = intent.lower()
         # slot = slot.lower()
         # value = value.lower()

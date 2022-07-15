@@ -195,3 +195,16 @@ def unique_list(list_):
         if x not in r:
             r.append(x)
     return r
+
+
+def split_slot_name(slot_name):
+    tokens = slot_name.split('-')
+    if len(tokens) == 2:
+        return tokens[0], tokens[1]
+    else:
+        return tokens[0], '-'.join(tokens[1:])
+
+
+if __name__ == "__main__":
+    print(split_slot_name("restaurant-search-location"))
+    print(split_slot_name("sports-day.match"))
