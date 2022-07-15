@@ -325,7 +325,7 @@ def nbt_forward(self,
                                              'distribution_distillation']:
                 domain_probs[domain] = torch.sigmoid(domain_scores)
 
-            if domain_labels is not None:
+            if domain_labels is not None and domain in domain_labels:
                 # Compute domain prediction loss
                 domain_scores = domain_scores.reshape(-1)
                 if self.config.loss_function == 'distillation':
