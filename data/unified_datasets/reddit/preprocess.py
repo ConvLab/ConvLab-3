@@ -40,6 +40,8 @@ def preprocess():
             if len(utterance) > 256:
                 # remove dialogs that contain too long utterances
                 return None
+            if 'http://' in utterance or 'https://' in utterance:
+                return None
             speaker = 'system' if i % 2 == 1 else 'user'
             turn = {
                 'speaker': speaker,
