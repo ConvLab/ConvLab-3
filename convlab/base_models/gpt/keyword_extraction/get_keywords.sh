@@ -1,6 +1,6 @@
 task_name="lm"
 model_type="gpt"
-model_name_or_path="/data/zhuqi/pre-trained-models/gpt2-large"
+model_name_or_path="gpt2-large"
 keywords_num=100
 keywords_ratio=0.3
 keywords_th_ratio=0
