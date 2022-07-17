@@ -127,7 +127,7 @@ def main(args):
     fin = open(word_loss_file, 'rb')
     fout = open(args.output_file, 'w', encoding='utf-8')
 
-    for item in json_lines.reader(fin):
+    for item in tqdm(json_lines.reader(fin)):
         words = [tokenizer.convert_tokens_to_string(tokens) for tokens in item['words']]
         losses = [np.mean(loss) for loss in item['losses']]
         dialog_keywords, keywords_turn_sent2idx = keywords_filter(words, losses)
