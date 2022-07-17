@@ -3,7 +3,7 @@ model_type="gpt"
 model_name_or_path="gpt2-large"
 keywords_num=100
 keywords_ratio=0.3
-keywords_th_ratio=0
+keywords_loss_th=0
 stopwords=True
 for dataset_name in dailydialog metalwoz tm1 tm2 tm3 sgd reddit wikidialog
 do
@@ -18,7 +18,7 @@ do
             --token_loss_file ${token_loss_file} \
             --keywords_num ${keywords_num} \
             --keywords_ratio ${keywords_ratio} \
-            --keywords_th_ratio ${keywords_th_ratio} \
+            --keywords_loss_th ${keywords_loss_th} \
             --stopwords ${stopwords} \
             --output_file ${output_file}
     done

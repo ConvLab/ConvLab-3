@@ -75,13 +75,6 @@ def main(args):
     tokenizer = GPT2Tokenizer.from_pretrained(args.model_name_or_path)
     sent_tokenizer = PunktSentenceTokenizer()
 
-    if args.keywords_th_ratio > 0:
-        losses = [loss for x in word_loss_list for word, loss in zip(x['words'], x['losses']) if not any([w.lower() in stop_words for w in word_tokenize(word)])]
-        loss_th = sorted(losses, reverse=True)[round(args.keywords_th_ratio*len(losses))]
-        print(f'loss th for top {args.keywords_th_ratio*100}%: {loss_th}')
-    else:
-        loss_th = 0
-
     def keywords_filter(words, losses):
         word_loss_pairs = list(zip(words, losses))
         index2keyword = {}
@@ -99,7 +92,7 @@ def main(args):
             if args.stopwords and any([w.lower() in stop_words for w in words]):
                 # skip stopwords
                 continue
-            if word_loss_pair[1] <= loss_th:
+            if word_loss_pair[1] <= args.keywords_loss_th:
                 # skip if loss is too small
                 continue
             # strip punctuation
@@ -174,7 +167,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_file', '-o', type=str, help='path to the output file')
     parser.add_argument('--keywords_num', '-n', type=int, default=100, help='how many words in an utterance serve as keywords')
     parser.add_argument('--keywords_ratio', '-r', type=float, default=1.0, help='how many words (in ratio) in an utterance serve as keywords')
-    parser.add_argument('--keywords_th_ratio', '-th', type=float, default=0., help='loss threshold for the keywords, ratio of all word losses')
+    parser.add_argument('--keywords_loss_th', '-th', type=float, default=0., help='loss threshold for the keywords')
     parser.add_argument('--stopwords', '-s', type=lambda x: bool(eval(x)), default=True, help='filter out stopwords')
     args = parser.parse_args()
     print(args)
