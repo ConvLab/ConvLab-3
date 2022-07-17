@@ -5,7 +5,7 @@ model_type="gpt"
 cache_dir="../cache"
 source_column="dialogue"
 max_length=512
-model_name_or_path="/data/zhuqi/pre-trained-models/gpt2-large"
+model_name_or_path="gpt2-large"
 per_device_eval_batch_size=16
 
 for dataset_name in dailydialog metalwoz tm1 tm2 tm3 sgd reddit wikidialog
