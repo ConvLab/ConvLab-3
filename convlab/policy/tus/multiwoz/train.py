@@ -216,6 +216,8 @@ if __name__ == "__main__":
 
     batch_size = config["batch_size"]
 
+    # load data with "load_data"
+
     # check train/test data
     data = {"train": {}, "test": {}}
     for data_type in data:
