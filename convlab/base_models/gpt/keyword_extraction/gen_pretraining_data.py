@@ -14,7 +14,6 @@ def main(args):
         data_split = filename.split('/')[-1].split('_')[-1].split('.')[0]
         output_file = os.path.join(args.output_dir, f"{filename.split('/')[-1].split('_')[-1]}")
         print(f'processing {dataset_name}: {filename} => {output_file}')
-        cnt = 0
         with open(filename, 'rb') as fin, open(output_file, 'w', encoding='utf-8') as fout:
             for dial in tqdm(json_lines.reader(fin)):
                 context = []
@@ -57,7 +56,10 @@ def main(args):
                         continue
 
                     if args.mode == 'key2gen_noisy':
-                        possible_keywords_sents = turn['keywords'][:]
+                        if random.random() < 0.8:
+                            possible_keywords_sents = turn['keywords'][:]
+                        else:
+                            possible_keywords_sents = []
                         num_possible_keywords_turns = min(random.randint(1, 5), len(turns_keywords) - 1)
                         for turn_keywords in random.sample(turns_keywords[:i] + turns_keywords[i+1:], num_possible_keywords_turns):
                             possible_keywords_sents.extend(turn_keywords)
