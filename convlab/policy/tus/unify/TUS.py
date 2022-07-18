@@ -104,8 +104,8 @@ class UserActionPolicy(Policy):
         norm_usr_action = []
         for intent, domain, slot, value in usr_action:
             intent = intent
-            domain, slot, value = normalize_domain_slot_value(
-                domain, slot, value)
+            # domain, slot, value = normalize_domain_slot_value(
+            #     domain, slot, value)
             norm_usr_action.append([intent, domain, slot, value])
 
         return norm_usr_action
