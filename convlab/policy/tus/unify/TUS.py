@@ -329,15 +329,14 @@ class UserActionPolicy(Policy):
             value = DEF_VAL_DNC
 
         # system
-        elif output == 3 and self._slot_type(domain, slot):
-            slot_type = self._slot_type(domain, slot)
-            value = self.sys_history_state[domain][slot_type].get(
+        elif output == 3:
+            value = self.sys_history_state[domain].get(
                 slot, "")
 
         elif output == 4 and domain in goal:  # usr
             for slot_type in ["info", "book"]:
-                if slot in goal[domain].get(slot_type, {}):
-                    value = goal[domain][slot_type][slot]
+                if slot in goal[domain]:
+                    value = goal[domain][slot]
 
         # elif output == 5 and domain.lower() in goal:
         #     if domain.lower() not in self.all_values["all_value"]:
