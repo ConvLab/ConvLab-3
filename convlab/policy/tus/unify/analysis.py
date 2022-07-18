@@ -277,10 +277,11 @@ class Analysis:
             if self.show_dialog:
                 print(f"dialog_id: {dialog['dialog_id']}")
             goal = create_goal(dialog)
-            if not goal.domain_goals:
-                continue
+
             sys_act = []
             policy_usr.init_session(goal=goal)
+            if not policy_usr.goal.domain_goals:
+                continue
             turn_num = len(dialog["turns"])
             start = 0
             if dialog["turns"][0]["speaker"] == "system":
