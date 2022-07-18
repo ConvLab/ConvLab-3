@@ -11,6 +11,8 @@ from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
 from convlab.policy.tus.unify.Goal import Goal
 from convlab.policy.tus.unify.usermanager import BinaryFeature
 from convlab.util import relative_import_module_from_unified_datasets
+from convlab.policy.tus.unify.util import parse_dialogue_act, parse_user_goal, metadata2state, int2onehot, create_goal, split_slot_name
+
 from convlab.util.custom_util import model_downloader
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
 
@@ -283,7 +285,7 @@ class UserActionPolicy(Policy):
     def _append_actions(self, action_list, score):
         usr_action = []
         for index, slot_name in enumerate(action_list):
-            domain, slot = slot_name.split('-')
+            domain, slot = split_slot_name(slot_name)
             is_action, act = self._add_user_action(
                 output=score[slot_name]["output"],
                 domain=domain,
