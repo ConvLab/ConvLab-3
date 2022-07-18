@@ -32,9 +32,6 @@ from transformers.training_args import (
     is_torch_tpu_available,
     is_sagemaker_mp_enabled,
     is_sagemaker_dp_enabled,
-    dist,
-    xm,
-    smp
 )
 
 from transformers.trainer import (
@@ -45,7 +42,7 @@ from transformers.trainer import (
 
 from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
 from datetime import timedelta
-
+import torch.distributed as dist
 
 logger = logging.get_logger(__name__)
 
