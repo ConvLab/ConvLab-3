@@ -335,7 +335,7 @@ class UserActionPolicy(Policy):
 
         elif output == 4 and domain in goal:  # usr
             for slot_type in ["info"]:
-                if slot in goal[domain][slot_type]:
+                if slot_type in goal[domain] and slot in goal[domain][slot_type]:
                     value = goal[domain][slot_type][slot]
 
         # elif output == 5 and domain.lower() in goal:
