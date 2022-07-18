@@ -273,7 +273,7 @@ class Analysis:
         label = []
         policy_usr = self.get_usr(usr=usr, load_path=load_path)
 
-        for dialog in test_data:
+        for dialog in tqdm(test_data):
             if self.show_dialog:
                 print(f"dialog_id: {dialog['dialog_id']}")
             goal = create_goal(dialog)

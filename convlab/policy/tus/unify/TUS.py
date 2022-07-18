@@ -329,7 +329,7 @@ class UserActionPolicy(Policy):
             value = DEF_VAL_DNC
 
         # system
-        elif output == 3:
+        elif output == 3 and domain in self.sys_history_state:
             value = self.sys_history_state[domain].get(
                 slot, "")
 
