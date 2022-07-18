@@ -280,7 +280,7 @@ class Analysis:
 
             sys_act = []
             policy_usr.init_session(goal=goal)
-            if not policy_usr.goal.domain_goals:
+            if not policy_usr.get_goal():
                 continue
             turn_num = len(dialog["turns"])
             start = 0
