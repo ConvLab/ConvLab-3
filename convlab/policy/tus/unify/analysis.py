@@ -576,6 +576,8 @@ if __name__ == '__main__':
     init_logging(log_dir_path=os.path.join(analysis_dir, "log"))
     if args.user_mode:
         config["model_name"] = config["model_name"] + '-' + args.user_mode
+
+    config["model_dir"] = f'{config["model_dir"]}_{args.dial_ids_order}'
     # with open(config["all_slot"]) as f:
     #     action_list = [line.strip() for line in f]
     # config["num_token"] = len(action_list)
