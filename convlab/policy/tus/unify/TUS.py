@@ -334,9 +334,9 @@ class UserActionPolicy(Policy):
                 slot, "")
 
         elif output == 4 and domain in goal:  # usr
-            for slot_type in ["info", "book"]:
-                if slot in goal[domain]:
-                    value = goal[domain][slot]
+            for slot_type in ["info"]:
+                if slot in goal[domain][slot_type]:
+                    value = goal[domain][slot_type][slot]
 
         # elif output == 5 and domain.lower() in goal:
         #     if domain.lower() not in self.all_values["all_value"]:
@@ -368,9 +368,9 @@ class UserActionPolicy(Policy):
 
     def _slot_type(self, domain, slot):
         slot_type = ""
-        if slot in self.sys_history_state[domain.lower()]["book"]:
+        if slot in self.sys_history_state[domain]["book"]:
             slot_type = "book"
-        elif slot in self.sys_history_state[domain.lower()]["semi"]:
+        elif slot in self.sys_history_state[domain]["semi"]:
             slot_type = "semi"
 
         return slot_type
