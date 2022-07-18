@@ -291,15 +291,15 @@ class Analysis:
                 usr_act = policy_usr.predict(sys_act)
                 golden_usr = parse_dialogue_act(
                     dialog["turns"][turn_id]["dialogue_acts"])
-                sys_act = parse_dialogue_act(
-                    dialog["turns"][turn_id + 1]["dialogue_acts"])
+                # sys_act = parse_dialogue_act(
+                #     dialog["turns"][turn_id + 1]["dialogue_acts"])
                 result.append(usr_act)
                 label.append(golden_usr)
-                if self.show_dialog:
-                    print(f"---> turn {turn_id} ")
-                    print(f"pre: {usr_act}")
-                    print(f"ans: {golden_usr}")
-                    print(f"sys: {sys_act}")
+                # if self.show_dialog:
+                #     print(f"---> turn {turn_id} ")
+                #     print(f"pre: {usr_act}")
+                #     print(f"ans: {golden_usr}")
+                #     print(f"sys: {sys_act}")
 
         for domain in [None]:
 
