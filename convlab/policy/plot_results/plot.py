@@ -18,7 +18,7 @@ def get_args():
     parser.add_argument('--tb-dir', type=str, default="TB_summary",
                         help='The last dir for tensorboard files')
     parser.add_argument("--map-file", type=str, default="results/map.json")
-    parser.add_argument("--out-file", type=str, default="results/fig")
+    parser.add_argument("--out-file", type=str, default="results/")
     parser.add_argument("--max-dialogues", type=int, default=0)
     parser.add_argument("--fill-between", type=float, default=0.3,
                         help="the transparency of the std err area")
@@ -104,6 +104,7 @@ if __name__ == "__main__":
 
     for plot_type in ["complete_rate", "success_rate", 'turns', 'avg_return']:
         file_name, file_extension = os.path.splitext(args.out_file)
+        os.makedirs(file_name, exist_ok=True)
         fig_name = f"{file_name}_{plot_type}{file_extension}"
 
         data = read_data(exp_dir=args.dir, tb_dir=args.tb_dir,
