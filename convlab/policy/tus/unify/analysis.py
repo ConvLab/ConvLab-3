@@ -609,7 +609,7 @@ if __name__ == '__main__':
                                 dial_ids_order=args.dial_ids_order)
         test_data = DataLoader(
             TUSDataManager(
-                config, raw_data),
+                config, raw_data["test"]),
             batch_size=config["batch_size"],
             shuffle=True)
 
