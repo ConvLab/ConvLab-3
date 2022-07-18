@@ -18,7 +18,8 @@ from convlab.util.custom_util import model_downloader
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util import relative_import_module_from_unified_datasets
 
-reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
+reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -27,8 +28,8 @@ DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
 DEF_VAL_BOOKED = 'yes'  # for booked
 DEF_VAL_NOBOOK = 'no'  # for booked
-Inform = "Inform"
-Request = "Request"
+Inform = "inform"
+Request = "request"
 NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK, ""]
 
 SLOT2SEMI = {
@@ -311,8 +312,8 @@ class UserActionPolicy(Policy):
             domain, slot = slot_name.split('-')
             is_action, act = self._add_user_action(
                 output=score[slot_name]["output"],
-                domain=domain.capitalize(),
-                slot=SLOT2SEMI.get(slot, slot))
+                domain=domain,
+                slot=slot)
             if is_action:
                 usr_action += act
         return usr_action
@@ -356,22 +357,22 @@ class UserActionPolicy(Policy):
         # system
         elif output == 3 and self._slot_type(domain, slot):
             slot_type = self._slot_type(domain, slot)
-            value = self.sys_history_state[domain.lower()][slot_type].get(
+            value = self.sys_history_state[domain][slot_type].get(
                 slot, "")
 
-        elif output == 4 and domain.lower() in goal:  # usr
+        elif output == 4 and domain in goal:  # usr
             for slot_type in ["info", "book"]:
-                if slot in goal[domain.lower()].get(slot_type, {}):
-                    value = goal[domain.lower()][slot_type][slot]
+                if slot in goal[domain].get(slot_type, {}):
+                    value = goal[domain][slot_type][slot]
 
-        elif output == 5 and domain.lower() in goal:
-            if domain.lower() not in self.all_values["all_value"]:
-                value = None
-            elif slot.lower() not in self.all_values["all_value"][domain.lower()]:
-                value = None
-            else:
-                value = random.choice(
-                    list(self.all_values["all_value"][domain.lower()][slot.lower()].keys()))
+        # elif output == 5 and domain in goal:
+        #     if domain not in self.all_values["all_value"]:
+        #         value = None
+        #     elif slot not in self.all_values["all_value"][domain.lower()]:
+        #         value = None
+        #     else:
+        #         value = random.choice(
+        #             list(self.all_values["all_value"][domain.lower()][slot.lower()].keys()))
 
         if value:
             is_action, act = self._form_action(
@@ -380,12 +381,13 @@ class UserActionPolicy(Policy):
         return is_action, act
 
     def _get_action_slot(self, domain, slot):
+        return slot
         return REF_USR_DA[domain.capitalize()].get(slot, None)
 
     def _form_action(self, intent, domain, slot, value):
         action_slot = self._get_action_slot(domain, slot)
         if action_slot:
-            return True, [[intent, domain, action_slot, value]]
+            return True, [[intent, domain, slot, value]]
         return False, [[]]
 
     def is_terminated(self):
