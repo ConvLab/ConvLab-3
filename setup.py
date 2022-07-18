@@ -39,6 +39,7 @@ setup(
         'tensorboard',
         'torch>=1.6',
         'transformers>=4.0',
+        'sentence-transformers',
         'datasets>=1.8',
         'seqeval',
         'spacy',
