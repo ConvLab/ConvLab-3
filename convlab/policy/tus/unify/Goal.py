@@ -67,7 +67,11 @@ class Goal(object):
             (boolean): True to accomplish.
         """
         for domain in self.domain_goals:
+            if domain not in self.status:
+                return False
             for slot in self.domain_goals[domain]["info"]:
+                if slot not in self.status[domain]:
+                    return False
                 if self.domain_goals[domain]["info"][slot] != self.status[domain][slot]:
                     return False
             for slot in self.domain_goals[domain]["reqt"]:
