@@ -69,14 +69,16 @@ class Goal(object):
         for domain in self.domain_goals:
             if domain not in self.status:
                 return False
-            for slot in self.domain_goals[domain]["info"]:
-                if slot not in self.status[domain]:
-                    return False
-                if self.domain_goals[domain]["info"][slot] != self.status[domain][slot]:
-                    return False
-            for slot in self.domain_goals[domain]["reqt"]:
-                if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
-                    return False
+            if "info" in self.domain_goals[domain]:
+                for slot in self.domain_goals[domain]["info"]:
+                    if slot not in self.status[domain]:
+                        return False
+                    if self.domain_goals[domain]["info"][slot] != self.status[domain][slot]:
+                        return False
+            if "reqt" in self.domain_goals[domain]:
+                for slot in self.domain_goals[domain]["reqt"]:
+                    if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
+                        return False
         return True
 
     def init_local_id(self):
