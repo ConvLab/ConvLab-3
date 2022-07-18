@@ -5,8 +5,6 @@ import logging
 import os
 import random
 
-from convlab.util import load_dataset, load_ontology
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -20,10 +18,13 @@ from convlab.dst.rule.multiwoz.usr_dst import UserRuleDST
 from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab.policy.rule.multiwoz import RulePolicy
 from convlab.policy.tus.multiwoz import util
-from convlab.policy.tus.multiwoz.transformer import \
-    TransformerActionPrediction
-from convlab.policy.tus.multiwoz.TUS import UserPolicy
+from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
+from convlab.policy.tus.unify.TUS import UserPolicy
 from convlab.policy.tus.unify.usermanager import TUSDataManager
+from convlab.policy.tus.unify.util import (create_goal, int2onehot,
+                                           metadata2state, parse_dialogue_act,
+                                           parse_user_goal, split_slot_name)
+from convlab.util import load_dataset, load_ontology
 from sklearn import metrics
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -125,7 +126,6 @@ class Analysis:
             dst_usr = None
             policy_usr = RulePolicy(character='usr')
         elif usr == "tus":
-            dst_usr = UserRuleDST()
             policy_usr = UserPolicy(self.config)
         elif usr == "ppo-tus":
             from convlab.policy.ppo.ppo_usr import PPO_USR
@@ -142,7 +142,7 @@ class Analysis:
             print(f"Unsupport user type: {usr}")
         # TODO VHUS
 
-        return dst_usr, policy_usr
+        return policy_usr
 
     def interact_test(self,
                       sys="rule",
@@ -271,32 +271,37 @@ class Analysis:
 
         result = []
         label = []
-        dst_usr, policy_usr = self.get_usr(usr=usr, load_path=load_path)
+        policy_usr = self.get_usr(usr=usr, load_path=load_path)
 
-        for dialog_id in test_data:
+        for dialog in test_data:
             if self.show_dialog:
-                print(f"dialog_id: {dialog_id}")
-            goal = test_data[dialog_id]["goal"]
+                print(f"dialog_id: {dialog['dialog_id']}")
+            goal = create_goal(dialog)
             sys_act = []
-            dst_usr.init_session()
             policy_usr.init_session(goal=goal)
-            for turn in range(0, len(test_data[dialog_id]["log"]), 2):
-                state = dst_usr.update(sys_act)
-                usr_act = policy_usr.predict(state)
-                golden_usr = util.parse_dialogue_act(
-                    test_data[dialog_id]["log"][turn]["dialog_act"])
-                state = dst_usr.update(golden_usr)
-                sys_act = util.parse_dialogue_act(
-                    test_data[dialog_id]["log"][turn + 1]["dialog_act"])
+            turn_num = len(dialog["turns"])
+            start = 0
+            if dialog["turns"][0]["speaker"] == "system":
+                start = 1
+            for turn_id in range(start, turn_num, 2):
+                if turn_id > 0:
+                    # cur_state = data[dialog_id]["log"][turn_id-1]["metadata"]
+                    sys_act = parse_dialogue_act(
+                        dialog["turns"][turn_id - 1]["dialogue_acts"])
+                usr_act = policy_usr.predict(sys_act)
+                golden_usr = parse_dialogue_act(
+                    dialog["turns"][turn_id]["dialogue_acts"])
+                sys_act = parse_dialogue_act(
+                    dialog["turns"][turn_id + 1]["dialogue_acts"])
                 result.append(usr_act)
                 label.append(golden_usr)
                 if self.show_dialog:
-                    print(f"---> turn {turn} ")
+                    print(f"---> turn {turn_id} ")
                     print(f"pre: {usr_act}")
                     print(f"ans: {golden_usr}")
                     print(f"sys: {sys_act}")
 
-        for domain in [None, "attraction", "hotel", "restaurant", "train", "taxi"]:
+        for domain in [None]:
 
             statistic = self._data_f1(result, label, domain)
             ana_result = {}
@@ -312,12 +317,13 @@ class Analysis:
                 print(f'{stat_type}: {ana_result[stat_type]}')
             col = [c for c in ana_result]
             df_f1 = pd.DataFrame([ana_result[c] for c in col], col)
+            print(df_f1)
             if domain:
                 df_f1.to_csv(os.path.join(
                     self.dir, f'{domain}-{user_mode}_data_scores.csv'))
             else:
                 df_f1.to_csv(os.path.join(
-                    self.dir, f'{user_mode}_data_scores.csv'))
+                    self.config["model_dir"], f'{user_mode}_data_scores.csv'))
 
     def _extract_domain_related_actions(self, actions, select_domain):
         domain_related_acts = []
@@ -588,9 +594,8 @@ if __name__ == '__main__':
                    show_dialog=args.show_dialog)
 
     if (args.usr == "tus" or args.usr == "ppo-tus") and args.do_data:
-        test_data_file = "data/multiwoz/test.json"
-        with open(test_data_file) as f:
-            test_data = json.load(f)
+        test_data = load_dataset(args.dataset,
+                                 dial_ids_order=args.dial_ids_order)["test"]
         if args.user_mode:
             ana.data_interact_test(test_data=test_data,
                                    usr=args.usr,

@@ -63,17 +63,10 @@ class UserActionPolicy(Policy):
             else:
                 return False
 
-    def predict(self, state, mode="max"):
+    def predict(self, sys_dialog_act, mode="max"):
         # update goal
-        sys_dialog_act = state["system_action"]
-        sys_dialog_act = unified_format(sys_dialog_act)
-        sys_dialog_act = reverse_da(sys_dialog_act)
-        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
-
-        self.goal.update_user_goal(action=sys_dialog_act,
-                                   state=state['belief_state'])
-        # self.goal.update_info_record(sys_act=state["system_action"])
-        self.goal.add_sys_da(sys_dialog_act)
+        self.predict_action_list = self.goal.action_list(sys_dialog_act)
+        cur_state = self.goal.update(action=sys_dialog_act, char="system")
         self.sys_acts.append(sys_dialog_act)
 
         # need better way to handle this
@@ -83,21 +76,17 @@ class UserActionPolicy(Policy):
         # update constraint
         self.time_step += 2
 
-        self.predict_action_list = self.goal.action_list(
-            sys_act=sys_dialog_act,
-            all_values=self.all_values)
-
         feature, mask = self.feat_handler.get_feature(
-            self.predict_action_list,
-            self.goal,
-            state['belief_state'],
-            self.sys_history_state,
-            sys_dialog_act,
-            self.pre_usr_act)
+            all_slot=self.predict_action_list,
+            user_goal=self.goal,
+            cur_state=cur_state,
+            pre_state=self.sys_history_state,
+            sys_action=sys_dialog_act,
+            usr_action=self.pre_usr_act)
         feature = torch.tensor([feature], dtype=torch.float).to(DEVICE)
         mask = torch.tensor([mask], dtype=torch.bool).to(DEVICE)
 
-        self.sys_history_state = state['belief_state']
+        self.sys_history_state = cur_state
 
         usr_output = self.user.forward(feature, mask)
         usr_action = self.transform_usr_act(
@@ -111,13 +100,10 @@ class UserActionPolicy(Policy):
         if len(usr_action) < 1:
             print("EMPTY ACTION")
 
-        # self.goal.update_info_record(usr_act=usr_action)
-        self.goal.add_usr_da(usr_action)
-
         # convert user action to unify data format
         norm_usr_action = []
         for intent, domain, slot, value in usr_action:
-            intent = intent.lower()
+            intent = intent
             domain, slot, value = normalize_domain_slot_value(
                 domain, slot, value)
             norm_usr_action.append([intent, domain, slot, value])
@@ -132,10 +118,11 @@ class UserActionPolicy(Policy):
         self.topic = 'NONE'
         remove_domain = "police"  # remove police domain in inference
 
-        if not goal:
-            self.new_goal(remove_domain=remove_domain)
-        else:
-            self.read_goal(goal)
+        # if not goal:
+        #     self.new_goal(remove_domain=remove_domain)
+        # else:
+        #     self.read_goal(goal)
+        self.read_goal(goal)
 
         # print(self.goal)
         if self.config.get("reorder", False):
