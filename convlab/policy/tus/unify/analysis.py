@@ -277,6 +277,8 @@ class Analysis:
             if self.show_dialog:
                 print(f"dialog_id: {dialog['dialog_id']}")
             goal = create_goal(dialog)
+            if not goal.domain_goals:
+                continue
             sys_act = []
             policy_usr.init_session(goal=goal)
             turn_num = len(dialog["turns"])
