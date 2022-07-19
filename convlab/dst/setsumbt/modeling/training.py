@@ -531,7 +531,8 @@ def train_eval(args, model, device, dev_dataloader):
                 req_fp += fp
                 req_fn += fn
 
-            for domain in model.domain_ids:
+            domains = [domain for domain in model.domain_ids if f'active-{domain}' in batch]
+            for domain in domains:
                 p_dom_ = p_dom[domain]
                 domain_labels = batch['active-' + domain].to(device)
 
@@ -734,7 +735,8 @@ def evaluate(args, model, device, dataloader, return_eval_output=False):
                 req_fp += fp
                 req_fn += fn
 
-            for domain in model.domain_ids:
+            domains = [domain for domain in model.domain_ids if f'active-{domain}' in batch]
+            for domain in domains:
                 p_dom_ = p_dom[domain]
                 domain_labels = batch['active-' + domain].to(device)
 
