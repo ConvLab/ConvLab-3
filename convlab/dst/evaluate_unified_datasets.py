@@ -11,6 +11,7 @@ def evaluate(predict_result):
     jga = []
     aga = []
     fga = []
+    l2_err = []
     lamb = [0.25, 0.5, 0.75, 1.0]
 
     for sample in predict_result:
@@ -52,12 +53,9 @@ def evaluate(predict_result):
             labels_prev = labels
         fga.append(weighted_err)
 
-        # Average goal accuracy as proposed in SGD challenge
-        flag = True
-        for ele in labels:
-            if ele not in predicts:
-                flag = False
-        aga.append(flag)
+        _l2 = 2.0 * len([ele for ele in labels if ele not in predicts])
+        _l2 += 2.0 * len([ele for ele in predicts if ele not in labels])
+        l2_err.append(_l2)
 
         flag = True
         for ele in predicts:
@@ -80,10 +78,10 @@ def evaluate(predict_result):
     metrics[f'slot_f1'] = f1
     metrics[f'slot_precision'] = precision
     metrics[f'slot_recall'] = recall
-    metrics['joint_goal_accuracy'] = sum(jga)/len(jga)
-    metrics['average_goal_accuracy'] = sum(aga)/len(aga) if aga else 0.0
+    metrics['joint_goal_accuracy'] = sum(jga) / len(jga)
     for i, l in enumerate(lamb):
         metrics[f'flexible_goal_accuracy_{l}'] = sum(weighted_err[i] for weighted_err in fga)/len(fga)
+    metrics['l2_norm_error'] = sum(l2_err) / len(l2_err)
 
     return metrics
 
