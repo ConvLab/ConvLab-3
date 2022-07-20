@@ -558,7 +558,7 @@ def train_eval(args, model, device, dev_dataloader):
                 0.0), torch.tensor(0.0), torch.tensor(0.0)
 
         sl_acc = sum(jg_acc / len(model.informable_slot_ids)).float()
-        jg_acc = sum((jg_acc / len(model.informable_slot_ids)).int()).float()
+        jg_acc = sum((jg_acc == len(model.informable_slot_ids)).int()).float()
         req_acc = sum(req_acc / len(model.requestable_slot_ids)).float() if req_acc is not None else torch.tensor(0.0)
         req_tp = sum(req_tp / len(model.requestable_slot_ids)).float() if req_tp is not None else torch.tensor(0.0)
         req_fp = sum(req_fp / len(model.requestable_slot_ids)).float() if req_fp is not None else torch.tensor(0.0)
@@ -762,7 +762,7 @@ def evaluate(args, model, device, dataloader, return_eval_output=False):
                 0.0), torch.tensor(0.0), torch.tensor(0.0)
 
         sl_acc = sum(jg_acc / len(model.informable_slot_ids)).float()
-        jg_acc = sum((jg_acc / len(model.informable_slot_ids)).int()).float()
+        jg_acc = sum((jg_acc == len(model.informable_slot_ids)).int()).float()
         req_acc = sum(req_acc / len(model.requestable_slot_ids)).float() if req_acc is not None else torch.tensor(0.0)
         req_tp = sum(req_tp / len(model.requestable_slot_ids)).float() if req_tp is not None else torch.tensor(0.0)
         req_fp = sum(req_fp / len(model.requestable_slot_ids)).float() if req_fp is not None else torch.tensor(0.0)
