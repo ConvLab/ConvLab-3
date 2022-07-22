@@ -35,7 +35,7 @@ python -m torch.distributed.launch --master_port ${master_port} \
     --model_name_or_path ${model_name_or_path} \
     --do_train \
     --save_steps 5000 \
-    --save_total_limit 3 \
+    --save_total_limit 1 \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \
     --logging_dir ${logging_dir} \
