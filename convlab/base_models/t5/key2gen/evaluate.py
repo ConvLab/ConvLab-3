@@ -67,12 +67,12 @@ if __name__ == '__main__':
                         filename = os.path.join(output_dir, task_name, f"{dataset_name}_{shot}shot_order{dial_ids_order}/gen{test_split}/generated_predictions.json")
                         results.append(evaluate(filename, metric))
                     res = {
-                        "dataset": f"{task_name}-{shot}shot",
-                        "model": f"{model_name}{test_split}",
+                        "dataset": f"{task_name}{test_split}-{shot}shot",
+                        "model": f"{model_name}",
                         **avg_result(results)
                     }
                     tables.append(res)
                     # print(res)
     res = tabulate(tables, headers='keys', tablefmt='github')
-    with open(f'eval_results.txt', 'w', encoding='utf-8') as f:
+    with open(f'eval_results.txt', 'a+', encoding='utf-8') as f:
         print(res, file=f)
