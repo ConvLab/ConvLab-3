@@ -19,7 +19,7 @@ from convlab.base_models.t5.key2gen.features import FEATURES
 from copy import deepcopy
 
 
-class VanillaDataset(datasets.GeneratorBasedBuilder):
+class GodelDataset(datasets.GeneratorBasedBuilder):
     """Dataset for vanilla generator (e.g., t5)"""
 
     VERSION = datasets.Version("1.18.0")
@@ -113,11 +113,8 @@ class VanillaDataset(datasets.GeneratorBasedBuilder):
                         print([knowledge])
                         raise
                 
-                context = "\n".join([f"{turn[0]}: {turn[1]}" for turn in item["context"]]+["system: "])
-                if self.config.name in ["kvret", "wow", "personachat"]:
-                    context_knowledge = f"generate a response: all knowledge: \n\n{knowledge_seq} context:\n\n{context}"
-                else:
-                    context_knowledge = f"generate a response: grounded knowledge: \n\n{knowledge_seq} context:\n\n{context}"
+                context = " EOS ".join([turn[1] for turn in item["context"]])
+                context_knowledge = context + ' <|Knowledge|> \n\n' + knowledge_seq + ' => '
                 
                 yield key, {
                     "context+knowledge": context_knowledge,
