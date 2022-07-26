@@ -1,22 +1,20 @@
 import json
-import math
 import os
 import random
 from copy import deepcopy
-from random import choice
 
-import numpy as np
 import torch
-from convlab.policy.tus.multiwoz.Goal import Goal
-from convlab.policy.tus.multiwoz.transformer import \
-    TransformerActionPrediction
-from convlab.policy.tus.multiwoz.usermanager import BinaryFeature
 from convlab.policy.policy import Policy
-from convlab.task.multiwoz.goal_generator import GoalGenerator
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
-from convlab.util.custom_util import model_downloader
-from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
+from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import (
+    act_dict_to_flat_tuple, unified_format)
+from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
+from convlab.policy.tus.unify.Goal import Goal
+from convlab.policy.tus.unify.usermanager import BinaryFeature
 from convlab.util import relative_import_module_from_unified_datasets
+from convlab.policy.tus.unify.util import parse_dialogue_act, parse_user_goal, metadata2state, int2onehot, create_goal, split_slot_name
+
+from convlab.util.custom_util import model_downloader
+from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
 
 reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
@@ -28,29 +26,20 @@ DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
 DEF_VAL_BOOKED = 'yes'  # for booked
 DEF_VAL_NOBOOK = 'no'  # for booked
-Inform = "Inform"
-Request = "Request"
+Inform = "inform"
+Request = "request"
 NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK, ""]
 
-SLOT2SEMI = {
-    "arriveby": "arriveBy",
-    "leaveat": "leaveAt",
-    "trainid": "trainID",
-}
 
-
+# TODO not ready for unify dataformat now
 class UserActionPolicy(Policy):
     def __init__(self, config, pretrain=True):
+        Policy.__init__(self)
         if isinstance(config, str):
             self.config = json.load(open(config))
         else:
             self.config = config
-        path = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        path = os.path.join(path, 'data/multiwoz/all_value.json')
-        self.all_values = json.load(open(path))
-        self.goal_gen = GoalGenerator()
-        Policy.__init__(self)
+
         feat_type = self.config.get("feat_type", "binary")
         print("feat_type", feat_type)
         self.feat_handler = BinaryFeature(self.config)
@@ -76,17 +65,10 @@ class UserActionPolicy(Policy):
             else:
                 return False
 
-    def predict(self, state, mode="max"):
+    def predict(self, sys_dialog_act, mode="max"):
         # update goal
-        sys_dialog_act = state["system_action"]
-        sys_dialog_act = unified_format(sys_dialog_act)
-        sys_dialog_act = reverse_da(sys_dialog_act)
-        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
-
-        self.goal.update_user_goal(action=sys_dialog_act,
-                                   state=state['belief_state'])
-        # self.goal.update_info_record(sys_act=state["system_action"])
-        self.goal.add_sys_da(sys_dialog_act)
+        self.predict_action_list = self.goal.action_list(sys_dialog_act)
+        cur_state = self.goal.update(action=sys_dialog_act, char="system")
         self.sys_acts.append(sys_dialog_act)
 
         # need better way to handle this
@@ -96,21 +78,17 @@ class UserActionPolicy(Policy):
         # update constraint
         self.time_step += 2
 
-        self.predict_action_list = self.goal.action_list(
-            sys_act=sys_dialog_act,
-            all_values=self.all_values)
-
         feature, mask = self.feat_handler.get_feature(
-            self.predict_action_list,
-            self.goal,
-            state['belief_state'],
-            self.sys_history_state,
-            sys_dialog_act,
-            self.pre_usr_act)
+            all_slot=self.predict_action_list,
+            user_goal=self.goal,
+            cur_state=cur_state,
+            pre_state=self.sys_history_state,
+            sys_action=sys_dialog_act,
+            usr_action=self.pre_usr_act)
         feature = torch.tensor([feature], dtype=torch.float).to(DEVICE)
         mask = torch.tensor([mask], dtype=torch.bool).to(DEVICE)
 
-        self.sys_history_state = state['belief_state']
+        self.sys_history_state = cur_state
 
         usr_output = self.user.forward(feature, mask)
         usr_action = self.transform_usr_act(
@@ -124,15 +102,12 @@ class UserActionPolicy(Policy):
         if len(usr_action) < 1:
             print("EMPTY ACTION")
 
-        # self.goal.update_info_record(usr_act=usr_action)
-        self.goal.add_usr_da(usr_action)
-
         # convert user action to unify data format
         norm_usr_action = []
         for intent, domain, slot, value in usr_action:
-            intent = intent.lower()
-            domain, slot, value = normalize_domain_slot_value(
-                domain, slot, value)
+            intent = intent
+            # domain, slot, value = normalize_domain_slot_value(
+            #     domain, slot, value)
             norm_usr_action.append([intent, domain, slot, value])
 
         return norm_usr_action
@@ -145,10 +120,11 @@ class UserActionPolicy(Policy):
         self.topic = 'NONE'
         remove_domain = "police"  # remove police domain in inference
 
-        if not goal:
-            self.new_goal(remove_domain=remove_domain)
-        else:
-            self.read_goal(goal)
+        # if not goal:
+        #     self.new_goal(remove_domain=remove_domain)
+        # else:
+        #     self.read_goal(goal)
+        self.read_goal(goal)
 
         # print(self.goal)
         if self.config.get("reorder", False):
@@ -309,11 +285,11 @@ class UserActionPolicy(Policy):
     def _append_actions(self, action_list, score):
         usr_action = []
         for index, slot_name in enumerate(action_list):
-            domain, slot = slot_name.split('-')
+            domain, slot = split_slot_name(slot_name)
             is_action, act = self._add_user_action(
                 output=score[slot_name]["output"],
-                domain=domain.capitalize(),
-                slot=SLOT2SEMI.get(slot, slot))
+                domain=domain,
+                slot=slot)
             if is_action:
                 usr_action += act
         return usr_action
@@ -355,24 +331,23 @@ class UserActionPolicy(Policy):
             value = DEF_VAL_DNC
 
         # system
-        elif output == 3 and self._slot_type(domain, slot):
-            slot_type = self._slot_type(domain, slot)
-            value = self.sys_history_state[domain.lower()][slot_type].get(
+        elif output == 3 and domain in self.sys_history_state:
+            value = self.sys_history_state[domain].get(
                 slot, "")
 
-        elif output == 4 and domain.lower() in goal:  # usr
-            for slot_type in ["info", "book"]:
-                if slot in goal[domain.lower()].get(slot_type, {}):
-                    value = goal[domain.lower()][slot_type][slot]
+        elif output == 4 and domain in goal:  # usr
+            for slot_type in ["info"]:
+                if slot_type in goal[domain] and slot in goal[domain][slot_type]:
+                    value = goal[domain][slot_type][slot]
 
-        elif output == 5 and domain.lower() in goal:
-            if domain.lower() not in self.all_values["all_value"]:
-                value = None
-            elif slot.lower() not in self.all_values["all_value"][domain.lower()]:
-                value = None
-            else:
-                value = random.choice(
-                    list(self.all_values["all_value"][domain.lower()][slot.lower()].keys()))
+        # elif output == 5 and domain.lower() in goal:
+        #     if domain.lower() not in self.all_values["all_value"]:
+        #         value = None
+        #     elif slot.lower() not in self.all_values["all_value"][domain.lower()]:
+        #         value = None
+        #     else:
+        #         value = random.choice(
+        #             list(self.all_values["all_value"][domain.lower()][slot.lower()].keys()))
 
         if value:
             is_action, act = self._form_action(
@@ -381,7 +356,7 @@ class UserActionPolicy(Policy):
         return is_action, act
 
     def _get_action_slot(self, domain, slot):
-        return REF_USR_DA[domain.capitalize()].get(slot, None)
+        return slot
 
     def _form_action(self, intent, domain, slot, value):
         action_slot = self._get_action_slot(domain, slot)
@@ -395,9 +370,9 @@ class UserActionPolicy(Policy):
 
     def _slot_type(self, domain, slot):
         slot_type = ""
-        if slot in self.sys_history_state[domain.lower()]["book"]:
+        if slot in self.sys_history_state[domain]["book"]:
             slot_type = "book"
-        elif slot in self.sys_history_state[domain.lower()]["semi"]:
+        elif slot in self.sys_history_state[domain]["semi"]:
             slot_type = "semi"
 
         return slot_type
