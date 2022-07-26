@@ -210,16 +210,31 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="multiwoz21")
     parser.add_argument("--dial-ids-order", type=int, default=0)
     parser.add_argument("--split2ratio", type=float, default=1)
-    parser.add_argument("--model-weight", type=str,
-                        default="", help="pretrained weight")
 
     args = parser.parse_args()
     config_file = open(args.user_config)
     config = json.load(config_file)
     config_file.close()
-    raw_data = load_dataset(args.dataset,
-                            dial_ids_order=args.dial_ids_order,
-                            split2ratio={'train': args.split2ratio})
+    if args.dataset == "sgd+tm":
+        print("merge multiple datasets...")
+        all_dataset = ["sgd", "tm1", "tm2", "tm3"]
+        datasets = {}
+        for dataset in all_dataset:
+            datasets[dataset] = load_dataset(dataset,
+                                             dial_ids_order=args.dial_ids_order,
+                                             split2ratio={'train': args.split2ratio})
+        # merge dataset
+        raw_data = {}
+        for data_type in ["train", "test"]:
+            raw_data[data_type] = []
+            for dataset in all_dataset:
+                raw_data[data_type] += datasets[dataset][data_type]
+
+    else:
+        print(f"load single dataset {args.dataset}/{args.split2ratio}")
+        raw_data = load_dataset(args.dataset,
+                                dial_ids_order=args.dial_ids_order,
+                                split2ratio={'train': args.split2ratio})
 
     batch_size = config["batch_size"]
 
@@ -245,9 +260,11 @@ if __name__ == "__main__":
 
     model = TransformerActionPrediction(config)
 
-    if args.model_weight:
-        print(f"fine tune based on {args.model_weight}...")
+    if "pretrain" in config:
+        pretrain_weight = os.path.join(
+            f'{config["pretrain"]}_{args.dial_ids_order}', f"model-loss")
+        print(f"fine tune based on {pretrain_weight}...")
         model.load_state_dict(torch.load(
-            args.model_weight, map_location=check_device()))
+            pretrain_weight, map_location=check_device()))
     trainer = Trainer(model, config)
     trainer.training(train_data, test_data)
