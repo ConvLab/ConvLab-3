@@ -208,8 +208,10 @@ if __name__ == "__main__":
     parser.add_argument("--force-read-data", '-f', action='store_true',
                         help="Force to read data from scratch")
     parser.add_argument("--dataset", type=str, default="multiwoz21")
-    parser.add_argument("--dial_ids_order", type=int, default=0)
+    parser.add_argument("--dial-ids-order", type=int, default=0)
     parser.add_argument("--split2ratio", type=float, default=1)
+    parser.add_argument("--model-weight", type=str,
+                        default="", help="pretrained weight")
 
     args = parser.parse_args()
     config_file = open(args.user_config)
@@ -242,5 +244,10 @@ if __name__ == "__main__":
                            batch_size=batch_size, shuffle=True)
 
     model = TransformerActionPrediction(config)
+
+    if args.model_weight:
+        print(f"fine tune based on {args.model_weight}...")
+        model.load_state_dict(torch.load(
+            args.model_weight, map_location=check_device()))
     trainer = Trainer(model, config)
     trainer.training(train_data, test_data)
