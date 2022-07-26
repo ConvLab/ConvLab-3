@@ -215,7 +215,22 @@ if __name__ == "__main__":
     config_file = open(args.user_config)
     config = json.load(config_file)
     config_file.close()
-    if args.dataset == "sgd+tm":
+    if args.dataset == "all":
+        print("merge all datasets...")
+        all_dataset = ["multiwoz21", "sgd", "tm1", "tm2", "tm3"]
+        datasets = {}
+        for dataset in all_dataset:
+            datasets[dataset] = load_dataset(dataset,
+                                             dial_ids_order=args.dial_ids_order,
+                                             split2ratio={'train': args.split2ratio})
+        # merge dataset
+        raw_data = {}
+        for data_type in ["train", "test"]:
+            raw_data[data_type] = []
+            for dataset in all_dataset:
+                raw_data[data_type] += datasets[dataset][data_type]
+
+    elif args.dataset == "sgd+tm":
         print("merge multiple datasets...")
         all_dataset = ["sgd", "tm1", "tm2", "tm3"]
         datasets = {}
