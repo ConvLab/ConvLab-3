@@ -9,7 +9,9 @@ from abc import ABC, abstractmethod
 from pprint import pprint
 from convlab.util.file_util import cached_path
 import shutil
-import importlib
+from sentence_transformers import SentenceTransformer, util
+import torch
+from tqdm import tqdm
 
 
 class BaseDatabase(ABC):
@@ -433,6 +435,36 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
     return dataset, sorted(list(delex_vocab))
 
 
+def retrieve_utterances(query_turns, turn_pool, top_k, model_name):
+    """
+    It takes a list of query turns, a list of turn pool, and a top_k value, and returns a list of query
+    turns with a new key called 'retrieve_utterances' that contains a list of top_k retrieved utterances
+    from the turn pool
+    
+    :param query_turns: a list of turns that you want to retrieve utterances for
+    :param turn_pool: the pool of turns to retrieve from
+    :param top_k: the number of utterances to retrieve for each query turn
+    :param model_name: the name of the model you want to use
+    :return: A list of dictionaries, with a new key 'retrieve_utterances' that is a list of retrieved turns and similarity scores.
+    """
+    embedder = SentenceTransformer(model_name)
+    corpus = [turn['utterance'] for turn in turn_pool]
+    corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    corpus_embeddings = corpus_embeddings.to('cuda')
+    corpus_embeddings = util.normalize_embeddings(corpus_embeddings)
+
+    queries = [turn['utterance'] for turn in query_turns]
+    query_embeddings = embedder.encode(queries, convert_to_tensor=True)
+    query_embeddings = query_embeddings.to('cuda')
+    query_embeddings = util.normalize_embeddings(query_embeddings)
+
+    hits = util.semantic_search(query_embeddings, corpus_embeddings, score_function=util.dot_score, top_k=top_k)
+
+    for i, turn in enumerate(query_turns):
+        turn['retrieved_turns'] = [{'score': hit['score'], **turn_pool[hit['corpus_id']]} for hit in hits[i]]
+    return query_turns
+
+
 if __name__ == "__main__":
     dataset = load_dataset('multiwoz21', dial_ids_order=0)
     train_ratio = 0.1
@@ -447,7 +479,11 @@ if __name__ == "__main__":
     print(res[0], len(res))
     
     data_by_split = load_nlu_data(dataset, data_split='test', speaker='user')
-    pprint(data_by_split['test'][0])
+    query_turns = data_by_split['test'][:10]
+    pool_dataset = load_dataset('camrest')
+    turn_pool = load_nlu_data(pool_dataset, data_split='train', speaker='user')['train']
+    augmented_dataset = retrieve_utterances(query_turns, turn_pool, 3, 'all-MiniLM-L6-v2')
+    pprint(augmented_dataset[0])
 
     def delex_slot(domain, slot, value):
         # only use slot name for delexicalization

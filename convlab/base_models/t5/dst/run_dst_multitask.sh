@@ -1,6 +1,6 @@
 n_gpus=1
 task_name="dst"
-dataset_name=$1
+dataset_name="sgd+tm1+tm2+tm3+multiwoz21"
 speaker="user"
 context_window_size=100
 data_dir="data/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
@@ -24,7 +24,16 @@ gradient_accumulation_steps=2
 lr=1e-3
 num_train_epochs=10
 
-python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size}
+names=$(echo ${dataset_name} | tr "+" "\n")
+rm -r ${data_dir}
+mkdir -p ${data_dir}
+for name in ${names};
+do
+    echo "preprocessing ${name}"
+    # python ../create_data.py -t ${task_name} -d ${name} -s ${speaker} -c ${context_window_size}
+done
+
+python merge_data.py $(echo ${dataset_name} | tr "+" " ")
 
 python ../run_seq2seq.py \
     --task_name ${task_name} \
