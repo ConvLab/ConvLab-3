@@ -1,4 +1,4 @@
-convlab2.policy.rule package
+convlab.policy.rule package
 ============================
 
 Subpackages
@@ -6,14 +6,14 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.rule.camrest
-   convlab2.policy.rule.crosswoz
-   convlab2.policy.rule.multiwoz
+   convlab.policy.rule.camrest
+   convlab.policy.rule.crosswoz
+   convlab.policy.rule.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.rule
+.. automodule:: convlab.policy.rule
    :members:
    :undoc-members:
    :show-inheritance:

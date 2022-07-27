@@ -1,13 +1,13 @@
-convlab2.task.multiwoz package
+convlab.task.multiwoz package
 ==============================
 
 Submodules
 ----------
 
-convlab2.task.multiwoz.goal\_generator module
+convlab.task.multiwoz.goal\_generator module
 ---------------------------------------------
 
-.. automodule:: convlab2.task.multiwoz.goal_generator
+.. automodule:: convlab.task.multiwoz.goal_generator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,7 +16,7 @@ convlab2.task.multiwoz.goal\_generator module
 Module contents
 ---------------
 
-.. automodule:: convlab2.task.multiwoz
+.. automodule:: convlab.task.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

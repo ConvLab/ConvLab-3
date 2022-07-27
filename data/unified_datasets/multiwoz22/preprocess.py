@@ -9,7 +9,7 @@ import difflib
 from fuzzywuzzy import fuzz
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from convlab2.util.file_util import read_zipped_json, write_zipped_json
+from convlab.util.file_util import read_zipped_json, write_zipped_json
 import logging
 
 

@@ -1,4 +1,4 @@
-convlab2.policy.mdrg package
+convlab.policy.mdrg package
 ============================
 
 Subpackages
@@ -6,12 +6,12 @@ Subpackages
 
 .. toctree::
 
-   convlab2.policy.mdrg.multiwoz
+   convlab.policy.mdrg.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.mdrg
+.. automodule:: convlab.policy.mdrg
    :members:
    :undoc-members:
    :show-inheritance:

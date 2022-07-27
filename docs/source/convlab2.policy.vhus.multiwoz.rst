@@ -1,29 +1,29 @@
-convlab2.policy.vhus.multiwoz package
+convlab.policy.vhus.multiwoz package
 =====================================
 
 Submodules
 ----------
 
-convlab2.policy.vhus.multiwoz.train module
+convlab.policy.vhus.multiwoz.train module
 ------------------------------------------
 
-.. automodule:: convlab2.policy.vhus.multiwoz.train
+.. automodule:: convlab.policy.vhus.multiwoz.train
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.vhus.multiwoz.usermanager module
+convlab.policy.vhus.multiwoz.usermanager module
 ------------------------------------------------
 
-.. automodule:: convlab2.policy.vhus.multiwoz.usermanager
+.. automodule:: convlab.policy.vhus.multiwoz.usermanager
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.policy.vhus.multiwoz.vhus module
+convlab.policy.vhus.multiwoz.vhus module
 -----------------------------------------
 
-.. automodule:: convlab2.policy.vhus.multiwoz.vhus
+.. automodule:: convlab.policy.vhus.multiwoz.vhus
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.policy.vhus.multiwoz.vhus module
 Module contents
 ---------------
 
-.. automodule:: convlab2.policy.vhus.multiwoz
+.. automodule:: convlab.policy.vhus.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

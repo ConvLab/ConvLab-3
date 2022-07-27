@@ -1,4 +1,4 @@
-convlab2.dst.sumbt package
+convlab.dst.sumbt package
 ==========================
 
 Subpackages
@@ -6,15 +6,15 @@ Subpackages
 
 .. toctree::
 
-   convlab2.dst.sumbt.multiwoz
+   convlab.dst.sumbt.multiwoz
 
 Submodules
 ----------
 
-convlab2.dst.sumbt.BeliefTrackerSlotQueryMultiSlot module
+convlab.dst.sumbt.BeliefTrackerSlotQueryMultiSlot module
 ---------------------------------------------------------
 
-.. automodule:: convlab2.dst.sumbt.BeliefTrackerSlotQueryMultiSlot
+.. automodule:: convlab.dst.sumbt.BeliefTrackerSlotQueryMultiSlot
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ convlab2.dst.sumbt.BeliefTrackerSlotQueryMultiSlot module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.sumbt
+.. automodule:: convlab.dst.sumbt
    :members:
    :undoc-members:
    :show-inheritance:

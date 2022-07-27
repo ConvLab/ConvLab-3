@@ -1,4 +1,4 @@
-convlab2.e2e package
+convlab.e2e package
 ====================
 
 Subpackages
@@ -6,14 +6,14 @@ Subpackages
 
 .. toctree::
 
-   convlab2.e2e.damd
-   convlab2.e2e.rnn_rollout
-   convlab2.e2e.sequicity
+   convlab.e2e.damd
+   convlab.e2e.rnn_rollout
+   convlab.e2e.sequicity
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.e2e
+.. automodule:: convlab.e2e
    :members:
    :undoc-members:
    :show-inheritance:

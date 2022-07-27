@@ -1,4 +1,4 @@
-convlab2.dst.mdbt package
+convlab.dst.mdbt package
 =========================
 
 Subpackages
@@ -6,23 +6,23 @@ Subpackages
 
 .. toctree::
 
-   convlab2.dst.mdbt.multiwoz
+   convlab.dst.mdbt.multiwoz
 
 Submodules
 ----------
 
-convlab2.dst.mdbt.mdbt module
+convlab.dst.mdbt.mdbt module
 -----------------------------
 
-.. automodule:: convlab2.dst.mdbt.mdbt
+.. automodule:: convlab.dst.mdbt.mdbt
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.dst.mdbt.mdbt\_util module
+convlab.dst.mdbt.mdbt\_util module
 -----------------------------------
 
-.. automodule:: convlab2.dst.mdbt.mdbt_util
+.. automodule:: convlab.dst.mdbt.mdbt_util
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ convlab2.dst.mdbt.mdbt\_util module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.mdbt
+.. automodule:: convlab.dst.mdbt
    :members:
    :undoc-members:
    :show-inheritance:

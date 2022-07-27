@@ -7,7 +7,7 @@ from tqdm import tqdm
 import re
 from collections import Counter
 from shutil import rmtree
-from convlab2.util.file_util import read_zipped_json, write_zipped_json
+from convlab.util.file_util import read_zipped_json, write_zipped_json
 from pprint import pprint
 import random
 
@@ -306,18 +306,12 @@ def preprocess():
             data_split = dial_id2split[dial_id]
             dialogue_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
             cur_domains = [domain]
-            goal = {
-                'description': '',
-                'inform': {},
-                'request': {}
-            }
             dialogue = {
                 'dataset': dataset,
                 'data_split': data_split,
                 'dialogue_id': dialogue_id,
                 'original_id': d["conversation_id"],
                 'domains': cur_domains,
-                'goal': goal,
                 'turns': []
             }
             turns = format_turns(d['utterances'])
@@ -398,8 +392,6 @@ def preprocess():
                 
                 if speaker == 'user':
                     turn['state'] = copy.deepcopy(prev_state)
-                else:
-                    turn['db_results'] = {}
 
                 dialogue['turns'].append(turn)
             dialogues_by_split[data_split].append(dialogue)

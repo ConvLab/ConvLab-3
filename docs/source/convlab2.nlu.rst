@@ -1,4 +1,4 @@
-convlab2.nlu package
+convlab.nlu package
 ====================
 
 Subpackages
@@ -6,25 +6,25 @@ Subpackages
 
 .. toctree::
 
-   convlab2.nlu.jointBERT
-   convlab2.nlu.milu
-   convlab2.nlu.svm
+   convlab.nlu.jointBERT
+   convlab.nlu.milu
+   convlab.nlu.svm
 
 Submodules
 ----------
 
-convlab2.nlu.evaluate module
+convlab.nlu.evaluate module
 ----------------------------
 
-.. automodule:: convlab2.nlu.evaluate
+.. automodule:: convlab.nlu.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.nlu module
+convlab.nlu.nlu module
 -----------------------
 
-.. automodule:: convlab2.nlu.nlu
+.. automodule:: convlab.nlu.nlu
    :members:
    :undoc-members:
    :show-inheritance:
@@ -33,7 +33,7 @@ convlab2.nlu.nlu module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlu
+.. automodule:: convlab.nlu
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,0 +1,1 @@
+from convlab.policy.gdpl.multiwoz.gdpl_policy import GDPLPolicy

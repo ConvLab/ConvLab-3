@@ -1,0 +1,10 @@
+[
+  {
+    "dir": "ppo",
+    "legend": "PPO"
+  },
+  {
+    "dir": "pg",
+    "legend": "PG"
+  }
+]

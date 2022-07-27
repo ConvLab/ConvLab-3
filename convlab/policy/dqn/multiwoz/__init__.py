@@ -1,0 +1,1 @@
+from convlab.policy.dqn.multiwoz.dqn_policy import DQNPolicy

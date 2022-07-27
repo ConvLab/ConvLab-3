@@ -1,29 +1,29 @@
-convlab2.nlg.sclstm.multiwoz package
+convlab.nlg.sclstm.multiwoz package
 ====================================
 
 Submodules
 ----------
 
-convlab2.nlg.sclstm.multiwoz.evaluate module
+convlab.nlg.sclstm.multiwoz.evaluate module
 --------------------------------------------
 
-.. automodule:: convlab2.nlg.sclstm.multiwoz.evaluate
+.. automodule:: convlab.nlg.sclstm.multiwoz.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlg.sclstm.multiwoz.sc\_lstm module
+convlab.nlg.sclstm.multiwoz.sc\_lstm module
 --------------------------------------------
 
-.. automodule:: convlab2.nlg.sclstm.multiwoz.sc_lstm
+.. automodule:: convlab.nlg.sclstm.multiwoz.sc_lstm
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlg.sclstm.multiwoz.train module
+convlab.nlg.sclstm.multiwoz.train module
 -----------------------------------------
 
-.. automodule:: convlab2.nlg.sclstm.multiwoz.train
+.. automodule:: convlab.nlg.sclstm.multiwoz.train
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.nlg.sclstm.multiwoz.train module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlg.sclstm.multiwoz
+.. automodule:: convlab.nlg.sclstm.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,29 +1,29 @@
-convlab2.nlu.jointBERT.multiwoz package
+convlab.nlu.jointBERT.multiwoz package
 =======================================
 
 Submodules
 ----------
 
-convlab2.nlu.jointBERT.multiwoz.nlu module
+convlab.nlu.jointBERT.multiwoz.nlu module
 ------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.multiwoz.nlu
+.. automodule:: convlab.nlu.jointBERT.multiwoz.nlu
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.multiwoz.postprocess module
+convlab.nlu.jointBERT.multiwoz.postprocess module
 --------------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.multiwoz.postprocess
+.. automodule:: convlab.nlu.jointBERT.multiwoz.postprocess
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlu.jointBERT.multiwoz.preprocess module
+convlab.nlu.jointBERT.multiwoz.preprocess module
 -------------------------------------------------
 
-.. automodule:: convlab2.nlu.jointBERT.multiwoz.preprocess
+.. automodule:: convlab.nlu.jointBERT.multiwoz.preprocess
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.nlu.jointBERT.multiwoz.preprocess module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlu.jointBERT.multiwoz
+.. automodule:: convlab.nlu.jointBERT.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

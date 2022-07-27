@@ -1,7 +1,7 @@
-convlab2
+convlab
 ========
 
 .. toctree::
    :maxdepth: 4
 
-   convlab2
+   convlab

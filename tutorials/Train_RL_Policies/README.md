@@ -2,10 +2,10 @@
 In the task-oriented system, a common strategy of learning a reinforcement learning dialog policy offline is to build a user simulator and make simulated interactions between the policy and simulator.
 
 ## Build an Environment
-In convlab2, we provide the enviroment class for training an RL policy, and we regard the all the components except system policy as the environment, i.e.:
+In convlab, we provide the enviroment class for training an RL policy, and we regard the all the components except system policy as the environment, i.e.:
 
 ```python
-from convlab2.dialog_agent.env import Environment
+from convlab.dialog_agent.env import Environment
 
 # We don't need NLU, DST and NLG for user simulator
 policy_usr = RulePolicy(character='usr')

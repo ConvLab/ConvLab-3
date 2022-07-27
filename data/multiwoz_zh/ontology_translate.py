@@ -5,7 +5,7 @@
 
 import json
 import re
-from convlab2.util.multiwoz.multiwoz_slot_trans import *
+from convlab.util.multiwoz.multiwoz_slot_trans import *
 en_pattern = re.compile('[a-zA-Z]')
 
 vocab_dict_path = 'vocab_dict.json'

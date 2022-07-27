@@ -7,7 +7,7 @@ from tqdm import tqdm
 import re
 from collections import Counter
 from shutil import rmtree
-from convlab2.util.file_util import read_zipped_json, write_zipped_json
+from convlab.util.file_util import read_zipped_json, write_zipped_json
 from pprint import pprint
 import random
 import glob

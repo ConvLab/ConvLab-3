@@ -14,7 +14,11 @@ DailyDialog is a high-quality multi-turn dialog dataset. It is intriguing in sev
   - Run `python preprocess.py` in the current directory.
 - **Main changes of the transformation:**
   - Use `topic` annotation as `domain`. If duplicated dialogs are annotated with different topics, use the most frequent one.
-  - Combine `intent` and `domain` annotation as `binary` dialogue acts.
+  - Use `intent` annotation as `binary` dialogue act.
+  - Retain emotion annotation in the `emotion` field of each turn.
+  - Use nltk to remove space before punctuation: `utt = ' '.join([detokenizer.detokenize(word_tokenize(s)) for s in sent_tokenize(utt)])`.
+  - Replace `" ’ "` with `"'"`: `utt = utt.replace(' ’ ', "'")`.
+  - Add space after full-stop
 - **Annotations:**
   - intent, emotion
 
@@ -30,10 +34,10 @@ English
 
 | split      |   dialogues |   utterances |   avg_utt |   avg_tokens |   avg_domains | cat slot match(state)   | cat slot match(goal)   | cat slot match(dialogue act)   | non-cat slot span(dialogue act)   |
 |------------|-------------|--------------|-----------|--------------|---------------|-------------------------|------------------------|--------------------------------|-----------------------------------|
-| train      |       11118 |        87170 |      7.84 |        13.61 |             1 | -                       | -                      | -                              | -                                 |
-| validation |        1000 |         8069 |      8.07 |        13.5  |             1 | -                       | -                      | -                              | -                                 |
-| test       |        1000 |         7740 |      7.74 |        13.78 |             1 | -                       | -                      | -                              | -                                 |
-| all        |       13118 |       102979 |      7.85 |        13.61 |             1 | -                       | -                      | -                              | -                                 |
+| train      |       11118 |        87170 |      7.84 |        11.22 |             1 | -                       | -                      | -                              | -                                 |
+| validation |        1000 |         8069 |      8.07 |        11.16 |             1 | -                       | -                      | -                              | -                                 |
+| test       |        1000 |         7740 |      7.74 |        11.36 |             1 | -                       | -                      | -                              | -                                 |
+| all        |       13118 |       102979 |      7.85 |        11.22 |             1 | -                       | -                      | -                              | -                                 |
 
 10 domains: ['Ordinary Life', 'School Life', 'Culture & Education', 'Attitude & Emotion', 'Relationship', 'Tourism', 'Health', 'Work', 'Politics', 'Finance']
 - **cat slot match**: how many values of categorical slots are in the possible values of ontology in percentage.

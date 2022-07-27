@@ -1,4 +1,4 @@
-convlab2.e2e.damd package
+convlab.e2e.damd package
 =========================
 
 Subpackages
@@ -6,12 +6,12 @@ Subpackages
 
 .. toctree::
 
-   convlab2.e2e.damd.multiwoz
+   convlab.e2e.damd.multiwoz
 
 Module contents
 ---------------
 
-.. automodule:: convlab2.e2e.damd
+.. automodule:: convlab.e2e.damd
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,21 +1,21 @@
-convlab2.dst.rule.multiwoz package
+convlab.dst.rule.multiwoz package
 ==================================
 
 Submodules
 ----------
 
-convlab2.dst.rule.multiwoz.dst module
+convlab.dst.rule.multiwoz.dst module
 -------------------------------------
 
-.. automodule:: convlab2.dst.rule.multiwoz.dst
+.. automodule:: convlab.dst.rule.multiwoz.dst
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.dst.rule.multiwoz.dst\_util module
+convlab.dst.rule.multiwoz.dst\_util module
 -------------------------------------------
 
-.. automodule:: convlab2.dst.rule.multiwoz.dst_util
+.. automodule:: convlab.dst.rule.multiwoz.dst_util
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ convlab2.dst.rule.multiwoz.dst\_util module
 Module contents
 ---------------
 
-.. automodule:: convlab2.dst.rule.multiwoz
+.. automodule:: convlab.dst.rule.multiwoz
    :members:
    :undoc-members:
    :show-inheritance:

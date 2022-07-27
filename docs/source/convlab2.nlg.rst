@@ -1,4 +1,4 @@
-convlab2.nlg package
+convlab.nlg package
 ====================
 
 Subpackages
@@ -6,24 +6,24 @@ Subpackages
 
 .. toctree::
 
-   convlab2.nlg.sclstm
-   convlab2.nlg.template
+   convlab.nlg.sclstm
+   convlab.nlg.template
 
 Submodules
 ----------
 
-convlab2.nlg.evaluate module
+convlab.nlg.evaluate module
 ----------------------------
 
-.. automodule:: convlab2.nlg.evaluate
+.. automodule:: convlab.nlg.evaluate
    :members:
    :undoc-members:
    :show-inheritance:
 
-convlab2.nlg.nlg module
+convlab.nlg.nlg module
 -----------------------
 
-.. automodule:: convlab2.nlg.nlg
+.. automodule:: convlab.nlg.nlg
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +32,7 @@ convlab2.nlg.nlg module
 Module contents
 ---------------
 
-.. automodule:: convlab2.nlg
+.. automodule:: convlab.nlg
    :members:
    :undoc-members:
    :show-inheritance:
