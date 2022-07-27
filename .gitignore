@@ -103,7 +103,7 @@ convlab/deploy/bert_multiwoz_all.zip
 convlab/deploy/templates/dialog_eg.html
 test.py
 *budget*.pdf
-*convlab2/policy/vector/action_dicts
+*convlab/policy/vector/action_dicts
 
 *.egg-info
 pre-trained-models/

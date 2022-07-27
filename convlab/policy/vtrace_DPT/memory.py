@@ -10,7 +10,7 @@ import pickle
 import logging
 from queue import PriorityQueue
 
-from convlab2.util.custom_util import set_seed
+from convlab.util.custom_util import set_seed
 
 
 class Memory:

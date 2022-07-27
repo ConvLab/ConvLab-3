@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import numpy as np
-from convlab2.util.multiwoz.lexicalize import delexicalize_da, flat_da
+from convlab.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from .vector_base import VectorBase
 
 

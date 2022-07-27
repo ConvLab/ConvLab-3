@@ -15,14 +15,14 @@ import json
 from copy import deepcopy
 from torch import multiprocessing as mp
 from argparse import ArgumentParser
-from convlab2.policy.vtrace_DPT import VTRACE
-from convlab2.policy.vtrace_DPT.memory import Memory
-from convlab2.policy.vtrace_DPT.multiprocessing_helper import get_queues, start_processes, submit_jobs, \
+from convlab.policy.vtrace_DPT import VTRACE
+from convlab.policy.vtrace_DPT.memory import Memory
+from convlab.policy.vtrace_DPT.multiprocessing_helper import get_queues, start_processes, submit_jobs, \
     terminate_processes
-from convlab2.policy.vtrace_DPT.ocl.ocl_helper import load_budget, check_setup, log_used_budget, get_goals, \
+from convlab.policy.vtrace_DPT.ocl.ocl_helper import load_budget, check_setup, log_used_budget, get_goals, \
     update_online_metrics
-from convlab2.task.multiwoz.goal_generator import GoalGenerator
-from convlab2.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
+from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.util.custom_util import set_seed, init_logging, save_config, move_finished_training, env_config, \
     eval_policy, load_config_file, get_config
 from datetime import datetime
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     begin_time = datetime.now()
     parser = ArgumentParser()
-    parser.add_argument("--path", type=str, default='convlab2/policy/vtrace_DPT/ocl/semantic_level_config_ocl.json',
+    parser.add_argument("--path", type=str, default='convlab/policy/vtrace_DPT/ocl/semantic_level_config_ocl.json',
                         help="Load path for config file")
     parser.add_argument("--seed", type=int, default=0,
                         help="Seed for the policy parameter initialization")

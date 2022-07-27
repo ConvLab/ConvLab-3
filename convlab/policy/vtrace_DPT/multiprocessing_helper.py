@@ -4,7 +4,7 @@ from copy import deepcopy
 import logging
 import torch
 import time
-from convlab2.util.custom_util import set_seed
+from convlab.util.custom_util import set_seed
 
 torch.multiprocessing.set_sharing_strategy('file_system')
 

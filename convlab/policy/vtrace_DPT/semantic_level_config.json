@@ -16,7 +16,7 @@
 	},
 	"vectorizer_sys": {
 		"uncertainty_vector_mul": {
-			"class_path": "convlab2.policy.vector.vector_nodes.VectorNodes",
+			"class_path": "convlab.policy.vector.vector_nodes.VectorNodes",
 			"ini_params": {
 				"use_masking": true,
 				"manually_add_entity_names": true,
@@ -27,7 +27,7 @@
 	"nlu_sys": {},
 	"dst_sys": {
 		"RuleDST": {
-			"class_path": "convlab2.dst.rule.multiwoz.dst.RuleDST",
+			"class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
 			"ini_params": {}
 		}
 	},
@@ -36,7 +36,7 @@
 	"dst_usr": {},
 	"policy_usr": {
 		"RulePolicy": {
-			"class_path": "convlab2.policy.rule.multiwoz.RulePolicy",
+			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
 			"ini_params": {
 				"character": "usr"
 			}

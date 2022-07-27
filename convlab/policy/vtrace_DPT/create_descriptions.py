@@ -1,8 +1,8 @@
 import os
 import json
 
-from convlab2.policy.vector.vector_binary import VectorBinary
-from convlab2.util import load_ontology, load_database
+from convlab.policy.vector.vector_binary import VectorBinary
+from convlab.util import load_ontology, load_database
 
 
 def create_description_dicts(name='multiwoz21'):

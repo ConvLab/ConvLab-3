@@ -4,7 +4,7 @@ import torch.nn as nn
 
 from transformers import RobertaTokenizer, RobertaModel
 
-from convlab2.policy.vtrace_DPT.create_descriptions import create_description_dicts
+from convlab.policy.vtrace_DPT.create_descriptions import create_description_dicts
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

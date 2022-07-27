@@ -1,1 +1,1 @@
-from convlab2.policy.vtrace_DPT.vtrace import VTRACE
+from convlab.policy.vtrace_DPT.vtrace import VTRACE

@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 
 from torch import optim
-from convlab2.policy.vtrace_DPT.transformer_model.EncoderDecoder import EncoderDecoder
-from convlab2.policy.vtrace_DPT.transformer_model.EncoderCritic import EncoderCritic
+from convlab.policy.vtrace_DPT.transformer_model.EncoderDecoder import EncoderDecoder
+from convlab.policy.vtrace_DPT.transformer_model.EncoderCritic import EncoderCritic
 from ... import Policy
 from ...util.custom_util import set_seed
 
