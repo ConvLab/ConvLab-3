@@ -124,7 +124,6 @@ class VTRACE(nn.Module, Policy):
         self.info_dict['critic_value'] = self.value([descr_list], [value_list]).squeeze()
 
         action = self.vector.action_devectorize(a.detach().numpy())
-        state['system_action'] = action
 
         return action
 
