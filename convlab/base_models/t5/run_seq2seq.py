@@ -221,7 +221,7 @@ class DataTrainingArguments:
         default=None, metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
     )
     early_stopping_patience: Optional[int] = field(
-        default=10, metadata={"help": "early stopping patience, set to 0 if you do not want to use early stopping."},
+        default=5, metadata={"help": "early stopping patience, set to 0 if you do not want to use early stopping."},
     )
 
     def __post_init__(self):
