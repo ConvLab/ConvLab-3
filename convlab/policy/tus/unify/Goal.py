@@ -84,22 +84,22 @@ class Goal(object):
         """
         for domain in self.domain_goals:
             if domain not in self.status:
-                print(f"{domain} is not mentioned")
+                # print(f"{domain} is not mentioned")
                 return False
             if "info" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["info"]:
                     if slot not in self.status[domain]:
-                        print(f"{slot} is not mentioned")
+                        # print(f"{slot} is not mentioned")
                         return False
                     goal = self.domain_goals[domain]["info"][slot].lower()
                     status = self.status[domain][slot].lower()
                     if goal != status and not is_time(goal, status):
-                        print(f"conflict slot {slot}: {goal} <-> {status}")
+                        # print(f"conflict slot {slot}: {goal} <-> {status}")
                         return False
             if "reqt" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["reqt"]:
                     if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
-                        print(f"not fulfilled request{domain}-{slot}")
+                        # print(f"not fulfilled request{domain}-{slot}")
                         return False
         return True
 
