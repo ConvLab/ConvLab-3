@@ -178,8 +178,8 @@ def create_goal(dialog) -> list:
             continue
         if intent == "inform" and value == "":
             continue
-        if intent == "request" and value != "":
-            intent = "inform"
+        # if intent == "request" and value != "":
+        #     intent = "inform"
         user_goal.append((domain, intent, slot, value))
     user_goal = unique_list(user_goal)
     inform_slots = {(domain, slot) for (domain, intent, slot,
