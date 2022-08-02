@@ -83,6 +83,9 @@ def create_personachat_data(dataset, data_dir, args):
 def create_wow_data(dataset, data_dir, args):
     data_by_split = dataset
     os.makedirs(data_dir, exist_ok=True)
+    data_by_split['test'] = data_by_split['test_seen'] + data_by_split['test_unseen']
+    data_by_split.pop('test_seen')
+    data_by_split.pop('test_unseen')
 
     data_splits = data_by_split.keys()
     for data_split in data_splits:
