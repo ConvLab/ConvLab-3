@@ -1,3 +1,4 @@
+import time
 import json
 from convlab.policy.tus.unify.util import split_slot_name
 from pprint import pprint
@@ -10,6 +11,20 @@ NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK, ""]
 
 
 # only support user goal from dataset
+
+
+def is_time(goal, status):
+    if isTimeFormat(goal) and isTimeFormat(status):
+        return True
+    return False
+
+
+def isTimeFormat(input):
+    try:
+        time.strptime(input, '%H:%M')
+        return True
+    except ValueError:
+        return False
 
 
 class Goal(object):
@@ -42,8 +57,6 @@ class Goal(object):
                '\n-----Goal-----'
 
     def init_goal_status(self, goal):
-        print("---->init")
-        pprint(goal)
         for domain, intent, slot, value in goal:  # check this order
             if domain not in self.domains:
                 self.domains.append(domain)
@@ -62,7 +75,7 @@ class Goal(object):
                 self.domain_goals[domain]["info"][slot] = value
 
             self.user_history[f"{domain}-{slot}"] = value
-        pprint(self.domain_goals)
+
     def task_complete(self):
         """
         Check that all requests have been met
@@ -78,8 +91,10 @@ class Goal(object):
                     if slot not in self.status[domain]:
                         print(f"{slot} is not mentioned")
                         return False
-                    if self.domain_goals[domain]["info"][slot].lower() != self.status[domain][slot].lower():
-                        print(f"conflict value of slot {slot}: {self.domain_goals[domain]['info'][slot]} <-> {self.status[domain][slot]}")
+                    goal = self.domain_goals[domain]["info"][slot].lower()
+                    status = self.status[domain][slot].lower()
+                    if goal != status and not is_time(goal, status):
+                        print(f"conflict slot {slot}: {goal} <-> {status}")
                         return False
             if "reqt" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["reqt"]:
