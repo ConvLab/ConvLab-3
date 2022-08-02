@@ -74,7 +74,6 @@ class PG(Policy):
         # print('True :')
         # print(a)
         action = self.vector.action_devectorize(a.detach().numpy())
-        state['system_action'] = action
         self.info_dict["action_used"] = action
         # for key in state.keys():
         #     print("Key : {} , Value : {}".format(key,state[key]))

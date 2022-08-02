@@ -4,7 +4,7 @@
     "legend": "PPO"
   },
   {
-    "dir": "vtrace",
-    "legend": "Vtrace"
+    "dir": "pg",
+    "legend": "PG"
   }
 ]

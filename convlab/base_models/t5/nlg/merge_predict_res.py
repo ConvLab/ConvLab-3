@@ -24,6 +24,7 @@ def merge(dataset_names, speaker, save_dir, context_window_size, predict_result)
                 continue
             sample['predictions'] = {'utterance': predict_result[i]}
             i += 1
+            merged.append(sample)
 
     json.dump(merged, open(os.path.join(save_dir, 'predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
 
