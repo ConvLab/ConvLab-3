@@ -12,7 +12,8 @@ from convlab.dialog_agent.session import BiSession
 from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab.policy.rule.multiwoz import RulePolicy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
-from convlab.util.custom_util import set_seed, get_config, env_config, create_goals
+from convlab.util.custom_util import set_seed, get_config, env_config, create_goals, data_goals
+from tqdm import tqdm
 
 
 def init_logging(log_dir_path, path_suffix=None):
@@ -36,7 +37,7 @@ def init_logging(log_dir_path, path_suffix=None):
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(config_path, model_name, verbose=False, model_path=""):
+def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_data=False):
     seed = 0
     set_seed(seed)
 
@@ -73,9 +74,15 @@ def evaluate(config_path, model_name, verbose=False, model_path=""):
 
     dialogues = 500
     goal_generator = GoalGenerator()
-    goals = create_goals(goal_generator, num_goals=dialogues, single_domains=False, allowed_domains=None)
+    if goals_from_data:
+        logging.info("read goals from dataset...")
+        goals = data_goals(dialogues, dataset="multiwoz21", dial_ids_order=0)
+    else:
+        logging.info("create goals from goal_generator...")
+        goals = create_goals(goal_generator, num_goals=dialogues,
+                             single_domains=False, allowed_domains=None)
 
-    for seed in range(1000, 1000 + dialogues):
+    for seed in tqdm(range(1000, 1000 + dialogues)):
         set_seed(seed)
         sess.init_session(goal=goals[seed-1000])
         sys_response = []
@@ -153,9 +160,12 @@ if __name__ == "__main__":
                         default="", help="suffix of path of log file")
     parser.add_argument("--log_dir_path", type=str,
                         default="log", help="path of log directory")
+    parser.add_argument("--goals_from_data", action='store_true',
+                        help="load goal from the dataset")
 
     args = parser.parse_args()
 
     init_logging(log_dir_path=args.log_dir_path,
                  path_suffix=args.log_path_suffix)
-    evaluate(config_path=args.config_path, model_name=args.model_name, verbose=args.verbose, model_path=args.model_path)
+    evaluate(config_path=args.config_path, model_name=args.model_name,
+             verbose=args.verbose, model_path=args.model_path, goals_from_data=args.goals_from_data)

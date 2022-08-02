@@ -10,9 +10,11 @@ from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import (
 from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
 from convlab.policy.tus.unify.Goal import Goal
 from convlab.policy.tus.unify.usermanager import BinaryFeature
-from convlab.util import relative_import_module_from_unified_datasets
-from convlab.policy.tus.unify.util import parse_dialogue_act, parse_user_goal, metadata2state, int2onehot, create_goal, split_slot_name
-
+from convlab.policy.tus.unify.util import (create_goal, int2onehot,
+                                           metadata2state, parse_dialogue_act,
+                                           parse_user_goal, split_slot_name)
+from convlab.util import (load_dataset,
+                          relative_import_module_from_unified_datasets)
 from convlab.util.custom_util import model_downloader
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
 
@@ -33,8 +35,9 @@ NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK, ""]
 
 # TODO not ready for unify dataformat now
 class UserActionPolicy(Policy):
-    def __init__(self, config, pretrain=True):
+    def __init__(self, config, pretrain=True, dataset="multiwoz21"):
         Policy.__init__(self)
+        self.dataset = dataset
         if isinstance(config, str):
             self.config = json.load(open(config))
         else:
@@ -47,8 +50,10 @@ class UserActionPolicy(Policy):
         self.config["num_token"] = config["num_token"]
         self.user = TransformerActionPrediction(self.config).to(device=DEVICE)
         if pretrain:
-            self.load(os.path.join(
-                self.config["model_dir"], self.config["model_name"]))
+            model_path = os.path.join(
+                self.config["model_dir"], self.config["model_name"])
+            print(f"loading model from {model_path}...")
+            self.load(model_path)
         self.user.eval()
         self.use_domain_mask = self.config.get("domain_mask", False)
         self.max_turn = 40
@@ -124,7 +129,12 @@ class UserActionPolicy(Policy):
         #     self.new_goal(remove_domain=remove_domain)
         # else:
         #     self.read_goal(goal)
+        if not goal:
+            data = load_dataset(self.dataset, 0)
+            goal = Goal(create_goal(data["test"][0]))
+
         self.read_goal(goal)
+        self.feat_handler.initFeatureHandeler(self.goal)
 
         # print(self.goal)
         if self.config.get("reorder", False):
@@ -133,12 +143,15 @@ class UserActionPolicy(Policy):
             self.predict_action_list = self.action_list
         self.sys_history_state = None  # to save sys history
         self.terminated = False
-        self.feat_handler.initFeatureHandeler(self.goal)
+
         self.pre_usr_act = None
         self.sys_acts = []
 
     def read_goal(self, data_goal):
-        self.goal = Goal(goal=data_goal)
+        if type(data_goal) == Goal:
+            self.goal = data_goal
+        else:
+            self.goal = Goal(goal=data_goal)
 
     def new_goal(self, remove_domain="police", domain_len=None):
         keep_generate_goal = True
@@ -180,7 +193,7 @@ class UserActionPolicy(Policy):
         for domain in domains:
             domain = domain.lower()
             if domain not in self.mentioned_domain and domain != 'general':
-                actions.append([Inform, domain.capitalize(), "None", "None"])
+                actions.append([Inform, domain, "None", "None"])
                 self.mentioned_domain.append(domain)
         return actions
 
@@ -379,11 +392,12 @@ class UserActionPolicy(Policy):
 
 
 class UserPolicy(Policy):
-    def __init__(self, config):
+    def __init__(self, config, dial_ids_order=0):
         if isinstance(config, str):
             self.config = json.load(open(config))
         else:
             self.config = config
+        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}'
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),
