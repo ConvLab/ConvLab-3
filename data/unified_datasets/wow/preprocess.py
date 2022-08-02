@@ -69,39 +69,32 @@ def preprocess():
 
                     for topic_passage in original_turn['retrieved_passages']:
                         for topic, passage in topic_passage.items():
-                            topic = html.unescape(topic)
-                            if topic in topic2passage:
-                                # topic that already added, add unseen sentences
-                                for sen in passage:
-                                    if sen not in topic2passage[topic]:
-                                        topic2passage[topic].append(sen)
-                            else:
-                                topic2passage[topic] = passage
+                            topic2passage[html.unescape(topic)] = passage
 
                     if speaker == 'system':
                         if len(original_turn['checked_sentence']) == 0:
-                            checked_sentence = None
+                            check_sentence = None
                         else:
-                            checked_sentence = list(original_turn['checked_sentence'].values())[0]
-                            checked_sentence = None if checked_sentence == 'no_passages_used' else checked_sentence
+                            check_sentence = list(original_turn['checked_sentence'].values())[0]
+                            check_sentence = None if check_sentence == 'no_passages_used' else check_sentence
                         
                         if len(original_turn['checked_passage']) == 0:
-                            checked_passage = None
+                            if check_sentence and check_sentence not in original_dial['chosen_topic_passage']:
+                                # search over retrieved_passages
+                                for topic, passage in topic2passage.items():
+                                    if check_sentence in passage:
+                                        checked_passage = topic
+                                        break
+                                else:
+                                    pprint(original_turn)
+                                    exit()
+                            else:
+                                checked_passage = None
                         else:
                             checked_passage = html.unescape(list(original_turn['checked_passage'].values())[0])
                             # print(topic2passage.keys())
                             checked_passage = None if checked_passage == 'no_passages_used' else topic2passage[checked_passage]
-
-                        if checked_sentence:
-                            if not checked_passage or checked_sentence not in checked_passage:
-                                # search over retrieved_passages
-                                for topic, passage in topic2passage.items():
-                                    if checked_sentence in passage:
-                                        checked_passage = passage
-                                        break
-                            assert checked_sentence in checked_passage, print(checked_sentence, checked_passage)
-
-                        dialogue['turns'][-1]['checked_sentence'] = checked_sentence
+                        dialogue['turns'][-1]['checked_sentence'] = check_sentence
                         dialogue['turns'][-1]['checked_passage'] = checked_passage
 
     dialogues = dialogues_by_split['train']+dialogues_by_split['validation']+dialogues_by_split['test_seen']+dialogues_by_split['test_unseen']

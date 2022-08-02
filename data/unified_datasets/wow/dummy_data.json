@@ -15,10 +15,7 @@
           "Science fiction (often shortened to SF or sci-fi) is a genre of speculative fiction, typically dealing with imaginative concepts such as futuristic science and technology, space travel, time travel, faster than light travel, parallel universes, and extraterrestrial life.",
           "Science fiction often explores the potential consequences of scientific and other innovations, and has been called a \"literature of ideas\".",
           "It usually avoids the supernatural, unlike the related genre of fantasy.",
-          "Historically, science-fiction stories have had a grounding in actual science, but now this is only expected of hard science fiction.",
-          "Science fiction is difficult to define, as it includes a wide range of subgenres and themes.",
-          "Hugo Gernsback, who suggested the term \"scientifiction\" for his \"Amazing Stories\" magazine, wrote: \"By 'scientifiction' I mean the Jules Verne, H. G. Wells and Edgar Allan Poe type of story—a charming romance intermingled with scientific fact and prophetic vision... Not only do these amazing tales make tremendously interesting reading—they are always instructive.",
-          "They supply knowledge... in a very palatable form... New adventures pictured for us in the scientifiction of today are not at all impossible of realization tomorrow..."
+          "Historically, science-fiction stories have had a grounding in actual science, but now this is only expected of hard science fiction."
         ]
       },
       {
@@ -68,10 +65,7 @@
           "Science fiction (often shortened to SF or sci-fi) is a genre of speculative fiction, typically dealing with imaginative concepts such as futuristic science and technology, space travel, time travel, faster than light travel, parallel universes, and extraterrestrial life.",
           "Science fiction often explores the potential consequences of scientific and other innovations, and has been called a \"literature of ideas\".",
           "It usually avoids the supernatural, unlike the related genre of fantasy.",
-          "Historically, science-fiction stories have had a grounding in actual science, but now this is only expected of hard science fiction.",
-          "Science fiction is difficult to define, as it includes a wide range of subgenres and themes.",
-          "Hugo Gernsback, who suggested the term \"scientifiction\" for his \"Amazing Stories\" magazine, wrote: \"By 'scientifiction' I mean the Jules Verne, H. G. Wells and Edgar Allan Poe type of story—a charming romance intermingled with scientific fact and prophetic vision... Not only do these amazing tales make tremendously interesting reading—they are always instructive.",
-          "They supply knowledge... in a very palatable form... New adventures pictured for us in the scientifiction of today are not at all impossible of realization tomorrow..."
+          "Historically, science-fiction stories have had a grounding in actual science, but now this is only expected of hard science fiction."
         ]
       },
       {
@@ -115,9 +109,7 @@
           "Various technologies, at a wide range of speeds have been used by Internet service providers (ISPs) to provide this service.",
           "Internet access was once rare, but has grown rapidly.",
           "In 1995, only percent of the world's population had access, with well over half of those living in the United States, and consumer use was through dial-up.",
-          "By the first decade of the 21st century, many consumers in developed nations used faster broadband technology, and by 2014, 41 percent of the world's population had access, broadband was almost ubiquitous worldwide, and global average connection speeds exceeded 1 Mbit/s.",
-          "The Internet developed from the ARPANET, which was funded by the US government to support projects within the government and at universities and research laboratories in the US – but grew over time to include most of the world's large universities and the research arms of many technology companies.",
-          "Use by a wider audience only came in 1995 when restrictions on the use of the Internet to carry commercial traffic were lifted."
+          "By the first decade of the 21st century, many consumers in developed nations used faster broadband technology, and by 2014, 41 percent of the world's population had access, broadband was almost ubiquitous worldwide, and global average connection speeds exceeded 1 Mbit/s."
         ]
       },
       {
@@ -135,9 +127,7 @@
           "Various technologies, at a wide range of speeds have been used by Internet service providers (ISPs) to provide this service.",
           "Internet access was once rare, but has grown rapidly.",
           "In 1995, only percent of the world's population had access, with well over half of those living in the United States, and consumer use was through dial-up.",
-          "By the first decade of the 21st century, many consumers in developed nations used faster broadband technology, and by 2014, 41 percent of the world's population had access, broadband was almost ubiquitous worldwide, and global average connection speeds exceeded 1 Mbit/s.",
-          "The Internet developed from the ARPANET, which was funded by the US government to support projects within the government and at universities and research laboratories in the US – but grew over time to include most of the world's large universities and the research arms of many technology companies.",
-          "Use by a wider audience only came in 1995 when restrictions on the use of the Internet to carry commercial traffic were lifted."
+          "By the first decade of the 21st century, many consumers in developed nations used faster broadband technology, and by 2014, 41 percent of the world's population had access, broadband was almost ubiquitous worldwide, and global average connection speeds exceeded 1 Mbit/s."
         ]
       },
       {
@@ -150,15 +140,7 @@
         "utterance": "Yes, it was developed from a government funded projects to help with universities research and laboratories in the United States...I am so glad they expanded it!",
         "utt_idx": 5,
         "checked_sentence": "The Internet developed from the ARPANET, which was funded by the US government to support projects within the government and at universities and research laboratories in the US – but grew over time to include most of the world's large universities and the research arms of many technology companies.",
-        "checked_passage": [
-          "Internet access is the ability of individuals and organizations to connect to the Internet using computer terminals, computers, and other devices; and to access services such as email and the World Wide Web.",
-          "Various technologies, at a wide range of speeds have been used by Internet service providers (ISPs) to provide this service.",
-          "Internet access was once rare, but has grown rapidly.",
-          "In 1995, only percent of the world's population had access, with well over half of those living in the United States, and consumer use was through dial-up.",
-          "By the first decade of the 21st century, many consumers in developed nations used faster broadband technology, and by 2014, 41 percent of the world's population had access, broadband was almost ubiquitous worldwide, and global average connection speeds exceeded 1 Mbit/s.",
-          "The Internet developed from the ARPANET, which was funded by the US government to support projects within the government and at universities and research laboratories in the US – but grew over time to include most of the world's large universities and the research arms of many technology companies.",
-          "Use by a wider audience only came in 1995 when restrictions on the use of the Internet to carry commercial traffic were lifted."
-        ]
+        "checked_passage": null
       },
       {
         "speaker": "user",
@@ -170,15 +152,7 @@
         "utterance": "What is your favorite thing to do with internet access? I like being able to use my computer and smartphone to use my email and browse the world wide web",
         "utt_idx": 7,
         "checked_sentence": "Internet access is the ability of individuals and organizations to connect to the Internet using computer terminals, computers, and other devices; and to access services such as email and the World Wide Web.",
-        "checked_passage": [
-          "Internet access is the ability of individuals and organizations to connect to the Internet using computer terminals, computers, and other devices; and to access services such as email and the World Wide Web.",
-          "Various technologies, at a wide range of speeds have been used by Internet service providers (ISPs) to provide this service.",
-          "Internet access was once rare, but has grown rapidly.",
-          "In 1995, only percent of the world's population had access, with well over half of those living in the United States, and consumer use was through dial-up.",
-          "By the first decade of the 21st century, many consumers in developed nations used faster broadband technology, and by 2014, 41 percent of the world's population had access, broadband was almost ubiquitous worldwide, and global average connection speeds exceeded 1 Mbit/s.",
-          "The Internet developed from the ARPANET, which was funded by the US government to support projects within the government and at universities and research laboratories in the US – but grew over time to include most of the world's large universities and the research arms of many technology companies.",
-          "Use by a wider audience only came in 1995 when restrictions on the use of the Internet to carry commercial traffic were lifted."
-        ]
+        "checked_passage": null
       }
     ]
   },
@@ -220,10 +194,7 @@
           "Pharmacists, also known as chemists (Commonwealth English) or druggists (North American and, archaically, Commonwealth English), are healthcare professionals who practice in pharmacy, the field of health sciences focusing on safe and effective medication use.",
           "A pharmacist is a member of the health care team directly involved with patient care.",
           "Pharmacists undergo university-level education to understand the biochemical mechanisms and actions of drugs, drug uses, therapeutic roles, side effects, potential drug interactions, and monitoring parameters.",
-          "This is mated to anatomy, physiology, and pathophysiology.",
-          "Pharmacists interpret and communicate this specialized knowledge to patients, physicians, and other health care providers.",
-          "Among other licensing requirements, different countries require pharmacists to hold either a Bachelor of Pharmacy, Master of Pharmacy, or Doctor of Pharmacy degree.",
-          "The most common pharmacist positions are that of a \"community pharmacist\" (also referred to as a \"retail pharmacist\", \"first-line pharmacist\" or \"dispensing chemist\"), or a \"hospital pharmacist\", where they instruct and counsel on the proper use and adverse effects of medically prescribed drugs and medicines."
+          "This is mated to anatomy, physiology, and pathophysiology."
         ]
       },
       {
@@ -257,10 +228,7 @@
           "Pharmacists, also known as chemists (Commonwealth English) or druggists (North American and, archaically, Commonwealth English), are healthcare professionals who practice in pharmacy, the field of health sciences focusing on safe and effective medication use.",
           "A pharmacist is a member of the health care team directly involved with patient care.",
           "Pharmacists undergo university-level education to understand the biochemical mechanisms and actions of drugs, drug uses, therapeutic roles, side effects, potential drug interactions, and monitoring parameters.",
-          "This is mated to anatomy, physiology, and pathophysiology.",
-          "Pharmacists interpret and communicate this specialized knowledge to patients, physicians, and other health care providers.",
-          "Among other licensing requirements, different countries require pharmacists to hold either a Bachelor of Pharmacy, Master of Pharmacy, or Doctor of Pharmacy degree.",
-          "The most common pharmacist positions are that of a \"community pharmacist\" (also referred to as a \"retail pharmacist\", \"first-line pharmacist\" or \"dispensing chemist\"), or a \"hospital pharmacist\", where they instruct and counsel on the proper use and adverse effects of medically prescribed drugs and medicines."
+          "This is mated to anatomy, physiology, and pathophysiology."
         ]
       },
       {
@@ -277,10 +245,7 @@
           "Pharmacists, also known as chemists (Commonwealth English) or druggists (North American and, archaically, Commonwealth English), are healthcare professionals who practice in pharmacy, the field of health sciences focusing on safe and effective medication use.",
           "A pharmacist is a member of the health care team directly involved with patient care.",
           "Pharmacists undergo university-level education to understand the biochemical mechanisms and actions of drugs, drug uses, therapeutic roles, side effects, potential drug interactions, and monitoring parameters.",
-          "This is mated to anatomy, physiology, and pathophysiology.",
-          "Pharmacists interpret and communicate this specialized knowledge to patients, physicians, and other health care providers.",
-          "Among other licensing requirements, different countries require pharmacists to hold either a Bachelor of Pharmacy, Master of Pharmacy, or Doctor of Pharmacy degree.",
-          "The most common pharmacist positions are that of a \"community pharmacist\" (also referred to as a \"retail pharmacist\", \"first-line pharmacist\" or \"dispensing chemist\"), or a \"hospital pharmacist\", where they instruct and counsel on the proper use and adverse effects of medically prescribed drugs and medicines."
+          "This is mated to anatomy, physiology, and pathophysiology."
         ]
       }
     ]
@@ -307,12 +272,7 @@
           "Beer has been brewed on the domestic level since its advent, thousands of years prior to its commercial production, although its legality has varied according to local regulation.",
           "Beer has been brewed domestically throughout its 7,000-year history, beginning in the Neolithic period in Mesopotamia (modern Iraq), Egypt and China.",
           "It seems to have first developed as thick beers; during this time meads, fruit wines and rice wines were also developed.",
-          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred.",
-          "The tradition of brewing being in the domain of women stemmed from the fact that brewing was a by-product of gathering, and often considered a part of baking.",
-          "The Greeks and Romans cultivated both grape wine and beer, to a lesser extent.",
-          "Roman women often directed production in larger households while the labor was performed by slaves.",
-          "By the Tang dynasty, homebrewing seems to have been a familiar domestic chore in China, albeit the lower classes had to make do with poorly-filtered mash.",
-          "Laws against making alcohol were enacted and repealed between the Zhou and Ming dynasties."
+          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred."
         ]
       },
       {
@@ -330,12 +290,7 @@
           "Beer has been brewed on the domestic level since its advent, thousands of years prior to its commercial production, although its legality has varied according to local regulation.",
           "Beer has been brewed domestically throughout its 7,000-year history, beginning in the Neolithic period in Mesopotamia (modern Iraq), Egypt and China.",
           "It seems to have first developed as thick beers; during this time meads, fruit wines and rice wines were also developed.",
-          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred.",
-          "The tradition of brewing being in the domain of women stemmed from the fact that brewing was a by-product of gathering, and often considered a part of baking.",
-          "The Greeks and Romans cultivated both grape wine and beer, to a lesser extent.",
-          "Roman women often directed production in larger households while the labor was performed by slaves.",
-          "By the Tang dynasty, homebrewing seems to have been a familiar domestic chore in China, albeit the lower classes had to make do with poorly-filtered mash.",
-          "Laws against making alcohol were enacted and repealed between the Zhou and Ming dynasties."
+          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred."
         ]
       },
       {
@@ -353,12 +308,7 @@
           "Beer has been brewed on the domestic level since its advent, thousands of years prior to its commercial production, although its legality has varied according to local regulation.",
           "Beer has been brewed domestically throughout its 7,000-year history, beginning in the Neolithic period in Mesopotamia (modern Iraq), Egypt and China.",
           "It seems to have first developed as thick beers; during this time meads, fruit wines and rice wines were also developed.",
-          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred.",
-          "The tradition of brewing being in the domain of women stemmed from the fact that brewing was a by-product of gathering, and often considered a part of baking.",
-          "The Greeks and Romans cultivated both grape wine and beer, to a lesser extent.",
-          "Roman women often directed production in larger households while the labor was performed by slaves.",
-          "By the Tang dynasty, homebrewing seems to have been a familiar domestic chore in China, albeit the lower classes had to make do with poorly-filtered mash.",
-          "Laws against making alcohol were enacted and repealed between the Zhou and Ming dynasties."
+          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred."
         ]
       },
       {
@@ -376,12 +326,7 @@
           "Beer has been brewed on the domestic level since its advent, thousands of years prior to its commercial production, although its legality has varied according to local regulation.",
           "Beer has been brewed domestically throughout its 7,000-year history, beginning in the Neolithic period in Mesopotamia (modern Iraq), Egypt and China.",
           "It seems to have first developed as thick beers; during this time meads, fruit wines and rice wines were also developed.",
-          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred.",
-          "The tradition of brewing being in the domain of women stemmed from the fact that brewing was a by-product of gathering, and often considered a part of baking.",
-          "The Greeks and Romans cultivated both grape wine and beer, to a lesser extent.",
-          "Roman women often directed production in larger households while the labor was performed by slaves.",
-          "By the Tang dynasty, homebrewing seems to have been a familiar domestic chore in China, albeit the lower classes had to make do with poorly-filtered mash.",
-          "Laws against making alcohol were enacted and repealed between the Zhou and Ming dynasties."
+          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred."
         ]
       },
       {
@@ -399,12 +344,7 @@
           "Beer has been brewed on the domestic level since its advent, thousands of years prior to its commercial production, although its legality has varied according to local regulation.",
           "Beer has been brewed domestically throughout its 7,000-year history, beginning in the Neolithic period in Mesopotamia (modern Iraq), Egypt and China.",
           "It seems to have first developed as thick beers; during this time meads, fruit wines and rice wines were also developed.",
-          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred.",
-          "The tradition of brewing being in the domain of women stemmed from the fact that brewing was a by-product of gathering, and often considered a part of baking.",
-          "The Greeks and Romans cultivated both grape wine and beer, to a lesser extent.",
-          "Roman women often directed production in larger households while the labor was performed by slaves.",
-          "By the Tang dynasty, homebrewing seems to have been a familiar domestic chore in China, albeit the lower classes had to make do with poorly-filtered mash.",
-          "Laws against making alcohol were enacted and repealed between the Zhou and Ming dynasties."
+          "Women brewers dominated alcohol production on every occupied continent until commercialization and industrialization of brewing occurred."
         ]
       }
     ]
@@ -431,12 +371,7 @@
           "It occurs more frequently (2–6%) in people of northern or western European ancestry, and less frequently in other populations.",
           "Red hair appears most commonly in people with two copies of a recessive allele on chromosome 16 which produces an altered version of the MC1R protein.",
           "Red hair varies in hues from a deep burgundy or bright copper (reddish-brown or auburn) through to burnt orange or red-orange and strawberry blond.",
-          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin.",
-          "It is associated with fair skin color, lighter eye colors (gray, blue, green, and hazel), freckles, and sensitivity to ultraviolet light.",
-          "Cultural reactions have varied from ridicule to admiration; many common stereotypes exist regarding redheads and they are often portrayed as fiery-tempered.",
-          "The term redhead has been in use since at least 1510.",
-          "Red hair is most commonly found at the northern and western fringes of Europe; it is centered around populations in the British Isles.",
-          "Redheads today are commonly associated with the Celtic nations and to a far lesser extent the Germanic peoples."
+          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin."
         ]
       },
       {
@@ -454,12 +389,7 @@
           "It occurs more frequently (2–6%) in people of northern or western European ancestry, and less frequently in other populations.",
           "Red hair appears most commonly in people with two copies of a recessive allele on chromosome 16 which produces an altered version of the MC1R protein.",
           "Red hair varies in hues from a deep burgundy or bright copper (reddish-brown or auburn) through to burnt orange or red-orange and strawberry blond.",
-          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin.",
-          "It is associated with fair skin color, lighter eye colors (gray, blue, green, and hazel), freckles, and sensitivity to ultraviolet light.",
-          "Cultural reactions have varied from ridicule to admiration; many common stereotypes exist regarding redheads and they are often portrayed as fiery-tempered.",
-          "The term redhead has been in use since at least 1510.",
-          "Red hair is most commonly found at the northern and western fringes of Europe; it is centered around populations in the British Isles.",
-          "Redheads today are commonly associated with the Celtic nations and to a far lesser extent the Germanic peoples."
+          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin."
         ]
       },
       {
@@ -477,12 +407,7 @@
           "It occurs more frequently (2–6%) in people of northern or western European ancestry, and less frequently in other populations.",
           "Red hair appears most commonly in people with two copies of a recessive allele on chromosome 16 which produces an altered version of the MC1R protein.",
           "Red hair varies in hues from a deep burgundy or bright copper (reddish-brown or auburn) through to burnt orange or red-orange and strawberry blond.",
-          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin.",
-          "It is associated with fair skin color, lighter eye colors (gray, blue, green, and hazel), freckles, and sensitivity to ultraviolet light.",
-          "Cultural reactions have varied from ridicule to admiration; many common stereotypes exist regarding redheads and they are often portrayed as fiery-tempered.",
-          "The term redhead has been in use since at least 1510.",
-          "Red hair is most commonly found at the northern and western fringes of Europe; it is centered around populations in the British Isles.",
-          "Redheads today are commonly associated with the Celtic nations and to a far lesser extent the Germanic peoples."
+          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin."
         ]
       },
       {
@@ -500,12 +425,7 @@
           "It occurs more frequently (2–6%) in people of northern or western European ancestry, and less frequently in other populations.",
           "Red hair appears most commonly in people with two copies of a recessive allele on chromosome 16 which produces an altered version of the MC1R protein.",
           "Red hair varies in hues from a deep burgundy or bright copper (reddish-brown or auburn) through to burnt orange or red-orange and strawberry blond.",
-          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin.",
-          "It is associated with fair skin color, lighter eye colors (gray, blue, green, and hazel), freckles, and sensitivity to ultraviolet light.",
-          "Cultural reactions have varied from ridicule to admiration; many common stereotypes exist regarding redheads and they are often portrayed as fiery-tempered.",
-          "The term redhead has been in use since at least 1510.",
-          "Red hair is most commonly found at the northern and western fringes of Europe; it is centered around populations in the British Isles.",
-          "Redheads today are commonly associated with the Celtic nations and to a far lesser extent the Germanic peoples."
+          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin."
         ]
       },
       {
@@ -523,12 +443,7 @@
           "It occurs more frequently (2–6%) in people of northern or western European ancestry, and less frequently in other populations.",
           "Red hair appears most commonly in people with two copies of a recessive allele on chromosome 16 which produces an altered version of the MC1R protein.",
           "Red hair varies in hues from a deep burgundy or bright copper (reddish-brown or auburn) through to burnt orange or red-orange and strawberry blond.",
-          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin.",
-          "It is associated with fair skin color, lighter eye colors (gray, blue, green, and hazel), freckles, and sensitivity to ultraviolet light.",
-          "Cultural reactions have varied from ridicule to admiration; many common stereotypes exist regarding redheads and they are often portrayed as fiery-tempered.",
-          "The term redhead has been in use since at least 1510.",
-          "Red hair is most commonly found at the northern and western fringes of Europe; it is centered around populations in the British Isles.",
-          "Redheads today are commonly associated with the Celtic nations and to a far lesser extent the Germanic peoples."
+          "It is characterized by high levels of the reddish pigment pheomelanin and relatively low levels of the dark pigment eumelanin."
         ]
       }
     ]
@@ -551,10 +466,7 @@
           "For most people it is eros rather than agape, philia, or storge.",
           "In the context of romantic love relationships, romance usually implies an expression of one's strong romantic love, or one's deep and strong emotional desires to connect with another person intimately or romantically.",
           "Historically, the term \"\"romance\"\" originates with the medieval ideal of chivalry as set out in its \"chivalric romance\" literature.",
-          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures.",
-          "The debate over an exact definition of romantic love may be found in literature as well as in the works of psychologists, philosophers, biochemists and other professionals and specialists.",
-          "Romantic love is a relative term, but generally accepted as a definition that distinguishes moments and situations within intimate relationships to an individual as contributing to a significant relationship connection.",
-          "Historians believe that the actual English word \"romance\" developed from a vernacular dialect within the French language meaning \"verse narrative\"—referring to the style of speech, writing, and artistic talents within elite classes."
+          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures."
         ]
       },
       {
@@ -573,10 +485,7 @@
           "For most people it is eros rather than agape, philia, or storge.",
           "In the context of romantic love relationships, romance usually implies an expression of one's strong romantic love, or one's deep and strong emotional desires to connect with another person intimately or romantically.",
           "Historically, the term \"\"romance\"\" originates with the medieval ideal of chivalry as set out in its \"chivalric romance\" literature.",
-          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures.",
-          "The debate over an exact definition of romantic love may be found in literature as well as in the works of psychologists, philosophers, biochemists and other professionals and specialists.",
-          "Romantic love is a relative term, but generally accepted as a definition that distinguishes moments and situations within intimate relationships to an individual as contributing to a significant relationship connection.",
-          "Historians believe that the actual English word \"romance\" developed from a vernacular dialect within the French language meaning \"verse narrative\"—referring to the style of speech, writing, and artistic talents within elite classes."
+          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures."
         ]
       },
       {
@@ -595,10 +504,7 @@
           "For most people it is eros rather than agape, philia, or storge.",
           "In the context of romantic love relationships, romance usually implies an expression of one's strong romantic love, or one's deep and strong emotional desires to connect with another person intimately or romantically.",
           "Historically, the term \"\"romance\"\" originates with the medieval ideal of chivalry as set out in its \"chivalric romance\" literature.",
-          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures.",
-          "The debate over an exact definition of romantic love may be found in literature as well as in the works of psychologists, philosophers, biochemists and other professionals and specialists.",
-          "Romantic love is a relative term, but generally accepted as a definition that distinguishes moments and situations within intimate relationships to an individual as contributing to a significant relationship connection.",
-          "Historians believe that the actual English word \"romance\" developed from a vernacular dialect within the French language meaning \"verse narrative\"—referring to the style of speech, writing, and artistic talents within elite classes."
+          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures."
         ]
       },
       {
@@ -629,17 +535,7 @@
         "utterance": "Good point. Romance is associated with perfect partners, which is often unattainable. Sexual attraction often is stronger.",
         "utt_idx": 8,
         "checked_sentence": "This feeling is associated with, but does not necessitate, sexual attraction.",
-        "checked_passage": [
-          "Romance is the expressive and pleasurable feeling from an emotional attraction towards another person.",
-          "This feeling is associated with, but does not necessitate, sexual attraction.",
-          "For most people it is eros rather than agape, philia, or storge.",
-          "In the context of romantic love relationships, romance usually implies an expression of one's strong romantic love, or one's deep and strong emotional desires to connect with another person intimately or romantically.",
-          "Historically, the term \"\"romance\"\" originates with the medieval ideal of chivalry as set out in its \"chivalric romance\" literature.",
-          "Humans have a natural inclination to form bonds with one another through social interactions, be it through verbal communication or nonverbal gestures.",
-          "The debate over an exact definition of romantic love may be found in literature as well as in the works of psychologists, philosophers, biochemists and other professionals and specialists.",
-          "Romantic love is a relative term, but generally accepted as a definition that distinguishes moments and situations within intimate relationships to an individual as contributing to a significant relationship connection.",
-          "Historians believe that the actual English word \"romance\" developed from a vernacular dialect within the French language meaning \"verse narrative\"—referring to the style of speech, writing, and artistic talents within elite classes."
-        ]
+        "checked_passage": null
       },
       {
         "speaker": "user",
@@ -676,11 +572,7 @@
           "Krav Maga (; , \"lit.\"",
           "\"contact-combat\") is a military self-defence and fighting system developed for the Israel Defense Forces (IDF) and Israeli security forces (Shin Bet and Mossad) that derived from a combination of techniques sourced from Boxing, Wrestling, Aikido, Judo, Karate along with realistic fight training.",
           "Krav Maga is known for its focus on real-world situations and its extreme efficiency.",
-          "It was derived from the street-fighting experience of Hungarian-Israeli martial artist Imi Lichtenfeld, who made use of his training as a boxer and wrestler as a means of defending the Jewish quarter against fascist groups in Bratislava, Czechoslovakia, in the mid-to-late 1930s.",
-          "In the late 1940s, following his migration to Israel, he began to provide lessons on combat training to what was to become the IDF.",
-          "From the outset, the original concept of Krav Maga was to take the most simple and practical techniques of other fighting styles (originally European boxing, wrestling and street fighting) and to make them rapidly teachable to military conscripts.",
-          "Krav Maga has a philosophy emphasizing aggression, and simultaneous defensive and offensive maneuvers.",
-          "Krav Maga has been used by the Israel Defense Forces' special forces units, the security apparatus, and by regular infantry units."
+          "It was derived from the street-fighting experience of Hungarian-Israeli martial artist Imi Lichtenfeld, who made use of his training as a boxer and wrestler as a means of defending the Jewish quarter against fascist groups in Bratislava, Czechoslovakia, in the mid-to-late 1930s."
         ]
       },
       {
@@ -697,11 +589,7 @@
           "Krav Maga (; , \"lit.\"",
           "\"contact-combat\") is a military self-defence and fighting system developed for the Israel Defense Forces (IDF) and Israeli security forces (Shin Bet and Mossad) that derived from a combination of techniques sourced from Boxing, Wrestling, Aikido, Judo, Karate along with realistic fight training.",
           "Krav Maga is known for its focus on real-world situations and its extreme efficiency.",
-          "It was derived from the street-fighting experience of Hungarian-Israeli martial artist Imi Lichtenfeld, who made use of his training as a boxer and wrestler as a means of defending the Jewish quarter against fascist groups in Bratislava, Czechoslovakia, in the mid-to-late 1930s.",
-          "In the late 1940s, following his migration to Israel, he began to provide lessons on combat training to what was to become the IDF.",
-          "From the outset, the original concept of Krav Maga was to take the most simple and practical techniques of other fighting styles (originally European boxing, wrestling and street fighting) and to make them rapidly teachable to military conscripts.",
-          "Krav Maga has a philosophy emphasizing aggression, and simultaneous defensive and offensive maneuvers.",
-          "Krav Maga has been used by the Israel Defense Forces' special forces units, the security apparatus, and by regular infantry units."
+          "It was derived from the street-fighting experience of Hungarian-Israeli martial artist Imi Lichtenfeld, who made use of his training as a boxer and wrestler as a means of defending the Jewish quarter against fascist groups in Bratislava, Czechoslovakia, in the mid-to-late 1930s."
         ]
       },
       {
@@ -718,11 +606,7 @@
           "Krav Maga (; , \"lit.\"",
           "\"contact-combat\") is a military self-defence and fighting system developed for the Israel Defense Forces (IDF) and Israeli security forces (Shin Bet and Mossad) that derived from a combination of techniques sourced from Boxing, Wrestling, Aikido, Judo, Karate along with realistic fight training.",
           "Krav Maga is known for its focus on real-world situations and its extreme efficiency.",
-          "It was derived from the street-fighting experience of Hungarian-Israeli martial artist Imi Lichtenfeld, who made use of his training as a boxer and wrestler as a means of defending the Jewish quarter against fascist groups in Bratislava, Czechoslovakia, in the mid-to-late 1930s.",
-          "In the late 1940s, following his migration to Israel, he began to provide lessons on combat training to what was to become the IDF.",
-          "From the outset, the original concept of Krav Maga was to take the most simple and practical techniques of other fighting styles (originally European boxing, wrestling and street fighting) and to make them rapidly teachable to military conscripts.",
-          "Krav Maga has a philosophy emphasizing aggression, and simultaneous defensive and offensive maneuvers.",
-          "Krav Maga has been used by the Israel Defense Forces' special forces units, the security apparatus, and by regular infantry units."
+          "It was derived from the street-fighting experience of Hungarian-Israeli martial artist Imi Lichtenfeld, who made use of his training as a boxer and wrestler as a means of defending the Jewish quarter against fascist groups in Bratislava, Czechoslovakia, in the mid-to-late 1930s."
         ]
       },
       {
@@ -755,13 +639,7 @@
           "Most teller jobs require experience with handling cash and a high school diploma.",
           "Most banks provide on-the-job training.",
           "Tellers are considered a \"front line\" in the banking business because they are the first people who a customer sees at the bank.",
-          "Being front line staff they are most likely to detect and stop fraudulent transactions in order to prevent losses at a bank (counterfeit currency and checks, identity theft, confidence tricks, etc.).",
-          "The position also requires tellers to be friendly and interact with the customers, providing them with information about customers' accounts and bank services.",
-          "Tellers typically work from a station, usually located on a teller line.",
-          "Most stations have a teller system, which includes cash drawers, receipt validator/printers, proof work sorters, and paperwork used for completing bank transactions.",
-          "These transactions include:  In the United States, tellers held approximately 608,000 jobs in 2006.",
-          "Of these, 1 out of 4 worked part-time.",
-          "Median annual earnings as of May 2006 were $22,140."
+          "Being front line staff they are most likely to detect and stop fraudulent transactions in order to prevent losses at a bank (counterfeit currency and checks, identity theft, confidence tricks, etc.)."
         ]
       },
       {
@@ -775,18 +653,11 @@
         "utt_idx": 3,
         "checked_sentence": "Most banks provide on-the-job training.",
         "checked_passage": [
-          "A bank teller (often abbreviated to simply teller) is an employee of a bank who deals directly with customers.",
-          "In some places, this employee is known as a cashier or customer representative.",
-          "Most teller jobs require experience with handling cash and a high school diploma.",
-          "Most banks provide on-the-job training.",
-          "Tellers are considered a \"front line\" in the banking business because they are the first people who a customer sees at the bank.",
-          "Being front line staff they are most likely to detect and stop fraudulent transactions in order to prevent losses at a bank (counterfeit currency and checks, identity theft, confidence tricks, etc.).",
-          "The position also requires tellers to be friendly and interact with the customers, providing them with information about customers' accounts and bank services.",
-          "Tellers typically work from a station, usually located on a teller line.",
-          "Most stations have a teller system, which includes cash drawers, receipt validator/printers, proof work sorters, and paperwork used for completing bank transactions.",
-          "These transactions include:  In the United States, tellers held approximately 608,000 jobs in 2006.",
-          "Of these, 1 out of 4 worked part-time.",
-          "Median annual earnings as of May 2006 were $22,140."
+          "The Bank Job is a British television game show broadcast live on Channel 4, hosted by George Lamb.",
+          "It was first broadcast on 2 January 2012 and ended on 17 March 2012.",
+          "Standing in a bank vault with 25 safe deposit boxes, four contestants answered questions to open the boxes and accumulate prize money during three rounds.",
+          "The winner of the third round advanced to a grand final at the end of the week, in which their entire total was placed in a jackpot that went to the eventual winner.",
+          "In the first round, cash amounts totaling £150,000 were placed in the boxes, at least four of which were left empty."
         ]
       },
       {
@@ -842,11 +713,7 @@
           "It may involve more or less free-falling which is a period during the parachute has not been deployed and the body gradually accelerates to terminal velocity.",
           "The first parachute jump in history was made by André-Jacques Garnerin, the inventor of the parachute, on October 22, 1797.",
           "Garnerin tested his contraption by leaping from a hydrogen balloon above Paris.",
-          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord.",
-          "The first intentional freefall jump with a ripcord-operated deployment was not made until over a century later by Leslie Irvin in 1919.",
-          "While Georgia Broadwick made an earlier freefall in 1914 when her static line became entangled with her jump aircraft's tail assembly, her freefall descent was not planned.",
-          "Broadwick cut her static line and deployed her parachute manually, only as a means of freeing herself from the aircraft to which she had become entangled.",
-          "The military developed parachuting technology as a way to save aircrews from emergencies aboard balloons and aircraft in flight, and later as a way of delivering soldiers to the battlefield."
+          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord."
         ]
       },
       {
@@ -864,11 +731,7 @@
           "It may involve more or less free-falling which is a period during the parachute has not been deployed and the body gradually accelerates to terminal velocity.",
           "The first parachute jump in history was made by André-Jacques Garnerin, the inventor of the parachute, on October 22, 1797.",
           "Garnerin tested his contraption by leaping from a hydrogen balloon above Paris.",
-          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord.",
-          "The first intentional freefall jump with a ripcord-operated deployment was not made until over a century later by Leslie Irvin in 1919.",
-          "While Georgia Broadwick made an earlier freefall in 1914 when her static line became entangled with her jump aircraft's tail assembly, her freefall descent was not planned.",
-          "Broadwick cut her static line and deployed her parachute manually, only as a means of freeing herself from the aircraft to which she had become entangled.",
-          "The military developed parachuting technology as a way to save aircrews from emergencies aboard balloons and aircraft in flight, and later as a way of delivering soldiers to the battlefield."
+          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord."
         ]
       },
       {
@@ -886,11 +749,7 @@
           "It may involve more or less free-falling which is a period during the parachute has not been deployed and the body gradually accelerates to terminal velocity.",
           "The first parachute jump in history was made by André-Jacques Garnerin, the inventor of the parachute, on October 22, 1797.",
           "Garnerin tested his contraption by leaping from a hydrogen balloon above Paris.",
-          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord.",
-          "The first intentional freefall jump with a ripcord-operated deployment was not made until over a century later by Leslie Irvin in 1919.",
-          "While Georgia Broadwick made an earlier freefall in 1914 when her static line became entangled with her jump aircraft's tail assembly, her freefall descent was not planned.",
-          "Broadwick cut her static line and deployed her parachute manually, only as a means of freeing herself from the aircraft to which she had become entangled.",
-          "The military developed parachuting technology as a way to save aircrews from emergencies aboard balloons and aircraft in flight, and later as a way of delivering soldiers to the battlefield."
+          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord."
         ]
       },
       {
@@ -908,11 +767,7 @@
           "It may involve more or less free-falling which is a period during the parachute has not been deployed and the body gradually accelerates to terminal velocity.",
           "The first parachute jump in history was made by André-Jacques Garnerin, the inventor of the parachute, on October 22, 1797.",
           "Garnerin tested his contraption by leaping from a hydrogen balloon above Paris.",
-          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord.",
-          "The first intentional freefall jump with a ripcord-operated deployment was not made until over a century later by Leslie Irvin in 1919.",
-          "While Georgia Broadwick made an earlier freefall in 1914 when her static line became entangled with her jump aircraft's tail assembly, her freefall descent was not planned.",
-          "Broadwick cut her static line and deployed her parachute manually, only as a means of freeing herself from the aircraft to which she had become entangled.",
-          "The military developed parachuting technology as a way to save aircrews from emergencies aboard balloons and aircraft in flight, and later as a way of delivering soldiers to the battlefield."
+          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord."
         ]
       },
       {
@@ -930,11 +785,7 @@
           "It may involve more or less free-falling which is a period during the parachute has not been deployed and the body gradually accelerates to terminal velocity.",
           "The first parachute jump in history was made by André-Jacques Garnerin, the inventor of the parachute, on October 22, 1797.",
           "Garnerin tested his contraption by leaping from a hydrogen balloon above Paris.",
-          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord.",
-          "The first intentional freefall jump with a ripcord-operated deployment was not made until over a century later by Leslie Irvin in 1919.",
-          "While Georgia Broadwick made an earlier freefall in 1914 when her static line became entangled with her jump aircraft's tail assembly, her freefall descent was not planned.",
-          "Broadwick cut her static line and deployed her parachute manually, only as a means of freeing herself from the aircraft to which she had become entangled.",
-          "The military developed parachuting technology as a way to save aircrews from emergencies aboard balloons and aircraft in flight, and later as a way of delivering soldiers to the battlefield."
+          "Garnerin's parachute bore little resemblance to today's parachutes, however, as it was not packed into any sort of container and did not feature a ripcord."
         ]
       },
       {
@@ -965,11 +816,7 @@
           "True crime is a non-fiction literary and film genre in which the author examines an actual crime and details the actions of real people.",
           "The crimes most commonly include murder, with tales of serial killers dominating the genre (about 40% in a 2002 survey), but true crime works have also focused on other subjects, for instance policemen memoirs, and more recently reality police TV shows.",
           "Depending on the writer, true crime can adhere strictly to well-established facts in journalistic fashion, or can be highly speculative.",
-          "Some true crime works are \"instant books\" produced quickly to capitalize on popular demand; these have been described as \"more than formulaic\" and hyper-conventional.",
-          "Others may reflect years of thoughtful research and inquiry and may have considerable literary merit.",
-          "Still others revisit historic crimes (or alleged crimes) and propose solutions, such as books examining political assassinations, well-known unsolved murders, or the deaths of celebrities.",
-          "Although the genre examines real historical events, true crime TV series typically use reenactments to help draw in viewers.",
-          "\"Helter Skelter\" (1974), the true story of the Manson murders by Vincent Bugliosi, is the biggest selling true crime book in publishing history; Truman Capote's \"In Cold Blood\" (1966) is number two."
+          "Some true crime works are \"instant books\" produced quickly to capitalize on popular demand; these have been described as \"more than formulaic\" and hyper-conventional."
         ]
       },
       {
