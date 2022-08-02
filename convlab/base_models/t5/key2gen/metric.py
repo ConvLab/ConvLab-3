@@ -65,6 +65,15 @@ Returns:
     unigram f1: unigram overlap, from parlai
     distinct-1/2: from parlai
     other knowledge utility score: task-specific knowledge utility metrics
+
+Examples:
+
+    >>> nlg_metric = datasets.load_metric("metric.py", "nlg")
+    >>> predictions = ["hello there general kenobi", "foo bar foobar"]
+    >>> references = ["hello there kenobi", "foo bar foobar"]
+    >>> results = nlg_metric.compute(predictions=predictions, references=references)
+    >>> print(results)
+    {"bleu": 35.35533905932737}
 """
 
 re_art = re.compile(r'\b(a|an|the)\b')
@@ -316,11 +325,11 @@ def f1_score(y_pred, y_true, average="micro"):
 
     if average == "macro":
         F1_macro_score = F1_pred / float(F1_count) if F1_count != 0 else 0
-        return F1_macro_score * 100
+        return F1_macro_score
     elif average == "micro":
         P_score = TP_all / float(TP_all + FP_all) if (TP_all + FP_all) != 0 else 0
         R_score = TP_all / float(TP_all + FN_all) if (TP_all + FN_all) != 0 else 0
-        F1_micro_score = _compute_F1(P_score, R_score) * 100
+        F1_micro_score = _compute_F1(P_score, R_score)
         return F1_micro_score
     else:
         raise ValueError("Options other than micro/macro are not supported.")

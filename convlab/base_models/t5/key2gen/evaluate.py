@@ -59,26 +59,31 @@ if __name__ == '__main__':
         for shot in tqdm(args.shots, desc='shots', leave=False):
             for output_dir in tqdm(args.output_dirs, desc='models', leave=False):
                 model_name = output_dir.split('/')[-1]
-                results = []
-                for dial_ids_order in tqdm(args.dial_ids_orders, desc='dial_ids_orders', leave=False):
-                    result_dir = os.path.join(output_dir, task_name, f"{dataset_name}_{shot}shot_order{dial_ids_order}/gen")
-                    result_file = os.path.join(result_dir, "result.json")
-                    if not os.path.exists(result_file):
-                        filename = os.path.join(output_dir, task_name, f"{dataset_name}_{shot}shot_order{dial_ids_order}/gen/generated_predictions.json")
-                        result = evaluate(filename, metric)
-                        json.dump(result, open(result_file, 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-                    else:
-                        result = json.load(open(result_file))
-                    results.append(result)
-                res = {
-                    "dataset": f"{task_name}-{shot}shot",
-                    "model": f"{model_name}",
-                    **avg_result(results)
-                }
-                table.append(res)
-                for k in res:
-                    if k not in fieldnames:
-                        fieldnames.append(k)
+                if task_name == "wow":
+                    test_splits = ["_seen", "_unseen"]
+                else:
+                    test_splits = [""]
+                for test_split in test_splits:
+                    results = []
+                    for dial_ids_order in tqdm(args.dial_ids_orders, desc='dial_ids_orders', leave=False):
+                        result_dir = os.path.join(output_dir, task_name, f"{dataset_name}_{shot}shot_order{dial_ids_order}/gen{test_split}")
+                        result_file = os.path.join(result_dir, "result.json")
+                        if not os.path.exists(result_file):
+                            filename = os.path.join(output_dir, task_name, f"{dataset_name}_{shot}shot_order{dial_ids_order}/gen{test_split}/generated_predictions.json")
+                            result = evaluate(filename, metric)
+                            json.dump(result, open(result_file, 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+                        else:
+                            result = json.load(open(result_file))
+                        results.append(result)
+                    res = {
+                        "dataset": f"{task_name}{test_split}-{shot}shot",
+                        "model": f"{model_name}",
+                        **avg_result(results)
+                    }
+                    table.append(res)
+                    for k in res:
+                        if k not in fieldnames:
+                            fieldnames.append(k)
                     
     res = tabulate(table, headers='keys', tablefmt='github')
     with open(f'eval_results.txt', 'w', encoding='utf-8') as f:
