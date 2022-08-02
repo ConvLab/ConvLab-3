@@ -37,7 +37,7 @@ def init_logging(log_dir_path, path_suffix=None):
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_data=False):
+def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_data=False, dialogues=500):
     seed = 0
     set_seed(seed)
 
@@ -72,7 +72,6 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
     task_success = {'Complete': [], 'Success': [],
                     'Success strict': [], 'total_return': [], 'turns': []}
 
-    dialogues = 5
     goal_generator = GoalGenerator()
     if goals_from_data:
         logging.info("read goals from dataset...")
@@ -123,7 +122,10 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
                 task_succ = sess.evaluator.task_success()
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
-                complete = sess.evaluator.complete
+                if goals_from_data:
+                    complete = sess.user_agent.policy.policy.goal.task_complete()
+                else:
+                    complete = sess.evaluator.complete
                 break
 
         if verbose:
@@ -154,6 +156,8 @@ if __name__ == "__main__":
     parser.add_argument("--model_path", type=str,
                         default='', help="if this is set, tries to load the model weights from this path"
                                          ", otherwise from config")
+    parser.add_argument("--num_dialogues", type=int,
+                        default=500, help="# of evaluation dialogue")
     parser.add_argument("--verbose", action='store_true',
                         help="whether to output utterances")
     parser.add_argument("--log_path_suffix", type=str,
@@ -167,5 +171,9 @@ if __name__ == "__main__":
 
     init_logging(log_dir_path=args.log_dir_path,
                  path_suffix=args.log_path_suffix)
-    evaluate(config_path=args.config_path, model_name=args.model_name,
-             verbose=args.verbose, model_path=args.model_path, goals_from_data=args.goals_from_data)
+    evaluate(config_path=args.config_path,
+             model_name=args.model_name,
+             verbose=args.verbose,
+             model_path=args.model_path,
+             goals_from_data=args.goals_from_data,
+             dialogues=args.num_dialogues)
