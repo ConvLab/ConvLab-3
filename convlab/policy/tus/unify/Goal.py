@@ -48,15 +48,16 @@ class Goal(object):
                 self.domain_goals[domain] = {}
 
             # "book" domain is not clear for unify data format
-            if "info" in intent.lower():
-                if "info" not in self.domain_goals[domain]:
-                    self.domain_goals[domain]["info"] = {}
-                self.domain_goals[domain]["info"][slot] = value
 
-            elif "request" in intent.lower():
+            if "request" in intent.lower():
                 if "reqt" not in self.domain_goals[domain]:
                     self.domain_goals[domain]["reqt"] = {}
                 self.domain_goals[domain]["reqt"][slot] = DEF_VAL_UNK
+
+            elif "info" in intent.lower():
+                if "info" not in self.domain_goals[domain]:
+                    self.domain_goals[domain]["info"] = {}
+                self.domain_goals[domain]["info"][slot] = value
 
             self.user_history[f"{domain}-{slot}"] = value
 
