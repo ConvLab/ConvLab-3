@@ -17,7 +17,7 @@ from convlab.util import (load_dataset,
                           relative_import_module_from_unified_datasets)
 from convlab.util.custom_util import model_downloader
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
-
+from pprint import pprint
 reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
@@ -114,6 +114,9 @@ class UserActionPolicy(Policy):
             # domain, slot, value = normalize_domain_slot_value(
             #     domain, slot, value)
             norm_usr_action.append([intent, domain, slot, value])
+
+
+        cur_state = self.goal.update(action=norm_usr_action, char="user")
 
         return norm_usr_action
 
@@ -215,6 +218,10 @@ class UserActionPolicy(Policy):
         is_finish, usr_action = self._finish_conversation()
         if is_finish:
             self.terminated = True
+            if "bye" == usr_action[0][0]:
+                print("fail")
+                pprint(self.goal.domain_goals)
+                pprint(self.goal.status)
             return usr_action
 
         usr_action = self._get_acts(
