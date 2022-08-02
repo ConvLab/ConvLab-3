@@ -72,7 +72,7 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
     task_success = {'Complete': [], 'Success': [],
                     'Success strict': [], 'total_return': [], 'turns': []}
 
-    dialogues = 500
+    dialogues = 5
     goal_generator = GoalGenerator()
     if goals_from_data:
         logging.info("read goals from dataset...")
