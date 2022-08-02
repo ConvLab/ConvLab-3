@@ -1,6 +1,6 @@
 import json
 from convlab.policy.tus.unify.util import split_slot_name
-
+from pprint import pprint
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
@@ -42,6 +42,8 @@ class Goal(object):
                '\n-----Goal-----'
 
     def init_goal_status(self, goal):
+        print("---->init")
+        pprint(goal)
         for domain, intent, slot, value in goal:  # check this order
             if domain not in self.domains:
                 self.domains.append(domain)
@@ -60,7 +62,7 @@ class Goal(object):
                 self.domain_goals[domain]["info"][slot] = value
 
             self.user_history[f"{domain}-{slot}"] = value
-
+        pprint(self.domain_goals)
     def task_complete(self):
         """
         Check that all requests have been met
@@ -69,16 +71,20 @@ class Goal(object):
         """
         for domain in self.domain_goals:
             if domain not in self.status:
+                print(f"{domain} is not mentioned")
                 return False
             if "info" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["info"]:
                     if slot not in self.status[domain]:
+                        print(f"{slot} is not mentioned")
                         return False
-                    if self.domain_goals[domain]["info"][slot] != self.status[domain][slot]:
+                    if self.domain_goals[domain]["info"][slot].lower() != self.status[domain][slot].lower():
+                        print(f"conflict value of slot {slot}: {self.domain_goals[domain]['info'][slot]} <-> {self.status[domain][slot]}")
                         return False
             if "reqt" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["reqt"]:
                     if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
+                        print(f"not fulfilled request{domain}-{slot}")
                         return False
         return True
 
