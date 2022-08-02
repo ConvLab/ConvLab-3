@@ -123,7 +123,10 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
                 task_succ = sess.evaluator.task_success()
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
-                complete = sess.evaluator.complete
+                if goals_from_data:
+                    complete = sess.user_agent.policy.policy.goal.task_complete()
+                else:
+                    complete = sess.evaluator.complete
                 break
 
         if verbose:
