@@ -44,7 +44,7 @@ class UserActionPolicy(Policy):
             self.config = config
 
         feat_type = self.config.get("feat_type", "binary")
-        print("feat_type", feat_type)
+        # print("feat_type", feat_type)
         self.feat_handler = BinaryFeature(self.config)
 
         self.config["num_token"] = config["num_token"]
@@ -78,7 +78,7 @@ class UserActionPolicy(Policy):
 
         # need better way to handle this
         if self._no_offer(sys_dialog_act):
-            return [["bye", "general", "None", "None"]]
+            return [["bye", "general", "none", "none"]]
 
         # update constraint
         self.time_step += 2
@@ -114,7 +114,6 @@ class UserActionPolicy(Policy):
             # domain, slot, value = normalize_domain_slot_value(
             #     domain, slot, value)
             norm_usr_action.append([intent, domain, slot, value])
-
 
         cur_state = self.goal.update(action=norm_usr_action, char="user")
 
@@ -196,7 +195,7 @@ class UserActionPolicy(Policy):
         for domain in domains:
             domain = domain.lower()
             if domain not in self.mentioned_domain and domain != 'general':
-                actions.append([Inform, domain, "None", "None"])
+                actions.append([Inform, domain, "none", "none"])
                 self.mentioned_domain.append(domain)
         return actions
 
@@ -206,11 +205,11 @@ class UserActionPolicy(Policy):
             return True, [['thank', 'general', 'none', 'none']]
 
         if self.time_step > self.max_turn:
-            return True, [["bye", "general", "None", "None"]]
+            return True, [["bye", "general", "none", "none"]]
 
         if len(self.sys_acts) >= 3:
             if self.sys_acts[-1] == self.sys_acts[-2] and self.sys_acts[-2] == self.sys_acts[-3]:
-                return True, [["bye", "general", "None", "None"]]
+                return True, [["bye", "general", "none", "none"]]
 
         return False, [[]]
 
@@ -218,10 +217,10 @@ class UserActionPolicy(Policy):
         is_finish, usr_action = self._finish_conversation()
         if is_finish:
             self.terminated = True
-            if "bye" == usr_action[0][0]:
-                print("fail")
-                pprint(self.goal.domain_goals)
-                pprint(self.goal.status)
+            # if "bye" == usr_action[0][0]:
+            #     print("fail")
+            #     pprint(self.goal.domain_goals)
+            #     pprint(self.goal.status)
             return usr_action
 
         usr_action = self._get_acts(
