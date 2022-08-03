@@ -16,91 +16,87 @@
 """KL Divergence Ensemble Distillation loss"""
 
 import torch
-from torch import lgamma, log
 from torch.nn import Module
 from torch.nn.functional import kl_div
 
 
-# Pytorch BayesianMatchingLoss nn.Module (see https://arxiv.org/pdf/1503.02531.pdf for details)
 class KLDistillationLoss(Module):
+    """Ensemble Distillation loss using KL Divergence (https://arxiv.org/pdf/1503.02531.pdf) implementation"""
 
     def __init__(self, lamb: float = 1e-4, ignore_index: int = -1) -> Module:
-        '''
-        Ensemble Distillation loss using KL Divergence (https://arxiv.org/pdf/1503.02531.pdf) implementation
-
+        """
         Args:
-            lamb: Target smoothing parameter
-            ignore_index: Specifies a target value that is ignored and does not contribute to the input gradient.
-        '''
+            lamb (float): Target smoothing parameter
+            ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
+        """
         super(KLDistillationLoss, self).__init__()
 
         self.lamb = lamb
         self.ignore_index = ignore_index
     
-    def forward(self, input: torch.Tensor, targets: torch.Tensor, temp: float = 1.0) -> torch.Tensor:
-        '''
+    def forward(self, inputs: torch.Tensor, targets: torch.Tensor, temp: float = 1.0) -> torch.Tensor:
+        """
         Args:
-            input: Predictive distribution
-            targets: Target distribution (ensemble marginal)
-            temp: Temperature scaling coefficient for predictive distribution
+            inputs (Tensor): Predictive distribution
+            targets (Tensor): Target distribution (ensemble marginal)
+            temp (float): Temperature scaling coefficient for predictive distribution
 
         Returns:
-            loss: Loss value
-        '''
+            loss (Tensor): Loss value
+        """
         # Assert input sizes
-        assert input.dim() == 2                 # Observations, predictive distribution
+        assert inputs.dim() == 2                  # Observations, predictive distribution
         assert targets.dim() == 2                # Label for each observation
-        assert targets.size(0) == input.size(0)  # Equal number of observation
+        assert targets.size(0) == inputs.size(0)  # Equal number of observation
 
         # Confirm predictive distribution dimension
-        if targets.size(-1) == input.size(-1):
-            dimension = input.size(-1)
-        else:
-            raise NameError(f'Target dimension {targets.size(-1)} is not the same as the prediction dimension {input.size(-1)}.')
+        if targets.size(-1) != inputs.size(-1):
+            name_error = f'Target dimension {targets.size(-1)} is not the same as the prediction dimension '
+            name_error += f'{inputs.size(-1)}.'
+            raise NameError(name_error)
 
         # Remove observations to be ignored in loss calculation
-        input = torch.log(torch.softmax(input / temp, -1))
+        inputs = torch.log(torch.softmax(inputs / temp, -1))
         ids = torch.where(targets[:, 0] != self.ignore_index)[0]
-        input = input[ids]
+        inputs = inputs[ids]
         targets = targets[ids]
 
         # Target smoothing
         targets = ((1 - self.lamb) * targets) + (self.lamb / targets.size(-1))
 
-        return kl_div(input, targets, reduction='none').sum(-1).mean()
+        return kl_div(inputs, targets, reduction='none').sum(-1).mean()
 
 
 # Pytorch BayesianMatchingLoss nn.Module
 class BinaryKLDistillationLoss(KLDistillationLoss):
+    """Binary Ensemble Distillation loss using KL Divergence (https://arxiv.org/pdf/1503.02531.pdf) implementation"""
 
     def __init__(self, lamb: float = 1e-4, ignore_index: int = -1) -> Module:
-        '''
-        Binary Ensemble Distillation loss using KL Divergence (https://arxiv.org/pdf/1503.02531.pdf) implementation
-
+        """
         Args:
-            lamb: Target smoothing parameter
-            ignore_index: Specifies a target value that is ignored and does not contribute to the input gradient.
-        '''
+            lamb (float): Target smoothing parameter
+            ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
+        """
         super(BinaryKLDistillationLoss, self).__init__(lamb, ignore_index)
 
-    def forward(self, input: torch.Tensor, targets: torch.Tensor, temp: float = 1.0) -> torch.Tensor:
-        '''
+    def forward(self, inputs: torch.Tensor, targets: torch.Tensor, temp: float = 1.0) -> torch.Tensor:
+        """
         Args:
-            input: Predictive distribution
-            targets: Target distribution (ensemble marginal)
-            temp: Temperature scaling coefficient for predictive distribution
+            inputs (Tensor): Predictive distribution
+            targets (Tensor): Target distribution (ensemble marginal)
+            temp (float): Temperature scaling coefficient for predictive distribution
 
         Returns:
-            loss: Loss value
-        '''
+            loss (Tensor): Loss value
+        """
         # Assert input sizes
-        assert input.dim() == 1                 # Observations, predictive distribution
+        assert inputs.dim() == 1                 # Observations, predictive distribution
         assert targets.dim() == 1                # Label for each observation
-        assert targets.size(0) == input.size(0)  # Equal number of observation
+        assert targets.size(0) == inputs.size(0)  # Equal number of observation
         
         # Convert input and target to 2D binary distribution for KL divergence computation
-        input = torch.sigmoid(input / temp).unsqueeze(-1)
-        input = torch.log(torch.cat((1 - input, input), 1))
+        inputs = torch.sigmoid(inputs / temp).unsqueeze(-1)
+        inputs = torch.log(torch.cat((1 - inputs, inputs), 1))
 
         targets = targets.unsqueeze(-1)
         targets = torch.cat((1 - targets, targets), -1)
