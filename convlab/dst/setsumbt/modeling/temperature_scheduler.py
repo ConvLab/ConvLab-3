@@ -20,6 +20,7 @@
 class LinearTemperatureScheduler:
     """
     Temperature scheduler object used for distribution temperature scheduling in distillation
+
     Attributes:
         state (dict): Internal state of scheduler
     """
@@ -28,7 +29,6 @@ class LinearTemperatureScheduler:
                  base_temp: float = 2.5,
                  cycle_len: float = 0.1):
         """
-        Init function for LinearTemperatureScheduler
         Args:
             total_steps (int): Total number of training steps
             base_temp (float): Starting temperature
@@ -57,6 +57,7 @@ class LinearTemperatureScheduler:
     def temp(self):
         """
         Get current temperature
+
         Returns:
             temp (float): Current temperature for distribution scaling
         """
@@ -65,6 +66,7 @@ class LinearTemperatureScheduler:
     def state_dict(self):
         """
         Return scheduler state
+
         Returns:
             state (dict): Dictionary format state of the scheduler
         """
@@ -73,7 +75,8 @@ class LinearTemperatureScheduler:
     def load_state_dict(self, state_dict: dict):
         """
         Load scheduler state from dictionary
-        Parameters:
+
+        Args:
             state_dict (dict): Dictionary format state of the scheduler
         """
         self.state = state_dict

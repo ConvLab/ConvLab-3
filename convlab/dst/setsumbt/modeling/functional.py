@@ -16,7 +16,6 @@
 """SetSUMBT functionals"""
 
 import torch
-import transformers
 from torch.autograd import Variable
 from torch.nn import (MultiheadAttention, GRU, LSTM, Linear, LayerNorm, Dropout,
                       CosineSimilarity, CrossEntropyLoss, PairwiseDistance,
@@ -25,12 +24,19 @@ from torch.nn.init import (xavier_normal_, constant_)
 
 from convlab.dst.setsumbt.loss import (BayesianMatchingLoss, BinaryBayesianMatchingLoss,
                                        KLDistillationLoss, BinaryKLDistillationLoss,
-                                       LabelSmoothingLoss, BinaryLabelSmoothingLoss)
-from convlab.dst.setsumbt.loss.endd_loss import rkl_dirichlet_mediator_loss, logits_to_mutual_info
+                                       LabelSmoothingLoss, BinaryLabelSmoothingLoss,
+                                       RKLDirichletMediatorLoss, BinaryRKLDirichletMediatorLoss)
 
 
 # Default belief tracker model initialization function
 def initialize_setsumbt_model(self, config):
+    """
+    Initialisation of the SetSUMBT head
+
+    Args:
+        self (class instance): Model class instance
+        config (configuration): Model configuration class
+    """
     # Slot Utterance matching attention
     self.slot_attention = MultiheadAttention(config.hidden_size, config.slot_attention_heads)
 
@@ -109,73 +115,78 @@ def initialize_setsumbt_model(self, config):
         self.loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
         self.temp = 1.0
     elif config.loss_function == 'distribution_distillation':
-        self.loss = rkl_dirichlet_mediator_loss
-        self.temp = 1.0
+        self.loss = RKLDirichletMediatorLoss(ignore_index=-1)
     else:
         raise NameError('NotImplemented')
 
     # Intent and domain prediction heads
     if config.predict_actions:
         self.request_gate = Linear(config.hidden_size, 1)
-        self.goodbye_gate = Linear(config.hidden_size, 3)
-        self.domain_gate = Linear(config.hidden_size, 1)
+        self.general_act_gate = Linear(config.hidden_size, 3)
+        self.active_domain_gate = Linear(config.hidden_size, 1)
 
         # Intent and domain loss function
         self.request_weight = float(self.config.user_request_loss_weight)
-        self.goodbye_weight = float(self.config.user_general_act_loss_weight)
-        self.domain_weight = float(self.config.active_domain_loss_weight)
+        self.general_act_weight = float(self.config.user_general_act_loss_weight)
+        self.active_domain_weight = float(self.config.active_domain_loss_weight)
         if config.loss_function == 'crossentropy':
             self.request_loss = BCEWithLogitsLoss()
-            self.goodbye_loss = CrossEntropyLoss(ignore_index=-1)
-            self.domain_loss = BCEWithLogitsLoss()
+            self.general_act_loss = CrossEntropyLoss(ignore_index=-1)
+            self.active_domain_loss = BCEWithLogitsLoss()
         elif config.loss_function == 'labelsmoothing':
             self.request_loss = BinaryLabelSmoothingLoss(label_smoothing=config.label_smoothing)
-            self.goodbye_loss = LabelSmoothingLoss(ignore_index=-1, label_smoothing=config.label_smoothing)
-            self.domain_loss = BinaryLabelSmoothingLoss(label_smoothing=config.label_smoothing)
+            self.general_act_loss = LabelSmoothingLoss(ignore_index=-1, label_smoothing=config.label_smoothing)
+            self.active_domain_loss = BinaryLabelSmoothingLoss(label_smoothing=config.label_smoothing)
         elif config.loss_function == 'bayesianmatching':
             self.request_loss = BinaryBayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
-            self.goodbye_loss = BayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
-            self.domain_loss = BinaryBayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
+            self.general_act_loss = BayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
+            self.active_domain_loss = BinaryBayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
         elif config.loss_function == 'distillation':
             self.request_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
-            self.goodbye_loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
-            self.domain_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
+            self.general_act_loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
+            self.active_domain_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
+        elif config.loss_function == 'distribution_distillation':
+            self.request_loss = BinaryRKLDirichletMediatorLoss(ignore_index=-1)
+            self.general_act_loss = RKLDirichletMediatorLoss(ignore_index=-1)
+            self.active_domain_loss = BinaryRKLDirichletMediatorLoss(ignore_index=-1)
 
 
 # Default belief tracker forward pass.
 def nbt_forward(self,
-                turn_embeddings,
-                turn_pooled_representation,
-                attention_mask,
-                batch_size,
-                dialogue_size,
-                hidden_state,
-                inform_labels,
-                request_labels,
-                domain_labels,
-                goodbye_labels,
-                calculate_inform_mutual_info):
+                turn_embeddings: torch.Tensor,
+                turn_pooled_representation: torch.Tensor,
+                attention_mask: torch.Tensor,
+                batch_size: int,
+                dialogue_size: int,
+                hidden_state: torch.Tensor = None,
+                state_labels: torch.Tensor = None,
+                request_labels: torch.Tensor = None,
+                active_domain_labels: torch.Tensor = None,
+                general_act_labels: torch.Tensor = None,
+                calculate_inform_mutual_info: bool = False):
     hidden_size = turn_embeddings.size(-1)
     # Initialise loss
     loss = 0.0
 
-    # Goodbye predictions
+    # General Action predictions
     goodbye_probs = None
     if self.config.predict_actions:
         # General action prediction
-        goodbye_scores = self.goodbye_gate(turn_pooled_representation.reshape(batch_size * dialogue_size, hidden_size))
+        goodbye_scores = self.general_act_gate(turn_pooled_representation.reshape(batch_size * dialogue_size,
+                                                                                  hidden_size))
 
         # Compute loss for general action predictions (weighted loss)
-        if goodbye_labels is not None:
+        if general_act_labels is not None:
             if self.config.loss_function == 'distillation':
-                goodbye_labels = goodbye_labels.reshape(-1, goodbye_labels.size(-1))
-                loss += self.goodbye_loss(goodbye_scores, goodbye_labels, self.temp) * self.goodbye_weight
+                general_act_labels = general_act_labels.reshape(-1, general_act_labels.size(-1))
+                loss += self.general_act_loss(goodbye_scores, general_act_labels, self.temp) * self.general_act_weight
             elif self.config.loss_function == 'distribution_distillation':
-                goodbye_labels = goodbye_labels.reshape(-1, goodbye_labels.size(-2), goodbye_labels.size(-1))
-                loss += self.loss(goodbye_scores, goodbye_labels, 1.0, 1.0)[0] * self.goodbye_weight
+                general_act_labels = general_act_labels.reshape(-1, general_act_labels.size(-2),
+                                                                general_act_labels.size(-1))
+                loss += self.general_act_loss(goodbye_scores, general_act_labels, 1.0, 1.0)[0] * self.general_act_weight
             else:
-                goodbye_labels = goodbye_labels.reshape(-1)
-                loss += self.goodbye_loss(goodbye_scores, goodbye_labels) * self.request_weight
+                general_act_labels = general_act_labels.reshape(-1)
+                loss += self.general_act_loss(goodbye_scores, general_act_labels) * self.request_weight
 
         # Compute general action probabilities
         if self.config.loss_function in ['crossentropy', 'labelsmoothing', 'distillation', 'distribution_distillation']:
@@ -314,7 +325,7 @@ def nbt_forward(self,
             if len(slot_ids) > 1:
                 # SqrtN reduction across all slots within a domain
                 belief = belief.sum(2) / ((belief != 0.0).float().sum(2) ** 0.5)
-            domain_scores = self.domain_gate(belief)
+            domain_scores = self.active_domain_gate(belief)
 
             # Store output probabilities
             domain_scores = domain_scores.reshape(batch_size, dialogue_size)
@@ -325,20 +336,20 @@ def nbt_forward(self,
                                              'distribution_distillation']:
                 domain_probs[domain] = torch.sigmoid(domain_scores)
 
-            if domain_labels is not None and domain in domain_labels:
+            if active_domain_labels is not None and domain in active_domain_labels:
                 # Compute domain prediction loss
                 domain_scores = domain_scores.reshape(-1)
                 if self.config.loss_function == 'distillation':
-                    loss += self.domain_loss(domain_scores, domain_labels[domain].reshape(-1),
-                                             self.temp) * self.domain_weight
+                    loss += self.active_domain_loss(domain_scores, active_domain_labels[domain].reshape(-1),
+                                                    self.temp) * self.active_domain_weight
                 elif self.config.loss_function == 'distribution_distillation':
-                    scores, labs = convert_probs_to_logits(domain_scores, domain_labels[domain])
+                    scores, labs = convert_probs_to_logits(domain_scores, active_domain_labels[domain])
                     loss += self.loss(scores, labs, 1.0, 1.0)[0] * self.request_weight
                 else:
-                    labs = domain_labels[domain].reshape(-1)
+                    labs = active_domain_labels[domain].reshape(-1)
                     domain_scores = domain_scores[labs != -1]
                     labs = labs[labs != -1].float()
-                    loss += self.domain_loss(domain_scores, labs) * self.domain_weight
+                    loss += self.active_domain_loss(domain_scores, labs) * self.active_domain_weight
     else:
         request_probs, domain_probs = None, None
 
@@ -401,19 +412,19 @@ def nbt_forward(self,
         inform_probs[slot] = probs_
 
         # Calculate belief state loss
-        if inform_labels is not None and slot in inform_labels:
+        if state_labels is not None and slot in state_labels:
             if self.config.loss_function == 'bayesianmatching':
                 prior = torch.ones(scores.size(-1)).float().to(scores.device)
                 prior = prior * self.config.prior_constant
                 prior = prior.unsqueeze(0).repeat((scores.size(0), 1))
 
-                loss += self.loss(scores, inform_labels[slot].reshape(-1), prior=prior)
+                loss += self.loss(scores, state_labels[slot].reshape(-1), prior=prior)
             elif self.config.loss_function == 'distillation':
-                labels = inform_labels[slot]
+                labels = state_labels[slot]
                 labels = labels.reshape(-1, labels.size(-1))
                 loss += self.loss(scores, labels, self.temp)
             elif self.config.loss_function == 'distribution_distillation':
-                labels = inform_labels[slot]
+                labels = state_labels[slot]
                 labels = labels.reshape(-1, labels.size(-2), labels.size(-1))
                 loss_, model_stats, ensemble_stats = self.loss(scores, labels, 1.0, 1.0)
                 loss += loss_
@@ -428,11 +439,11 @@ def nbt_forward(self,
                                'ensemble_precision_max': ensemble_precision.max(),
                                'ensemble_precision_mean': ensemble_precision.mean()}
             else:
-                loss += self.loss(scores, inform_labels[slot].reshape(-1))
+                loss += self.loss(scores, state_labels[slot].reshape(-1))
 
     # Return model outputs
     out = inform_probs, request_probs, domain_probs, goodbye_probs, context
-    if inform_labels is not None or request_labels is not None or domain_labels is not None or goodbye_labels is not None:
+    if state_labels is not None or request_labels is not None or active_domain_labels is not None or general_act_labels is not None:
         out = (loss,) + out + (stats,)
     if calculate_inform_mutual_info:
         out = out + (mutual_info,)

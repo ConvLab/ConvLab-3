@@ -40,7 +40,7 @@ class EnsembleSetSUMBT(Module):
             setattr(self, attr, model_cls(config))
     
 
-    # Load all ensemble memeber parameters
+    # Load all ensemble member parameters
     def load(self, path, config=None):
         if config is None:
             config = self.config

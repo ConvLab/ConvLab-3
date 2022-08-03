@@ -104,8 +104,8 @@ class BertSetSUMBT(BertPreTrainedModel):
 
         if get_turn_pooled_representation:
             return nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
-                                dialogue_size, hidden_state, inform_labels, request_labels, domain_labels,
-                                goodbye_labels, calculate_inform_mutual_info) + (bert_output.pooler_output,)
+                               dialogue_size, hidden_state, inform_labels, request_labels, domain_labels,
+                               goodbye_labels, calculate_inform_mutual_info) + (bert_output.pooler_output,)
         return nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size, dialogue_size,
-                            hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
-                            calculate_inform_mutual_info)
+                           hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
+                           calculate_inform_mutual_info)
