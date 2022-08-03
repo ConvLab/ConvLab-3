@@ -15,18 +15,19 @@
 # limitations under the License.
 """Convlab3 Unified Format Dialogue Datasets"""
 
+from copy import deepcopy
+
 import torch
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
 from transformers.tokenization_utils import PreTrainedTokenizer
-from copy import deepcopy
 
-from convlab.dst.setsumbt.dataset.utils import (load_dataset, get_ontology_slots, ontology_add_values,
+from convlab.util import load_dataset
+from convlab.dst.setsumbt.dataset.utils import (get_ontology_slots, ontology_add_values,
                                                 get_values_from_data, ontology_add_requestable_slots,
                                                 get_requestable_slots, load_dst_data, extract_dialogues,
                                                 combine_value_sets)
 
 
-# Convert dialogue examples to model input features and labels
 def convert_examples_to_features(data: list,
                                  ontology: dict,
                                  tokenizer: PreTrainedTokenizer,
@@ -34,7 +35,8 @@ def convert_examples_to_features(data: list,
                                  max_seq_len: int = 64) -> dict:
     """
     Convert dialogue examples to model input features and labels
-    Parameters:
+
+    Args:
         data (list): List of all extracted dialogues
         ontology (dict): Ontology dictionary containing slots, slot descriptions and
         possible value sets including requests
@@ -126,7 +128,7 @@ def convert_examples_to_features(data: list,
             labels.append(labs)
 
         labels = torch.tensor(labels)
-        features['labels-' + domslot] = labels
+        features['state_labels-' + domslot] = labels
 
     # Create requestable slot labels
     for domslot in requestable_slots:
@@ -151,9 +153,9 @@ def convert_examples_to_features(data: list,
             labels.append(labs)
 
         labels = torch.tensor(labels)
-        features['request-' + domslot] = labels
+        features['request_labels-' + domslot] = labels
 
-    # Greeting act labels (0-no greeting, 1-goodbye, 2-thank you)
+    # General act labels (1-goodbye, 2-thank you)
     labels = []
     for dial in data:
         labs = []
@@ -172,7 +174,7 @@ def convert_examples_to_features(data: list,
         labels.append(labs)
 
     labels = torch.tensor(labels)
-    features['goodbye'] = labels
+    features['general_act_labels'] = labels
 
     # Create active domain labels
     for domain in domains:
@@ -190,17 +192,17 @@ def convert_examples_to_features(data: list,
             labels.append(labs)
 
         labels = torch.tensor(labels)
-        features['active-' + domain] = labels
+        features['active_domain_labels-' + domain] = labels
 
     del labels
 
     return features
 
 
-# Unified Dataset object
 class UnifiedFormatDataset(Dataset):
     """
     Class for preprocessing, and storing data easily from the Convlab3 unified format.
+
     Attributes:
         dataset_dict (dict): Dictionary containing all the data in dataset
         ontology (dict): Set of all domain-slot-value triplets in the ontology of the model
@@ -215,8 +217,8 @@ class UnifiedFormatDataset(Dataset):
                  train_ratio: float = 1.0,
                  seed: int = 0):
         """
-        Parameters:
-            dataset_name (str): Name of the dataset to load
+        Args:
+            dataset_name (str): Name of the dataset/s to load (multiple to be seperated by +)
             set_type (str): Subset of the dataset to load (train, validation or test)
             tokenizer (transformers tokenizer): Tokenizer for the encoder model used
             max_turns (int): Maximum numbers of turns in a dialogue
@@ -248,48 +250,73 @@ class UnifiedFormatDataset(Dataset):
             data += extract_dialogues(data_)
         self.features = convert_examples_to_features(data, self.ontology, tokenizer, max_turns, max_seq_len)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> dict:
+        """
+        Obtain dialogues with specific ids from dataset
+
+        Args:
+            index (int/list/tensor): Index/indices of dialogues to get
+
+        Returns:
+            features (dict): All inputs and labels required to train the model
+        """
         return {label: self.features[label][index] for label in self.features
                 if self.features[label] is not None}
 
     def __len__(self):
+        """
+        Get number of dialogues in the dataset
+
+        Returns:
+            len (int): Number of dialogues in the dataset object
+        """
         return self.features['input_ids'].size(0)
 
-    # Resample subset of the dataset
-    def resample(self, size=None):
-        '''
+    def resample(self, size: int = None) -> Dataset:
+        """
         Resample subset of the dataset
+
         Args:
             size (int): Number of dialogues to sample
-        '''
+
+        Returns:
+            self (Dataset): Dataset object
+        """
         # If no subset size is specified we resample a set with the same size as the full dataset
         n_dialogues = self.__len__()
         if not size:
             size = n_dialogues
 
         dialogues = torch.randint(low=0, high=n_dialogues, size=(size,))
-        self.features = {label: self.features[label][dialogues] for label in self.features
-                        if self.features[label] is not None}
+        self.features = self.__getitem__(dialogues)
         
         return self
 
-    # Map all data to a device
     def to(self, device):
-        '''
+        """
         Map all data to a device
+
         Args:
             device (torch device): Device to map data to
-        '''
+        """
         self.device = device
         self.features = {label: self.features[label].to(device) for label in self.features
                          if self.features[label] is not None}
 
 
-# Module to create torch dataloaders
-def get_dataloader(dataset_name: str, set_type: str, batch_size: int, tokenizer, max_turns: int=12, max_seq_len: int=64,
-                   device='cpu', resampled_size=None, train_ratio=1.0):
+def get_dataloader(dataset_name: str,
+                   set_type: str,
+                   batch_size: int,
+                   tokenizer: PreTrainedTokenizer,
+                   max_turns: int = 12,
+                   max_seq_len: int = 64,
+                   device='cpu',
+                   resampled_size: int = None,
+                   train_ratio: float = 1.0,
+                   seed: int = 0) -> DataLoader:
     '''
     Module to create torch dataloaders
+
     Args:
         dataset_name (str): Name of the dataset to load
         set_type (str): Subset of the dataset to load (train, validation or test)
@@ -299,11 +326,14 @@ def get_dataloader(dataset_name: str, set_type: str, batch_size: int, tokenizer,
         max_seq_len (int): Maximum number of tokens in a dialogue turn
         device (torch device): Device to map data to
         resampled_size (int): Number of dialogues to sample
+        train_ratio (float): Ratio of training data to use for training
+        seed (int): Seed governing random order of ids for subsampling
 
     Returns:
         loader (torch dataloader): Dataloader to train and evaluate the setsumbt model
     '''
-    data = UnifiedFormatDataset(dataset_name, set_type, tokenizer, max_turns, max_seq_len, train_ratio=train_ratio)
+    data = UnifiedFormatDataset(dataset_name, set_type, tokenizer, max_turns, max_seq_len, train_ratio=train_ratio,
+                                seed=seed)
     data.to(device)
 
     if resampled_size:
@@ -314,5 +344,26 @@ def get_dataloader(dataset_name: str, set_type: str, batch_size: int, tokenizer,
     else:
         sampler = RandomSampler(data)
     loader = DataLoader(data, sampler=sampler, batch_size=batch_size)
+
+    return loader
+
+
+def change_batch_size(loader: DataLoader, batch_size: int) -> DataLoader:
+    """
+    Change the batch size of a preloaded loader
+
+    Args:
+        loader (DataLoader): Dataloader to train and evaluate the setsumbt model
+        batch_size (int): Batch size for the dataloader
+
+    Returns:
+        loader (DataLoader): Dataloader to train and evaluate the setsumbt model
+    """
+
+    if 'SequentialSampler' in str(loader.sampler):
+        sampler = SequentialSampler(loader.dataset)
+    else:
+        sampler = RandomSampler(loader.dataset)
+    loader = DataLoader(loader.dataset, sampler=sampler, batch_size=batch_size)
 
     return loader

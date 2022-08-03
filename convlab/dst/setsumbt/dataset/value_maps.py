@@ -42,14 +42,6 @@ DOMAINS_MAP = {'Alarm_1': 'alarm', 'Banks_1': 'banks', 'Banks_2': 'banks', 'Buse
                'auto_repair': 'car_repairs', 'flights': 'flights', 'food-ordering': 'takeout', 'hotels': 'hotel',
                'movies': 'movies', 'music': 'music', 'restaurant-search': 'restaurant', 'sports': 'sports',
                'movie': 'movies'}
-INVERSE_DOMAINS_MAP = {item: key for key, item in DOMAINS_MAP.items()}
-
-
-SLOTS_MAP = {"account_balance": "balance", "transfer_amount": "amount", "from_location": "departure",
-             "from_station": "departure", "origin": "departure", "origin_station_name": "departure",
-             "from_city": "departure", "to_location": "destination", "to_station": "destination",
-             "destination_station_name": "destination", "to_city": "destination", "leaving_date": "departure_date",
-             "leaving_time": "departure_time", "fare": "price", "fare_type": "price"}
 
 
 # Generic value sets for quantity and time slots

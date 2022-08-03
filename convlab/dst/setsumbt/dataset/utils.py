@@ -15,13 +15,14 @@
 # limitations under the License.
 """Convlab3 Unified dataset data processing utilities"""
 
-from convlab.util import load_dataset, load_ontology, load_dst_data, load_nlu_data
-from convlab.dst.setsumbt.dataset.value_maps import *
+from convlab.util import load_ontology, load_dst_data, load_nlu_data
+from convlab.dst.setsumbt.dataset.value_maps import VALUE_MAP, DOMAINS_MAP, QUANTITIES, TIME
 
 
 def get_ontology_slots(dataset_name: str) -> dict:
     """
     Function to extract slots, slot descriptions and categorical slot values from the dataset ontology.
+
     Args:
         dataset_name (str): Dataset name
 
@@ -52,6 +53,7 @@ def get_ontology_slots(dataset_name: str) -> dict:
 def get_values_from_data(dataset: dict) -> dict:
     """
     Function to extract slots, slot descriptions and categorical slot values from the dataset ontology.
+
     Args:
         dataset (dict): Dataset dictionary obtained using the load_dataset function
 
@@ -78,6 +80,7 @@ def get_values_from_data(dataset: dict) -> dict:
 def combine_value_sets(value_sets: list) -> dict:
     """
     Function to combine value sets extracted from different datasets
+
     Args:
         value_sets (list): List of value sets extracted using the get_values_from_data function
 
@@ -101,6 +104,7 @@ def combine_value_sets(value_sets: list) -> dict:
 def clean_values(value_sets: dict, value_map: dict = VALUE_MAP) -> dict:
     """
     Function to clean up the possible value sets extracted from the states in the dataset
+
     Args:
         value_sets (dict): Dictionary containing possible values obtained from dataset
         value_map (dict): Label map to avoid duplication and typos in values
