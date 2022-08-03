@@ -106,7 +106,6 @@ def main(args=None, config=None):
 
     # Create Tokenizer and embedding model for Data Loaders and ontology
     encoder = CandidateEncoderModel.from_pretrained(config.candidate_embedding_model_name)
-
     tokenizer = Tokenizer.from_pretrained(config.tokenizer_name, config=config)
 
     # Set up model training/evaluation
@@ -114,59 +113,63 @@ def main(args=None, config=None):
     training.set_seed(args)
     embeddings.set_seed(args)
 
-    # if args.ensemble_size > 1:
-    #     ensemble_utils.set_logger(logger, tb_writer)
-    #     ensemble.set_seed(args)
-    #     logger.info('Building %i resampled dataloaders each of size %i' % (args.ensemble_size,
-    #                                                                        args.data_sampling_size))
-    #     dataloaders = ensemble_utils.build_train_loaders(args, tokenizer, Dataset)
-    #     logger.info('Dataloaders built.')
-    #     for i, loader in enumerate(dataloaders):
-    #         path = os.path.join(OUTPUT_DIR, 'ensemble-%i' % i)
-    #         if not os.path.exists(path):
-    #             os.mkdir(path)
-    #         path = os.path.join(path, 'train.dataloader')
-    #         torch.save(loader, path)
-    #     logger.info('Dataloaders saved.')
-    #
-    #     train_slots = embeddings.get_slot_candidate_embeddings(
-    #         'train', args, tokenizer, encoder)
-    #     dev_slots = embeddings.get_slot_candidate_embeddings(
-    #         'dev', args, tokenizer, encoder)
-    #     test_slots = embeddings.get_slot_candidate_embeddings(
-    #         'test', args, tokenizer, encoder)
-    #
-    #     train_dataloader = Dataset.get_dataloader(
-    #         'train', args.train_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
-    #     torch.save(dev_dataloader, os.path.join(
-    #         OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
-    #     dev_dataloader = Dataset.get_dataloader(
-    #         'dev', args.dev_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
-    #     torch.save(dev_dataloader, os.path.join(
-    #         OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
-    #     test_dataloader = Dataset.get_dataloader(
-    #         'test', args.test_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
-    #     torch.save(test_dataloader, os.path.join(
-    #         OUTPUT_DIR, 'dataloaders', 'test.dataloader'))
-    #
-    #     # Do not perform standard training after ensemble setup is created
-    #     return 0
+    if args.ensemble_size > 1:
+        logger.info('Building %i resampled dataloaders each of size %i' % (args.ensemble_size,
+                                                                           args.data_sampling_size))
+        dataloaders = [unified_format.get_dataloader('train', args.train_batch_size, tokenizer, args.max_dialogue_len,
+                                            args.max_turn_len, resampled_size=args.data_sampling_size)
+                        for _ in range(args.ensemble_size)]
+        logger.info('Dataloaders built.')
+        for i, loader in enumerate(dataloaders):
+            path = os.path.join(OUTPUT_DIR, 'ens-%i' % i)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            path = os.path.join(path, 'train.dataloader')
+            torch.save(loader, path)
+        logger.info('Dataloaders saved.')
+
+        train_slots = embeddings.get_slot_candidate_embeddings(
+            'train', args, tokenizer, encoder)
+        dev_slots = embeddings.get_slot_candidate_embeddings(
+            'dev', args, tokenizer, encoder)
+        test_slots = embeddings.get_slot_candidate_embeddings(
+            'test', args, tokenizer, encoder)
+
+        train_dataloader = Dataset.get_dataloader(
+            'train', args.train_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
+        torch.save(dev_dataloader, os.path.join(
+            OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
+        dev_dataloader = Dataset.get_dataloader(
+            'dev', args.dev_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
+        torch.save(dev_dataloader, os.path.join(
+            OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
+        test_dataloader = Dataset.get_dataloader(
+            'test', args.test_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
+        torch.save(test_dataloader, os.path.join(
+            OUTPUT_DIR, 'dataloaders', 'test.dataloader'))
+
+        # Do not perform standard training after ensemble setup is created
+        return 0
 
     # Perform tasks
     # TRAINING
     if args.do_train:
-        exists = False
         if os.path.exists(os.path.join(OUTPUT_DIR, 'dataloaders', 'train.dataloader')):
             train_dataloader = torch.load(os.path.join(OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
-            if train_dataloader.batch_size == args.train_batch_size:
-                exists = True
-        if not exists:
+            if train_dataloader.batch_size != args.train_batch_size:
+                train_dataloader = unified_format.change_batch_size(train_dataloader, args.train_batch_size)
+        else:
             if args.data_sampling_size <= 0:
                 args.data_sampling_size = None
-            train_dataloader = unified_format.get_dataloader(args.dataset, 'train',
-                                                args.train_batch_size, tokenizer, args.max_dialogue_len,
-                                                config.max_turn_len, resampled_size=args.data_sampling_size,
-                                                train_ratio=args.dataset_train_ratio)
+            train_dataloader = unified_format.get_dataloader(args.dataset,
+                                                             'train',
+                                                             args.train_batch_size,
+                                                             tokenizer,
+                                                             args.max_dialogue_len,
+                                                             config.max_turn_len,
+                                                             resampled_size=args.data_sampling_size,
+                                                             train_ratio=args.dataset_train_ratio,
+                                                             seed=args.seed)
             torch.save(train_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
 
         # Get training batch loaders and ontology embeddings
@@ -178,15 +181,17 @@ def main(args=None, config=None):
 
         # Get development set batch loaders= and ontology embeddings
         if args.do_eval:
-            exists = False
             if os.path.exists(os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader')):
                 dev_dataloader = torch.load(os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
-                if dev_dataloader.batch_size == args.dev_batch_size:
-                    exists = True
-            if not exists:
-                dev_dataloader = unified_format.get_dataloader(args.dataset, 'validation',
-                                                args.dev_batch_size, tokenizer, args.max_dialogue_len,
-                                                config.max_turn_len)
+                if dev_dataloader.batch_size != args.dev_batch_size:
+                    dev_dataloader = unified_format.change_batch_size(dev_dataloader, args.dev_batch_size)
+            else:
+                dev_dataloader = unified_format.get_dataloader(args.dataset,
+                                                               'validation',
+                                                               args.dev_batch_size,
+                                                               tokenizer,
+                                                               args.max_dialogue_len,
+                                                               config.max_turn_len)
                 torch.save(dev_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
 
             if os.path.exists(os.path.join(OUTPUT_DIR, 'database', 'dev.db')):
@@ -219,14 +224,16 @@ def main(args=None, config=None):
 
     # Evaluation on the development set
     if args.do_eval:
-        exists = False
         if os.path.exists(os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader')):
             dev_dataloader = torch.load(os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
-            if dev_dataloader.batch_size == args.dev_batch_size:
-                exists = True
-        if not exists:
-            dev_dataloader = unified_format.get_dataloader(args.dataset, 'validation',
-                                                           args.dev_batch_size, tokenizer, args.max_dialogue_len,
+            if dev_dataloader.batch_size != args.dev_batch_size:
+                dev_dataloader = unified_format.change_batch_size(dev_dataloader, args.dev_batch_size)
+        else:
+            dev_dataloader = unified_format.get_dataloader(args.dataset,
+                                                           'validation',
+                                                           args.dev_batch_size,
+                                                           tokenizer,
+                                                           args.max_dialogue_len,
                                                            config.max_turn_len)
             torch.save(dev_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
 
@@ -250,29 +257,28 @@ def main(args=None, config=None):
 
     # Evaluation on the test set
     if args.do_test:
-        exists = False
         if os.path.exists(os.path.join(OUTPUT_DIR, 'dataloaders', 'test.dataloader')):
             test_dataloader = torch.load(os.path.join(OUTPUT_DIR, 'dataloaders', 'test.dataloader'))
-            if test_dataloader.batch_size == args.test_batch_size:
-                exists = True
-        if not exists:
+            if test_dataloader.batch_size != args.test_batch_size:
+                test_dataloader = unified_format.change_batch_size(test_dataloader, args.test_batch_size)
+        else:
             test_dataloader = unified_format.get_dataloader(args.dataset, 'test',
-                                                           args.test_batch_size, tokenizer, args.max_dialogue_len,
-                                                           config.max_turn_len)
+                                                            args.test_batch_size, tokenizer, args.max_dialogue_len,
+                                                            config.max_turn_len)
             torch.save(test_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'test.dataloader'))
 
         if os.path.exists(os.path.join(OUTPUT_DIR, 'database', 'test.db')):
             test_slots = torch.load(os.path.join(OUTPUT_DIR, 'database', 'test.db'))
         else:
             test_slots = embeddings.get_slot_candidate_embeddings(test_dataloader.dataset.ontology,
-                                                                 'test', args, tokenizer, encoder)
+                                                                  'test', args, tokenizer, encoder)
 
         # Load model ontology
         training.set_ontology_embeddings(model, test_slots)
 
         # TESTING
         jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, output = training.evaluate(args, model, device, test_dataloader,
-                                                                                return_eval_output=True)
+                                                                                 return_eval_output=True)
 
         if not os.path.exists(os.path.join(OUTPUT_DIR, 'predictions')):
             os.mkdir(os.path.join(OUTPUT_DIR, 'predictions'))
