@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2020 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Discriminative models calibration"""
+"""Evaluation Utilities"""
 
 import random
 
@@ -119,7 +119,9 @@ def get_predictions(args, model, device, dataloader):
     else:
         request_belief, request_labels, domain_belief, domain_labels, greeting_belief, greeting_labels = [None]*6
 
-    return belief_states, labels, request_belief, request_labels, domain_belief, domain_labels, greeting_belief, greeting_labels
+    out = (belief_states, labels, request_belief, request_labels)
+    out += (domain_belief, domain_labels, greeting_belief, greeting_labels)
+    return out
 
 
 def normalise(p):
