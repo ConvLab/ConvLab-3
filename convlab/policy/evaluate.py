@@ -12,7 +12,8 @@ from convlab.dialog_agent.session import BiSession
 from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab.policy.rule.multiwoz import RulePolicy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
-from convlab.util.custom_util import set_seed, get_config, env_config, create_goals
+from convlab.util.custom_util import set_seed, get_config, env_config, create_goals, data_goals
+from tqdm import tqdm
 
 
 def init_logging(log_dir_path, path_suffix=None):
@@ -36,7 +37,7 @@ def init_logging(log_dir_path, path_suffix=None):
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def evaluate(config_path, model_name, verbose=False, model_path=""):
+def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_data=False, dialogues=500):
     seed = 0
     set_seed(seed)
 
@@ -71,11 +72,16 @@ def evaluate(config_path, model_name, verbose=False, model_path=""):
     task_success = {'Complete': [], 'Success': [],
                     'Success strict': [], 'total_return': [], 'turns': []}
 
-    dialogues = 500
     goal_generator = GoalGenerator()
-    goals = create_goals(goal_generator, num_goals=dialogues, single_domains=False, allowed_domains=None)
+    if goals_from_data:
+        logging.info("read goals from dataset...")
+        goals = data_goals(dialogues, dataset="multiwoz21", dial_ids_order=0)
+    else:
+        logging.info("create goals from goal_generator...")
+        goals = create_goals(goal_generator, num_goals=dialogues,
+                             single_domains=False, allowed_domains=None)
 
-    for seed in range(1000, 1000 + dialogues):
+    for seed in tqdm(range(1000, 1000 + dialogues)):
         set_seed(seed)
         sess.init_session(goal=goals[seed-1000])
         sys_response = []
@@ -116,7 +122,10 @@ def evaluate(config_path, model_name, verbose=False, model_path=""):
                 task_succ = sess.evaluator.task_success()
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
-                complete = sess.evaluator.complete
+                if goals_from_data:
+                    complete = sess.user_agent.policy.policy.goal.task_complete()
+                else:
+                    complete = sess.evaluator.complete
                 break
 
         if verbose:
@@ -142,20 +151,29 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str,
                         default="PPO", help="name of model")
-    parser.add_argument("--config_path", type=str,
+    parser.add_argument("-C", "--config_path", type=str,
                         default='', help="config path defining the environment for simulation and system pipeline")
     parser.add_argument("--model_path", type=str,
                         default='', help="if this is set, tries to load the model weights from this path"
                                          ", otherwise from config")
-    parser.add_argument("--verbose", action='store_true',
+    parser.add_argument("-N", "--num_dialogues", type=int,
+                        default=500, help="# of evaluation dialogue")
+    parser.add_argument("-V", "--verbose", action='store_true',
                         help="whether to output utterances")
     parser.add_argument("--log_path_suffix", type=str,
                         default="", help="suffix of path of log file")
     parser.add_argument("--log_dir_path", type=str,
                         default="log", help="path of log directory")
+    parser.add_argument("-D", "--goals_from_data", action='store_true',
+                        help="load goal from the dataset")
 
     args = parser.parse_args()
 
     init_logging(log_dir_path=args.log_dir_path,
                  path_suffix=args.log_path_suffix)
-    evaluate(config_path=args.config_path, model_name=args.model_name, verbose=args.verbose, model_path=args.model_path)
+    evaluate(config_path=args.config_path,
+             model_name=args.model_name,
+             verbose=args.verbose,
+             model_path=args.model_path,
+             goals_from_data=args.goals_from_data,
+             dialogues=args.num_dialogues)

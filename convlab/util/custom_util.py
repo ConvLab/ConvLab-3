@@ -18,14 +18,12 @@ from convlab.dst.rule.multiwoz import RuleDST
 from convlab.policy.rule.multiwoz import RulePolicy
 from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab.util import load_dataset
-from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
 
 import shutil
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
                 "Id": "trainid", "ref": "reference"}
-
 
 
 sys.path.append(os.path.dirname(os.path.dirname(
@@ -58,7 +56,8 @@ def flatten_acts(dialogue_acts):
     act_list = []
     for act_type in dialogue_acts:
         for act in dialogue_acts[act_type]:
-            act_list.append([act['intent'], act['domain'], act['slot'], act.get('value', "")])
+            act_list.append([act['intent'], act['domain'],
+                            act['slot'], act.get('value', "")])
     return act_list
 
 
@@ -143,16 +142,16 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-                select_acts, offer_acts = evaluate(sess,
-                                                num_dialogues=conf['model']['num_eval_dialogues'],
-                                                sys_semantic_to_usr=conf['model'][
-                                                    'sys_semantic_to_usr'],
-                                                save_flag=save_eval, save_path=log_save_path)
+            select_acts, offer_acts = evaluate(sess,
+                                               num_dialogues=conf['model']['num_eval_dialogues'],
+                                               sys_semantic_to_usr=conf['model'][
+                                                   'sys_semantic_to_usr'],
+                                               save_flag=save_eval, save_path=log_save_path)
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
-        avg_actions, task_success, book_acts, inform_acts, request_acts, \
-        select_acts, offer_acts = \
+            avg_actions, task_success, book_acts, inform_acts, request_acts, \
+            select_acts, offer_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'])
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
@@ -164,7 +163,7 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
                     task_success_gathered[key] = []
                 task_success_gathered[key].append(value)
         task_success = task_success_gathered
-    
+
     policy_sys.is_train = True
     logging.info(f"Complete: {complete_rate}, Success: {success_rate}, Success strict: {success_rate_strict}, "
                  f"Average Return: {avg_return}, Turns: {turns}, Average Actions: {avg_actions}, "
@@ -198,7 +197,8 @@ def env_config(conf, policy_sys, check_book_constraints=True):
                                     'sys', return_semantic_acts=conf['model']['sys_semantic_to_usr'])
 
     # assemble
-    evaluator = MultiWozEvaluator(check_book_constraints=check_book_constraints)
+    evaluator = MultiWozEvaluator(
+        check_book_constraints=check_book_constraints)
     env = Environment(sys_nlg, simulator, nlu_sys, dst_sys, evaluator=evaluator,
                       use_semantic_acts=conf['model']['sys_semantic_to_usr'])
     sess = BiSession(system_pipeline, simulator, None, evaluator)
@@ -345,7 +345,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_return'].append(total_return)
         task_success['turns'].append(turns)
         task_success['avg_actions'].append(avg_actions / turns)
-        
+
         task_success['total_booking_acts'].append(book)
         task_success['total_inform_acts'].append(inform)
         task_success['total_request_acts'].append(request)
@@ -367,11 +367,11 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     # save dialogue_info and clear mem
 
     return np.average(task_success['All_user_sim']), np.average(task_success['All_evaluator']), \
-           np.average(task_success['All_evaluator_strict']), np.average(task_success['total_return']), \
-           np.average(task_success['turns']), np.average(task_success['avg_actions']), task_success, \
-           np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
-           np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
-           np.average(task_success['total_offer_acts'])
+        np.average(task_success['All_evaluator_strict']), np.average(task_success['total_return']), \
+        np.average(task_success['turns']), np.average(task_success['avg_actions']), task_success, \
+        np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
+        np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
+        np.average(task_success['total_offer_acts'])
 
 
 def model_downloader(download_dir, model_path):
@@ -395,7 +395,8 @@ def get_goal_distribution(dataset_name='multiwoz21'):
         data = data_split[key]
         for dialogue in data:
             goal = dialogue['goal']
-            domains = list(set(goal['inform'].keys()) | set(goal['request'].keys()))
+            domains = list(set(goal['inform'].keys()) |
+                           set(goal['request'].keys()))
             domains.sort()
             domains = "-".join(domains)
 
@@ -417,14 +418,16 @@ def get_goal_distribution(dataset_name='multiwoz21'):
     domain_combinations.sort(key=lambda x: x[1], reverse=True)
     print(domain_combinations)
     print(single_domain_counter)
-    print("Number of combinations:", sum([value for _, value in domain_combinations]))
+    print("Number of combinations:", sum(
+        [value for _, value in domain_combinations]))
 
 
 def unified_format(acts):
     new_acts = {'categorical': []}
     for act in acts:
         intent, domain, slot, value = act
-        new_acts['categorical'].append({"intent": intent, "domain": domain, "slot": slot, "value": value})
+        new_acts['categorical'].append(
+            {"intent": intent, "domain": domain, "slot": slot, "value": value})
 
     return new_acts
 
@@ -438,6 +441,7 @@ def act_dict_to_flat_tuple(acts):
 
 
 def create_goals(goal_generator, num_goals, single_domains=False, allowed_domains=None):
+    from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
 
     collected_goals = []
     while len(collected_goals) != num_goals:
@@ -447,6 +451,20 @@ def create_goals(goal_generator, num_goals, single_domains=False, allowed_domain
         if allowed_domains is not None and not set(goal.domain_goals).issubset(set(allowed_domains)):
             continue
         collected_goals.append(goal)
+    return collected_goals
+
+
+def data_goals(num_goals, dataset="multiwoz21", dial_ids_order=0):
+    from convlab.policy.tus.unify.Goal import Goal
+    from convlab.policy.tus.unify.util import create_goal
+    data = load_dataset(dataset, dial_ids_order)
+    collected_goals = []
+    for dialog in data["test"]:
+        goal = Goal(create_goal(dialog))
+        collected_goals.append(goal)
+    if len(collected_goals) < num_goals:
+        print(f"# of data goals ({data['test']}) < num_goals {num_goals}")
+    # reorder goals?
     return collected_goals
 
 
@@ -540,5 +558,3 @@ def get_config(filepath, args) -> dict:
 
 if __name__ == '__main__':
     get_goal_distribution()
-
-
