@@ -584,7 +584,7 @@ class MultiWozEvaluator(Evaluator):
             else:
                 info_constraints = []
             query_result = self.database.query(
-                domain, info_constraints, soft_contraints=reqt_constraints)
+                domain, info_constraints + reqt_constraints)
             if not query_result:
                 mismatch += 1
                 continue
