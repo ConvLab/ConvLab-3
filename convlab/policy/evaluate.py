@@ -151,20 +151,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str,
                         default="PPO", help="name of model")
-    parser.add_argument("--config_path", type=str,
+    parser.add_argument("-C", "--config_path", type=str,
                         default='', help="config path defining the environment for simulation and system pipeline")
     parser.add_argument("--model_path", type=str,
                         default='', help="if this is set, tries to load the model weights from this path"
                                          ", otherwise from config")
-    parser.add_argument("--num_dialogues", type=int,
+    parser.add_argument("-N", "--num_dialogues", type=int,
                         default=500, help="# of evaluation dialogue")
-    parser.add_argument("--verbose", action='store_true',
+    parser.add_argument("-V", "--verbose", action='store_true',
                         help="whether to output utterances")
     parser.add_argument("--log_path_suffix", type=str,
                         default="", help="suffix of path of log file")
     parser.add_argument("--log_dir_path", type=str,
                         default="log", help="path of log directory")
-    parser.add_argument("--goals_from_data", action='store_true',
+    parser.add_argument("-D", "--goals_from_data", action='store_true',
                         help="load goal from the dataset")
 
     args = parser.parse_args()
