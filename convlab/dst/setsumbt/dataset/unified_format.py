@@ -215,7 +215,9 @@ class UnifiedFormatDataset(Dataset):
                  max_turns: int = 12,
                  max_seq_len: int = 64,
                  train_ratio: float = 1.0,
-                 seed: int = 0):
+                 seed: int = 0,
+                 data: dict = None,
+                 ontology: dict = None):
         """
         Args:
             dataset_name (str): Name of the dataset/s to load (multiple to be seperated by +)
@@ -225,30 +227,36 @@ class UnifiedFormatDataset(Dataset):
             max_seq_len (int): Maximum number of tokens in a dialogue turn
             train_ratio (float): Fraction of training data to use during training
             seed (int): Seed governing random order of ids for subsampling
+            data (dict): Dataset features for loading from dict
+            ontology (dict): Ontology dict for loading from dict
         """
-        if '+' in dataset_name:
-            dataset_args = [{"dataset_name": name} for name in dataset_name.split('+')]
+        if data is not None:
+            self.ontology = ontology
+            self.features = data
         else:
-            dataset_args = [{"dataset_name": dataset_name}]
-        if train_ratio != 1.0:
-            for dataset_args_ in dataset_args:
-                dataset_args_['dial_ids_order'] = seed
-                dataset_args_['split2ratio'] = {'train': train_ratio, 'validation': train_ratio}
-        self.dataset_dicts = [load_dataset(**dataset_args_) for dataset_args_ in dataset_args]
-        self.ontology = get_ontology_slots(dataset_name)
-        values = [get_values_from_data(dataset) for dataset in self.dataset_dicts]
-        self.ontology = ontology_add_values(self.ontology, combine_value_sets(values))
-        self.ontology = ontology_add_requestable_slots(self.ontology, get_requestable_slots(self.dataset_dicts))
+            if '+' in dataset_name:
+                dataset_args = [{"dataset_name": name} for name in dataset_name.split('+')]
+            else:
+                dataset_args = [{"dataset_name": dataset_name}]
+            if train_ratio != 1.0:
+                for dataset_args_ in dataset_args:
+                    dataset_args_['dial_ids_order'] = seed
+                    dataset_args_['split2ratio'] = {'train': train_ratio, 'validation': train_ratio}
+            self.dataset_dicts = [load_dataset(**dataset_args_) for dataset_args_ in dataset_args]
+            self.ontology = get_ontology_slots(dataset_name)
+            values = [get_values_from_data(dataset) for dataset in self.dataset_dicts]
+            self.ontology = ontology_add_values(self.ontology, combine_value_sets(values))
+            self.ontology = ontology_add_requestable_slots(self.ontology, get_requestable_slots(self.dataset_dicts))
 
-        data = [load_dst_data(dataset_dict, data_split=set_type, speaker='all',
-                              dialogue_acts=True, split_to_turn=False)
-                for dataset_dict in self.dataset_dicts]
-        data_list = [data_[set_type] for data_ in data]
+            data = [load_dst_data(dataset_dict, data_split=set_type, speaker='all',
+                                  dialogue_acts=True, split_to_turn=False)
+                    for dataset_dict in self.dataset_dicts]
+            data_list = [data_[set_type] for data_ in data]
 
-        data = []
-        for data_ in data_list:
-            data += extract_dialogues(data_)
-        self.features = convert_examples_to_features(data, self.ontology, tokenizer, max_turns, max_seq_len)
+            data = []
+            for data_ in data_list:
+                data += extract_dialogues(data_)
+            self.features = convert_examples_to_features(data, self.ontology, tokenizer, max_turns, max_seq_len)
 
     def __getitem__(self, index: int) -> dict:
         """
@@ -302,6 +310,10 @@ class UnifiedFormatDataset(Dataset):
         self.device = device
         self.features = {label: self.features[label].to(device) for label in self.features
                          if self.features[label] is not None}
+
+    @classmethod
+    def from_datadict(cls, data: dict, ontology: dict):
+        return cls(None, None, None, data=data, ontology=ontology)
 
 
 def get_dataloader(dataset_name: str,
