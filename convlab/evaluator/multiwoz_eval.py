@@ -631,6 +631,15 @@ class MultiWozEvaluator(Evaluator):
 
         return reward
 
+    def evaluate_dialog(self, goal, user_acts, system_acts, system_states):
+
+        self.add_goal(goal.domain_goals)
+        for sys_act, sys_state, user_act in zip(system_acts, system_states, user_acts):
+            self.add_sys_da(sys_act, sys_state)
+            self.add_usr_da(user_act)
+        self.task_success()
+        return {"complete": self.complete, "success": self.success, "success_strict": self.success_strict}
+
     def update_goal(self, goal, system_action):
         for intent, domain, slot, val in system_action:
             # need to reverse slot to old representation
