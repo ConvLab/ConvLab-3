@@ -16,24 +16,20 @@
 """Run SetSUMBT training/eval"""
 
 import logging
-import random
 import os
 from shutil import copy2 as copy
 import json
 
 import torch
-import transformers
 from transformers import (BertModel, BertConfig, BertTokenizer,
                           RobertaModel, RobertaConfig, RobertaTokenizer)
 from tensorboardX import SummaryWriter
 
-from convlab.dst.setsumbt.modeling.bert_nbt import BertSetSUMBT
-from convlab.dst.setsumbt.modeling.roberta_nbt import RobertaSetSUMBT
+from convlab.dst.setsumbt.modeling import BertSetSUMBT, RobertaSetSUMBT
 from convlab.dst.setsumbt.dataset import unified_format
 from convlab.dst.setsumbt.modeling import training
 from convlab.dst.setsumbt.dataset import ontology as embeddings
 from convlab.dst.setsumbt.utils import get_args, update_args
-# from convlab.dst.setsumbt.modeling import ensemble_utils
 
 
 # Available model
@@ -116,10 +112,18 @@ def main(args=None, config=None):
     if args.ensemble_size > 1:
         logger.info('Building %i resampled dataloaders each of size %i' % (args.ensemble_size,
                                                                            args.data_sampling_size))
-        dataloaders = [unified_format.get_dataloader('train', args.train_batch_size, tokenizer, args.max_dialogue_len,
-                                            args.max_turn_len, resampled_size=args.data_sampling_size)
-                        for _ in range(args.ensemble_size)]
+        dataloaders = [unified_format.get_dataloader(args.dataset,
+                                                     'train',
+                                                     args.train_batch_size,
+                                                     tokenizer,
+                                                     args.max_dialogue_len,
+                                                     args.max_turn_len,
+                                                     resampled_size=args.data_sampling_size,
+                                                     train_ratio=args.dataset_train_ratio,
+                                                     seed=args.seed)
+                       for _ in range(args.ensemble_size)]
         logger.info('Dataloaders built.')
+
         for i, loader in enumerate(dataloaders):
             path = os.path.join(OUTPUT_DIR, 'ens-%i' % i)
             if not os.path.exists(path):
@@ -128,25 +132,40 @@ def main(args=None, config=None):
             torch.save(loader, path)
         logger.info('Dataloaders saved.')
 
-        train_slots = embeddings.get_slot_candidate_embeddings(
-            'train', args, tokenizer, encoder)
-        dev_slots = embeddings.get_slot_candidate_embeddings(
-            'dev', args, tokenizer, encoder)
-        test_slots = embeddings.get_slot_candidate_embeddings(
-            'test', args, tokenizer, encoder)
+        train_dataloader = unified_format.get_dataloader(args.dataset,
+                                                         'train',
+                                                         args.train_batch_size,
+                                                         tokenizer,
+                                                         args.max_dialogue_len,
+                                                         args.max_turn_len,
+                                                         resampled_size=args.data_sampling_size,
+                                                         train_ratio=args.dataset_train_ratio,
+                                                         seed=args.seed)
+        torch.save(train_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
+        dev_dataloader = unified_format.get_dataloader(args.dataset,
+                                                       'validation',
+                                                       args.train_batch_size,
+                                                       tokenizer,
+                                                       args.max_dialogue_len,
+                                                       args.max_turn_len,
+                                                       resampled_size=args.data_sampling_size,
+                                                       train_ratio=args.dataset_train_ratio,
+                                                       seed=args.seed)
+        torch.save(dev_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
+        test_dataloader = unified_format.get_dataloader(args.dataset,
+                                                        'test',
+                                                        args.train_batch_size,
+                                                        tokenizer,
+                                                        args.max_dialogue_len,
+                                                        args.max_turn_len,
+                                                        resampled_size=args.data_sampling_size,
+                                                        train_ratio=args.dataset_train_ratio,
+                                                        seed=args.seed)
+        torch.save(test_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'test.dataloader'))
 
-        train_dataloader = Dataset.get_dataloader(
-            'train', args.train_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
-        torch.save(dev_dataloader, os.path.join(
-            OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
-        dev_dataloader = Dataset.get_dataloader(
-            'dev', args.dev_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
-        torch.save(dev_dataloader, os.path.join(
-            OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
-        test_dataloader = Dataset.get_dataloader(
-            'test', args.test_batch_size, tokenizer, args.max_dialogue_len, config.max_turn_len)
-        torch.save(test_dataloader, os.path.join(
-            OUTPUT_DIR, 'dataloaders', 'test.dataloader'))
+        embeddings.get_slot_candidate_embeddings(train_dataloader.dataset.ontology, 'train', args, tokenizer, encoder)
+        embeddings.get_slot_candidate_embeddings(dev_dataloader.dataset.ontology, 'dev', args, tokenizer, encoder)
+        embeddings.get_slot_candidate_embeddings(test_dataloader.dataset.ontology, 'test', args, tokenizer, encoder)
 
         # Do not perform standard training after ensemble setup is created
         return 0
