@@ -3,17 +3,14 @@
 import logging
 import re
 import numpy as np
+
 from copy import deepcopy
 from convlab.evaluator.evaluator import Evaluator
 from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
-
-
-import os
 from convlab.util import relative_import_module_from_unified_datasets
-from pprint import pprint
 reverse_da = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', 'reverse_da')
 
@@ -117,7 +114,7 @@ class MultiWozEvaluator(Evaluator):
         """
         self.sys_da_array = []
         self.usr_da_array = []
-        self.goal = goal
+        self.goal = deepcopy(goal)
         self.cur_domain = ''
         self.booked = self._init_dict_booked()
         self.booked_states = self._init_dict_booked()
@@ -554,7 +551,7 @@ class MultiWozEvaluator(Evaluator):
         else:
             info_constraints = []
         query_result = self.database.query(
-            domain, info_constraints, soft_contraints=reqt_constraints)
+            domain, info_constraints + reqt_constraints)
         if not query_result:
             mismatch += 1
 
