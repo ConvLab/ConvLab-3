@@ -18,6 +18,7 @@
 import json
 import os
 import random
+from copy import deepcopy
 
 import torch
 import numpy as np
@@ -105,7 +106,7 @@ def get_slot_candidate_embeddings(ontology: dict, set_type: str, args, tokenizer
             slot_emb = encode_candidates([desc], args, tokenizer, embedding_model)[0]
 
             # Obtain possible value set and discard requestable value
-            values = slot_info['possible_values']
+            values = deepcopy(slot_info['possible_values'])
             is_requestable = False
             if '?' in values:
                 is_requestable = True
