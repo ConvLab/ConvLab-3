@@ -16,17 +16,19 @@ from tqdm import tqdm
 
 class BaseDatabase(ABC):
     """Base class of unified database. Should override the query function."""
+
     def __init__(self):
         """extract data.zip and load the database."""
 
     @abstractmethod
-    def query(self, domain:str, state:dict, topk:int, **kwargs)->list:
+    def query(self, domain: str, state: dict, topk: int, **kwargs) -> list:
         """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
+
 
 def download_unified_datasets(dataset_name, filename, data_dir):
     """
     It downloads the file of unified datasets from HuggingFace's datasets if it doesn't exist in the data directory
-    
+
     :param dataset_name: The name of the dataset
     :param filename: the name of the file you want to download
     :param data_dir: the directory where the file will be downloaded to
@@ -41,22 +43,26 @@ def download_unified_datasets(dataset_name, filename, data_dir):
         shutil.move(cache_path, data_path)
     return data_path
 
+
 def relative_import_module_from_unified_datasets(dataset_name, filename, names2import):
     """
     It downloads a file from the unified datasets repository, imports it as a module, and returns the
     variable(s) you want from that module
-    
+
     :param dataset_name: the name of the dataset, e.g. 'multiwoz21'
     :param filename: the name of the file to download, e.g. 'preprocess.py'
     :param names2import: a string or a list of strings. If it's a string, it's the name of the variable
     to import. If it's a list of strings, it's the names of the variables to import
     :return: the variable(s) that are being imported from the module.
     """
-    data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
+    data_dir = os.path.abspath(os.path.join(os.path.abspath(
+        __file__), f'../../../data/unified_datasets/{dataset_name}'))
     assert filename.endswith('.py')
-    assert isinstance(names2import, str) or (isinstance(names2import, list) and len(names2import) > 0)
+    assert isinstance(names2import, str) or (
+        isinstance(names2import, list) and len(names2import) > 0)
     data_path = download_unified_datasets(dataset_name, filename, data_dir)
-    module_spec = importlib.util.spec_from_file_location(filename[:-3], data_path)
+    module_spec = importlib.util.spec_from_file_location(
+        filename[:-3], data_path)
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
     if isinstance(names2import, str):
@@ -67,7 +73,8 @@ def relative_import_module_from_unified_datasets(dataset_name, filename, names2i
             variables.append(eval(f'module.{name}'))
         return variables
 
-def load_dataset(dataset_name:str, dial_ids_order=None, split2ratio={}) -> Dict:
+
+def load_dataset(dataset_name: str, dial_ids_order=None, split2ratio={}) -> Dict:
     """load unified dataset from `data/unified_datasets/$dataset_name`
 
     Args:
@@ -79,7 +86,8 @@ def load_dataset(dataset_name:str, dial_ids_order=None, split2ratio={}) -> Dict:
     Returns:
         dataset (dict): keys are data splits and the values are lists of dialogues
     """
-    data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
+    data_dir = os.path.abspath(os.path.join(os.path.abspath(
+        __file__), f'../../../data/unified_datasets/{dataset_name}'))
     data_path = download_unified_datasets(dataset_name, 'data.zip', data_dir)
 
     archive = ZipFile(data_path)
@@ -87,11 +95,13 @@ def load_dataset(dataset_name:str, dial_ids_order=None, split2ratio={}) -> Dict:
         dialogues = json.loads(f.read())
     dataset = {}
     if dial_ids_order is not None:
-        data_path = download_unified_datasets(dataset_name, 'shuffled_dial_ids.json', data_dir)
+        data_path = download_unified_datasets(
+            dataset_name, 'shuffled_dial_ids.json', data_dir)
         dial_ids = json.load(open(data_path))[dial_ids_order]
         for data_split in dial_ids:
             ratio = split2ratio.get(data_split, 1)
-            dataset[data_split] = [dialogues[i] for i in dial_ids[data_split][:round(len(dial_ids[data_split])*ratio)]]
+            dataset[data_split] = [dialogues[i]
+                                   for i in dial_ids[data_split][:round(len(dial_ids[data_split])*ratio)]]
     else:
         for dialogue in dialogues:
             if dialogue['data_split'] not in dataset:
@@ -100,10 +110,12 @@ def load_dataset(dataset_name:str, dial_ids_order=None, split2ratio={}) -> Dict:
                 dataset[dialogue['data_split']].append(dialogue)
         for data_split in dataset:
             if data_split in split2ratio:
-                dataset[data_split] = dataset[data_split][:round(len(dataset[data_split])*split2ratio[data_split])]
+                dataset[data_split] = dataset[data_split][:round(
+                    len(dataset[data_split])*split2ratio[data_split])]
     return dataset
 
-def load_ontology(dataset_name:str) -> Dict:
+
+def load_ontology(dataset_name: str) -> Dict:
     """load unified ontology from `data/unified_datasets/$dataset_name`
 
     Args:
@@ -112,7 +124,8 @@ def load_ontology(dataset_name:str) -> Dict:
     Returns:
         ontology (dict): dataset ontology
     """
-    data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
+    data_dir = os.path.abspath(os.path.join(os.path.abspath(
+        __file__), f'../../../data/unified_datasets/{dataset_name}'))
     data_path = download_unified_datasets(dataset_name, 'data.zip', data_dir)
 
     archive = ZipFile(data_path)
@@ -120,7 +133,8 @@ def load_ontology(dataset_name:str) -> Dict:
         ontology = json.loads(f.read())
     return ontology
 
-def load_database(dataset_name:str):
+
+def load_database(dataset_name: str):
     """load database from `data/unified_datasets/$dataset_name`
 
     Args:
@@ -129,36 +143,40 @@ def load_database(dataset_name:str):
     Returns:
         database: an instance of BaseDatabase
     """
-    data_dir = os.path.abspath(os.path.join(os.path.abspath(__file__), f'../../../data/unified_datasets/{dataset_name}'))
-    data_path = download_unified_datasets(dataset_name, 'database.py', data_dir)
+    data_dir = os.path.abspath(os.path.join(os.path.abspath(
+        __file__), f'../../../data/unified_datasets/{dataset_name}'))
+    data_path = download_unified_datasets(
+        dataset_name, 'database.py', data_dir)
     module_spec = importlib.util.spec_from_file_location('database', data_path)
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
-    Database = relative_import_module_from_unified_datasets(dataset_name, 'database.py', 'Database')
+    Database = relative_import_module_from_unified_datasets(
+        dataset_name, 'database.py', 'Database')
     assert issubclass(Database, BaseDatabase)
     database = Database()
     assert isinstance(database, BaseDatabase)
     return database
 
+
 def load_unified_data(
-        dataset, 
-        data_split='all', 
-        speaker='all', 
-        utterance=False, 
-        dialogue_acts=False, 
-        state=False, 
-        db_results=False,
-        use_context=False, 
-        context_window_size=0, 
-        terminated=False, 
-        goal=False, 
-        active_domains=False,
-        split_to_turn=True
-    ):
+    dataset,
+    data_split='all',
+    speaker='all',
+    utterance=False,
+    dialogue_acts=False,
+    state=False,
+    db_results=False,
+    use_context=False,
+    context_window_size=0,
+    terminated=False,
+    goal=False,
+    active_domains=False,
+    split_to_turn=True
+):
     """
     > This function takes in a dataset, and returns a dictionary of data splits, where each data split
     is a list of samples
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: which split of the data to load. Can be 'train', 'validation', 'test', or 'all',
     defaults to all (optional)
@@ -182,7 +200,8 @@ def load_unified_data(
     data_splits = dataset.keys() if data_split == 'all' else [data_split]
     assert speaker in ['user', 'system', 'all']
     assert not use_context or context_window_size > 0
-    info_list = list(filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results']))
+    info_list = list(
+        filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results']))
     info_list += ['utt_idx']
     data_by_split = {}
     for data_split in data_splits:
@@ -194,7 +213,7 @@ def load_unified_data(
                 for ele in info_list:
                     if ele in turn:
                         sample[ele] = turn[ele]
-                
+
                 if use_context or not split_to_turn:
                     sample_copy = deepcopy(sample)
                     context.append(sample_copy)
@@ -207,7 +226,8 @@ def load_unified_data(
                     if active_domains:
                         sample['domains'] = dialogue['domains']
                     if terminated:
-                        sample['terminated'] = turn['utt_idx'] == len(dialogue['turns']) - 1
+                        sample['terminated'] = turn['utt_idx'] == len(
+                            dialogue['turns']) - 1
                     if speaker == 'system' and 'booked' in turn:
                         sample['booked'] = turn['booked']
                     data_by_split[data_split].append(sample)
@@ -221,7 +241,7 @@ def load_nlu_data(dataset, data_split='all', speaker='user', use_context=False, 
     """
     It loads the data from the specified dataset, and returns it in a format that is suitable for
     training a NLU model
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
     :param speaker: 'user' or 'system', defaults to user (optional)
@@ -243,7 +263,7 @@ def load_dst_data(dataset, data_split='all', speaker='user', context_window_size
     """
     It loads the data from the specified dataset, with the specified data split, speaker, context window
     size, suitable for training a DST model
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
     :param speaker: 'user' or 'system', defaults to user (optional)
@@ -259,11 +279,12 @@ def load_dst_data(dataset, data_split='all', speaker='user', context_window_size
     kwargs.setdefault('state', True)
     return load_unified_data(dataset, **kwargs)
 
+
 def load_policy_data(dataset, data_split='all', speaker='system', context_window_size=1, **kwargs):
     """
     It loads the data from the specified dataset, and returns it in a format that is suitable for
     training a policy
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
     :param speaker: 'system' or 'user', defaults to system (optional)
@@ -283,11 +304,12 @@ def load_policy_data(dataset, data_split='all', speaker='system', context_window
     kwargs.setdefault('terminated', True)
     return load_unified_data(dataset, **kwargs)
 
+
 def load_nlg_data(dataset, data_split='all', speaker='system', use_context=False, context_window_size=0, **kwargs):
     """
     It loads the data from the specified dataset, and returns it in a format that is suitable for
     training a NLG model
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
     :param speaker: 'system' or 'user', defaults to system (optional)
@@ -304,11 +326,12 @@ def load_nlg_data(dataset, data_split='all', speaker='system', use_context=False
     kwargs.setdefault('dialogue_acts', True)
     return load_unified_data(dataset, **kwargs)
 
+
 def load_e2e_data(dataset, data_split='all', speaker='system', context_window_size=100, **kwargs):
     """
     It loads the data from the specified dataset, and returns it in a format that is suitable for
     training an End2End model
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
     :param speaker: 'system' or 'user', defaults to system (optional)
@@ -327,11 +350,12 @@ def load_e2e_data(dataset, data_split='all', speaker='system', context_window_si
     kwargs.setdefault('dialogue_acts', True)
     return load_unified_data(dataset, **kwargs)
 
+
 def load_rg_data(dataset, data_split='all', speaker='system', context_window_size=100, **kwargs):
     """
     It loads the data from the dataset, and returns it in a format that is suitable for training a 
     response generation model
-    
+
     :param dataset: dataset object from `load_dataset`
     :param data_split: 'train', 'validation', 'test', or 'all', defaults to all (optional)
     :param speaker: 'system' or 'user', defaults to system (optional)
@@ -347,7 +371,7 @@ def load_rg_data(dataset, data_split='all', speaker='system', context_window_siz
     return load_unified_data(dataset, **kwargs)
 
 
-def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore_values=['yes', 'no']):
+def create_delex_data(dataset, delex_func=lambda d, s, v: f'[({d})-({s})]', ignore_values=['yes', 'no']):
     """add delex_utterance to the dataset according to dialogue acts and belief_state
     delex_func: function that return the placeholder (e.g. "[(domain_name)-(slot_name)]") given (domain, slot, value)
     ignore_values: ignored values when delexicalizing using the categorical acts and states
@@ -357,7 +381,7 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
         It takes a list of strings and placeholders, and a regex pattern. If the pattern matches exactly
         one string, it replaces that string with a placeholder and returns True. Otherwise, it returns
         False
-        
+
         :param texts_placeholders: a list of tuples, each tuple is a string and a boolean. The boolean
         indicates whether the string is a placeholder or not
         :param value_pattern: a regular expression that matches the value to be delexicalized
@@ -379,7 +403,8 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
             searchObj = re.search(value_pattern, substring)
             assert searchObj
             start, end = searchObj.span(1)
-            texts_placeholders[idx:idx+1] = [(substring[0:start], False), (placeholder, True), (substring[end:], False)]
+            texts_placeholders[idx:idx+1] = [
+                (substring[0:start], False), (placeholder, True), (substring[end:], False)]
             return True
         return False
 
@@ -392,7 +417,8 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
                 delex_utt = []
                 last_end = 0
                 # ignore the non-categorical das that do not have span annotation
-                spans = [x for x in turn['dialogue_acts']['non-categorical'] if 'start' in x]
+                spans = [x for x in turn['dialogue_acts']
+                         ['non-categorical'] if 'start' in x]
                 for da in sorted(spans, key=lambda x: x['start']):
                     # from left to right
                     start, end = da['start'], da['end']
@@ -412,7 +438,8 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
                     domain, slot, value = da['domain'], da['slot'], da['value']
                     if value.lower() not in ignore_values:
                         placeholder = delex_func(domain, slot, value)
-                        pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
+                        pattern = re.compile(
+                            r'\b({})\b'.format(value), flags=re.I)
                         if delex_inplace(delex_utt, pattern):
                             delex_vocab.add(placeholder)
 
@@ -425,13 +452,15 @@ def create_delex_data(dataset, delex_func=lambda d,s,v: f'[({d})-({s})]', ignore
                             # has value
                             for value in values.split('|'):
                                 if value.lower() not in ignore_values:
-                                    placeholder = delex_func(domain, slot, value)
-                                    pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
+                                    placeholder = delex_func(
+                                        domain, slot, value)
+                                    pattern = re.compile(
+                                        r'\b({})\b'.format(value), flags=re.I)
                                     if delex_inplace(delex_utt, pattern):
                                         delex_vocab.add(placeholder)
 
                 turn['delex_utterance'] = ''.join([x[0] for x in delex_utt])
-    
+
     return dataset, sorted(list(delex_vocab))
 
 
@@ -468,16 +497,18 @@ def retrieve_utterances(query_turns, turn_pool, top_k, model_name):
 if __name__ == "__main__":
     dataset = load_dataset('multiwoz21', dial_ids_order=0)
     train_ratio = 0.1
-    dataset['train'] = dataset['train'][:round(len(dataset['train'])*train_ratio)]
+    dataset['train'] = dataset['train'][:round(
+        len(dataset['train'])*train_ratio)]
     print(len(dataset['train']))
     print(dataset.keys())
     print(len(dataset['test']))
 
     from convlab.util.unified_datasets_util import BaseDatabase
     database = load_database('multiwoz21')
-    res = database.query("train", [['departure', 'cambridge'], ['destination','peterborough'], ['day', 'tuesday'], ['arrive by', '11:15']], topk=3)
+    res = database.query("train", [['departure', 'cambridge'], [
+                         'destination', 'peterborough'], ['day', 'tuesday'], ['arrive by', '11:15']], topk=3)
     print(res[0], len(res))
-    
+
     data_by_split = load_nlu_data(dataset, data_split='test', speaker='user')
     query_turns = data_by_split['test'][:10]
     pool_dataset = load_dataset('camrest')
@@ -490,8 +521,10 @@ if __name__ == "__main__":
         return f'[{slot}]'
 
     dataset, delex_vocab = create_delex_data(dataset, delex_slot)
-    json.dump(dataset['test'], open('new_delex_multiwoz21_test.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    json.dump(delex_vocab, open('new_delex_vocab.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(dataset['test'], open('new_delex_multiwoz21_test.json',
+              'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    json.dump(delex_vocab, open('new_delex_vocab.json', 'w',
+              encoding='utf-8'), indent=2, ensure_ascii=False)
     with open('new_delex_cmp.txt', 'w') as f:
         for dialog in dataset['test']:
             for turn in dialog['turns']:

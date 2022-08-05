@@ -10,12 +10,14 @@ from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import (
 from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
 from convlab.policy.tus.unify.Goal import Goal
 from convlab.policy.tus.unify.usermanager import BinaryFeature
-from convlab.util import relative_import_module_from_unified_datasets
-from convlab.policy.tus.unify.util import parse_dialogue_act, parse_user_goal, metadata2state, int2onehot, create_goal, split_slot_name
-
+from convlab.policy.tus.unify.util import (create_goal, int2onehot,
+                                           metadata2state, parse_dialogue_act,
+                                           parse_user_goal, split_slot_name)
+from convlab.util import (load_dataset,
+                          relative_import_module_from_unified_datasets)
 from convlab.util.custom_util import model_downloader
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
-
+from pprint import pprint
 reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
@@ -33,22 +35,25 @@ NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK, ""]
 
 # TODO not ready for unify dataformat now
 class UserActionPolicy(Policy):
-    def __init__(self, config, pretrain=True):
+    def __init__(self, config, pretrain=True, dataset="multiwoz21"):
         Policy.__init__(self)
+        self.dataset = dataset
         if isinstance(config, str):
             self.config = json.load(open(config))
         else:
             self.config = config
 
         feat_type = self.config.get("feat_type", "binary")
-        print("feat_type", feat_type)
+        # print("feat_type", feat_type)
         self.feat_handler = BinaryFeature(self.config)
 
         self.config["num_token"] = config["num_token"]
         self.user = TransformerActionPrediction(self.config).to(device=DEVICE)
         if pretrain:
-            self.load(os.path.join(
-                self.config["model_dir"], self.config["model_name"]))
+            model_path = os.path.join(
+                self.config["model_dir"], self.config["model_name"])
+            print(f"loading model from {model_path}...")
+            self.load(model_path)
         self.user.eval()
         self.use_domain_mask = self.config.get("domain_mask", False)
         self.max_turn = 40
@@ -73,7 +78,7 @@ class UserActionPolicy(Policy):
 
         # need better way to handle this
         if self._no_offer(sys_dialog_act):
-            return [["bye", "general", "None", "None"]]
+            return [["bye", "general", "none", "none"]]
 
         # update constraint
         self.time_step += 2
@@ -110,6 +115,8 @@ class UserActionPolicy(Policy):
             #     domain, slot, value)
             norm_usr_action.append([intent, domain, slot, value])
 
+        cur_state = self.goal.update(action=norm_usr_action, char="user")
+
         return norm_usr_action
 
         # return usr_action
@@ -124,7 +131,12 @@ class UserActionPolicy(Policy):
         #     self.new_goal(remove_domain=remove_domain)
         # else:
         #     self.read_goal(goal)
+        if not goal:
+            data = load_dataset(self.dataset, 0)
+            goal = Goal(create_goal(data["test"][0]))
+
         self.read_goal(goal)
+        self.feat_handler.initFeatureHandeler(self.goal)
 
         # print(self.goal)
         if self.config.get("reorder", False):
@@ -133,12 +145,15 @@ class UserActionPolicy(Policy):
             self.predict_action_list = self.action_list
         self.sys_history_state = None  # to save sys history
         self.terminated = False
-        self.feat_handler.initFeatureHandeler(self.goal)
+
         self.pre_usr_act = None
         self.sys_acts = []
 
     def read_goal(self, data_goal):
-        self.goal = Goal(goal=data_goal)
+        if type(data_goal) == Goal:
+            self.goal = data_goal
+        else:
+            self.goal = Goal(goal=data_goal)
 
     def new_goal(self, remove_domain="police", domain_len=None):
         keep_generate_goal = True
@@ -180,7 +195,7 @@ class UserActionPolicy(Policy):
         for domain in domains:
             domain = domain.lower()
             if domain not in self.mentioned_domain and domain != 'general':
-                actions.append([Inform, domain.capitalize(), "None", "None"])
+                actions.append([Inform, domain, "none", "none"])
                 self.mentioned_domain.append(domain)
         return actions
 
@@ -190,11 +205,11 @@ class UserActionPolicy(Policy):
             return True, [['thank', 'general', 'none', 'none']]
 
         if self.time_step > self.max_turn:
-            return True, [["bye", "general", "None", "None"]]
+            return True, [["bye", "general", "none", "none"]]
 
         if len(self.sys_acts) >= 3:
             if self.sys_acts[-1] == self.sys_acts[-2] and self.sys_acts[-2] == self.sys_acts[-3]:
-                return True, [["bye", "general", "None", "None"]]
+                return True, [["bye", "general", "none", "none"]]
 
         return False, [[]]
 
@@ -202,6 +217,10 @@ class UserActionPolicy(Policy):
         is_finish, usr_action = self._finish_conversation()
         if is_finish:
             self.terminated = True
+            # if "bye" == usr_action[0][0]:
+            #     print("fail")
+            #     pprint(self.goal.domain_goals)
+            #     pprint(self.goal.status)
             return usr_action
 
         usr_action = self._get_acts(
@@ -379,11 +398,12 @@ class UserActionPolicy(Policy):
 
 
 class UserPolicy(Policy):
-    def __init__(self, config):
+    def __init__(self, config, dial_ids_order=0):
         if isinstance(config, str):
             self.config = json.load(open(config))
         else:
             self.config = config
+        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}'
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),
@@ -404,6 +424,38 @@ class UserPolicy(Policy):
         return self.policy.get_reward()
 
     def get_goal(self):
+        slot2dbattr = {
+            'open hours': 'openhours',
+            'price range': 'pricerange',
+            'arrive by': 'arriveBy',
+            'leave at': 'leaveAt',
+            'train id': 'trainID'
+        }
         if hasattr(self.policy, 'get_goal'):
-            return self.policy.get_goal()
+            # workaround: convert goal to old format
+            multiwoz_goal = {}
+            goal = self.policy.get_goal()
+            for domain in goal:
+                multiwoz_goal[domain] = {}
+                for slot_type in ["info", "reqt"]:
+                    if slot_type not in goal[domain]:
+                        continue
+                    if slot_type not in multiwoz_goal[domain]:
+                        multiwoz_goal[domain][slot_type] = {}
+                    for slot in goal[domain][slot_type]:
+                        value = goal[domain][slot_type][slot].lower()
+                        if "book" in slot:
+                            if "book" not in multiwoz_goal[domain]:
+                                multiwoz_goal[domain]["book"] = {}
+                            norm_slot = slot.split(' ')[-1]
+                            multiwoz_goal[domain]["book"][norm_slot] = value
+                        elif slot in slot2dbattr:
+                            norm_slot = slot2dbattr[slot]
+                            multiwoz_goal[domain][slot_type][norm_slot] = value
+                        else:
+                            multiwoz_goal[domain][slot_type][slot] = value
+            for domain in multiwoz_goal:
+                if "book" in multiwoz_goal[domain]:
+                    multiwoz_goal[domain]["booked"] = '?'
+            return multiwoz_goal
         return None

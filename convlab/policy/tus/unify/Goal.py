@@ -1,6 +1,7 @@
+import time
 import json
 from convlab.policy.tus.unify.util import split_slot_name
-
+from pprint import pprint
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
@@ -10,6 +11,20 @@ NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK, ""]
 
 
 # only support user goal from dataset
+
+
+def is_time(goal, status):
+    if isTimeFormat(goal) and isTimeFormat(status):
+        return True
+    return False
+
+
+def isTimeFormat(input):
+    try:
+        time.strptime(input, '%H:%M')
+        return True
+    except ValueError:
+        return False
 
 
 class Goal(object):
@@ -48,15 +63,16 @@ class Goal(object):
                 self.domain_goals[domain] = {}
 
             # "book" domain is not clear for unify data format
-            if "info" in intent.lower():
-                if "info" not in self.domain_goals[domain]:
-                    self.domain_goals[domain]["info"] = {}
-                self.domain_goals[domain]["info"][slot] = value
 
-            elif "request" in intent.lower():
+            if "request" in intent.lower():
                 if "reqt" not in self.domain_goals[domain]:
                     self.domain_goals[domain]["reqt"] = {}
                 self.domain_goals[domain]["reqt"][slot] = DEF_VAL_UNK
+
+            elif "info" in intent.lower():
+                if "info" not in self.domain_goals[domain]:
+                    self.domain_goals[domain]["info"] = {}
+                self.domain_goals[domain]["info"][slot] = value
 
             self.user_history[f"{domain}-{slot}"] = value
 
@@ -68,16 +84,22 @@ class Goal(object):
         """
         for domain in self.domain_goals:
             if domain not in self.status:
+                # print(f"{domain} is not mentioned")
                 return False
             if "info" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["info"]:
                     if slot not in self.status[domain]:
+                        # print(f"{slot} is not mentioned")
                         return False
-                    if self.domain_goals[domain]["info"][slot] != self.status[domain][slot]:
+                    goal = self.domain_goals[domain]["info"][slot].lower()
+                    status = self.status[domain][slot].lower()
+                    if goal != status and not is_time(goal, status):
+                        # print(f"conflict slot {slot}: {goal} <-> {status}")
                         return False
             if "reqt" in self.domain_goals[domain]:
                 for slot in self.domain_goals[domain]["reqt"]:
                     if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
+                        # print(f"not fulfilled request{domain}-{slot}")
                         return False
         return True
 

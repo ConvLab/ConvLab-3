@@ -1,6 +1,6 @@
 {
 	"model": {
-		"load_path": "",
+		"load_path": "convlab/policy/mle/experiments/experiment_2022-05-23-14-08-43/save/supervised",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,
@@ -32,10 +32,10 @@
 	"nlu_usr": {},
 	"dst_usr": {},
 	"policy_usr": {
-		"RulePolicy": {
-			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
+		"TUSPolicy": {
+			"class_path": "convlab.policy.tus.unify.TUS.UserPolicy",
 			"ini_params": {
-				"character": "usr"
+				"config": "convlab/policy/tus/unify/exp/all.json"
 			}
 		}
 	},
