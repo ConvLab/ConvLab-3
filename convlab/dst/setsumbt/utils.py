@@ -66,7 +66,7 @@ def get_args(base_models: dict):
     parser.add_argument('--rnn_zero_init', help='Zero Initialise RNN hidden states', action='store_true')
     parser.add_argument('--distance_measure', default='cosine',
                         help='Similarity measure for candidate scoring: cosine/euclidean')
-    # parser.add_argument('--ensemble_size', help='Number of models in ensemble', default=-1, type=int)
+    parser.add_argument('--ensemble_size', help='Number of models in ensemble', default=-1, type=int)
     parser.add_argument('--no_set_similarity', action='store_true', help='Set True to not use set similarity')
     parser.add_argument('--set_pooling',
                         help='Set pooling method for set similarity model using single embedding distances',
@@ -133,8 +133,7 @@ def get_args(base_models: dict):
 
     # ACTIONS
     parser.add_argument('--run_nbt', help='Run NBT script',action='store_true')
-    # parser.add_argument('--run_calibration',
-    #                     help='Run calibration', action='store_true')
+    parser.add_argument('--run_evaluation', help='Run evaluation script', action='store_true')
 
     # RUN_NBT ACTIONS
     parser.add_argument('--do_train', help='Perform training', action='store_true')

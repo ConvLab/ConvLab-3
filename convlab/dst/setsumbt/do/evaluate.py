@@ -97,17 +97,17 @@ def main(args=None, config=None):
     # Perform tasks
     if os.path.exists(os.path.join(OUTPUT_DIR, 'predictions', 'test.predictions')):
         pred = torch.load(os.path.join(OUTPUT_DIR, 'predictions', 'test.predictions'))
-        labels = pred['labels']
+        state_labels = pred['state_labels']
         belief_states = pred['belief_states']
         if 'request_labels' in pred:
             request_labels = pred['request_labels']
-            request_belief = pred['request_belief']
-            domain_labels = pred['domain_labels']
-            domain_belief = pred['domain_belief']
-            greeting_labels = pred['greeting_labels']
-            greeting_belief = pred['greeting_belief']
+            request_probs = pred['request_probs']
+            active_domain_labels = pred['active_domain_labels']
+            active_domain_probs = pred['active_domain_probs']
+            general_act_labels = pred['general_act_labels']
+            general_act_probs = pred['general_act_probs']
         else:
-            request_belief = None
+            request_probs = None
         del pred
     else:
         # Get training batch loaders and ontology embeddings
@@ -136,98 +136,58 @@ def main(args=None, config=None):
         training.set_ontology_embeddings(model, test_slots)
 
         belief_states = evaluation_utils.get_predictions(args, model, device, test_dataloader)
-        belief_states, labels, request_belief, request_labels, domain_belief, domain_labels, greeting_belief, greeting_labels = belief_states
-        out = {'belief_states': belief_states, 'labels': labels,
-               'request_belief': request_belief, 'request_labels': request_labels,
-               'domain_belief': domain_belief, 'domain_labels': domain_labels,
-               'greeting_belief': greeting_belief, 'greeting_labels': greeting_labels}
+        state_labels = belief_states[1]
+        request_probs = belief_states[2]
+        request_labels = belief_states[3]
+        active_domain_probs = belief_states[4]
+        active_domain_labels = belief_states[5]
+        general_act_probs = belief_states[6]
+        general_act_labels = belief_states[7]
+        belief_states = belief_states[0]
+        out = {'belief_states': belief_states, 'state_labels': state_labels, 'request_probs': request_probs,
+               'request_labels': request_labels, 'active_domain_probs': active_domain_probs,
+               'active_domain_labels': active_domain_labels, 'general_act_probs': general_act_probs,
+               'general_act_labels': general_act_labels}
         torch.save(out, os.path.join(OUTPUT_DIR, 'predictions', 'test.predictions'))
 
     # Calculate calibration metrics
-    jg = jg_ece(belief_states, labels, 10)
+    jg = jg_ece(belief_states, state_labels, 10)
     logger.info('Joint Goal ECE: %f' % jg)
 
-    binary_states = {}
-    for slot, p in belief_states.items():
-        shp = p.shape
-        p = p.reshape(-1, p.size(-1))
-        p_ = torch.ones(p.shape).to(p.device) * 1e-8
-        p_[range(p.size(0)), p.argmax(-1)] = 1.0 - 1e-8
-        binary_states[slot] = p_.reshape(shp)
-    jg = jg_ece(binary_states, labels, 10)
-    logger.info('Joint Goal Binary ECE: %f' % jg)
-
-    bs = {slot: torch.cat((p[:, :, 0].unsqueeze(-1), p[:, :, 1:].max(-1)
-                          [0].unsqueeze(-1)), -1) for slot, p in belief_states.items()}
-    ls = {}
-    for slot, l in labels.items():
-        y = torch.zeros((l.size(0), l.size(1))).to(l.device)
-        dials, turns = torch.where(l > 0)
-        y[dials, turns] = 1.0
-        dials, turns = torch.where(l < 0)
-        y[dials, turns] = -1.0
-        ls[slot] = y
-
-    jg = jg_ece(bs, ls, 10)
-    logger.info('Slot presence ECE: %f' % jg)
-
-    binary_states = {}
-    for slot, p in bs.items():
-        shp = p.shape
-        p = p.reshape(-1, p.size(-1))
-        p_ = torch.ones(p.shape).to(p.device) * 1e-8
-        p_[range(p.size(0)), p.argmax(-1)] = 1.0 - 1e-8
-        binary_states[slot] = p_.reshape(shp)
-    jg = jg_ece(binary_states, ls, 10)
-    logger.info('Slot presence Binary ECE: %f' % jg)
-
     jg_acc = 0.0
-    padding = torch.cat([item.unsqueeze(-1) for _, item in labels.items()], -1).sum(-1) * -1.0
-    padding = (padding == len(labels))
+    padding = torch.cat([item.unsqueeze(-1) for _, item in state_labels.items()], -1).sum(-1) * -1.0
+    padding = (padding == len(state_labels))
     padding = padding.reshape(-1)
     for slot in belief_states:
-        args.accuracy_topn = 1
-        topn = args.accuracy_topn
         p_ = belief_states[slot]
-        gold = labels[slot]
+        gold = state_labels[slot]
 
-        if p_.size(-1) <= topn:
-            topn = p_.size(-1) - 1
-        if topn <= 0:
-            topn = 1
-
-        if topn > 1:
-            labs = p_.reshape(-1, p_.size(-1)).argsort(dim=-1, descending=True)
-            labs = labs[:, :topn]
-        else:
-            labs = p_.reshape(-1, p_.size(-1)).argmax(dim=-1).unsqueeze(-1)
-        acc = [lab in s for lab, s, pad in zip(gold.reshape(-1), labs, padding) if not pad]
+        pred = p_.reshape(-1, p_.size(-1)).argmax(dim=-1).unsqueeze(-1)
+        acc = [lab in s for lab, s, pad in zip(gold.reshape(-1), pred, padding) if not pad]
         acc = torch.tensor(acc).float()
 
         jg_acc += acc
 
     n_turns = jg_acc.size(0)
-    sl_acc = sum(jg_acc / len(belief_states)).float()
     jg_acc = sum((jg_acc / len(belief_states)).int()).float()
 
-    sl_acc /= n_turns
     jg_acc /= n_turns
 
     logger.info('Joint Goal Accuracy: %f, Slot Accuracy %f' % (jg_acc, sl_acc))
 
-    l2 = l2_acc(belief_states, labels, remove_belief=False)
+    l2 = l2_acc(belief_states, state_labels, remove_belief=False)
     logger.info(f'Model L2 Norm Goal Accuracy: {l2}')
-    l2 = l2_acc(belief_states, labels, remove_belief=True)
+    l2 = l2_acc(belief_states, state_labels, remove_belief=True)
     logger.info(f'Binary Model L2 Norm Goal Accuracy: {l2}')
 
-    padding = torch.cat([item.unsqueeze(-1) for _, item in labels.items()], -1).sum(-1) * -1.0
-    padding = (padding == len(labels))
+    padding = torch.cat([item.unsqueeze(-1) for _, item in state_labels.items()], -1).sum(-1) * -1.0
+    padding = (padding == len(state_labels))
     padding = padding.reshape(-1)
 
     tp, fp, fn, tn, n = 0.0, 0.0, 0.0, 0.0, 0.0
     for slot in belief_states:
         p_ = belief_states[slot]
-        gold = labels[slot].reshape(-1)
+        gold = state_labels[slot].reshape(-1)
         p_ = p_.reshape(-1, p_.size(-1))
 
         p_ = p_[~padding].argmax(-1)
@@ -248,143 +208,89 @@ def main(args=None, config=None):
 
     logger.info(f"Slot Accuracy: {acc}, Slot F1: {f1}, Slot Precision: {prec}, Slot Recall: {rec}")
 
-    for slot in belief_states:
-        p = belief_states[slot]
-        p = p.reshape(-1, p.size(-1))
-        p = torch.cat(
-            (p[:, 0].unsqueeze(-1), p[:, 1:].max(-1)[0].unsqueeze(-1)), -1)
-        belief_states[slot] = p
-
-        l = labels[slot].reshape(-1)
-        l[l > 0] = 1
-        labels[slot] = l
-    f1 = 0.0
-    for slot in belief_states:
-        prd = belief_states[slot].argmax(-1)
-        tp = ((prd == 1) * (labels[slot] == 1)).sum()
-        fp = ((prd == 1) * (labels[slot] == 0)).sum()
-        fn = ((prd == 0) * (labels[slot] == 1)).sum()
-        if tp > 0:
-            f1 += tp / (tp + 0.5 * (fp + fn))
-    f1 /= len(belief_states)
-    logger.info(f'Trucated Goal F1 Score: {f1}')
-
-    l2 = l2_acc(belief_states, labels, remove_belief=False)
-    logger.info(f'Model L2 Norm Trucated Goal Accuracy: {l2}')
-    l2 = l2_acc(belief_states, labels, remove_belief=True)
-    logger.info(f'Binary Model L2 Norm Trucated Goal Accuracy: {l2}')
-
-    if request_belief is not None:
+    if request_probs is not None:
         tp, fp, fn = 0.0, 0.0, 0.0
-        for slot in request_belief:
-            p = request_belief[slot]
+        for slot in request_probs:
+            p = request_probs[slot]
             l = request_labels[slot]
 
             tp += (p.round().int() * (l == 1)).reshape(-1).float()
             fp += (p.round().int() * (l == 0)).reshape(-1).float()
             fn += ((1 - p.round().int()) * (l == 1)).reshape(-1).float()
-        tp /= len(request_belief)
-        fp /= len(request_belief)
-        fn /= len(request_belief)
+        tp /= len(request_probs)
+        fp /= len(request_probs)
+        fn /= len(request_probs)
         f1 = tp.sum() / (tp.sum() + 0.5 * (fp.sum() + fn.sum()))
         logger.info('Request F1 Score: %f' % f1.item())
 
-        for slot in request_belief:
-            p = request_belief[slot]
+        for slot in request_probs:
+            p = request_probs[slot]
             p = p.unsqueeze(-1)
             p = torch.cat((1 - p, p), -1)
-            request_belief[slot] = p
-        jg = jg_ece(request_belief, request_labels, 10)
+            request_probs[slot] = p
+        jg = jg_ece(request_probs, request_labels, 10)
         logger.info('Request Joint Goal ECE: %f' % jg)
 
-        binary_states = {}
-        for slot, p in request_belief.items():
-            shp = p.shape
-            p = p.reshape(-1, p.size(-1))
-            p_ = torch.ones(p.shape).to(p.device) * 1e-8
-            p_[range(p.size(0)), p.argmax(-1)] = 1.0 - 1e-8
-            binary_states[slot] = p_.reshape(shp)
-        jg = jg_ece(binary_states, request_labels, 10)
-        logger.info('Request Joint Goal Binary ECE: %f' % jg)
-
         tp, fp, fn = 0.0, 0.0, 0.0
-        for dom in domain_belief:
-            p = domain_belief[dom]
-            l = domain_labels[dom]
+        for dom in active_domain_probs:
+            p = active_domain_probs[dom]
+            l = active_domain_labels[dom]
 
             tp += (p.round().int() * (l == 1)).reshape(-1).float()
             fp += (p.round().int() * (l == 0)).reshape(-1).float()
             fn += ((1 - p.round().int()) * (l == 1)).reshape(-1).float()
-        tp /= len(domain_belief)
-        fp /= len(domain_belief)
-        fn /= len(domain_belief)
+        tp /= len(active_domain_probs)
+        fp /= len(active_domain_probs)
+        fn /= len(active_domain_probs)
         f1 = tp.sum() / (tp.sum() + 0.5 * (fp.sum() + fn.sum()))
         logger.info('Domain F1 Score: %f' % f1.item())
 
-        for dom in domain_belief:
-            p = domain_belief[dom]
+        for dom in active_domain_probs:
+            p = active_domain_probs[dom]
             p = p.unsqueeze(-1)
             p = torch.cat((1 - p, p), -1)
-            domain_belief[dom] = p
-        jg = jg_ece(domain_belief, domain_labels, 10)
+            active_domain_probs[dom] = p
+        jg = jg_ece(active_domain_probs, domain_labels, 10)
         logger.info('Domain Joint Goal ECE: %f' % jg)
 
-        binary_states = {}
-        for slot, p in domain_belief.items():
-            shp = p.shape
-            p = p.reshape(-1, p.size(-1))
-            p_ = torch.ones(p.shape).to(p.device) * 1e-8
-            p_[range(p.size(0)), p.argmax(-1)] = 1.0 - 1e-8
-            binary_states[slot] = p_.reshape(shp)
-        jg = jg_ece(binary_states, domain_labels, 10)
-        logger.info('Domain Joint Goal Binary ECE: %f' % jg)
-
-        tp = ((greeting_belief.argmax(-1) > 0) *
-              (greeting_labels > 0)).reshape(-1).float().sum()
-        fp = ((greeting_belief.argmax(-1) > 0) *
-              (greeting_labels == 0)).reshape(-1).float().sum()
-        fn = ((greeting_belief.argmax(-1) == 0) *
-              (greeting_labels > 0)).reshape(-1).float().sum()
+        tp = ((general_act_probs.argmax(-1) > 0) *
+              (general_act_labels > 0)).reshape(-1).float().sum()
+        fp = ((general_act_probs.argmax(-1) > 0) *
+              (general_act_labels == 0)).reshape(-1).float().sum()
+        fn = ((general_act_probs.argmax(-1) == 0) *
+              (general_act_labels > 0)).reshape(-1).float().sum()
         f1 = tp / (tp + 0.5 * (fp + fn))
-        logger.info('Greeting F1 Score: %f' % f1.item())
+        logger.info('General Act F1 Score: %f' % f1.item())
 
-        err = ece(greeting_belief.reshape(-1, greeting_belief.size(-1)),
-                  greeting_labels.reshape(-1), 10)
-        logger.info('Greetings ECE: %f' % err)
+        err = ece(general_act_probs.reshape(-1, general_act_probs.size(-1)),
+                  general_act_labels.reshape(-1), 10)
+        logger.info('General Act ECE: %f' % err)
 
-        greeting_belief = greeting_belief.reshape(-1, greeting_belief.size(-1))
-        binary_states = torch.ones(greeting_belief.shape).to(
-            greeting_belief.device) * 1e-8
-        binary_states[range(greeting_belief.size(0)),
-                      greeting_belief.argmax(-1)] = 1.0 - 1e-8
-        err = ece(binary_states, greeting_labels.reshape(-1), 10)
-        logger.info('Greetings Binary ECE: %f' % err)
+        for slot in request_probs:
+            p = request_probs[slot].unsqueeze(-1)
+            request_probs[slot] = torch.cat((1 - p, p), -1)
 
-        for slot in request_belief:
-            p = request_belief[slot].unsqueeze(-1)
-            request_belief[slot] = torch.cat((1 - p, p), -1)
-
-        l2 = l2_acc(request_belief, request_labels, remove_belief=False)
+        l2 = l2_acc(request_probs, request_labels, remove_belief=False)
         logger.info(f'Model L2 Norm Request Accuracy: {l2}')
-        l2 = l2_acc(request_belief, request_labels, remove_belief=True)
+        l2 = l2_acc(request_probs, request_labels, remove_belief=True)
         logger.info(f'Binary Model L2 Norm Request Accuracy: {l2}')
 
-        for slot in domain_belief:
-            p = domain_belief[slot].unsqueeze(-1)
-            domain_belief[slot] = torch.cat((1 - p, p), -1)
+        for slot in active_domain_probs:
+            p = active_domain_probs[slot].unsqueeze(-1)
+            active_domain_probs[slot] = torch.cat((1 - p, p), -1)
 
-        l2 = l2_acc(domain_belief, domain_labels, remove_belief=False)
+        l2 = l2_acc(active_domain_probs, active_domain_labels, remove_belief=False)
         logger.info(f'Model L2 Norm Domain Accuracy: {l2}')
-        l2 = l2_acc(domain_belief, domain_labels, remove_belief=True)
+        l2 = l2_acc(active_domain_probs, active_domain_labels, remove_belief=True)
         logger.info(f'Binary Model L2 Norm Domain Accuracy: {l2}')
 
-        greeting_labels = {'bye': greeting_labels}
-        greeting_belief = {'bye': greeting_belief}
+        active_domain_labels = {'general': active_domain_labels}
+        general_act_probs = {'general': general_act_probs}
 
-        l2 = l2_acc(greeting_belief, greeting_labels, remove_belief=False)
-        logger.info(f'Model L2 Norm Greeting Accuracy: {l2}')
-        l2 = l2_acc(greeting_belief, greeting_labels, remove_belief=False)
-        logger.info(f'Binary Model L2 Norm Greeting Accuracy: {l2}')
+        l2 = l2_acc(general_act_probs, active_domain_labels, remove_belief=False)
+        logger.info(f'Model L2 Norm General Act Accuracy: {l2}')
+        l2 = l2_acc(general_act_probs, active_domain_labels, remove_belief=False)
+        logger.info(f'Binary Model L2 Norm General Act Accuracy: {l2}')
 
 
 if __name__ == "__main__":

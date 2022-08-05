@@ -22,38 +22,40 @@ import numpy as np
 from tqdm import tqdm
 
 
-# Load logger and tensorboard summary writer
-def set_logger(logger_, tb_writer_):
-    global logger, tb_writer
-    logger = logger_
-    tb_writer = tb_writer_
-
-
-# Set seeds
 def set_seed(args):
+    """
+    Set random seeds
+
+    Args:
+        args (Arguments class): Arguments class containing seed and number of gpus to use
+    """
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     if args.n_gpu > 0:
         torch.cuda.manual_seed_all(args.seed)
-    logger.info('Seed set to %d.' % args.seed)
 
 
-def get_predictions(args, model, device, dataloader):
-    logger.info("  Num Batches = %d", len(dataloader))
+def get_predictions(args, model, device: torch.device, dataloader: torch.utils.data.DataLoader) -> tuple:
+    """
+    Get model predictions
 
+    Args:
+        args: Runtime arguments
+        model: SetSUMBT Model
+        device: Torch device
+        dataloader: Dataloader containing eval data
+    """
     model.eval()
-    if args.dropout_iterations > 1:
-        model.train()
     
-    belief_states = {slot: [] for slot in model.informable_slot_ids}
-    request_belief = {slot: [] for slot in model.requestable_slot_ids}
-    domain_belief = {dom: [] for dom in model.domain_ids}
-    greeting_belief = []
-    labels = {slot: [] for slot in model.informable_slot_ids}
+    belief_states = {slot: [] for slot in model.setsumbt.informable_slot_ids}
+    request_probs = {slot: [] for slot in model.setsumbt.requestable_slot_ids}
+    active_domain_probs = {dom: [] for dom in model.setsumbt.domain_ids}
+    general_act_probs = []
+    state_labels = {slot: [] for slot in model.setsumbt.informable_slot_ids}
     request_labels = {slot: [] for slot in model.requestable_slot_ids}
-    domain_labels = {dom: [] for dom in model.domain_ids}
-    greeting_labels = []
+    active_domain_labels = {dom: [] for dom in model.setsumbt.domain_ids}
+    general_act_labels = []
     epoch_iterator = tqdm(dataloader, desc="Iteration")
     for step, batch in enumerate(epoch_iterator):
         with torch.no_grad():    
@@ -61,76 +63,50 @@ def get_predictions(args, model, device, dataloader):
             token_type_ids = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
             attention_mask = batch['attention_mask'].to(device) if 'attention_mask' in batch else None
 
-            if args.dropout_iterations > 1:
-                p = {slot: [] for slot in model.informable_slot_ids}
-                for _ in range(args.dropout_iterations):
-                    p_, p_req_, p_dom_, p_bye_, _ = model(input_ids=input_ids,
-                                                        token_type_ids=token_type_ids,
-                                                        attention_mask=attention_mask)
-                    for slot in model.informable_slot_ids:
-                        p[slot].append(p_[slot].unsqueeze(0))
-                
-                mu = {slot: torch.cat(p[slot], 0).mean(0) for slot in model.informable_slot_ids}
-                sig = {slot: torch.cat(p[slot], 0).var(0) for slot in model.informable_slot_ids}
-                p = {slot: mu[slot] / torch.sqrt(1 + sig[slot]) for slot in model.informable_slot_ids}
-                p = {slot: normalise(p[slot]) for slot in model.informable_slot_ids}
-            else:
-                p, p_req, p_dom, p_bye, _ = model(input_ids=input_ids,
-                                                token_type_ids=token_type_ids,
-                                                attention_mask=attention_mask)
-            
-            for slot in model.informable_slot_ids:
+            p, p_req, p_dom, p_gen, _ = model(input_ids=input_ids, token_type_ids=token_type_ids,
+                                              attention_mask=attention_mask)
+
+            for slot in belief_states:
                 p_ = p[slot]
-                labs = batch['labels-' + slot].to(device)
+                labs = batch['state_labels-' + slot].to(device)
                 
                 belief_states[slot].append(p_)
-                labels[slot].append(labs)
+                state_labels[slot].append(labs)
             
             if p_req is not None:
-                for slot in model.requestable_slot_ids:
+                for slot in request_probs:
                     p_ = p_req[slot]
-                    labs = batch['request-' + slot].to(device)
+                    labs = batch['request_labels-' + slot].to(device)
 
-                    request_belief[slot].append(p_)
+                    request_probs[slot].append(p_)
                     request_labels[slot].append(labs)
                 
-                for domain in model.domain_ids:
+                for domain in active_domain_probs:
                     p_ = p_dom[domain]
                     labs = batch['active-' + domain].to(device)
 
-                    domain_belief[domain].append(p_)
-                    domain_labels[domain].append(labs)
+                    active_domain_probs[domain].append(p_)
+                    active_domain_labels[domain].append(labs)
                 
-                greeting_belief.append(p_bye)
-                greeting_labels.append(batch['goodbye'].to(device))
+                general_act_probs.append(p_bye)
+                general_act_labels.append(batch['goodbye'].to(device))
     
     for slot in belief_states:
         belief_states[slot] = torch.cat(belief_states[slot], 0)
-        labels[slot] = torch.cat(labels[slot], 0)
+        state_labels[slot] = torch.cat(state_labels[slot], 0)
     if p_req is not None:
-        for slot in request_belief:
-            request_belief[slot] = torch.cat(request_belief[slot], 0)
+        for slot in request_probs:
+            request_probs[slot] = torch.cat(request_probs[slot], 0)
             request_labels[slot] = torch.cat(request_labels[slot], 0)
-        for domain in domain_belief:
-            domain_belief[domain] = torch.cat(domain_belief[domain], 0)
-            domain_labels[domain] = torch.cat(domain_labels[domain], 0)
-        greeting_belief = torch.cat(greeting_belief, 0)
-        greeting_labels = torch.cat(greeting_labels, 0)
+        for domain in active_domain_probs:
+            active_domain_probs[domain] = torch.cat(active_domain_probs[domain], 0)
+            active_domain_labels[domain] = torch.cat(active_domain_labels[domain], 0)
+        general_act_probs = torch.cat(general_act_probs, 0)
+        general_act_labels = torch.cat(general_act_labels, 0)
     else:
-        request_belief, request_labels, domain_belief, domain_labels, greeting_belief, greeting_labels = [None]*6
+        request_probs, request_labels, active_domain_probs, active_domain_labels = [None] * 4
+        general_act_probs, general_act_labels = [None] * 2
 
-    out = (belief_states, labels, request_belief, request_labels)
-    out += (domain_belief, domain_labels, greeting_belief, greeting_labels)
+    out = (belief_states, state_labels, request_belief, request_labels)
+    out += (active_domain_probs, active_domain_labels, general_act_probs, general_act_labels)
     return out
-
-
-def normalise(p):
-    p_shape = p.size()
-
-    p = p.reshape(-1, p_shape[-1]) + 1e-10
-    p_sum = p.sum(-1).unsqueeze(1).repeat((1, p_shape[-1]))
-    p /= p_sum
-
-    p = p.reshape(p_shape)
-
-    return p
