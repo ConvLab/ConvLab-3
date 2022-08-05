@@ -1,6 +1,6 @@
 import time
 import json
-from convlab.policy.tus.unify.util import split_slot_name
+from convlab.policy.tus.unify.util import split_slot_name, slot_name_map
 from pprint import pprint
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -25,6 +25,30 @@ def isTimeFormat(input):
         return True
     except ValueError:
         return False
+
+
+def old_goal2list(goal: dict, reorder=False) -> list:
+    goal_list = []
+    for domain in goal:
+        for slot_type in ['info', 'book', 'reqt']:
+            if slot_type not in goal[domain]:
+                continue
+            for slot in goal[domain][slot_type]:
+                s = slot
+                if slot in slot_name_map:
+                    s = slot_name_map[slot]
+                elif slot in slot_name_map[domain]:
+                    s = slot_name_map[domain][slot]
+                # domain, intent, slot, value
+                if slot_type in ['info', 'book']:
+                    i = "inform"
+                    v = goal[domain][slot_type][slot]
+                else:
+                    i = "request"
+                    v = DEF_VAL_UNK
+                goal_list.append([domain, i, s, v])
+
+    return goal_list
 
 
 class Goal(object):

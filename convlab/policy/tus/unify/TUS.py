@@ -5,19 +5,16 @@ from copy import deepcopy
 
 import torch
 from convlab.policy.policy import Policy
-from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import (
-    act_dict_to_flat_tuple, unified_format)
 from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
 from convlab.policy.tus.unify.Goal import Goal
 from convlab.policy.tus.unify.usermanager import BinaryFeature
-from convlab.policy.tus.unify.util import (create_goal, int2onehot,
-                                           metadata2state, parse_dialogue_act,
-                                           parse_user_goal, split_slot_name)
+from convlab.policy.tus.unify.util import create_goal, split_slot_name
 from convlab.util import (load_dataset,
                           relative_import_module_from_unified_datasets)
 from convlab.util.custom_util import model_downloader
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
-from pprint import pprint
+from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.policy.tus.unify.Goal import old_goal2list
+
 reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
@@ -61,6 +58,7 @@ class UserActionPolicy(Policy):
         self.reward = {"success": 40,
                        "fail": -20}
         self.sys_acts = []
+        self.goal_gen = GoalGenerator()
 
     def _no_offer(self, system_in):
         for intent, domain, slot, value in system_in:
@@ -127,13 +125,10 @@ class UserActionPolicy(Policy):
         self.topic = 'NONE'
         remove_domain = "police"  # remove police domain in inference
 
-        # if not goal:
-        #     self.new_goal(remove_domain=remove_domain)
-        # else:
-        #     self.read_goal(goal)
         if not goal:
-            data = load_dataset(self.dataset, 0)
-            goal = Goal(create_goal(data["test"][0]))
+            old_goal = self.goal_gen.get_user_goal()
+            goal_list = old_goal2list(old_goal)
+            goal = Goal(goal_list)
 
         self.read_goal(goal)
         self.feat_handler.initFeatureHandeler(self.goal)
