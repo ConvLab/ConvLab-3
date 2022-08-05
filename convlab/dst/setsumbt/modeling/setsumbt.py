@@ -59,10 +59,8 @@ class SlotUtteranceMatching(Module):
         key_padding_mask = (attention_mask[:, :, 0] == 0.0)
         key_padding_mask[key_padding_mask[:, 0], :] = False
 
-        hidden, _ = self.slot_attention(query=slot_embeddings,
-                                        key=turn_embeddings,
-                                        value=turn_embeddings,
-                                        key_padding_mask=key_padding_mask)
+        hidden, _ = self.attention(query=slot_embeddings, key=turn_embeddings, value=turn_embeddings,
+                                   key_padding_mask=key_padding_mask)
 
         attention_mask = attention_mask[:, 0, :].unsqueeze(0).repeat((slot_embeddings.size(0), 1, 1))
         hidden = hidden * attention_mask
@@ -203,6 +201,7 @@ class SetSUMBTHead(Module):
             config (configuration): Model configuration class
         """
         super(SetSUMBTHead, self).__init__()
+        self.config = config
         # Slot Utterance matching attention
         self.slot_utterance_matching = SlotUtteranceMatching(config.hidden_size, config.slot_attention_heads)
 
@@ -414,7 +413,7 @@ class SetSUMBTHead(Module):
                                                     dialogue_size, -1).transpose(1, 2)
         if self.config.set_similarity:
             belief_embedding = belief_embedding.reshape(batch_size, dialogue_size, num_slots, -1,
-                                                        self.config.nbt_hidden_size)
+                                                        self.config.hidden_size)
         # [batch_size, dialogue_size, num_slots, *slot_desc_len, 768]
 
         # Pooling of the set of latent context representation
@@ -427,6 +426,9 @@ class SetSUMBTHead(Module):
             belief_embedding = belief_embedding.reshape(batch_size, dialogue_size, num_slots, -1)
 
         # Perform classification
+        # Get padded batch, dialogue idx pairs
+        batches, dialogues = torch.where(attention_mask[:, 0, 0].reshape(batch_size, dialogue_size) == 0.0)
+        
         if self.config.predict_actions:
             # User request prediction
             request_probs = dict()
@@ -435,8 +437,6 @@ class SetSUMBTHead(Module):
 
                 # Store output probabilities
                 request_logits = request_logits.reshape(batch_size, dialogue_size)
-                mask = attention_mask[0, :, 0].reshape(batch_size, dialogue_size)
-                batches, dialogues = torch.where(mask == 0.0)
                 # Set request scores to 0.0 for padded turns
                 request_logits[batches, dialogues] = 0.0
                 request_probs[slot] = torch.sigmoid(request_logits)
@@ -466,8 +466,6 @@ class SetSUMBTHead(Module):
 
                 # Store output probabilities
                 active_domain_logits = active_domain_logits.reshape(batch_size, dialogue_size)
-                mask = attention_mask[0, :, 0].reshape(batch_size, dialogue_size)
-                batches, dialogues = torch.where(mask == 0.0)
                 active_domain_logits[batches, dialogues] = 0.0
                 active_domain_probs[domain] = torch.sigmoid(active_domain_logits)
 
@@ -524,8 +522,6 @@ class SetSUMBTHead(Module):
                 belief_state_mutual_info[slot] = self.loss.logits_to_mutual_info(logits).reshape(batch_size, dialogue_size)
 
             # Set padded turn probabilities to zero
-            mask = attention_mask[self.slot_ids[slot], :, 0].reshape(batch_size, dialogue_size)
-            batches, dialogues = torch.where(mask == 0.0)
             probs_[batches, dialogues, :] = 0.0
             belief_state_probs[slot] = probs_
 

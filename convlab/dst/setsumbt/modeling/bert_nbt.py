@@ -34,9 +34,9 @@ class BertSetSUMBT(BertPreTrainedModel):
             for p in self.bert.parameters():
                 p.requires_grad = False
 
-        self.prediction_head = SetSUMBTHead(config)
-        self.add_slot_candidates = self.prediction_head.add_slot_candidates
-        self.add_value_candidates = self.prediction_head.add_value_candidates
+        self.setsumbt = SetSUMBTHead(config)
+        self.add_slot_candidates = self.setsumbt.add_slot_candidates
+        self.add_value_candidates = self.setsumbt.add_value_candidates
 
     def forward(self,
                 input_ids: torch.Tensor,
@@ -80,10 +80,10 @@ class BertSetSUMBT(BertPreTrainedModel):
         turn_embeddings = turn_embeddings.reshape(batch_size * dialogue_size, turn_size, -1)
 
         if get_turn_pooled_representation:
-            return self.prediction_head(turn_embeddings, bert_output.pooler_output, attention_mask,
-                                        batch_size, dialogue_size, hidden_state, state_labels,
-                                        request_labels, active_domain_labels, general_act_labels,
-                                        calculate_state_mutual_info) + (bert_output.pooler_output,)
-        return self.prediction_head(turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
-                                    dialogue_size, hidden_state, state_labels, request_labels, active_domain_labels,
-                                    general_act_labels, calculate_state_mutual_info)
+            return self.setsumbt(turn_embeddings, bert_output.pooler_output, attention_mask,
+                                 batch_size, dialogue_size, hidden_state, state_labels,
+                                 request_labels, active_domain_labels, general_act_labels,
+                                 calculate_state_mutual_info) + (bert_output.pooler_output,)
+        return self.setsumbt(turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
+                             dialogue_size, hidden_state, state_labels, request_labels, active_domain_labels,
+                             general_act_labels, calculate_state_mutual_info)
