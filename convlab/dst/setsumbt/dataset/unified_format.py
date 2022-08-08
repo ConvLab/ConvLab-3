@@ -114,7 +114,7 @@ def convert_examples_to_features(data: list,
     # Create slot labels
     for domslot in tqdm(informable_slots):
         labels = []
-        for dial in tqdm(data):
+        for dial in data:
             labs = []
             for turn in dial:
                 value = [v for d, substate in turn['state'].items() for s, v in substate.items()
@@ -137,7 +137,7 @@ def convert_examples_to_features(data: list,
     # Create requestable slot labels
     for domslot in tqdm(requestable_slots):
         labels = []
-        for dial in tqdm(data):
+        for dial in data:
             labs = []
             for turn in dial:
                 domain, slot = domslot.split('-', 1)
@@ -183,7 +183,7 @@ def convert_examples_to_features(data: list,
     # Create active domain labels
     for domain in tqdm(domains):
         labels = []
-        for dial in tqdm(data):
+        for dial in data:
             labs = []
             for turn in dial:
                 if domain in turn['active_domains']:
