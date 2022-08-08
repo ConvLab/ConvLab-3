@@ -18,14 +18,18 @@
 from copy import deepcopy
 
 import torch
+import transformers
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
 from transformers.tokenization_utils import PreTrainedTokenizer
+from tqdm import tqdm
 
 from convlab.util import load_dataset
 from convlab.dst.setsumbt.dataset.utils import (get_ontology_slots, ontology_add_values,
                                                 get_values_from_data, ontology_add_requestable_slots,
                                                 get_requestable_slots, load_dst_data, extract_dialogues,
                                                 combine_value_sets)
+
+transformers.logging.set_verbosity_error()
 
 
 def convert_examples_to_features(data: list,
@@ -52,7 +56,7 @@ def convert_examples_to_features(data: list,
 
     # Get encoder input for system, user utterance pairs
     input_feats = []
-    for dial in data:
+    for dial in tqdm(data):
         dial_feats = []
         for turn in dial:
             if len(turn['system_utterance']) == 0:
@@ -108,9 +112,9 @@ def convert_examples_to_features(data: list,
     domains = list(set([slot.split('-', 1)[0] for slot in domains]))
 
     # Create slot labels
-    for domslot in informable_slots:
+    for domslot in tqdm(informable_slots):
         labels = []
-        for dial in data:
+        for dial in tqdm(data):
             labs = []
             for turn in dial:
                 value = [v for d, substate in turn['state'].items() for s, v in substate.items()
@@ -131,9 +135,9 @@ def convert_examples_to_features(data: list,
         features['state_labels-' + domslot] = labels
 
     # Create requestable slot labels
-    for domslot in requestable_slots:
+    for domslot in tqdm(requestable_slots):
         labels = []
-        for dial in data:
+        for dial in tqdm(data):
             labs = []
             for turn in dial:
                 domain, slot = domslot.split('-', 1)
@@ -157,7 +161,7 @@ def convert_examples_to_features(data: list,
 
     # General act labels (1-goodbye, 2-thank you)
     labels = []
-    for dial in data:
+    for dial in tqdm(data):
         labs = []
         for turn in dial:
             acts = [act['intent'] for act in turn['dialogue_acts'] if act['intent'] in ['bye', 'thank']]
@@ -177,9 +181,9 @@ def convert_examples_to_features(data: list,
     features['general_act_labels'] = labels
 
     # Create active domain labels
-    for domain in domains:
+    for domain in tqdm(domains):
         labels = []
-        for dial in data:
+        for dial in tqdm(data):
             labs = []
             for turn in dial:
                 if domain in turn['active_domains']:
