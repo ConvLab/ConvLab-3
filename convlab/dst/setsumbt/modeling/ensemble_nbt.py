@@ -65,9 +65,9 @@ class EnsembleSetSUMBT(Module):
         """
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             getattr(self, attr).add_slot_candidates(slot_candidates)
-        self.requestable_slot_ids = self.model_0.requestable_slot_ids
-        self.informable_slot_ids = self.model_0.informable_slot_ids
-        self.domain_ids = self.model_0.domain_ids
+        self.requestable_slot_ids = self.model_0.setsumbt.requestable_slot_ids
+        self.informable_slot_ids = self.model_0.setsumbt.informable_slot_ids
+        self.domain_ids = self.setsumbt.model_0.domain_ids
 
     def add_value_candidates(self, slot: str, value_candidates: torch.Tensor, replace: bool = False):
         """

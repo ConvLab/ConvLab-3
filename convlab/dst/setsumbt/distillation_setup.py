@@ -106,11 +106,6 @@ def do_label_padding(data: dict) -> dict:
     return data
 
 
-map_dict = {'belief_state': 'belief', 'greeting_act_belief': 'goodbye_belief',
-            'state_labels': 'labels', 'request_labels': 'request',
-            'domain_labels': 'active', 'greeting_labels': 'goodbye'}
-
-
 def flatten_data(data: dict) -> dict:
     """
     Map data to flattened feature format used in training
@@ -122,7 +117,6 @@ def flatten_data(data: dict) -> dict:
     """
     data_new = dict()
     for label, feats in data.items():
-        label = map_dict.get(label, label)
         if type(feats) == dict:
             for label_, feats_ in feats.items():
                 data_new[label + '-' + label_] = feats_
@@ -160,15 +154,15 @@ def get_ensemble_distributions(args):
     attention_mask = []
     state_labels = {slot: [] for slot in model.informable_slot_ids}
     request_labels = {slot: [] for slot in model.requestable_slot_ids}
-    domain_labels = {domain: [] for domain in model.domain_ids}
-    greeting_labels = []
+    active_domain_labels = {domain: [] for domain in model.domain_ids}
+    general_act_labels = []
 
     is_noisy = [] if 'is_noisy' in dataloader.dataset.features else None
 
     belief_state = {slot: [] for slot in model.informable_slot_ids}
-    request_belief = {slot: [] for slot in model.requestable_slot_ids}
-    domain_belief = {domain: [] for domain in model.domain_ids}
-    greeting_act_belief = []
+    request_probs = {slot: [] for slot in model.requestable_slot_ids}
+    active_domain_probs = {domain: [] for domain in model.domain_ids}
+    general_act_probs = []
     model.eval()
     for batch in tqdm(dataloader, desc='Batch:'):
         ids = batch['input_ids']
@@ -187,26 +181,25 @@ def get_ensemble_distributions(args):
         mask = mask.to(device) if mask is not None else None
 
         for slot in state_labels:
-            state_labels[slot].append(batch['labels-' + slot])
+            state_labels[slot].append(batch['state_labels-' + slot])
         if model.config.predict_actions:
             for slot in request_labels:
-                request_labels[slot].append(batch['request-' + slot])
+                request_labels[slot].append(batch['request_labels-' + slot])
             for domain in domain_labels:
-                domain_labels[domain].append(batch['active-' + domain])
-            greeting_labels.append(batch['goodbye'])
+                domain_labels[domain].append(batch['active_domain_labels-' + domain])
+            greeting_labels.append(batch['general_act_labels'])
 
         with torch.no_grad():
-            p, p_req, p_dom, p_bye, _ = model(ids, mask, tt_ids,
-                                            reduction=args.reduction)
+            p, p_req, p_dom, p_gen, _ = model(ids, mask, tt_ids, reduction=args.reduction)
 
         for slot in belief_state:
             belief_state[slot].append(p[slot].cpu())
         if model.config.predict_actions:
-            for slot in request_belief:
-                request_belief[slot].append(p_req[slot].cpu())
-            for domain in domain_belief:
-                domain_belief[domain].append(p_dom[domain].cpu())
-            greeting_act_belief.append(p_bye.cpu())
+            for slot in request_probs:
+                request_probs[slot].append(p_req[slot].cpu())
+            for domain in active_domain_probs:
+                active_domain_probs[domain].append(p_dom[domain].cpu())
+            general_act_probs.append(p_gen.cpu())
     
     input_ids = torch.cat(input_ids, 0) if input_ids[0] is not None else None
     token_type_ids = torch.cat(token_type_ids, 0) if token_type_ids[0] is not None else None
@@ -216,14 +209,14 @@ def get_ensemble_distributions(args):
     state_labels = {slot: torch.cat(l, 0) for slot, l in state_labels.items()}
     if model.config.predict_actions:
         request_labels = {slot: torch.cat(l, 0) for slot, l in request_labels.items()}
-        domain_labels = {domain: torch.cat(l, 0) for domain, l in domain_labels.items()}
-        greeting_labels = torch.cat(greeting_labels, 0)
+        active_domain_labels = {domain: torch.cat(l, 0) for domain, l in active_domain_labels.items()}
+        general_act_labels = torch.cat(general_act_labels, 0)
     
     belief_state = {slot: torch.cat(p, 0) for slot, p in belief_state.items()}
     if model.config.predict_actions:
-        request_belief = {slot: torch.cat(p, 0) for slot, p in request_belief.items()}
-        domain_belief = {domain: torch.cat(p, 0) for domain, p in domain_belief.items()}
-        greeting_act_belief = torch.cat(greeting_act_belief, 0)
+        request_probs = {slot: torch.cat(p, 0) for slot, p in request_probs.items()}
+        active_domain_probs = {domain: torch.cat(p, 0) for domain, p in active_domain_probs.items()}
+        general_act_probs = torch.cat(general_act_probs, 0)
 
     data = {'input_ids': input_ids}
     if token_type_ids is not None:
@@ -236,11 +229,11 @@ def get_ensemble_distributions(args):
     data['belief_state'] = belief_state
     if model.config.predict_actions:
         data['request_labels'] = request_labels
-        data['domain_labels'] = domain_labels
-        data['greeting_labels'] = greeting_labels
-        data['request_belief'] = request_belief
-        data['domain_belief'] = domain_belief
-        data['greeting_act_belief'] = greeting_act_belief
+        data['active_domain_labels'] = active_domain_labels
+        data['general_act_labels'] = general_act_labels
+        data['request_probs'] = request_probs
+        data['active_domain_probs'] = active_domain_probs
+        data['general_act_probs'] = general_act_probs
 
     file = os.path.join(args.model_path, 'dataloaders', f'{args.set_type}.data')
     torch.save(data, file)
