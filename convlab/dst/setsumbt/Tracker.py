@@ -5,46 +5,48 @@ import logging
 
 import torch
 import transformers
-from transformers import (BertModel, BertConfig, BertTokenizer,
-                          RobertaModel, RobertaConfig, RobertaTokenizer)
-from convlab.dst.setsumbt.modeling import (RobertaSetSUMBT,
-                                            BertSetSUMBT)
+from transformers import BertModel, BertConfig, BertTokenizer, RobertaModel, RobertaConfig, RobertaTokenizer
 
+from convlab.dst.setsumbt.modeling import RobertaSetSUMBT, BertSetSUMBT
+from convlab.dst.setsumbt.modeling.training import set_ontology_embeddings
 from convlab.dst.dst import DST
-from convlab.util.multiwoz.state import default_state
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA, REF_USR_DA
-from convlab.dst.rule.multiwoz import normalize_value
 from convlab.util.custom_util import model_downloader
 
 USE_CUDA = torch.cuda.is_available()
 
-# Map from SetSUMBT slot names to Convlab slot names
-SLOT_MAP = {'arrive by': 'arriveBy',
-            'leave at': 'leaveAt',
-            'price range': 'pricerange',
-            'trainid': 'trainID',
-            'reference': 'Ref',
-            'taxi types': 'car type'}
-
 
 class SetSUMBTTracker(DST):
+    """SetSUMBT Tracker object for Convlab dialogue system"""
 
-    def __init__(self, model_path="", model_type="roberta",
-                 get_turn_pooled_representation=False,
-                 get_confidence_scores=False,
-                 threshold='auto',
-                 return_entropy=False,
-                 return_mutual_info=False,
-                 store_full_belief_state=False):
+    def __init__(self,
+                 model_path: str = "",
+                 model_type: str = "roberta",
+                 return_turn_pooled_representation: bool = False,
+                 return_confidence_scores: bool = False,
+                 confidence_threshold='auto',
+                 return_belief_state_entropy: bool = False,
+                 return_belief_state_mutual_info: bool = False,
+                 store_full_belief_state: bool = False):
+        """
+        Args:
+            model_path: Model path or download URL
+            model_type: Transformer type (roberta/bert)
+            return_turn_pooled_representation: If true a turn level pooled representation is returned
+            return_confidence_scores: If true act confidence scores are included in the state
+            confidence_threshold: Confidence threshold value for constraints or option auto
+            return_belief_state_entropy: If true belief state distribution entropies are included in the state
+            return_belief_state_mutual_info: If true belief state distribution mutual infos are included in the state
+            store_full_belief_state: If true full belief state is stored within tracker object
+        """
         super(SetSUMBTTracker, self).__init__()
 
         self.model_type = model_type
         self.model_path = model_path
-        self.get_turn_pooled_representation = get_turn_pooled_representation
-        self.get_confidence_scores = get_confidence_scores
-        self.threshold = threshold
-        self.return_entropy = return_entropy
-        self.return_mutual_info = return_mutual_info
+        self.return_turn_pooled_representation = return_turn_pooled_representation
+        self.return_confidence_scores = return_confidence_scores
+        self.confidence_threshold = confidence_threshold
+        self.return_belief_state_entropy = return_belief_state_entropy
+        self.return_belief_state_mutual_info = return_belief_state_mutual_info
         self.store_full_belief_state = store_full_belief_state
         if self.store_full_belief_state:
             self.full_belief_state = {}
@@ -77,15 +79,14 @@ class SetSUMBTTracker(DST):
         self.device = torch.device('cuda') if USE_CUDA else torch.device('cpu')
 
         # Value dict for value normalisation
-        path = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         path = os.path.join(path, 'data/multiwoz/value_dict.json')
         self.value_dict = json.load(open(path))
 
         self.load_weights()
 
     def load_weights(self):
-        # Load tokenizer and model checkpoints
+        """Load model weights and model ontology"""
         logging.info('Loading SetSUMBT pretrained model.')
         self.tokenizer = self.tokenizer.from_pretrained(self.config.tokenizer_name)
         logging.info(f'Model tokenizer loaded from {self.config.tokenizer_name}.')
@@ -98,60 +99,56 @@ class SetSUMBTTracker(DST):
         logging.info(f'Model transferred to device: {self.device}')
 
         logging.info('Loading model ontology')
-        if os.path.isfile(os.path.join(self.model_path, 'ontology.json')):
-            ontology_dir = self.model_path
-        else:
-            ontology_dir = os.path.join(self.model_path, 'database')
-        f = open(os.path.join(ontology_dir, 'test.json'), 'r')
+        f = open(os.path.join(self.model_path, 'database', 'test.json'), 'r')
         self.ontology = json.load(f)
         f.close()
 
-        db = torch.load(os.path.join(ontology_dir, 'test.db'))
+        db = torch.load(os.path.join(self.model_path, 'database', 'test.db'))
         set_ontology_embeddings(self.model, db)
 
-        if self.get_confidence_scores:
-            logging.info('Model will output action and state confidence scores.')
-        if self.get_confidence_scores:
-            self.get_thresholds(self.threshold)
+        if self.return_confidence_scores:
+            logging.info('Model returns user action and belief state confidence scores.')
+            self.get_thresholds(self.confidence_threshold)
             logging.info('Uncertain Querying set up and thresholds set up at:')
-            logging.info(self.thresholds)
-        if self.return_entropy:
-            logging.info('Model will output state distribution entropy.')
-        if self.return_mutual_info:
-            logging.info('Model will output state distribution mutual information.')
+            logging.info(self.confidence_thresholds)
+        if self.return_belief_state_entropy:
+            logging.info('Model returns belief state distribution entropy scores (Total uncertainty).')
+        if self.return_belief_state_mutual_info:
+            logging.info('Model returns belief state distribution mutual information scores (Knowledge uncertainty).')
         logging.info('Ontology loaded successfully.')
 
-        self.det_dic = {}
-        for domain, dic in REF_USR_DA.items():
-            for key, value in dic.items():
-                assert '-' not in key
-                self.det_dic[key.lower()] = key + '-' + domain
-                self.det_dic[value.lower()] = key + '-' + domain
+    def get_thresholds(self, threshold='auto') -> dict:
+        """
+        Setup dictionary of domain specific confidence thresholds
 
-    #TODO
-    def get_thresholds(self, threshold='auto'):
-        self.thresholds = {}
-        for slot, value_candidates in self.ontology.items():
-            domain, slot = slot.split('-', 1)
-            slot = REF_SYS_DA[domain.capitalize()].get(slot, slot)
-            slot = slot.strip().split()[1] if 'book ' in slot else slot
-            slot = SLOT_MAP.get(slot, slot)
+        Args:
+            threshold: Threshold value or option auto
 
-            # Auto thresholds are set based on the number of value candidates per slot
-            if domain not in self.thresholds:
-                self.thresholds[domain] = {}
-            if threshold == 'auto':
-                thres = 1.0 / (float(len(value_candidates)) - 2.1)
-                self.thresholds[domain][slot] = max(0.05, thres)
-            else:
-                self.thresholds[domain][slot] = max(0.05, threshold)
+        Returns:
+            confidence_thresholds: Domain specific confidence thresholds
+        """
+        self.confidence_thresholds = dict()
+        for domain, substate in self.ontology.items():
+            for slot, slot_info in substate.items():
+                # Auto thresholds are set based on the number of value candidates per slot
+                if domain not in self.confidence_thresholds:
+                    self.confidence_thresholds[domain] = dict()
+                if threshold == 'auto':
+                    thres = 1.0 / (float(len(slot_info['possible_values'])) - 2.1)
+                    self.confidence_thresholds[domain][slot] = max(0.05, thres)
+                else:
+                    self.confidence_thresholds[domain][slot] = max(0.05, threshold)
 
-        return self.thresholds
+        return self.confidence_thresholds
 
     def init_session(self):
-        self.state = {"belief_state": {domain: {slot: '' for slot, slot_info in substate.items()
-                                                if slot_info['possible_values'] and slot_info['possible_values'] != ['?']}
-                                       for domain, substate in self.ontology.items()}}
+        self.state = dict()
+        self.state['belief_state'] = dict()
+        for domain, substate in self.ontology.items():
+            self.state['belief_state'][domain] = dict()
+            for slot, slot_info in substate.items():
+                if slot_info['possible_values'] and slot_info['possible_values'] != ['?']:
+                    self.state['belief_state'][domain][slot] = ''
         self.state['history'] = []
         self.state['system_action'] = []
         self.state['user_action'] = []
@@ -159,88 +156,83 @@ class SetSUMBTTracker(DST):
         self.hidden_states = None
         self.info_dict = {}
 
-    def update(self, user_act=''):
+    def update(self, user_act: str = '') -> dict:
+        """
+        Update user actions and dialogue and belief states.
+
+        Args:
+            user_act:
+
+        Returns:
+
+        """
         prev_state = self.state
+        _output = self.predict(self.get_features(user_act))
 
-        # Convert dialogs into transformer input features (token_ids, masks, etc)
-        features = self.get_features(user_act)
-        # Model forward pass
-        pred_states, active_domains, user_acts, turn_pooled_representation, belief_state, entropy_, mutual_info_ = self.predict(
-            features)
-
-        if entropy_ is not None:
-            entropy = {}
-            for slot, e in entropy_.items():
+        # Format state entropy
+        if _output[5] is not None:
+            state_entropy = dict()
+            for slot, e in _output[5].items():
                 domain, slot = slot.split('-', 1)
-                if domain not in entropy:
-                    entropy[domain] = {}
-                if 'book' in slot:
-                    assert slot.startswith('book ')
-                    slot = slot.strip().split()[1]
-                slot = SLOT_MAP.get(slot, slot)
-                entropy[domain][slot] = e
-            del entropy_
+                if domain not in state_entropy:
+                    state_entropy[domain] = dict()
+                state_entropy[domain][slot] = e
         else:
-            entropy = None
+            state_entropy = None
 
-        if mutual_info_ is not None:
-            mutual_info = {}
-            for slot, mi in mutual_info_.items():
+        # Format state mutual information
+        if _output[6] is not None:
+            state_mutual_info = dict()
+            for slot, mi in _output[5].items():
                 domain, slot = slot.split('-', 1)
-                if domain not in mutual_info:
-                    mutual_info[domain] = {}
-                if 'book' in slot:
-                    assert slot.startswith('book ')
-                    slot = slot.strip().split()[1]
-                slot = SLOT_MAP.get(slot, slot)
-                mutual_info[domain][slot] = mi[0, 0]
+                if domain not in state_mutual_info:
+                    state_mutual_info[domain] = dict()
+                state_mutual_info[domain][slot] = mi[0, 0]
         else:
-            mutual_info = None
+            state_mutual_info = None
 
-        if belief_state is not None:
-            bs_probs = {}
-            belief_state, request_dist, domain_dist, greeting_dist = belief_state
-            for slot, p in belief_state.items():
+        # Format all confidence scores
+        belief_state_confidence = None
+        if _output[4] is not None:
+            belief_state_confidence = dict()
+            belief_state_conf, request_probs, active_domain_probs, general_act_probs = _output[4]
+            for slot, p in belief_state_conf.items():
                 domain, slot = slot.split('-', 1)
-                if domain not in bs_probs:
-                    bs_probs[domain] = {}
-                if 'book' in slot:
-                    assert slot.startswith('book ')
-                    slot = slot.strip().split()[1]
-                slot = SLOT_MAP.get(slot, slot)
-                if slot not in bs_probs[domain]:
-                    bs_probs[domain][slot] = {}
-                bs_probs[domain][slot]['inform'] = p
+                if domain not in belief_state_confidence:
+                    belief_state_confidence[domain] = dict()
+                if slot not in belief_state_confidence[domain]:
+                    belief_state_confidence[domain][slot] = dict()
+                belief_state_confidence[domain][slot]['inform'] = p
 
-            for slot, p in request_dist.items():
+            for slot, p in request_probs.items():
                 domain, slot = slot.split('-', 1)
-                if domain not in bs_probs:
-                    bs_probs[domain] = {}
-                slot = SLOT_MAP.get(slot, slot)
-                if slot not in bs_probs[domain]:
-                    bs_probs[domain][slot] = {}
-                bs_probs[domain][slot]['request'] = p
+                if domain not in belief_state_confidence:
+                    belief_state_confidence[domain] = dict()
+                if slot not in belief_state_confidence[domain]:
+                    belief_state_confidence[domain][slot] = dict()
+                belief_state_confidence[domain][slot]['request'] = p
 
-            for domain, p in domain_dist.items():
-                if domain not in bs_probs:
-                    bs_probs[domain] = {}
-                bs_probs[domain]['none'] = {'inform': p}
+            for domain, p in active_domain_probs.items():
+                if domain not in belief_state_confidence:
+                    belief_state_confidence[domain] = dict()
+                belief_state_confidence[domain]['none'] = {'inform': p}
 
-            if 'general' not in bs_probs:
-                bs_probs['general'] = {}
-            bs_probs['general']['none'] = greeting_dist
+            if 'general' not in belief_state_confidence:
+                belief_state_confidence['general'] = dict()
+            belief_state_confidence['general']['none'] = general_act_probs
 
-        new_domains = [d for d, active in active_domains.items() if active]
-        new_domains = [
-            d for d in new_domains if not self.active_domains.get(d, False)]
-        self.active_domains = active_domains
+        # Get new domain activation actions
+        new_domains = [d for d, active in _output[1].items() if active]
+        new_domains = [d for d in new_domains if not self.active_domains.get(d, False)]
+        self.active_domains = _output[1]
 
+        user_acts = _output[2]
         for domain in new_domains:
-            user_acts.append(['Inform', domain.capitalize(), 'none', 'none'])
+            user_acts.append({'intent': 'inform', 'domain': domain, 'slot': '', 'value': ''})
 
         new_belief_state = copy.deepcopy(prev_state['belief_state'])
         # user_acts = []
-        for domain, substate in pred_states.items():
+        for domain, substate in _output[0].items():
             for slot, value in substate.items():
                 value = '' if value == 'none' else value
                 value = 'dontcare' if value == 'do not care' else value
@@ -250,142 +242,143 @@ class SetSUMBTTracker(DST):
                     if domain == 'bus':
                         continue
                     else:
-                        logging.debug(
-                            'Error: domain <{}> not in belief state'.format(domain))
+                        logging.debug('Error: domain <{}> not in belief state'.format(domain))
 
                 # Uncertainty clipping of state
-                if belief_state is not None:
-                    if bs_probs[domain][slot].get('inform', 1.0) < self.thresholds[domain][slot]:
+                if belief_state_confidence is not None:
+                    threshold = self.confidence_thresholds[domain][slot]
+                    if belief_state_confidence[domain][slot].get('inform', 1.0) < threshold:
                         value = ''
 
                 new_belief_state[domain][slot] = value
                 if prev_state['belief_state'][domain][slot] != value:
-                    user_acts.append(['Inform', domain, slot, value])
+                    user_acts.append({'intent': 'inform', 'domain': domain, 'slot': slot, 'value': value})
                 else:
-                    logging.debug(
-                        'unknown slot name <{}> with value <{}> of domain <{}>\nitem: {}\n\n'.format(
-                            slot, value, domain, state)
-                    )
+                    bug = f'Unknown slot name <{slot}> with value <{value}> of domain <{domain}>'
+                    logging.debug(bug)
 
         new_state = copy.deepcopy(dict(prev_state))
         new_state['belief_state'] = new_belief_state
         new_state['active_domains'] = self.active_domains
-        if belief_state is not None:
-            new_state['belief_state_probs'] = bs_probs
-        if entropy is not None:
-            new_state['entropy'] = entropy
-        if mutual_info is not None:
-            new_state['mutual_information'] = mutual_info
+        if belief_state_confidence is not None:
+            new_state['belief_state_probs'] = belief_state_confidence
+        if state_entropy is not None:
+            new_state['entropy'] = state_entropy
+        if state_mutual_info is not None:
+            new_state['mutual_information'] = state_mutual_info
 
         user_acts = [act for act in user_acts if act not in new_state['system_action']]
         new_state['user_action'] = user_acts
 
-        user_requests = [[a, d, s, v] for a, d, s, v in user_acts if a == 'Request']
-        for act, domain, slot, value in user_requests:
-            k = REF_SYS_DA[domain].get(slot, slot)
-            domain = domain.lower()
-            if domain not in new_state['request_state']:
-                new_state['request_state'][domain] = {}
-            if k not in new_state['request_state'][domain]:
-                new_state['request_state'][domain][k] = 0
-
-        if turn_pooled_representation is not None:
-            new_state['turn_pooled_representation'] = turn_pooled_representation
+        if _output[3] is not None:
+            new_state['turn_pooled_representation'] = _output[3]
 
         self.state = new_state
         self.info_dict = copy.deepcopy(dict(new_state))
 
         return self.state
 
-    # Model prediction function
+    def predict(self, features: dict) -> tuple:
+        """
+        Model forward pass and prediction post processing.
 
-    def predict(self, features):
-        # Forward Pass
-        mutual_info = None
+        Args:
+            features: Dictionary of model input features
+
+        Returns:
+            out: Model predictions and uncertainty features
+        """
+        state_mutual_info = None
         with torch.no_grad():
             turn_pooled_representation = None
-            if self.get_turn_pooled_representation:
-                belief_state, request, domain, goodbye, self.hidden_states, turn_pooled_representation = self.model(input_ids=features['input_ids'],
-                                                                                                                    token_type_ids=features[
-                                                                                                                        'token_type_ids'],
-                                                                                                                    attention_mask=features[
-                                                                                                                        'attention_mask'],
-                                                                                                                    hidden_state=self.hidden_states,
-                                                                                                                    get_turn_pooled_representation=True)
-            elif self.return_mutual_info:
-                belief_state, request, domain, goodbye, self.hidden_states, mutual_info = self.model(input_ids=features['input_ids'],
-                                                                                                     token_type_ids=features[
-                                                                                                         'token_type_ids'],
-                                                                                                     attention_mask=features[
-                                                                                                         'attention_mask'],
-                                                                                                     hidden_state=self.hidden_states,
-                                                                                                     get_turn_pooled_representation=False,
-                                                                                                     calculate_inform_mutual_info=True)
+            if self.return_turn_pooled_representation:
+                _outputs = self.model(input_ids=features['input_ids'], token_type_ids=features['token_type_ids'],
+                                      attention_mask=features['attention_mask'], hidden_state=self.hidden_states,
+                                      get_turn_pooled_representation=True)
+                belief_state = _outputs[0]
+                request_probs = _outputs[1]
+                active_domain_probs = _outputs[2]
+                general_act_probs = _outputs[3]
+                self.hidden_states = _outputs[4]
+                turn_pooled_representation = _outputs[5]
+            elif self.return_belief_state_mutual_info:
+                _outputs = self.model(input_ids=features['input_ids'], token_type_ids=features['token_type_ids'],
+                                      attention_mask=features['attention_mask'], hidden_state=self.hidden_states,
+                                      get_turn_pooled_representation=True, calculate_inform_mutual_info=True)
+                belief_state = _outputs[0]
+                request_probs = _outputs[1]
+                active_domain_probs = _outputs[2]
+                general_act_probs = _outputs[3]
+                self.hidden_states = _outputs[4]
+                state_mutual_info = _outputs[5]
             else:
-                belief_state, request, domain, goodbye, self.hidden_states = self.model(input_ids=features['input_ids'],
-                                                                                        token_type_ids=features['token_type_ids'],
-                                                                                        attention_mask=features['attention_mask'],
-                                                                                        hidden_state=self.hidden_states,
-                                                                                        get_turn_pooled_representation=False)
+                _outputs = self.model(input_ids=features['input_ids'], token_type_ids=features['token_type_ids'],
+                                      attention_mask=features['attention_mask'], hidden_state=self.hidden_states,
+                                      get_turn_pooled_representation=False)
+                belief_state, request_probs, active_domain_probs, general_act_probs, self.hidden_states = _outputs
 
         # Convert belief state into dialog state
-        predictions = {}
-        for slot, state in belief_state.items():
+        dialogue_state = dict()
+        for slot, probs in belief_state.items():
             dom, slot = slot.split('-', 1)
-            if dom not in predictions:
-                predictions[dom] = {}
-            pred = self.ontology[dom][slot]['possible_values'][state[0, 0, :].argmax().item()]
-            if pred != 'none':
-                predictions[dom][slot] = pred
+            if dom not in dialogue_state:
+                dialogue_state[dom] = dict()
+            val = self.ontology[dom][slot]['possible_values'][probs[0, 0, :].argmax().item()]
+            if val != 'none':
+                dialogue_state[dom][slot] = val
 
         if self.store_full_belief_state:
             self.full_belief_state = belief_state
 
         # Obtain model output probabilities
-        if self.get_confidence_scores:
-            entropy = None
-            if self.return_entropy:
-                entropy = {slot: state[0, 0, :]
-                           for slot, state in belief_state.items()}
-                entropy = {slot: self.relative_entropy(
-                    p).item() for slot, p in entropy.items()}
+        if self.return_confidence_scores:
+            state_entropy = None
+            if self.return_belief_state_entropy:
+                state_entropy = {slot: probs[0, 0, :] for slot, probs in belief_state.items()}
+                state_entropy = {slot: self.relative_entropy(p).item() for slot, p in state_entropy.items()}
 
             # Confidence score is the max probability across all not "none" values candidates.
-            belief_state = {slot: state[0, 0, 1:].max().item()
-                            for slot, state in belief_state.items()}
-            request_dist = {SLOT_MAP.get(
-                slot, slot): p[0, 0].item() for slot, p in request.items()}
-            domain_dist = {domain: p[0, 0].item()
-                           for domain, p in domain.items()}
-            greeting_dist = {'bye': goodbye[0, 0, 1].item(
-            ), 'thank': goodbye[0, 0, 2].item()}
-            belief_state = (belief_state, request_dist,
-                            domain_dist, greeting_dist)
+            belief_state_conf = {slot: probs[0, 0, 1:].max().item() for slot, probs in belief_state.items()}
+            _request_probs = {slot: p[0, 0].item() for slot, p in request_probs.items()}
+            _active_domain_probs = {domain: p[0, 0].item() for domain, p in active_domain_probs.items()}
+            _general_act_probs = {'bye': general_act_probs[0, 0, 1].item(), 'thank': general_act_probs[0, 0, 2].item()}
+            confidence_scores = (belief_state_conf, _request_probs, _active_domain_probs, _general_act_probs)
         else:
-            belief_state = None
-            entropy = None
+            confidence_scores = None
+            state_entropy = None
 
         # Construct request action prediction
-        request = [slot for slot, p in request.items() if p[0, 0].item() > 0.5]
-        request = [slot.split('-', 1) for slot in request]
-        request = [[domain, SLOT_MAP.get(slot, slot)]
-                   for domain, slot in request]
-        request = [['Request', domain.capitalize(), REF_USR_DA[domain.capitalize()].get(
-            slot, slot), '?'] for domain, slot in request]
+        request_acts = [slot for slot, p in request_probs.items() if p[0, 0].item() > 0.5]
+        request_acts = [slot.split('-', 1) for slot in request_acts]
+        request_acts = [{'intent': 'request',
+                         'domain': domain,
+                         'slot': slot,
+                         'value': '?'} for domain, slot in request_acts]
 
         # Construct active domain set
-        domain = {domain: p[0, 0].item() > 0.5 for domain, p in domain.items()}
+        active_domains = {domain: p[0, 0].item() > 0.5 for domain, p in active_domain_probs.items()}
 
         # Construct general domain action
-        goodbye = goodbye[0, 0, :].argmax(-1).item()
-        goodbye = [[], ['bye'], ['thank']][goodbye]
-        goodbye = [[act, 'general', 'none', 'none'] for act in goodbye]
+        general_acts = general_act_probs[0, 0, :].argmax(-1).item()
+        general_acts = [[], ['bye'], ['thank']][general_acts]
+        general_acts = [{'intent': act, 'domain': 'general', 'slot': '', 'value': ''} for act in general_acts]
 
-        user_acts = request + goodbye
+        user_acts = request_acts + general_acts
 
-        return predictions, domain, user_acts, turn_pooled_representation, belief_state, entropy, mutual_info
+        out = (dialogue_state, active_domains, user_acts, turn_pooled_representation, confidence_scores)
+        out += (state_entropy, state_mutual_info)
+        return out
 
-    def relative_entropy(self, probs):
+    def relative_entropy(self, probs: torch.Tensor) -> torch.Tensor:
+        """
+        Compute relative entrop for a probability distribution
+
+        Args:
+            probs: Probability distributions
+
+        Returns:
+            entropy: Relative entropy
+        """
         entropy = probs * torch.log(probs + 1e-8)
         entropy = -entropy.sum()
         # Maximum entropy of a K dimentional distribution is ln(K)
@@ -393,8 +386,16 @@ class SetSUMBTTracker(DST):
 
         return entropy
 
-    # Convert dialog turns into model features
-    def get_features(self, user_act):
+    def get_features(self, user_act: str) -> dict:
+        """
+        Tokenize utterances and construct model input features
+
+        Args:
+            user_act: User action string
+
+        Returns:
+            features: Model input features
+        """
         # Extract system utterance from dialog history
         context = self.state['history']
         if context:
@@ -422,7 +423,10 @@ class SetSUMBTTracker(DST):
 
 
 if __name__ == "__main__":
-    tracker = SetSUMBTTracker(model_path='models/SetSUMBT-Acts-multiwoz21-10%-roberta-gru-cosine-labelsmoothing-Seed20222202-20-04-22-16-04')
+    tracker = SetSUMBTTracker(model_path='/gpfs/project/niekerk/src/SetSUMBT/models/SetSUMBT+ActPrediction-multiwoz21-roberta-gru-cosine-labelsmoothing-Seed0-10-08-22-12-42',
+                              return_turn_pooled_representation=True, return_confidence_scores=True,
+                              confidence_threshold = 'auto', return_belief_state_entropy=True,
+                              return_belief_state_mutual_info=True, store_full_belief_state=True)
     tracker.init_session()
     state = tracker.update('hey. I need a cheap restaurant.')
     tracker.state['history'].append(['usr', 'hey. I need a cheap restaurant.'])
@@ -430,8 +434,10 @@ if __name__ == "__main__":
     state = tracker.update('If you have something Asian that would be great.')
     tracker.state['history'].append(['usr', 'If you have something Asian that would be great.'])
     tracker.state['history'].append(['sys', 'The Golden Wok is a nice cheap chinese restaurant.'])
-    tracker.state['system_action'] = [['Inform', 'restaurant', 'food', 'chinese'],
-                                      ['Inform', 'restaurant', 'name', 'the golden wok']]
+    tracker.state['system_action'] = [{'intent': 'inform', 'domain': 'restaurant', 'slot': 'food', 'value': 'chinese'},
+                                      {'intent': 'inform', 'domain': 'restaurant', 'slot': 'name',
+                                       'value': 'the golden wok'}]
     state = tracker.update('Great. Where are they located?')
     tracker.state['history'].append(['usr', 'Great. Where are they located?'])
     print(tracker.state)
+    print(tracker.full_belief_state)
