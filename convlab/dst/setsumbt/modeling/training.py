@@ -71,6 +71,7 @@ def log_info(global_step, loss, jg_acc=None, sl_acc=None, req_f1=None, dom_f1=No
 
     Args:
         global_step: Number of global training steps completed
+        loss: Training loss
         jg_acc: Joint goal accuracy
         sl_acc: Slot accuracy
         req_f1: Request prediction F1 score
@@ -78,18 +79,24 @@ def log_info(global_step, loss, jg_acc=None, sl_acc=None, req_f1=None, dom_f1=No
         gen_f1: General action prediction F1 score
         stats: Uncertainty measure statistics of model
     """
-    info = f"{global_step} steps complete, " if global_step >= 0 else "Training complete. "
-    info += f"Loss since last update: {loss}. "
-    info += f"Validation set stats: Joint Goal Acc: {jg_acc}, Slot Acc: {sl_acc}, "
-    if req_f1:
+    info = f"{global_step} steps complete, " if type(global_step) == int else ""
+    if global_step == 'training_complete':
+        info += f"Training Complete"
+        info += f"Loss since last update: {loss}. Validation set stats: "
+    if global_step == 'dev':
+        info += f"Validation set stats: Loss: {loss}, "
+    if global_step == 'test':
+        info += f"Test set stats: Loss: {loss}, "
+    info += f"Joint Goal Acc: {jg_acc}, Slot Acc: {sl_acc}, "
+    if req_f1 is not None:
         info += f"Request F1 Score: {req_f1}, Active Domain F1 Score: {dom_f1}, "
         info += f"General Action F1 Score: {gen_f1}"
     logger.info(info)
 
-    if global_step >= 0:
+    if type(global_step) == int:
         tb_writer.add_scalar('JointGoalAccuracy/Dev', jg_acc, global_step)
         tb_writer.add_scalar('SlotAccuracy/Dev', sl_acc, global_step)
-        if req_f1:
+        if req_f1 is not None:
             tb_writer.add_scalar('RequestF1Score/Dev', req_f1, global_step)
             tb_writer.add_scalar('ActiveDomainF1Score/Dev', dom_f1, global_step)
             tb_writer.add_scalar('GeneralActionF1Score/Dev', gen_f1, global_step)
@@ -243,12 +250,12 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots: dict, sl
             model.zero_grad()
             set_ontology_embeddings(model.module if args.n_gpu > 1 else model, slots, load_slots=False)
         else:
-            jg_acc, req_f1, dom_f1, bye_f1 = 0.0, 0.0, 0.0, 0.0
+            jg_acc, req_f1, dom_f1, gen_f1 = 0.0, 0.0, 0.0, 0.0
 
         best_model['joint goal accuracy'] = jg_acc
         best_model['request f1 score'] = req_f1
         best_model['active domain f1 score'] = dom_f1
-        best_model['general act f1 score'] = bye_f1
+        best_model['general act f1 score'] = gen_f1
 
     # Log training set up
     logger.info(f"Device: {device}, Number of GPUs: {args.n_gpu}, FP16 training: {args.fp16}")
@@ -456,7 +463,7 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots: dict, sl
         jg_acc, sl_acc, req_f1, dom_f1, gen_f1, loss, stats = evaluate(args, model, device, dev_dataloader,
                                                                        is_train=True)
 
-        log_info(-1, tr_loss / global_step, jg_acc, sl_acc, req_f1, dom_f1, gen_f1)
+        log_info('training_complete', tr_loss / global_step, jg_acc, sl_acc, req_f1, dom_f1, gen_f1)
     else:
         logger.info('Training complete!')
 
@@ -603,6 +610,9 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
                 p_req_ = p_req[slot]
                 request_labels = batch['request_labels-' + slot].to(device)
 
+                print(slot, p_req_, request_labels)
+                quit()
+
                 acc = (p_req_.round().int() == request_labels).reshape(-1).float()
                 tp = (p_req_.round().int() * (request_labels == 1)).reshape(-1).float()
                 fp = (p_req_.round().int() * (request_labels == 0)).reshape(-1).float()
@@ -680,7 +690,7 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
         gen_f1 = gen_tp + 0.5 * (gen_fp + gen_fn)
         gen_f1 = gen_tp / gen_f1 if gen_f1 != 0.0 else 0.0
     else:
-        req_f1, dom_f1, bye_f1 = None, None, None
+        req_f1, dom_f1, gen_f1 = None, None, None
 
     if return_eval_output:
         dial_idx = 0

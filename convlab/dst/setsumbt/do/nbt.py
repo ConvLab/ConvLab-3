@@ -265,13 +265,8 @@ def main(args=None, config=None):
         training.set_ontology_embeddings(model, dev_slots)
 
         # EVALUATION
-        jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss = training.evaluate(args, model, device, dev_dataloader)
-        if req_f1:
-            logger.info('Development loss: %f, Joint Goal Accuracy: %f, Slot Accuracy: %f, Request F1 Score: %f, Domain F1 Score: %f, Goodbye F1 Score: %f'
-                        % (loss, jg_acc, sl_acc, req_f1, dom_f1, bye_f1))
-        else:
-            logger.info('Development loss: %f, Joint Goal Accuracy: %f, Slot Accuracy: %f'
-                        % (loss, jg_acc, sl_acc))
+        jg_acc, sl_acc, req_f1, dom_f1, gen_f1, loss = training.evaluate(args, model, device, dev_dataloader)
+        training.log_info('dev', loss, jg_acc, sl_acc, req_f1, dom_f1, gen_f1)
 
     # Evaluation on the test set
     if args.do_test:
@@ -295,7 +290,7 @@ def main(args=None, config=None):
         training.set_ontology_embeddings(model, test_slots)
 
         # TESTING
-        jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, output = training.evaluate(args, model, device, test_dataloader,
+        jg_acc, sl_acc, req_f1, dom_f1, gen_f1, loss, output = training.evaluate(args, model, device, test_dataloader,
                                                                                  return_eval_output=True)
 
         if not os.path.exists(os.path.join(OUTPUT_DIR, 'predictions')):
@@ -304,12 +299,7 @@ def main(args=None, config=None):
         json.dump(output, writer)
         writer.close()
 
-        if req_f1:
-            logger.info('Test loss: %f, Joint Goal Accuracy: %f, Slot Accuracy: %f, Request F1 Score: %f, Domain F1 Score: %f, Goodbye F1 Score: %f'
-                        % (loss, jg_acc, sl_acc, req_f1, dom_f1, bye_f1))
-        else:
-            logger.info('Test loss: %f, Joint Goal Accuracy: %f, Slot Accuracy: %f'
-                        % (loss, jg_acc, sl_acc))
+        training.log_info('test', loss, jg_acc, sl_acc, req_f1, dom_f1, gen_f1)
 
     tb_writer.close()
 
