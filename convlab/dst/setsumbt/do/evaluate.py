@@ -73,7 +73,7 @@ def main(args=None, config=None):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(message)s', '%H:%M %m-%d-%y')
 
     fh = logging.FileHandler(args.logging_path)
     fh.setLevel(logging.INFO)
