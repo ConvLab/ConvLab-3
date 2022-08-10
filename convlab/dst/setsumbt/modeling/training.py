@@ -121,7 +121,7 @@ def get_input_dict(batch: dict,
     Returns:
         input_dict: Dictrionary containing model inputs for the batch
     """
-    input_dict = {}
+    input_dict = dict()
 
     input_dict['input_ids'] = batch['input_ids'].to(device)
     input_dict['token_type_ids'] = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
@@ -146,7 +146,7 @@ def get_input_dict(batch: dict,
                                             for slot in model_requestable_slot_ids
                                             if ('request_labels-' + slot) in batch}
             input_dict['active_domain_labels'] = {domain: batch['active_domain_labels-' + domain].to(device)
-                                                  for domain in model.setsumbt.domain_ids
+                                                  for domain in model_domain_ids
                                                   if ('active_domain_labels-' + domain) in batch}
             input_dict['general_act_labels'] = batch['general_act_labels'].to(device)
 
@@ -383,7 +383,7 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots: dict, sl
                 try:
                     current_score = req_f1 * model.config.user_request_loss_weight if req_f1 is not None else 0.0
                     current_score += dom_f1 * model.config.active_domain_loss_weight if dom_f1 is not None else 0.0
-                    current_score += bye_f1 * model.config.user_general_act_loss_weight if bye_f1 is not None else 0.0
+                    current_score += gen_f1 * model.config.user_general_act_loss_weight if gen_f1 is not None else 0.0
                 except AttributeError:
                     current_score = 0.0
                 current_score += jg_acc
@@ -405,7 +405,7 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots: dict, sl
                     if req_f1:
                         best_model['request f1 score'] = req_f1
                         best_model['active domain f1 score'] = dom_f1
-                        best_model['general act f1 score'] = bye_f1
+                        best_model['general act f1 score'] = gen_f1
                     best_model['train loss'] = tr_loss / global_step
 
                     output_dir = os.path.join(args.output_dir, f"checkpoint-{global_step}")

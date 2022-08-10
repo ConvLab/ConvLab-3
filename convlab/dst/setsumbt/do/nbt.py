@@ -226,8 +226,7 @@ def main(args=None, config=None):
         training.set_ontology_embeddings(model, train_slots)
 
         # TRAINING !!!!!!!!!!!!!!!!!!
-        training.train(args, model, device, train_dataloader, dev_dataloader, train_slots, dev_slots,
-                       embeddings=embeddings, tokenizer=tokenizer)
+        training.train(args, model, device, train_dataloader, dev_dataloader, train_slots, dev_slots)
 
         # Copy final best model to the output dir
         checkpoints = os.listdir(OUTPUT_DIR)
