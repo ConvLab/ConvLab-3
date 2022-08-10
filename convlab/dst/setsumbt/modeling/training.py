@@ -610,9 +610,6 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
                 p_req_ = p_req[slot]
                 request_labels = batch['request_labels-' + slot].to(device)
 
-                print(slot, p_req_, request_labels)
-                quit()
-
                 acc = (p_req_.round().int() == request_labels).reshape(-1).float()
                 tp = (p_req_.round().int() * (request_labels == 1)).reshape(-1).float()
                 fp = (p_req_.round().int() * (request_labels == 0)).reshape(-1).float()
