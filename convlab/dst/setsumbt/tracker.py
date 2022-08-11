@@ -223,10 +223,9 @@ class SetSUMBTTracker(DST):
 
         user_acts = _output[2]
         for domain in new_domains:
-            user_acts.append({'intent': 'inform', 'domain': domain, 'slot': '', 'value': ''})
+            user_acts.append(['inform', domain, 'none', 'none'])
 
         new_belief_state = copy.deepcopy(prev_state['belief_state'])
-        # user_acts = []
         for domain, substate in _output[0].items():
             for slot, value in substate.items():
                 value = '' if value == 'none' else value
@@ -247,7 +246,7 @@ class SetSUMBTTracker(DST):
 
                 new_belief_state[domain][slot] = value
                 if prev_state['belief_state'][domain][slot] != value:
-                    user_acts.append({'intent': 'inform', 'domain': domain, 'slot': slot, 'value': value})
+                    user_acts.append(['inform', domain, slot, value])
                 else:
                     bug = f'Unknown slot name <{slot}> with value <{value}> of domain <{domain}>'
                     logging.debug(bug)
@@ -345,10 +344,7 @@ class SetSUMBTTracker(DST):
         # Construct request action prediction
         request_acts = [slot for slot, p in request_probs.items() if p[0, 0].item() > 0.5]
         request_acts = [slot.split('-', 1) for slot in request_acts]
-        request_acts = [{'intent': 'request',
-                         'domain': domain,
-                         'slot': slot,
-                         'value': '?'} for domain, slot in request_acts]
+        request_acts = [['request', domain, slot, '?'] for domain, slot in request_acts]
 
         # Construct active domain set
         active_domains = {domain: p[0, 0].item() > 0.5 for domain, p in active_domain_probs.items()}
@@ -356,7 +352,7 @@ class SetSUMBTTracker(DST):
         # Construct general domain action
         general_acts = general_act_probs[0, 0, :].argmax(-1).item()
         general_acts = [[], ['bye'], ['thank']][general_acts]
-        general_acts = [{'intent': act, 'domain': 'general', 'slot': '', 'value': ''} for act in general_acts]
+        general_acts = [[act, 'general', 'none', 'none'] for act in general_acts]
 
         user_acts = request_acts + general_acts
 
@@ -417,22 +413,30 @@ class SetSUMBTTracker(DST):
         return features
 
 
-if __name__ == "__main__":
-    tracker = SetSUMBTTracker(model_path='/gpfs/project/niekerk/src/SetSUMBT/models/SetSUMBT+ActPrediction-multiwoz21-roberta-gru-cosine-labelsmoothing-Seed0-10-08-22-12-42',
-                              return_turn_pooled_representation=True, return_confidence_scores=True,
-                              confidence_threshold = 'auto', return_belief_state_entropy=True,
-                              return_belief_state_mutual_info=True, store_full_belief_state=True)
-    tracker.init_session()
-    state = tracker.update('hey. I need a cheap restaurant.')
-    tracker.state['history'].append(['usr', 'hey. I need a cheap restaurant.'])
-    tracker.state['history'].append(['sys', 'There are many cheap places, which food do you like?'])
-    state = tracker.update('If you have something Asian that would be great.')
-    tracker.state['history'].append(['usr', 'If you have something Asian that would be great.'])
-    tracker.state['history'].append(['sys', 'The Golden Wok is a nice cheap chinese restaurant.'])
-    tracker.state['system_action'] = [{'intent': 'inform', 'domain': 'restaurant', 'slot': 'food', 'value': 'chinese'},
-                                      {'intent': 'inform', 'domain': 'restaurant', 'slot': 'name',
-                                       'value': 'the golden wok'}]
-    state = tracker.update('Great. Where are they located?')
-    tracker.state['history'].append(['usr', 'Great. Where are they located?'])
-    print(tracker.state)
-    print(tracker.full_belief_state)
+# if __name__ == "__main__":
+#     from convlab.policy.vector.vector_uncertainty import VectorUncertainty
+#     # from convlab.policy.vector.vector_binary import VectorBinary
+#     tracker = SetSUMBTTracker(model_path='/gpfs/project/niekerk/src/SetSUMBT/models/SetSUMBT+ActPrediction-multiwoz21-roberta-gru-cosine-labelsmoothing-Seed0-10-08-22-12-42',
+#                               return_confidence_scores=True, confidence_threshold='auto',
+#                               return_belief_state_entropy=True)
+#     vector = VectorUncertainty(use_state_total_uncertainty=True, confidence_thresholds=tracker.confidence_thresholds,
+#                                use_masking=True)
+#     # vector = VectorBinary()
+#     tracker.init_session()
+#
+#     state = tracker.update('hey. I need a cheap restaurant.')
+#     tracker.state['history'].append(['usr', 'hey. I need a cheap restaurant.'])
+#     tracker.state['history'].append(['sys', 'There are many cheap places, which food do you like?'])
+#     state = tracker.update('If you have something Asian that would be great.')
+#     tracker.state['history'].append(['usr', 'If you have something Asian that would be great.'])
+#     tracker.state['history'].append(['sys', 'The Golden Wok is a nice cheap chinese restaurant.'])
+#     tracker.state['system_action'] = [['inform', 'restaurant', 'food', 'chinese'],
+#                                       ['inform', 'restaurant', 'name', 'the golden wok']]
+#     state = tracker.update('Great. Where are they located?')
+#     tracker.state['history'].append(['usr', 'Great. Where are they located?'])
+#     state = tracker.state
+#     state['terminated'] = False
+#     state['booked'] = {}
+#
+#     print(state)
+#     print(vector.state_vectorize(state))
