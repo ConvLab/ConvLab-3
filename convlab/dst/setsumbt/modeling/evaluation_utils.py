@@ -53,7 +53,7 @@ def get_predictions(args, model, device: torch.device, dataloader: torch.utils.d
     active_domain_probs = {dom: [] for dom in model.setsumbt.domain_ids}
     general_act_probs = []
     state_labels = {slot: [] for slot in model.setsumbt.informable_slot_ids}
-    request_labels = {slot: [] for slot in model.requestable_slot_ids}
+    request_labels = {slot: [] for slot in model.setsumbt.requestable_slot_ids}
     active_domain_labels = {dom: [] for dom in model.setsumbt.domain_ids}
     general_act_labels = []
     epoch_iterator = tqdm(dataloader, desc="Iteration")
@@ -83,13 +83,13 @@ def get_predictions(args, model, device: torch.device, dataloader: torch.utils.d
                 
                 for domain in active_domain_probs:
                     p_ = p_dom[domain]
-                    labs = batch['active-' + domain].to(device)
+                    labs = batch['active_domain_labels-' + domain].to(device)
 
                     active_domain_probs[domain].append(p_)
                     active_domain_labels[domain].append(labs)
                 
-                general_act_probs.append(p_bye)
-                general_act_labels.append(batch['goodbye'].to(device))
+                general_act_probs.append(p_gen)
+                general_act_labels.append(batch['general_act_labels'].to(device))
     
     for slot in belief_states:
         belief_states[slot] = torch.cat(belief_states[slot], 0)
@@ -107,6 +107,6 @@ def get_predictions(args, model, device: torch.device, dataloader: torch.utils.d
         request_probs, request_labels, active_domain_probs, active_domain_labels = [None] * 4
         general_act_probs, general_act_labels = [None] * 2
 
-    out = (belief_states, state_labels, request_belief, request_labels)
+    out = (belief_states, state_labels, request_probs, request_labels)
     out += (active_domain_probs, active_domain_labels, general_act_probs, general_act_labels)
     return out

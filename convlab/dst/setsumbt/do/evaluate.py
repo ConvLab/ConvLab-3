@@ -91,7 +91,6 @@ def main(args=None, config=None):
         args.fp16 = False
 
     # Set up model training/evaluation
-    evaluation_utils.set_logger(logger, None)
     evaluation_utils.set_seed(args)
 
     # Perform tasks
@@ -173,7 +172,7 @@ def main(args=None, config=None):
 
     jg_acc /= n_turns
 
-    logger.info('Joint Goal Accuracy: %f, Slot Accuracy %f' % (jg_acc, sl_acc))
+    logger.info(f'Joint Goal Accuracy: {jg_acc}')
 
     l2 = l2_acc(belief_states, state_labels, remove_belief=False)
     logger.info(f'Model L2 Norm Goal Accuracy: {l2}')
@@ -250,7 +249,7 @@ def main(args=None, config=None):
             p = p.unsqueeze(-1)
             p = torch.cat((1 - p, p), -1)
             active_domain_probs[dom] = p
-        jg = jg_ece(active_domain_probs, domain_labels, 10)
+        jg = jg_ece(active_domain_probs, active_domain_labels, 10)
         logger.info('Domain Joint Goal ECE: %f' % jg)
 
         tp = ((general_act_probs.argmax(-1) > 0) *
@@ -284,12 +283,12 @@ def main(args=None, config=None):
         l2 = l2_acc(active_domain_probs, active_domain_labels, remove_belief=True)
         logger.info(f'Binary Model L2 Norm Domain Accuracy: {l2}')
 
-        active_domain_labels = {'general': active_domain_labels}
+        general_act_labels = {'general': general_act_labels}
         general_act_probs = {'general': general_act_probs}
 
-        l2 = l2_acc(general_act_probs, active_domain_labels, remove_belief=False)
+        l2 = l2_acc(general_act_probs, general_act_labels, remove_belief=False)
         logger.info(f'Model L2 Norm General Act Accuracy: {l2}')
-        l2 = l2_acc(general_act_probs, active_domain_labels, remove_belief=False)
+        l2 = l2_acc(general_act_probs, general_act_labels, remove_belief=False)
         logger.info(f'Binary Model L2 Norm General Act Accuracy: {l2}')
 
 
