@@ -487,7 +487,6 @@ def data_goals(num_goals, dataset="multiwoz21", dial_ids_order=0):
         print(f"# of data goals ({data['test']}) < num_goals {num_goals}")
     # reorder goals?
     return collected_goals
->>>>>>>>> Temporary merge branch 2:convlab/util/custom_util.py
 
 
 def map_class(cls_path: str):
