@@ -5,10 +5,10 @@
 		"use_pretrained_initialisation": false,
 		"batchsz": 1000,
 		"seed": 0,
-		"epoch": 0,
+		"epoch": 50,
 		"eval_frequency": 5,
 		"process_num": 4,
-		"num_eval_dialogues": 5,
+		"num_eval_dialogues": 500,
 		"sys_semantic_to_usr": false
 	},
 	"vectorizer_sys": {

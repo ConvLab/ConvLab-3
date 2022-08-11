@@ -19,7 +19,7 @@ class Environment():
         self.evaluator = evaluator
         self.use_semantic_acts = use_semantic_acts
 
-    def reset(self, goal):
+    def reset(self, goal=None):
         self.usr.init_session(goal=goal)
         self.sys_dst.init_session()
         if self.evaluator:
@@ -28,6 +28,8 @@ class Environment():
         return self.sys_dst.state
 
     def step(self, action):
+        # save last system action
+        self.sys_dst.state['system_action'] = action
         if not self.use_semantic_acts:
             model_response = self.sys_nlg.generate(
                 action) if self.sys_nlg else action
@@ -48,11 +50,10 @@ class Environment():
             observation) if self.sys_nlu else observation
         self.sys_dst.state['user_action'] = dialog_act
         state = self.sys_dst.update(dialog_act)
-        self.sys_dst.state['history'].append(["sys", model_response])
-        self.sys_dst.state['history'].append(["usr", observation])
-
         state = deepcopy(state)
-        dialog_act = self.sys_dst.state['user_action']
+
+        state['history'].append(["sys", model_response])
+        state['history'].append(["usr", observation])
 
         terminated = self.usr.is_terminated()
 

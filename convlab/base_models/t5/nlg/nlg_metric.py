@@ -73,6 +73,7 @@ class NLGMetrics(datasets.Metric):
 
     def _compute(self, predictions, references):
         """Returns the scores: bleu"""
+        references = [" " if ref=="" else ref for ref in references]
         bleu = sacrebleu.corpus_bleu(predictions, [references], lowercase=True).score
         
         return {

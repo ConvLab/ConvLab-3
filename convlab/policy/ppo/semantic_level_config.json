@@ -1,6 +1,6 @@
 {
 	"model": {
-		"load_path": "convlab/policy/mle/experiments/experiment_2022-05-23-14-08-43/save/supervised",
+		"load_path": "",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,

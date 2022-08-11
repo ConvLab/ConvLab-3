@@ -40,7 +40,7 @@ python ../run_seq2seq.py \
     --do_eval \
     --save_strategy epoch \
     --evaluation_strategy epoch \
-    --save_total_limit 3 \
+    --save_total_limit 1 \
     --prediction_loss_only \
     --cache_dir ${cache_dir} \
     --output_dir ${output_dir} \

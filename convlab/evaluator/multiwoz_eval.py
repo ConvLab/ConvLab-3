@@ -3,14 +3,16 @@
 import logging
 import re
 import numpy as np
+
 from copy import deepcopy
 from convlab.evaluator.evaluator import Evaluator
+from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
-import os
+from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.util import relative_import_module_from_unified_datasets
-
-reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
+reverse_da = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', 'reverse_da')
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -24,13 +26,13 @@ requestable = \
 belief_domains = requestable.keys()
 
 mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'name': 'name', 'phone': 'phone',
-                          'post': 'postcode', 'price': 'pricerange'},
+                          'post': 'postcode', 'price': 'pricerange', 'ref': 'ref'},
            'hotel': {'addr': 'address', 'area': 'area', 'internet': 'internet', 'parking': 'parking', 'name': 'name',
-                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type'},
+                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type', 'ref': 'ref'},
            'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
                           'post': 'postcode', 'type': 'type'},
            'train': {'id': 'trainID', 'arrive': 'arriveBy', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
-                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price'},
+                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price', 'ref': 'ref'},
            'taxi': {'car': 'car type', 'phone': 'phone'},
            'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
            'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
@@ -39,6 +41,24 @@ mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'na
 time_re = re.compile(r'^(([01]\d|2[0-4]):([0-5]\d)|24:00)$')
 NUL_VALUE = ["", "dont care", 'not mentioned',
              "don't care", "dontcare", "do n't care"]
+REF_SYS_DA_M = {}
+for dom, ref_slots in REF_SYS_DA.items():
+    dom = dom.lower()
+    REF_SYS_DA_M[dom] = {}
+    for slot_a, slot_b in ref_slots.items():
+        if slot_a == 'Ref':
+            slot_b = 'ref'
+        REF_SYS_DA_M[dom][slot_a.lower()] = slot_b
+    REF_SYS_DA_M[dom]['none'] = 'none'
+REF_SYS_DA_M['taxi']['phone'] = 'phone'
+REF_SYS_DA_M['taxi']['car'] = 'car type'
+DEF_VAL_UNK = '?'  # Unknown
+DEF_VAL_DNC = 'dontcare'  # Do not care
+DEF_VAL_NUL = 'none'  # for none
+DEF_VAL_BOOKED = 'yes'  # for booked
+DEF_VAL_NOBOOK = 'no'  # for booked
+
+NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
 
 
 class MultiWozEvaluator(Evaluator):
@@ -56,7 +76,8 @@ class MultiWozEvaluator(Evaluator):
         self.success = 0
         self.success_strict = 0
         self.successful_domains = []
-        logging.info(f"We check booking constraints: {self.check_book_constraints}")
+        logging.info(
+            f"We check booking constraints: {self.check_book_constraints}")
 
     def _init_dict(self):
         dic = {}
@@ -93,11 +114,18 @@ class MultiWozEvaluator(Evaluator):
         """
         self.sys_da_array = []
         self.usr_da_array = []
-        self.goal = goal
+        self.goal = deepcopy(goal)
         self.cur_domain = ''
         self.booked = self._init_dict_booked()
         self.booked_states = self._init_dict_booked()
         self.successful_domains = []
+
+    @staticmethod
+    def _convert_action(act):
+        act = unified_format(act)
+        act = reverse_da(act)
+        act = act_dict_to_flat_tuple(act)
+        return act
 
     def add_sys_da(self, da_turn, belief_state=None):
         """add sys_da into array
@@ -107,11 +135,7 @@ class MultiWozEvaluator(Evaluator):
                 list[intent, domain, slot, value]
         """
 
-        sys_dialog_act = da_turn
-        sys_dialog_act = unified_format(sys_dialog_act)
-        sys_dialog_act = reverse_da(sys_dialog_act)
-        sys_dialog_act = act_dict_to_flat_tuple(sys_dialog_act)
-        da_turn = sys_dialog_act
+        da_turn = self._convert_action(da_turn)
 
         for intent, domain, slot, value in da_turn:
             dom_int = '-'.join([domain, intent])
@@ -131,12 +155,15 @@ class MultiWozEvaluator(Evaluator):
                 else:
                     if not self.booked[domain] and re.match(r'^\d{8}$', value) and \
                             len(self.dbs[domain]) > int(value):
-                        self.booked[domain] = self.dbs[domain][int(value)].copy()
+                        self.booked[domain] = self.dbs[domain][int(
+                            value)].copy()
                         self.booked[domain]['Ref'] = value
                         if belief_state is not None:
-                            self.booked_states[domain] = deepcopy(belief_state[domain])
+                            self.booked_states[domain] = deepcopy(
+                                belief_state[domain])
                         else:
                             self.booked_states[domain] = None
+        self.goal = self.update_goal(self.goal, da_turn)
 
     def add_usr_da(self, da_turn):
         """add usr_da into array
@@ -145,6 +172,7 @@ class MultiWozEvaluator(Evaluator):
             da_turn:
                 list[intent, domain, slot, value]
         """
+        da_turn = self._convert_action(da_turn)
         for intent, domain, slot, value in da_turn:
             dom_int = '-'.join([domain, intent])
             domain = dom_int.split('-')[0].lower()
@@ -384,7 +412,9 @@ class MultiWozEvaluator(Evaluator):
                     goal[d]['info'][mapping[d][s]] = v
                 elif i == 'request':
                     goal[d]['reqt'].append(s)
-        TP, FP, FN, _, _, _ = self._inform_F1_goal(goal, self.sys_da_array)
+
+        TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt = self._inform_F1_goal(
+            goal, self.sys_da_array)
         if aggregate:
             try:
                 rec = TP / (TP + FN)
@@ -405,22 +435,22 @@ class MultiWozEvaluator(Evaluator):
         """
         booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
-        #book_constraint_sess = self.book_rate_constrains(ref2goal)
-        book_constraint_sess = 1
+        book_constraint_sess = self.book_rate_constrains(ref2goal)
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
-        #goal_sess = 1
-        # book rate == 1 & inform recall == 1
+
         if ((book_sess == 1 and inform_sess[1] == 1)
             or (book_sess == 1 and inform_sess[1] is None)
             or (book_sess is None and inform_sess[1] == 1)) \
                 and goal_sess == 1:
             self.complete = 1
             self.success = 1
-            self.success_strict = 1 if (book_constraint_sess == 1 or book_constraint_sess is None) else 0
+            self.success_strict = 1 if (
+                book_constraint_sess == 1 or book_constraint_sess is None) else 0
             return self.success if not self.check_book_constraints else self.success_strict
         else:
-            self.complete = 1 if booking_done and (inform_sess[1] == 1 or inform_sess[1] is None) else 0
+            self.complete = 1 if booking_done and (
+                inform_sess[1] == 1 or inform_sess[1] is None) else 0
             self.success = 0
             self.success_strict = 0
             return 0
@@ -473,13 +503,16 @@ class MultiWozEvaluator(Evaluator):
                 elif i == 'request':
                     goal[d]['reqt'].append(s)
 
-        book_constraints = self._book_goal_constraints(goal, self.booked_states, [domain])
-        book_constraints = np.mean(book_constraints) if book_constraints else None
+        book_constraints = self._book_goal_constraints(
+            goal, self.booked_states, [domain])
+        book_constraints = np.mean(
+            book_constraints) if book_constraints else None
 
         book_rate = self._book_rate_goal(goal, self.booked, [domain])
         book_rate = np.mean(book_rate) if book_rate else None
         match, mismatch = self._final_goal_analyze_domain(domain)
-        goal_sess = 1 if (match == 0 and mismatch == 0) else match / (match + mismatch)
+        goal_sess = 1 if (match == 0 and mismatch ==
+                          0) else match / (match + mismatch)
 
         inform = self._inform_F1_goal(goal, self.sys_da_array, [domain])
         try:
@@ -488,9 +521,10 @@ class MultiWozEvaluator(Evaluator):
             inform_rec = None
 
         if ((book_rate == 1 and inform_rec == 1) or (book_rate == 1 and inform_rec is None) or
-            (book_rate is None and inform_rec == 1)) and goal_sess == 1:
+                (book_rate is None and inform_rec == 1)) and goal_sess == 1:
             domain_success = 1
-            domain_strict_success = 1 if (book_constraints == 1 or book_constraints is None) else 0
+            domain_strict_success = 1 if (
+                book_constraints == 1 or book_constraints is None) else 0
             return domain_success if not self.check_book_constraints else domain_strict_success
         else:
             return 0
@@ -514,7 +548,7 @@ class MultiWozEvaluator(Evaluator):
         else:
             info_constraints = []
         query_result = self.database.query(
-            domain, info_constraints, soft_contraints=reqt_constraints)
+            domain, info_constraints + reqt_constraints)
         if not query_result:
             mismatch += 1
 
@@ -547,7 +581,7 @@ class MultiWozEvaluator(Evaluator):
             else:
                 info_constraints = []
             query_result = self.database.query(
-                domain, info_constraints, soft_contraints=reqt_constraints)
+                domain, info_constraints + reqt_constraints)
             if not query_result:
                 mismatch += 1
                 continue
@@ -593,3 +627,32 @@ class MultiWozEvaluator(Evaluator):
                     self.successful_domains.append(self.cur_domain)
 
         return reward
+
+    def evaluate_dialog(self, goal, user_acts, system_acts, system_states):
+
+        self.add_goal(goal.domain_goals)
+        for sys_act, sys_state, user_act in zip(system_acts, system_states, user_acts):
+            self.add_sys_da(sys_act, sys_state)
+            self.add_usr_da(user_act)
+        self.task_success()
+        return {"complete": self.complete, "success": self.success, "success_strict": self.success_strict}
+
+    def update_goal(self, goal, system_action):
+        for intent, domain, slot, val in system_action:
+            # need to reverse slot to old representation
+            if slot in reverse_da_slot_name_map:
+                slot = reverse_da_slot_name_map[slot]
+            elif domain in reverse_da_slot_name_map and slot in reverse_da_slot_name_map[domain]:
+                slot = reverse_da_slot_name_map[domain][slot]
+            else:
+                slot = slot.capitalize()
+            if intent.lower() in ['inform', 'recommend']:
+                if domain.lower() in goal:
+                    if 'reqt' in goal[domain.lower()]:
+                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) in goal[domain.lower()][
+                                'reqt']:
+                            if val in NOT_SURE_VALS:
+                                val = '\"' + val + '\"'
+                            goal[domain.lower()]['reqt'][
+                                REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower())] = val
+        return goal

@@ -1,0 +1,32 @@
+{
+    "model_dir": "convlab/policy/tus/unify/multiwoz",
+    "model_name": "model",
+    "num_epoch": 50,
+    "batch_size": 128,
+    "learning_rate": 0.0001,
+    "num_token": 65,
+    "debug": false,
+    "gelu": false,
+    "dropout": 0.1,
+    "embed_dim": 79,
+    "out_dim": 6,
+    "hidden": 200,
+    "num_transformer": 2,
+    "weight_factor": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        5
+    ],
+    "window": 3,
+    "nhead": 4,
+    "dim_feedforward": 200,
+    "num_transform_layer": 2,
+    "turn-pos": false,
+    "reorder": true,
+    "conflict": false,
+    "remove_domain": "police",
+    "domain_feat": true
+}

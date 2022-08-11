@@ -24,6 +24,10 @@ setup(
     ],
     setup_requires=['setuptools-git'],
     install_requires=[
+        'accelerate',
+        'rouge-score',
+        'sacrebleu',
+        'tensorboardX',
         'boto3',
         'matplotlib',
         'tabulate',
@@ -35,6 +39,7 @@ setup(
         'tensorboard',
         'torch>=1.6',
         'transformers>=4.0',
+        'sentence-transformers',
         'datasets>=1.8',
         'seqeval',
         'spacy',
