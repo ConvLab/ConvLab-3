@@ -78,11 +78,6 @@ class SetSUMBTTracker(DST):
 
         self.device = torch.device('cuda') if USE_CUDA else torch.device('cpu')
 
-        # Value dict for value normalisation
-        path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        path = os.path.join(path, 'data/multiwoz/value_dict.json')
-        self.value_dict = json.load(open(path))
-
         self.load_weights()
 
     def load_weights(self):
