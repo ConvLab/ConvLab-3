@@ -435,13 +435,10 @@ class MultiWozEvaluator(Evaluator):
         """
         booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
-        # book_constraint_sess = self.book_rate_constrains(ref2goal)
-        book_constraint_sess = 1
+        book_constraint_sess = self.book_rate_constrains(ref2goal)
         inform_sess = self.inform_F1(ref2goal)
         goal_sess = self.final_goal_analyze()
-        # goal_sess = 1
-        # book rate == 1 & inform recall == 1
-        # todo remove the forth rule. check valid goals
+
         if ((book_sess == 1 and inform_sess[1] == 1)
             or (book_sess == 1 and inform_sess[1] is None)
             or (book_sess is None and inform_sess[1] == 1)) \
