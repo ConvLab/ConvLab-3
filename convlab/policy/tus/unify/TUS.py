@@ -14,6 +14,8 @@ from convlab.util import (load_dataset,
 from convlab.util.custom_util import model_downloader
 from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.policy.tus.unify.Goal import old_goal2list
+from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal as ABUS_Goal
+
 
 reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
@@ -129,6 +131,9 @@ class UserActionPolicy(Policy):
             old_goal = self.goal_gen.get_user_goal()
             goal_list = old_goal2list(old_goal)
             goal = Goal(goal_list)
+        elif type(goal) == ABUS_Goal:
+            goal_list = old_goal2list(goal.domain_goals)
+            goal = Goal(goal_list)
 
         self.read_goal(goal)
         self.feat_handler.initFeatureHandeler(self.goal)
@@ -150,15 +155,15 @@ class UserActionPolicy(Policy):
         else:
             self.goal = Goal(goal=data_goal)
 
-    def new_goal(self, remove_domain="police", domain_len=None):
-        keep_generate_goal = True
-        while keep_generate_goal:
-            self.goal = Goal(goal_generator=self.goal_gen)
-            if (domain_len and len(self.goal.domains) != domain_len) or \
-                    (remove_domain and remove_domain in self.goal.domains):
-                keep_generate_goal = True
-            else:
-                keep_generate_goal = False
+    # def new_goal(self, remove_domain="police", domain_len=None):
+    #     keep_generate_goal = True
+    #     while keep_generate_goal:
+    #         self.goal = Goal(goal_generator=self.goal_gen)
+    #         if (domain_len and len(self.goal.domains) != domain_len) or \
+    #                 (remove_domain and remove_domain in self.goal.domains):
+    #             keep_generate_goal = True
+    #         else:
+    #             keep_generate_goal = False
 
     def load(self, model_path=None):
         self.user.load_state_dict(torch.load(model_path, map_location=DEVICE))

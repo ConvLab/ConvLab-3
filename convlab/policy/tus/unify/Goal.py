@@ -125,6 +125,7 @@ class Goal(object):
                     if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
                         # print(f"not fulfilled request{domain}-{slot}")
                         return False
+        
         return True
 
     def init_local_id(self):
@@ -193,6 +194,10 @@ class Goal(object):
 
     def _update_status(self, action: list, char: str):
         for intent, domain, slot, value in action:
+            if slot == "arrive by":
+                slot = "arriveBy"
+            elif slot == "leave at":
+                slot = "leaveAt"
             if domain not in self.status:
                 self.status[domain] = {}
             # update info
@@ -204,6 +209,10 @@ class Goal(object):
     def _update_goal(self, action: list, char: str):
         # update requt slots in goal
         for intent, domain, slot, value in action:
+            if slot == "arrive by":
+                slot = "arriveBy"
+            elif slot == "leave at":
+                slot = "leaveAt"
             if "info" not in intent:
                 continue
             if self._check_update_request(domain, slot) and value != "?":
