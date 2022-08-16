@@ -7,7 +7,7 @@ from datetime import datetime
 import numpy as np
 import torch
 import transformers
-from datasets import Dataset, load_dataset, load_metric
+from datasets import Dataset, load_metric
 from tqdm import tqdm
 from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
                           BartForConditionalGeneration, BartTokenizer,
@@ -223,6 +223,7 @@ class Trainer:
 
 def main():
     args = arg_parser()
+    print("---> data_name", args.data_name)
     trainer = Trainer(max_input_length=500, max_target_length=100)
     data = trainer.parse_data(model_type=args.model_type,
                               data_name=args.data_name,

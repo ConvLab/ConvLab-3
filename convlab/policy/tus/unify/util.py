@@ -20,7 +20,7 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
                 name,
                 dial_ids_order=dial_ids_order,
                 split2ratio=ratio)
-        raw_data = merge_dataset(datasets)
+        raw_data = merge_dataset(datasets, all_dataset[0])
 
     else:
         print(f"load single dataset {data_name}/{split2ratio}")
@@ -29,12 +29,12 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
                                 split2ratio=ratio)
     return raw_data
 
-def merge_dataset(datasets):
-    data_split = [x for x in datasets[0]]
+def merge_dataset(datasets, data_name):
+    data_split = [x for x in datasets[data_name]]
     raw_data = {}
     for data_type in data_split:
         raw_data[data_type] = []
-        for dataname, dataset in dataset.items():
+        for dataname, dataset in datasets.items():
             print(f"merge {dataname}...")
             raw_data[data_type] += dataset[data_type]
     return raw_data
