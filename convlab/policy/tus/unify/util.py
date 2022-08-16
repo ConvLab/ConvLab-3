@@ -240,6 +240,45 @@ def split_slot_name(slot_name):
         return tokens[0], '-'.join(tokens[1:])
 
 
+# copy from data.unified_datasets.multiwoz21
+slot_name_map = {
+    'addr': "address",
+    'post': "postcode",
+    'pricerange': "price range",
+    'arrive': "arrive by",
+    'arriveby': "arrive by",
+    'leave': "leave at",
+    'leaveat': "leave at",
+    'depart': "departure",
+    'dest': "destination",
+    'fee': "entrance fee",
+    'open': 'open hours',
+    'car': "type",
+    'car type': "type",
+    'ticket': 'price',
+    'trainid': 'train id',
+    'id': 'train id',
+    'people': 'book people',
+    'stay': 'book stay',
+    'none': '',
+    'attraction': {
+        'price': 'entrance fee'
+    },
+    'hospital': {},
+    'hotel': {
+        'day': 'book day', 'price': "price range"
+    },
+    'restaurant': {
+        'day': 'book day', 'time': 'book time', 'price': "price range"
+    },
+    'taxi': {},
+    'train': {
+        'day': 'day', 'time': "duration"
+    },
+    'police': {},
+    'booking': {}
+}
+
 if __name__ == "__main__":
     print(split_slot_name("restaurant-search-location"))
     print(split_slot_name("sports-day.match"))

@@ -35,7 +35,7 @@
 		"TUSPolicy": {
 			"class_path": "convlab.policy.tus.unify.TUS.UserPolicy",
 			"ini_params": {
-				"config": "convlab/policy/tus/unify/exp/all.json"
+				"config": "convlab/policy/tus/unify/exp/multiwoz.json"
 			}
 		}
 	},
