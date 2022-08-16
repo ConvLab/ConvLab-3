@@ -123,37 +123,6 @@ def get_booking_domain(slot, value, all_values, domain_list):
             found = domain
     return found
 
-
-def act2slot(intent, domain, slot, value, all_values):
-
-    if domain not in UsrDa2Goal:
-        # print(f"Not handle domain {domain}")
-        return ""
-
-    if domain == "booking":
-        slot = SysDa2Goal[domain][slot]
-        domain = get_booking_domain(slot, value, all_values)
-        return f"{domain}-{slot}"
-
-    elif domain in UsrDa2Goal:
-        if slot in SysDa2Goal[domain]:
-            slot = SysDa2Goal[domain][slot]
-        elif slot in UsrDa2Goal[domain]:
-            slot = UsrDa2Goal[domain][slot]
-        elif slot in SysDa2Goal["booking"]:
-            slot = SysDa2Goal["booking"][slot]
-        # else:
-        #     print(
-        #         f"UNSEEN ACTION IN GENERATE LABEL {intent, domain, slot, value}")
-
-        return f"{domain}-{slot}"
-
-    print("strange!!!")
-    print(intent, domain, slot, value)
-
-    return ""
-
-
 def get_user_history(dialog, all_values):
     turn_num = len(dialog)
     mentioned_slot = []

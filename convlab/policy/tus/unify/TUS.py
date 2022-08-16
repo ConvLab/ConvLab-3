@@ -152,8 +152,7 @@ class UserActionPolicy(Policy):
     def read_goal(self, data_goal):
         if type(data_goal) == Goal:
             self.goal = data_goal
-        else:
-            self.goal = Goal(goal=data_goal)
+        self.goal = Goal(goal=data_goal)
 
     # def new_goal(self, remove_domain="police", domain_len=None):
     #     keep_generate_goal = True
