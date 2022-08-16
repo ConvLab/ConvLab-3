@@ -1,8 +1,43 @@
 from convlab.policy.tus.multiwoz.Da2Goal import SysDa2Goal, UsrDa2Goal
+from convlab.util import load_dataset
+
 import json
 
 NOT_MENTIONED = "not mentioned"
 
+def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2ratio=1):
+    ratio = {'train': split2ratio, 'validation': split2ratio}
+    if data_name == "all" or data_name == "sgd+tm":
+        print("merge all datasets...")
+        if data_name == "all":
+            all_dataset = ["multiwoz21", "sgd", "tm1", "tm2", "tm3"]
+        if data_name == "sgd+tm":
+            all_dataset = ["sgd", "tm1", "tm2", "tm3"]
+
+        datasets = {}
+        for name in all_dataset:
+            datasets[name] = load_dataset(
+                name,
+                dial_ids_order=dial_ids_order,
+                split2ratio=ratio)
+        raw_data = merge_dataset(datasets)
+
+    else:
+        print(f"load single dataset {data_name}/{split2ratio}")
+        raw_data = load_dataset(data_name,
+                                dial_ids_order=dial_ids_order,
+                                split2ratio=ratio)
+    return raw_data
+
+def merge_dataset(datasets):
+    data_split = [x for x in datasets[0]]
+    raw_data = {}
+    for data_type in data_split:
+        raw_data[data_type] = []
+        for dataname, dataset in dataset.items():
+            print(f"merge {dataname}...")
+            raw_data[data_type] += dataset[data_type]
+    return raw_data
 
 def int2onehot(index, output_dim=6, remove_zero=False):
     one_hot = [0] * output_dim
@@ -147,7 +182,7 @@ def update_config_file(file_name, attribute, value):
 def create_goal(dialog) -> list:
     # a list of {'intent': ..., 'domain': ..., 'slot': ..., 'value': ...}
     dicts = []
-    for i, turn in enumerate(dialog['turns']):
+    for turn in dialog['turns']:
         # print(turn['speaker'])
         # assert (i % 2 == 0) == (turn['speaker'] == 'user')
         # if i % 2 == 0:
