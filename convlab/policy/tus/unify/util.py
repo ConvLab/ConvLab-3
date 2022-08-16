@@ -123,19 +123,6 @@ def get_booking_domain(slot, value, all_values, domain_list):
             found = domain
     return found
 
-def get_user_history(dialog, all_values):
-    turn_num = len(dialog)
-    mentioned_slot = []
-    for turn_id in range(0, turn_num, 2):
-        usr_act = parse_dialogue_act(
-            dialog[turn_id]["dialog_act"])
-        for intent, domain, slot, value in usr_act:
-            slot_name = act2slot(
-                intent, domain.lower(), slot.lower(), value.lower(), all_values)
-            if slot_name not in mentioned_slot:
-                mentioned_slot.append(slot_name)
-    return mentioned_slot
-
 
 def update_config_file(file_name, attribute, value):
     with open(file_name, 'r') as config_file:

@@ -135,7 +135,6 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
                 break
 
         if verbose:
-            pprint(dialog)nt.policy.policy.goal.status)
             logging.info(f"Complete: {complete}")
             logging.info(f"Success: {task_succ}")
 

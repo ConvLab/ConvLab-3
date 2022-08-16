@@ -131,6 +131,7 @@ class UserActionPolicy(Policy):
             old_goal = self.goal_gen.get_user_goal()
             goal_list = old_goal2list(old_goal)
             goal = Goal(goal_list)
+
         elif type(goal) == ABUS_Goal:
             goal_list = old_goal2list(goal.domain_goals)
             goal = Goal(goal_list)
@@ -152,7 +153,8 @@ class UserActionPolicy(Policy):
     def read_goal(self, data_goal):
         if type(data_goal) == Goal:
             self.goal = data_goal
-        self.goal = Goal(goal=data_goal)
+        else:
+            self.goal = Goal(goal=data_goal)
 
     # def new_goal(self, remove_domain="police", domain_len=None):
     #     keep_generate_goal = True
