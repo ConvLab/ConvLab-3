@@ -45,15 +45,21 @@ class Trainer:
         self.tokenizer.add_tokens(special_tokens)
         self.max_input_length = max_input_length
         self.max_target_length = max_target_length
+        self.base_name = "convlab/policy/genTUS"
+        self.dir_name = ""
 
-    @staticmethod
-    def _get_data_folder(model_type, data_name, dial_ids_order=0, split2ratio=1):
+    def _get_data_folder(self, model_type, data_name, dial_ids_order=0, split2ratio=1):
         # base_name = "convlab/policy/genTUS/unify/data"
         if model_type not in ["unify", "multiwoz"]:
             print("Unknown model type. Currently only support unify and multiwoz")
-        base_name = "convlab/policy/genTUS"
-        dir_name = f"{data_name}_{dial_ids_order}_{split2ratio}"
-        return os.path.join(base_name, model_type, 'data', dir_name)
+        self.dir_name = f"{data_name}_{dial_ids_order}_{split2ratio}"
+        return os.path.join(self.base_name, model_type, 'data', self.dir_name)
+
+    def _get_model_folder(self, model_type):
+        folder_name = os.path.join(self.base_name, model_type, "experiments", self.dir_name)
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+        return folder_name
     
     def parse_data(self, model_type, data_name, dial_ids_order=0, split2ratio=1):
         data_folder = self._get_data_folder(model_type, data_name, dial_ids_order, split2ratio)
@@ -90,14 +96,17 @@ class Trainer:
 
         return model_inputs
 
-    def train(self, model_name, datasets, batch_size=16):
+    def train(self, model_type, datasets, batch_size=16):
         model = BartForConditionalGeneration.from_pretrained(self.model_checkpoint)
         model.resize_token_embeddings(len(self.tokenizer))
         fp16 = False
         if torch.cuda.is_available():
             fp16 = True
 
-        model_dir = f"{model_name}-{datetime.now().strftime('%y-%m-%d-%H-%M')}"
+        model_dir = os.path.join(
+            self._get_model_folder(model_type),
+            f"{datetime.now().strftime('%y-%m-%d-%H-%M')}")
+
         args = Seq2SeqTrainingArguments(
             model_dir,
             evaluation_strategy="epoch",
@@ -222,8 +231,8 @@ def main():
                               data_name=args.data_name,
                               dial_ids_order=args.dial_ids_order,
                               split2ratio=args.split2ratio)
-    trainer.train(model_name=args.model_name,
-                  datasets=data, 
+    trainer.train(model_type=args.model_type,
+                  datasets=data,
                   batch_size=args.batch_size)
 
 if __name__ == "__main__":
