@@ -50,9 +50,13 @@ class Goal:
 
         elif isinstance(goal, ABUS_Goal):
             goal = old_goal2list(goal.domain_goals)
+        print("---> goal")
+        print(goal)
 
         # be careful of this order
         for domain, intent, slot, value in goal:
+            if domain == "none":
+                continue
             if domain not in self.domains:
                 self.domains.append(domain)
                 self.domain_goals[domain] = {}
@@ -83,8 +87,8 @@ class Goal:
                         "status": NOT_MENTIONED}
 
     def get_goal_list(self, data_goal=None):
+        goal_list = []
         if data_goal:
-            goal_list = []
             # make sure the order!!!
             for intent, domain, slot, _ in data_goal:
                 status = self.status[domain][intent][slot]["status"]
@@ -92,7 +96,13 @@ class Goal:
                 goal_list.append([intent, domain, slot, value, status])
             return goal_list
         else:
-            return old_goal2list(self.domain_goals)
+            for domain, domain_goal in self.domain_goals.items():
+                for intent, sub_goal in domain_goal.items():
+                    for slot, value in sub_goal.items():
+                        status = self.status[domain][intent][slot]["status"]
+                        goal_list.append([intent, domain, slot, value, status])
+
+        return goal_list
 
     def task_complete(self):
         """

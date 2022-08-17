@@ -4,7 +4,7 @@ import json
 import torch
 from torch.nn.functional import softmax, one_hot, cross_entropy
 
-from convlab.policy.genTUS.knowledge_graph import KnowledgeGraph
+from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.token_map import tokenMap
 from convlab.policy.genTUS.utils import append_tokens
 from transformers import (BartConfig, BartForConditionalGeneration,

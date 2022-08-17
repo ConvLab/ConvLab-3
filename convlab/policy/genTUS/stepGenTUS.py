@@ -283,13 +283,11 @@ class UserActionPolicy(Policy):
 
         if not self.add_sys_from_reward:
             self.goal.update_user_goal(action=sys_act, char="sys")
-            self.goal.add_sys_da(sys_act)  # for evaluation
             self.sys_acts.append(sys_act)  # for terminate conversation
 
         # update constraint
         self.time_step += 2
 
-        # TODO should we use vector?
         history = []
         if self.usr_acts:
             if self.max_history == 1:
@@ -320,7 +318,6 @@ class UserActionPolicy(Policy):
         #     self.goal.add_usr_da(good_bye)
         #     return good_bye
 
-        self.goal.add_usr_da(self.semantic_action)
         self.goal.update_user_goal(action=self.semantic_action, char="usr")
         self.vector.update_mentioned_domain(self.semantic_action)
         self.usr_acts.append(self.semantic_action)
@@ -528,9 +525,9 @@ class UserActionPolicy(Policy):
 
     def is_success(self):
         task_complete = self.goal.task_complete()
-        goal_status = self.goal.all_mentioned()
+        # goal_status = self.goal.all_mentioned()
         # should mentioned all slots
-        if task_complete and goal_status["complete"] > 0.6:
+        if task_complete :#and goal_status["complete"] > 0.6:
             return True
         return False
 
@@ -545,8 +542,7 @@ class UserActionPolicy(Policy):
             return [["bye", "general", "None", "None"]], "bye"
             if self.mode == "semantic":
                 return [["bye", "general", "None", "None"]]
-            else:
-                return "bye"
+            return "bye"
 
     def _finish_conversation_rule(self):
         if self.is_success():
@@ -621,12 +617,19 @@ if __name__ == "__main__":
 
     set_seed(20220220)
     # Test semantic level behaviour
-    model_checkpoint = 'results/bart-base-finetuned-sys-to-user-22-01-19-23-44/'
+    model_checkpoint = '22-08-16-19-51/checkpoint-6000'
     usr_policy = UserPolicy(
         model_checkpoint,
         mode="semantic")
     usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
+    print(usr.policy.get_goal())
+
     print(usr.response([]))
-    print(usr.response([["Request", "Attraction", "Type", "?"]]))
+    print(usr.policy.policy.goal.status)
+    print(usr.response([["request", "attraction", "area", "?"]]))
+    print(usr.policy.policy.goal.status)
+    print(usr.response([["request", "attraction", "area", "?"]]))
+    print(usr.policy.policy.goal.status)
+
