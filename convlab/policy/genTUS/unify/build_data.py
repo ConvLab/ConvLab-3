@@ -2,13 +2,12 @@ import json
 import os
 import sys
 from argparse import ArgumentParser
-from pprint import pprint
 
 from tqdm import tqdm
 
 from convlab.policy.genTUS.unify.Goal import Goal, transform_data_act
 from convlab.policy.tus.unify.util import create_goal, load_experiment_dataset
-from convlab.util import load_dataset
+
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -53,7 +52,7 @@ class DataBuilder:
         example = []
         history = []
 
-        data_goal = self._norm_domain_goal(create_goal(dialog))
+        data_goal = self.norm_domain_goal(create_goal(dialog))
         if not data_goal:
             return example
         user_goal = Goal(goal=data_goal)
@@ -64,7 +63,7 @@ class DataBuilder:
             user_goal.update_user_goal(action=sys_act, char="sys")
             usr_goal_str = self._user_goal_str(user_goal, data_goal, random_order, no_status)
 
-            usr_act = self._norm_domain(transform_data_act(
+            usr_act = self.norm_domain(transform_data_act(
                 dialog["turns"][turn_id]["dialogue_acts"]))
             user_goal.update_user_goal(action=usr_act, char="usr")
 
@@ -83,7 +82,7 @@ class DataBuilder:
     def _get_sys_act(self, dialog, turn_id):
         sys_act = []
         if turn_id > 0:
-            sys_act = self._norm_domain(transform_data_act(
+            sys_act = self.norm_domain(transform_data_act(
                 dialog["turns"][turn_id - 1]["dialogue_acts"]))
         return sys_act
 
@@ -120,7 +119,7 @@ class DataBuilder:
             return f"_{intent}"
         return intent
 
-    def _norm_domain(self, x):
+    def norm_domain(self, x):
         if not x:
             return x
         norm_result = []
@@ -140,7 +139,7 @@ class DataBuilder:
             norm_result.append([self._norm_intent(intent), domain, slot, value])
         return norm_result
 
-    def _norm_domain_goal(self, x):
+    def norm_domain_goal(self, x):
         if not x:
             return x
         norm_result = []
@@ -157,7 +156,7 @@ class DataBuilder:
                     value = "<?>"
                 else:
                     value = "none"
-            norm_result.append([self._norm_intent(intent), domain, slot, value])
+            norm_result.append([domain, self._norm_intent(intent), slot, value])
         return norm_result
 
     @staticmethod

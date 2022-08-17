@@ -2,7 +2,9 @@
 The user goal for unify data format
 """
 import json
-
+from convlab.policy.tus.unify.Goal import old_goal2list
+from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal as ABUS_Goal
 
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -18,44 +20,44 @@ CONFLICT = "conflict"
 class Goal:
     """ User Goal Model Class. """
 
-    def __init__(self, goal_generator=None, goal=None):
+    def __init__(self, goal=None):
         """
-        create new Goal by random
+        create new Goal from a dialog or from goal_generator
         Args:
-            goal_generator (GoalGenerator): Goal Gernerator.
+            goal: can be a list (create from a dialog), an abus goal, or none
         """
         self.domains = []
         self.domain_goals = {}
         self.status = {}
 
-        if not goal_generator and not goal:
-            print("Warning!!! One of goal_generator or goal should not be None!!!")
-
-        if goal_generator:
-            print("we only support goal from dataset currently")
-            # TODO support multiwpz goal generator
-
-        if goal:
-            self._init_goal_from_data(goal)
-
+        self._init_goal_from_data(goal)
         self._init_status()
+
 
     def __str__(self):
         return '-----Goal-----\n' + \
                json.dumps(self.domain_goals, indent=4) + \
                '\n-----Goal-----'
 
-    def _init_goal_from_data(self, goal):
-        for intent, domain, slot, value in goal:
+    def _init_goal_from_data(self, goal=None):
+        if not goal:
+            goal_gen = GoalGenerator()
+            old_goal = goal_gen.get_user_goal()
+            goal = old_goal2list(old_goal)
+
+        elif isinstance(goal, dict):
+            goal = old_goal2list(goal)
+
+        elif isinstance(goal, ABUS_Goal):
+            goal = old_goal2list(goal.domain_goals)
+
+        # be careful of this order
+        for domain, intent, slot, value in goal:
             if domain not in self.domains:
                 self.domains.append(domain)
                 self.domain_goals[domain] = {}
             if intent not in self.domain_goals[domain]:
                 self.domain_goals[domain][intent] = {}
-
-            # if slot in self.domain_goals[domain][intent]:
-            #     print(
-            #         f"duplicate slot!! {intent}-{domain}-{slot}-{self.domain_goals[domain][intent][slot]}/{value}")
 
             if not value:
                 if intent == "request":
@@ -67,17 +69,17 @@ class Goal:
                 self.domain_goals[domain][intent][slot] = value
 
     def _init_status(self):
-        for domain in self.domain_goals:
+        for domain, domain_goal in self.domain_goals.items():
             if domain not in self.status:
                 self.status[domain] = {}
-            for slot_type in self.domain_goals[domain]:
+            for slot_type, sub_domain_goal in domain_goal.items():
                 if slot_type not in self.status[domain]:
                     self.status[domain][slot_type] = {}
-                for slot in self.domain_goals[domain][slot_type]:
+                for slot in sub_domain_goal:
                     if slot not in self.status[domain][slot_type]:
                         self.status[domain][slot_type][slot] = {}
                     self.status[domain][slot_type][slot] = {
-                        "value": str(self.domain_goals[domain][slot_type][slot]),
+                        "value": str(sub_domain_goal[slot]),
                         "status": NOT_MENTIONED}
 
     def get_goal_list(self, data_goal=None):
@@ -90,7 +92,7 @@ class Goal:
                 goal_list.append([intent, domain, slot, value, status])
             return goal_list
         else:
-            print("only user history goal is supported currently")
+            return old_goal2list(self.domain_goals)
 
     def task_complete(self):
         """
@@ -98,8 +100,24 @@ class Goal:
         Returns:
             (boolean): True to accomplish.
         """
-        pass
+        for domain, domain_goal in self.status.items():
+            if domain not in self.domain_goals:
+                continue
+            for slot_type, sub_domain_goal in domain_goal.items():
+                if slot_type not in self.domain_goals[domain]:
+                    continue
+                for slot, status in sub_domain_goal.items():
+                    if slot not in self.domain_goals[domain][slot_type]:
+                        continue
+                    # for strict success, turn this on
+                    # if status["status"] in [NOT_MENTIONED, CONFLICT]:
+                    #     return False
+                    if "?" in status["value"]:
+                        return False
 
+        return True
+
+    # TODO change to update()?
     def update_user_goal(self, action, char="usr"):
         # update request and booked
         if char == "usr":
@@ -147,7 +165,7 @@ class Goal:
         self.status[domain][intent][slot]["status"] = status
 
     def _set_goal(self, intent, domain, slot, value):
-        old_value = self.domain_goals[domain][intent][slot]
+        # old_value = self.domain_goals[domain][intent][slot]
         self.domain_goals[domain][intent][slot] = value
         self.status[domain][intent][slot]["value"] = value
         # print(
@@ -177,8 +195,8 @@ def is_request(intent):
 
 def transform_data_act(data_action):
     action_list = []
-    for action_type in data_action:
-        for act in data_action[action_type]:
+    for _, dialog_act in data_action.items():
+        for act in dialog_act:
             value = act.get("value", "")
             if not value:
                 if "request" in act["intent"]:
@@ -188,30 +206,3 @@ def transform_data_act(data_action):
             action_list.append(
                 [act["intent"], act["domain"], act["slot"], value])
     return action_list
-
-
-if __name__ == "__main__":
-    data_name = "data/unified_datasets_goal/data.json"
-    data = json.load(open(data_name))
-    i = 0
-    for dialog in data:
-        goal = Goal(goal=dialog["unified_goal"])
-        print(goal)
-
-        for turn in dialog["turns"]:
-            if turn["speaker"] == "user":
-                act = transform_data_act(turn["dialogue_act"])
-                goal.update_user_goal(action=act, char="usr")
-                print("---> usr")
-                print(act)
-                print(goal)
-            if turn["speaker"] == "system":
-                act = transform_data_act(turn["dialogue_act"])
-                goal.update_user_goal(action=act, char="sys")
-                print("---> sys")
-                print(act)
-                print(goal)
-
-        i += 1
-        if i > 0:
-            break
