@@ -1,6 +1,5 @@
 import json
 import os
-from copy import deepcopy
 
 import torch
 from transformers import BartTokenizer
@@ -612,7 +611,7 @@ if __name__ == "__main__":
     import os
 
     from convlab.dialog_agent import PipelineAgent
-    from convlab.nlu.jointBERT.multiwoz import BERTNLU
+    # from convlab.nlu.jointBERT.multiwoz import BERTNLU
     from convlab.util.custom_util import set_seed
 
     set_seed(20220220)
