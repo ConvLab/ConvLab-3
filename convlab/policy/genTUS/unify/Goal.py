@@ -90,7 +90,7 @@ class Goal:
         goal_list = []
         if data_goal:
             # make sure the order!!!
-            for intent, domain, slot, _ in data_goal:
+            for domain, intent, slot, _ in data_goal:
                 status = self._get_status(domain, intent, slot)
                 value = self.domain_goals[domain][intent][slot]
                 goal_list.append([intent, domain, slot, value, status])
