@@ -91,7 +91,7 @@ class Goal:
         if data_goal:
             # make sure the order!!!
             for intent, domain, slot, _ in data_goal:
-                status = self.status[domain][intent][slot]["status"]
+                status = self._get_status(domain, intent, slot)
                 value = self.domain_goals[domain][intent][slot]
                 goal_list.append([intent, domain, slot, value, status])
             return goal_list
@@ -99,10 +99,19 @@ class Goal:
             for domain, domain_goal in self.domain_goals.items():
                 for intent, sub_goal in domain_goal.items():
                     for slot, value in sub_goal.items():
-                        status = self.status[domain][intent][slot]["status"]
+                        status = self._get_status(domain, intent, slot)
                         goal_list.append([intent, domain, slot, value, status])
 
         return goal_list
+
+    def _get_status(self, domain, intent, slot):
+        if domain not in self.status:
+            return NOT_MENTIONED
+        if intent not in self.status[domain]:
+            return NOT_MENTIONED
+        if slot not in self.status[domain][intent]:
+            return NOT_MENTIONED
+        return self.status[domain][intent][slot]["status"]
 
     def task_complete(self):
         """
