@@ -112,7 +112,7 @@ class Trainer:
             per_device_eval_batch_size=batch_size,
             weight_decay=0.01,
             save_total_limit=2,
-            num_train_epochs=5,
+            num_train_epochs=1,
             predict_with_generate=True,
             fp16=fp16,
             push_to_hub=False,

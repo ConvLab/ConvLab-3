@@ -616,7 +616,7 @@ if __name__ == "__main__":
 
     set_seed(20220220)
     # Test semantic level behaviour
-    model_checkpoint = '22-08-16-19-51/checkpoint-6000'
+    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21_0_1.0/22-08-17-15-39/checkpoint-6000/'
     usr_policy = UserPolicy(
         model_checkpoint,
         mode="semantic")
