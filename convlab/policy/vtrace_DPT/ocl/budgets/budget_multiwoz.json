@@ -1,8 +1,0 @@
-{
-  "timeline": {"restaurant": 0, "hotel": 1000, "train": 2000, "attraction": 3000, "taxi": 4000,
-                "police": 5000, "hospital": 6000},
-  "budget": [["hotel-train", 1370], ["restaurant", 1311], ["attraction-train", 1194], ["restaurant-train", 1187],
-    ["hotel", 636], ["hotel-restaurant", 570], ["attraction-restaurant", 544], ["attraction-restaurant-taxi", 543],
-    ["attraction-hotel-taxi", 542], ["attraction-hotel", 542], ["hotel-restaurant-taxi", 537], ["taxi", 435],
-    ["train", 345], ["hospital", 287], ["police", 245], ["attraction", 150]]
-}

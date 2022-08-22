@@ -2,13 +2,9 @@
 
 import random
 import torch
-import sys
-import torch
-from pprint import pprint
-
-import matplotlib.pyplot as plt
 import numpy as np
-from convlab.policy.rlmodule import Memory_evaluator, Transition
+
+from convlab.policy.rlmodule import Memory_evaluator
 from torch import multiprocessing as mp
 
 
