@@ -3,6 +3,7 @@
 	"epoch": 16,
 	"gamma": 0.99,
 	"policy_lr": 0.00005,
+	"supervised_lr": 0.00005,
 	"entropy_weight": 0.01,
 	"value_lr": 0.0001,
 	"save_dir": "save",
@@ -27,6 +28,7 @@
 	"rho_bar": 1,
 	"max_length": 10,
 	"noisy_linear": false,
+	"dataset_name": "multiwoz21",
 
 	"enc_input_dim": 128,
 	"enc_nhead": 2,

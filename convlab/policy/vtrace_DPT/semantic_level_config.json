@@ -20,7 +20,9 @@
 			"ini_params": {
 				"use_masking": true,
 				"manually_add_entity_names": true,
-				"seed": 0
+				"seed": 0,
+				"dataset_name": "multiwoz21",
+				"filter_state": true
 			}
 		}
 	},

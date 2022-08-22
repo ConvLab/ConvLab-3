@@ -23,11 +23,12 @@ class EncoderDecoder(nn.Module):
                  node_embedding_dim, roberta_path="", node_attention=True, max_length=25, semantic_descriptions=True,
                  freeze_roberta=True, use_pooled=False, verbose=False, mean=False, ignore_features=None,
                  only_active_values=False, roberta_actions=False, independent_descriptions=False, need_weights=True,
-                 random_matrix=False, distance_metric=False, noisy_linear=False, **kwargs):
+                 random_matrix=False, distance_metric=False, noisy_linear=False, dataset_name='multiwoz21', **kwargs):
         super(EncoderDecoder, self).__init__()
         self.node_embedder = NodeEmbedderRoberta(node_embedding_dim, freeze_roberta=freeze_roberta,
                                                  use_pooled=use_pooled, roberta_path=roberta_path,
-                                                 semantic_descriptions=semantic_descriptions, mean=mean).to(DEVICE)
+                                                 semantic_descriptions=semantic_descriptions, mean=mean,
+                                                 dataset_name=dataset_name).to(DEVICE)
         #TODO: Encoder input dim should be same as projection dim or use another linear layer?
         self.encoder = TransformerModelEncoder(enc_input_dim, enc_nhead, enc_d_hid, enc_nlayers, enc_dropout, need_weights).to(DEVICE)
         self.decoder = TransformerModelDecoder(action_embedding_dim, dec_nhead, dec_d_hid, dec_nlayers, dec_dropout, need_weights).to(DEVICE)

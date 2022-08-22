@@ -16,9 +16,10 @@ class NodeEmbedderRoberta(nn.Module):
     '''
 
     def __init__(self, projection_dim, freeze_roberta=True, use_pooled=False, max_length=25, roberta_path="",
-                 description_dict=None, semantic_descriptions=True, mean=False):
+                 description_dict=None, semantic_descriptions=True, mean=False, dataset_name="multiwoz21"):
         super(NodeEmbedderRoberta, self).__init__()
 
+        self.dataset_name = dataset_name
         self.max_length = max_length
         self.description_size = 768
         self.projection_dim = projection_dim
@@ -63,6 +64,7 @@ class NodeEmbedderRoberta(nn.Module):
 
         logging.info(f"Embedding semantic descriptions: {semantic_descriptions}")
         logging.info(f"Embedded descriptions successfully. Size: {self.embedded_descriptions.size()}")
+        logging.info(f"Data set used for descriptions: {dataset_name}")
 
     def form_embedded_descriptions(self):
 
@@ -109,10 +111,10 @@ class NodeEmbedderRoberta(nn.Module):
 
     def init_description_dict(self):
 
-        create_description_dicts()
+        create_description_dicts(self.dataset_name)
         root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if self.semantic_descriptions:
-            path = os.path.join(root_dir, 'semantic_information_descriptions.json')
+            path = os.path.join(root_dir, f'descriptions/semantic_information_descriptions_{self.dataset_name}.json')
         else:
             path = os.path.join(root_dir, 'information_descriptions.json')
         with open(path, "r") as f:

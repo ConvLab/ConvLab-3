@@ -2,6 +2,7 @@
 import os
 import sys
 import numpy as np
+import logging
 
 from copy import deepcopy
 from convlab.policy.vec import Vector
@@ -22,6 +23,7 @@ class VectorBase(Vector):
 
         super().__init__()
 
+        logging.info(f"Vectorizer: Data set used is {dataset_name}")
         self.set_seed(seed)
         self.ontology = load_ontology(dataset_name)
         try:
@@ -33,7 +35,7 @@ class VectorBase(Vector):
             self.db_domains = self.db.domains
         except Exception as e:
             self.db = None
-            self.db_domains = None
+            self.db_domains = []
             print(f"VectorBase: {e}")
 
         self.dataset_name = dataset_name
@@ -272,6 +274,10 @@ class VectorBase(Vector):
         2. If there is an entity available, can not say NoOffer or NoBook
         '''
         mask_list = np.zeros(self.da_dim)
+
+        if number_entities_dict is None:
+            return mask_list
+
         for i in range(self.da_dim):
             action = self.vec2act[i]
             domain, intent, slot, value = action.split('-')
