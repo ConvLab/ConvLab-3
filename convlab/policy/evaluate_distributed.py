@@ -12,7 +12,7 @@ from convlab.policy.rlmodule import Memory_evaluator, Transition
 from torch import multiprocessing as mp
 
 
-def sampler(pid, queue, evt, sess, seed_range):
+def sampler(pid, queue, evt, sess, seed_range, goals):
     """
     This is a sampler function, and it will be called by multiprocess.Process to sample data from environment by multiple
     processes.
@@ -31,7 +31,8 @@ def sampler(pid, queue, evt, sess, seed_range):
         torch.cuda.manual_seed(seed)
         random.seed(seed)
         np.random.seed(seed)
-        sess.init_session()
+        goal = goals.pop()
+        sess.init_session(goal=goal)
         sys_response = '' if sess.sys_agent.nlg is not None else []
         sys_response = [] if sess.sys_agent.return_semantic_acts else sys_response
         total_return_success = 0.0
@@ -92,7 +93,7 @@ def sampler(pid, queue, evt, sess, seed_range):
     evt.wait()
 
 
-def sample(sess, seedrange, process_num):
+def sample(sess, seedrange, process_num, goals):
     """
     Given batchsz number of task, the batchsz will be splited equally to each processes
     and when processes return, it merge all data and return
@@ -112,7 +113,8 @@ def sample(sess, seedrange, process_num):
     processes = []
     for i in range(process_num):
         process_args = (
-            i, queue, evt, sess, seedrange[i * num_seeds_per_thread: (i+1) * num_seeds_per_thread])
+            i, queue, evt, sess, seedrange[i * num_seeds_per_thread: (i+1) * num_seeds_per_thread],
+            goals[i * num_seeds_per_thread: (i+1) * num_seeds_per_thread])
         processes.append(mp.Process(target=sampler, args=process_args))
     for p in processes:
         # set the process as daemon, and it will be killed once the main process is stoped.
@@ -132,9 +134,9 @@ def sample(sess, seedrange, process_num):
     return buff.get_batch()
 
 
-def evaluate_distributed(sess, seed_range, process_num):
+def evaluate_distributed(sess, seed_range, process_num, goals):
 
-    batch = sample(sess, seed_range, process_num)
+    batch = sample(sess, seed_range, process_num, goals)
     return np.average(batch.complete), np.average(batch.success), np.average(batch.success_strict), \
            np.average(batch.total_return_success), np.average(batch.turns), np.average(batch.avg_actions), \
            batch.task_success, np.average(batch.book_actions), np.average(batch.inform_actions), np.average(batch.request_actions), \

@@ -1,11 +1,35 @@
 import json
 import os
-from random import shuffle
 
-from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
-from convlab.policy.tus.multiwoz.Da2Goal import SysDa2Goal, UsrDa2Goal
-from convlab.policy.tus.multiwoz.util import parse_user_goal
-from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab2.evaluator.multiwoz_eval import MultiWozEvaluator
+from convlab2.policy.tus.multiwoz.Da2Goal import SysDa2Goal, UsrDa2Goal
+from convlab2.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
+
+# import reflect table
+REF_SYS_DA_M = {}
+for dom, ref_slots in REF_SYS_DA.items():
+    dom = dom.lower()
+    REF_SYS_DA_M[dom] = {}
+    for slot_a, slot_b in ref_slots.items():
+        if slot_a == 'Ref':
+            slot_b = 'ref'
+        REF_SYS_DA_M[dom][slot_a.lower()] = slot_b
+    REF_SYS_DA_M[dom]['none'] = 'none'
+REF_SYS_DA_M['taxi']['phone'] = 'phone'
+REF_SYS_DA_M['taxi']['car'] = 'car type'
+
+# Goal slot mapping table
+mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'name': 'name', 'phone': 'phone',
+                          'post': 'postcode', 'price': 'pricerange'},
+           'hotel': {'addr': 'address', 'area': 'area', 'internet': 'internet', 'parking': 'parking', 'name': 'name',
+                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type'},
+           'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
+                          'post': 'postcode', 'type': 'type'},
+           'train': {'id': 'trainID', 'arrive': 'arriveBy', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
+                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price'},
+           'taxi': {'car': 'car type', 'phone': 'phone'},
+           'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
+           'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
 
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -24,45 +48,19 @@ ref_slot_data2stand = {
 class Goal(object):
     """ User Goal Model Class. """
 
-    def __init__(self, goal_generator=None, goal=None):
-        """
-        create new Goal by random
-        Args:
-            goal_generator (GoalGenerator): Goal Gernerator.
-        """
-        self.max_domain_len = 5
-        self.max_slot_len = 20
-        self.local_id = {}
-        path = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+    def __init__(self, goal):
+        self.domain_goals = _process_goal(goal)
+        self.domains = [d for d in self.domain_goals]
+
+        path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         path = os.path.join(path, 'data/multiwoz/all_value.json')
         self.all_values = json.load(open(path))
-        if goal_generator is not None and goal is None:
-            self.domain_goals = goal_generator.get_user_goal()
-            self.domains = list(self.domain_goals['domain_ordering'])
-            del self.domain_goals['domain_ordering']
-        elif goal_generator is None and goal is not None:
-            self.domains = []
-            self.domain_goals = {}
-            for domain in goal.domains:
-                if domain in SysDa2Goal and goal.domain_goals[domain]:  # TODO check order
-                    self.domains.append(domain)
-                    self.domain_goals[domain] = goal.domain_goals[domain]
-        else:
-            print("Warning!!! One of goal_generator or goal should not be None!!!")
 
-        for domain in self.domains:
-            if 'reqt' in self.domain_goals[domain].keys():
-                self.domain_goals[domain]['reqt'] = {
-                    slot: DEF_VAL_UNK for slot in self.domain_goals[domain]['reqt']}
-
-            if 'book' in self.domain_goals[domain].keys():
-                self.domain_goals[domain]['booked'] = DEF_VAL_UNK
-        self.init_local_id()
         self.init_info_record()
         self.actions = None
         self.evaluator = MultiWozEvaluator()
         self.evaluator.add_goal(self.domain_goals)
+        self.cur_domain = None
 
     def init_info_record(self):
         self.info = {}
@@ -72,62 +70,16 @@ class Goal(object):
                 for slot in self.domain_goals[domain]['info']:
                     self.info[domain][slot] = DEF_VAL_NUL
 
-    def add_sys_da(self, sys_act):
-        self.evaluator.add_sys_da(sys_act)
+    def add_sys_da(self, sys_act, belief_state):
+        self.evaluator.add_sys_da(sys_act, belief_state)
+        self.update_user_goal(sys_act, belief_state)
 
     def add_usr_da(self, usr_act):
         self.evaluator.add_usr_da(usr_act)
 
-    def _update_info_action(self, act):
-        for intent, domain, slot, value in act:
-            domain = domain.lower()
-            value = value.lower()
-            slot = slot.lower()
-            domain, slot = self._norm_domain_slot(domain, slot, value)
-            if domain in self.info and slot in self.info[domain] and value not in NOT_SURE_VALS:
-                self.info[domain][slot] = value
-
-    def init_local_id(self):
-        # local_id = {
-        #     "domain 1": {
-        #         "ID": [1, 0, 0],
-        #         "SLOT": {
-        #             "slot 1": [1, 0, 0],
-        #             "slot 2": [0, 1, 0]}}}
-
-        for domain_id, domain in enumerate(self.domains):
-            self._init_domain_id(domain)
-            self._update_domain_id(domain, domain_id)
-            slot_id = 0
-            for slot_type in ["info", "book", "reqt"]:
-                for slot in self.domain_goals[domain].get(slot_type, {}):
-                    self._init_slot_id(domain, slot)
-                    self._update_slot_id(domain, slot, slot_id)
-                    slot_id += 1
-
-    def insert_local_id(self, new_slot_name):
-        domain, slot = new_slot_name.split('-')
-        if domain not in self.local_id:
-            self._init_domain_id(domain)
-            domain_id = len(self.domains) + 1
-            self._update_domain_id(domain, domain_id)
-            self._init_slot_id(domain, slot)
-            # the first slot for a new domain
-            self._update_slot_id(domain, slot, 0)
-
-        else:
-            slot_id = len(self.local_id[domain]["SLOT"]) + 1
-            self._init_slot_id(domain, slot)
-            self._update_slot_id(domain, slot, slot_id)
-
-    def get_slot_id(self, slot_name):
-        domain, slot = slot_name.split('-')
-        if domain in self.local_id and slot in self.local_id[domain]["SLOT"]:
-            return self.local_id[domain]["ID"], self.local_id[domain]["SLOT"][slot]
-        else:  # a slot not in original user goal
-            self.insert_local_id(slot_name)
-            domain_id, slot_id = self.get_slot_id(slot_name)
-            return domain_id, slot_id
+        usr_domain = [d for i, d, s, v in usr_act][0] if usr_act else self.cur_domain
+        usr_domain = usr_domain if usr_domain else 'general'
+        self.cur_domain = usr_domain if usr_domain.lower() not in ['general', 'booking'] else self.cur_domain
 
     def task_complete(self):
         """
@@ -135,55 +87,23 @@ class Goal(object):
         Returns:
             (boolean): True to accomplish.
         """
-        return self.evaluator.task_success()
-
-    def next_domain_incomplete(self):
-        # request
+        if self.evaluator.success == 1:
+            return True
         for domain in self.domains:
-            # reqt
             if 'reqt' in self.domain_goals[domain]:
-                requests = self.domain_goals[domain]['reqt']
-                unknow_reqts = [
-                    key for (key, val) in requests.items() if val in NOT_SURE_VALS]
-                if len(unknow_reqts) > 0:
-                    return domain, 'reqt', ['name'] if 'name' in unknow_reqts else unknow_reqts
-
-            # book
+                reqt_vals = self.domain_goals[domain]['reqt'].values()
+                for val in reqt_vals:
+                    if val in NOT_SURE_VALS:
+                        return False
             if 'booked' in self.domain_goals[domain]:
                 if self.domain_goals[domain]['booked'] in NOT_SURE_VALS:
-                    return domain, 'book', \
-                        self.domain_goals[domain]['fail_book'] if 'fail_book' in self.domain_goals[domain].keys() else \
-                        self.domain_goals[domain]['book']
-
-        return None, None, None
+                    return False
+        return True
 
     def __str__(self):
         return '-----Goal-----\n' + \
                json.dumps(self.domain_goals, indent=4) + \
                '\n-----Goal-----'
-
-    def action_list(self, user_history=None, sys_act=None, all_values=None):
-        goal_slot = parse_user_goal(self)
-
-        if not self.actions:
-            if user_history:
-                self.actions = self._reorder_based_on_user_history(
-                    user_history, goal_slot)
-
-            else:
-                # priority_action = [slot for slot in goal_slot]
-                self.actions = self._reorder_random(goal_slot)
-        priority_action = self.actions
-
-        if sys_act:
-            for intent, domain, slot, value in sys_act:
-                slot_name = self.act2slot(
-                    intent, domain, slot, value, all_values)
-                # print("system_mention:", slot_name)
-                if slot_name and slot_name not in priority_action:
-                    priority_action.insert(0, slot_name)
-
-        return priority_action
 
     def get_booking_domain(self, slot, value, all_values):
         for domain in self.domains:
@@ -191,47 +111,6 @@ class Goal(object):
                 return domain
         print("NOT FOUND BOOKING DOMAIN")
         return ""
-
-    def act2slot(self, intent, domain, slot, value, all_values):
-        domain = domain.lower()
-        slot = slot.lower()
-
-        if domain not in UsrDa2Goal:
-            # print(f"Not handle domain {domain}")
-            return ""
-
-        if domain == "booking":
-            slot = SysDa2Goal[domain][slot]
-            domain = self.get_booking_domain(slot, value, all_values)
-            if domain:
-                return f"{domain}-{slot}"
-
-        elif domain in UsrDa2Goal:
-            if slot in SysDa2Goal[domain]:
-                slot = SysDa2Goal[domain][slot]
-            elif slot in UsrDa2Goal[domain]:
-                slot = UsrDa2Goal[domain][slot]
-            elif slot in SysDa2Goal["booking"]:
-                slot = SysDa2Goal["booking"][slot]
-
-            return f"{domain}-{slot}"
-        return ""
-
-    def _reorder_random(self, goal_slot):
-        new_order = [slot for slot in goal_slot]
-        return new_order
-
-    def _reorder_based_on_user_history(self, user_history, goal_slot):
-        # user_history = [slot_0, slot_1, ...]
-        new_order = []
-        for slot in user_history:
-            if slot and slot not in new_order:
-                new_order.append(slot)
-
-        for slot in goal_slot:
-            if slot not in new_order:
-                new_order.append(slot)
-        return new_order
 
     def update_user_goal(self, action=None, state=None):
         # update request and booked
@@ -253,6 +132,7 @@ class Goal(object):
                     self.domain_goals[domain]["booked"] = DEF_VAL_NOBOOK
 
     def _check_book_info(self, state, domain):
+        # need to check info, reqt for booked?
         if domain not in state:
             return False
 
@@ -268,6 +148,9 @@ class Goal(object):
                     state_value = ""
                 # only check mentioned values (?)
                 if state_value and state_value != user_value:
+                    # print(
+                    #     f"booking info is incorrect, for slot {slot}: "
+                    #     f"goal {user_value} != state {state_value}")
                     return False
 
         return True
@@ -290,6 +173,35 @@ class Goal(object):
                 if self._check_update_request(domain, slot) and value != "?":
                     self.domain_goals[domain]['reqt'][slot] = value
                     # print(f"update reqt {slot} = {value} from system action")
+
+            if intent.lower() == 'inform':
+                if domain.lower() in self.domain_goals:
+                    if 'reqt' in self.domain_goals[domain.lower()]:
+                        if REF_SYS_DA_M.get(domain, {}).get(slot, slot) in self.domain_goals[domain]['reqt']:
+                            if value in NOT_SURE_VALS:
+                                value = '\"' + value + '\"'
+                            self.domain_goals[domain]['reqt'][REF_SYS_DA_M.get(domain, {}).get(slot, slot)] = value
+
+            if domain not in ['general', 'booking']:
+                self.cur_domain = domain
+
+            if domain and intent and slot:
+                dial_act = f'{domain.lower()}-{intent.lower()}-{slot.lower()}'
+            else:
+                dial_act = ''
+
+            if dial_act == 'booking-book-ref' and self.cur_domain.lower() in ['hotel', 'restaurant', 'train']:
+                if self.cur_domain in self.domain_goals and 'booked' in self.domain_goals[self.cur_domain.lower()]:
+                    self.domain_goals[self.cur_domain.lower()]['booked'] = DEF_VAL_BOOKED
+            elif dial_act == 'train-offerbooked-ref' or dial_act == 'train-inform-ref':
+                if 'train' in self.domain_goals and 'booked' in self.domain_goals['train']:
+                    self.domain_goals['train']['booked'] = DEF_VAL_BOOKED
+            elif dial_act == 'taxi-inform-car':
+                if 'taxi' in self.domain_goals and 'booked' in self.domain_goals['taxi']:
+                    self.domain_goals['taxi']['booked'] = DEF_VAL_BOOKED
+            if intent.lower() in ['book', 'offerbooked'] and self.cur_domain.lower() in self.domain_goals:
+                if 'booked' in self.domain_goals[self.cur_domain.lower()]:
+                    self.domain_goals[self.cur_domain.lower()]['booked'] = DEF_VAL_BOOKED
 
     def _norm_domain_slot(self, domain, slot, value):
         if domain == "booking":
@@ -316,7 +228,9 @@ class Goal(object):
             elif slot in SysDa2Goal["booking"]:
                 # ["inform", "hotel", "stay", 2]
                 slot = SysDa2Goal["booking"][slot]
-
+            # else:
+            #     print(
+            #         f"UNSEEN SLOT IN UPDATE GOAL {intent, domain, slot, value}")
             return domain, slot
 
         else:
@@ -352,10 +266,14 @@ class Goal(object):
             if self._check_update_request(domain, booked_slot):
                 self._update_slot(domain, booked_slot,
                                   state[domain]["book"]["booked"][0][booked_slot])
+                # print("update reqt {} in booked".format(booked_slot),
+                #       self.domain_goals[domain]['reqt'][booked_slot])
 
     def _update_book(self, state, domain, slot):
         if self._check_value(state[domain]["book"][slot]):
             self._update_slot(domain, slot, state[domain]["book"][slot])
+            # print("update reqt {} in book".format(slot),
+            #       state[domain]["book"][slot])
 
     def _check_update_request(self, domain, slot):
         # check whether one slot is a request slot
@@ -375,7 +293,7 @@ class Goal(object):
         return True
 
     def _get_booking_domain(self, slot, value):
-        """ 
+        """
         find the domain for domain booking, excluding slot "ref"
         """
         found = ""
@@ -390,22 +308,33 @@ class Goal(object):
                         found = domain
         return found
 
-    def _init_domain_id(self, domain):
-        self.local_id[domain] = {"ID": [0] * self.max_domain_len, "SLOT": {}}
 
-    def _init_slot_id(self, domain, slot):
-        self.local_id[domain]["SLOT"][slot] = [0] * self.max_slot_len
+def _process_goal(tasks):
+    goal = {}
+    for task in tasks['tasks']:
+        goal[task['Dom'].lower()] = {}
+        if task['Book']:
+            goal[task['Dom'].lower()]['booked'] = DEF_VAL_UNK
+            goal[task['Dom'].lower()]['book'] = {}
+            for con in task['Book'].split(', '):
+                slot, val = con.split('=', 1)
+                slot = mapping[task['Dom'].lower()].get(slot, slot)
+                goal[task['Dom'].lower()]['book'][slot] = val
+        if task['Cons']:
+            goal[task['Dom'].lower()]['info'] = {}
+            goal[task['Dom'].lower()]['fail_info'] = {}
+            for con in task['Cons'].split(', '):
+                slot, val = con.split('=', 1)
+                slot = mapping[task['Dom'].lower()].get(slot, slot)
+                if " (otherwise " in val:
+                    value = val.split(" (if unavailable use: ")
+                    goal[task['Dom'].lower()]['fail_info'][slot] = value[0]
+                    goal[task['Dom'].lower()]['info'][slot] = value[1][:-1]
+                else:
+                    goal[task['Dom'].lower()]['info'][slot] = val
 
-    def _update_domain_id(self, domain, domain_id):
-        if domain_id < self.max_domain_len:
-            self.local_id[domain]["ID"][domain_id] = 1
-        else:
-            print(
-                f"too many doamins: {domain_id} > {self.max_domain_len}")
+        if task['Reqs']:
+            goal[task['Dom'].lower()]['reqt'] = {mapping[task['Dom'].lower()].get(s, s): DEF_VAL_UNK for s in
+                                                 task['Reqs'].split(', ')}
 
-    def _update_slot_id(self, domain, slot, slot_id):
-        if slot_id < self.max_slot_len:
-            self.local_id[domain]["SLOT"][slot][slot_id] = 1
-        else:
-            print(
-                f"too many slots, {slot_id} > {self.max_slot_len}")
+    return goal

@@ -5,7 +5,7 @@ from convlab.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from .vector_base import VectorBase
 
 
-class VectorBinary(VectorBase):
+class VectorNodes(VectorBase):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
                  seed=0):
@@ -22,6 +22,14 @@ class VectorBinary(VectorBase):
         self.state_dim = self.da_opp_dim + self.da_dim + self.belief_state_dim + \
             len(self.db_domains) + 6 * len(self.db_domains) + 1
 
+    def init_kg_graph(self):
+        self.kg_info = []
+
+    def add_graph_node(self, domain, node_type, description, value):
+
+        node = {"domain": domain, "node_type": node_type, "description": description, "value": value}
+        self.kg_info.append(node)
+
     def state_vectorize(self, state):
         """vectorize a state
 
@@ -36,6 +44,7 @@ class VectorBinary(VectorBase):
         """
         self.state = state['belief_state']
         domain_active_dict = self.init_domain_active_dict()
+        self.init_kg_graph()
 
         # when character is sys, to help query database when da is booking-book
         # update current domain according to user action
@@ -44,16 +53,11 @@ class VectorBinary(VectorBase):
             for intent, domain, slot, value in action:
                 domain_active_dict[domain] = True
 
-        opp_act_vec = self.vectorize_user_act(state)
-        last_act_vec = self.vectorize_system_act(state)
-        belief_state, domain_active_dict = self.vectorize_belief_state(state, domain_active_dict)
-        book = self.vectorize_booked(state)
-        degree, number_entities_dict = self.pointer()
-        final = 1. if state['terminated'] else 0.
-
-        state_vec = np.r_[opp_act_vec, last_act_vec,
-                          belief_state, book, degree, final]
-        assert len(state_vec) == self.state_dim
+        self.get_user_act_feature(state)
+        self.get_sys_act_feature(state)
+        domain_active_dict = self.get_user_goal_feature(state, domain_active_dict)
+        number_entities_dict = self.get_db_features()
+        self.get_general_features(state, domain_active_dict)
 
         if self.use_mask:
             mask = self.get_mask(domain_active_dict, number_entities_dict)
@@ -62,7 +66,7 @@ class VectorBinary(VectorBase):
         else:
             mask = np.zeros(self.da_dim)
 
-        return state_vec, mask
+        return np.zeros(1), mask
 
     def get_mask(self, domain_active_dict, number_entities_dict):
         #domain_mask = self.compute_domain_mask(domain_active_dict)
@@ -71,43 +75,68 @@ class VectorBinary(VectorBase):
         mask = entity_mask + general_mask
         return mask
 
-    def vectorize_booked(self, state):
-        book = np.zeros(len(self.db_domains))
-        for i, domain in enumerate(self.db_domains):
-            if domain in state['booked'] and state['booked'][domain]:
-                book[i] = 1.
-        return book
+    def get_db_features(self):
 
-    def vectorize_belief_state(self, state, domain_active_dict):
-        belief_state = np.zeros(self.belief_state_dim)
-        i = 0
+        degree, number_entities_dict = self.pointer()
+        feature_type = 'db'
+        for domain, num_entities in number_entities_dict.items():
+            description = f"db-{domain}-entities".lower()
+            # self.add_graph_node(domain, feature_type, description, int(num_entities > 0))
+            self.add_graph_node(domain, feature_type, description, min(num_entities, 5) / 5)
+        return number_entities_dict
+
+    def get_user_goal_feature(self, state, domain_active_dict):
+
+        feature_type = 'user goal'
         for domain in self.belief_domains:
             for slot, value in state['belief_state'][domain].items():
-                if value:
-                    belief_state[i] = 1.
-                i += 1
+                description = f"user goal-{domain}-{slot}".lower()
+                value = 1.0 if (value and value != "not mentioned") else 0.0
+                self.add_graph_node(domain, feature_type, description, value)
 
             if [slot for slot, value in state['belief_state'][domain].items() if value]:
                 domain_active_dict[domain] = True
-        return belief_state, domain_active_dict
+        return domain_active_dict
 
-    def vectorize_system_act(self, state):
+    def get_sys_act_feature(self, state):
+
+        feature_type = 'last system act'
         action = state['system_action'] if self.character == 'sys' else state['user_action']
         action = delexicalize_da(action, self.requestable)
         action = flat_da(action)
-        last_act_vec = np.zeros(self.da_dim)
         for da in action:
             if da in self.act2vec:
-                last_act_vec[self.act2vec[da]] = 1.
-        return last_act_vec
+                domain = da.split('-')[0]
+                description = "system-" + da
+                value = 1.0
+                self.add_graph_node(domain, feature_type, description.lower(), value)
 
-    def vectorize_user_act(self, state):
+    def get_user_act_feature(self, state):
+        # user-act feature
+        feature_type = 'user act'
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
         opp_action = flat_da(opp_action)
-        opp_act_vec = np.zeros(self.da_opp_dim)
+
         for da in opp_action:
             if da in self.opp2vec:
-                prob = 1.0
-                opp_act_vec[self.opp2vec[da]] = prob
-        return opp_act_vec
+                domain = da.split('-')[0]
+                description = "user-" + da
+                value = 1.0
+                self.add_graph_node(domain, feature_type, description.lower(), value)
+
+    def get_general_features(self, state, domain_active_dict):
+
+        feature_type = 'general'
+        for i, domain in enumerate(self.db_domains):
+            if domain in state['booked']:
+                description = f"general-{domain}-booked".lower()
+                value = 1.0 if state['booked'][domain] else 0.0
+                self.add_graph_node(domain, feature_type, description, value)
+
+        for domain in self.domains:
+            if domain == 'general':
+                continue
+            value = 1.0 if domain_active_dict[domain] else 0
+            description = f"general-{domain}".lower()
+            self.add_graph_node(domain, feature_type, description, value)

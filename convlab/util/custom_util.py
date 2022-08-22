@@ -8,6 +8,7 @@ import zipfile
 import numpy as np
 import torch
 from tensorboardX import SummaryWriter
+from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.util.file_util import cached_path
 from convlab.policy.evaluate_distributed import evaluate_distributed
 from convlab.util.train_util_neo import init_logging_nunu
@@ -83,9 +84,9 @@ def load_config_file(filepath: str = None) -> dict:
     return conf
 
 
-def save_config(terminal_args, config_file_args, config_save_path):
+def save_config(terminal_args, config_file_args, config_save_path, policy_config=None):
     config_save_path = os.path.join(config_save_path, f'config_saved.json')
-    args_dict = {"args": terminal_args, "config": config_file_args}
+    args_dict = {"args": terminal_args, "config": config_file_args, "policy_config": policy_config}
     json.dump(args_dict, open(config_save_path, 'w'))
 
 
@@ -140,23 +141,32 @@ def save_best(policy_sys, best_complete_rate, best_success_rate, best_return, co
     return best_complete_rate, best_success_rate, best_return
 
 
-def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path):
+def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_domain_goals=False, allowed_domains=None):
     policy_sys.is_train = False
+
+    goal_generator = GoalGenerator()
+    goals = []
+    for seed in range(1000, 1000 + conf['model']['num_eval_dialogues']):
+        set_seed(seed)
+        goal = create_goals(goal_generator, 1, single_domain_goals, allowed_domains)
+        goals.append(goal[0])
+
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts = evaluate(sess,
-                                               num_dialogues=conf['model']['num_eval_dialogues'],
-                                               sys_semantic_to_usr=conf['model'][
-                                                   'sys_semantic_to_usr'],
-                                               save_flag=save_eval, save_path=log_save_path)
+                select_acts, offer_acts = evaluate(sess,
+                                                num_dialogues=conf['model']['num_eval_dialogues'],
+                                                sys_semantic_to_usr=conf['model'][
+                                                    'sys_semantic_to_usr'],
+                                                save_flag=save_eval, save_path=log_save_path, goals=goals)
+
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
             select_acts, offer_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
-                                 conf['model']['process_num'])
+                                 conf['model']['process_num'], goals)
         total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
 
         task_success_gathered = {}
@@ -267,12 +277,7 @@ def create_env(args, policy_sys):
     return env, sess
 
 
-def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None):
-    seed = 0
-    random.seed(seed)
-    np.random.seed(seed)
-
-    # sess = BiSession(agent_sys, simulator, None, evaluator)
+def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
 
     eval_save = {}
     turn_counter_dict = {}
@@ -285,7 +290,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
-        sess.init_session()
+        goal = goals.pop()
+        sess.init_session(goal=goal)
         sys_response = [] if sess.sys_agent.nlg is None else ''
         sys_response = [] if sys_semantic_to_usr else sys_response
         avg_actions = 0
@@ -455,6 +461,18 @@ def create_goals(goal_generator, num_goals, single_domains=False, allowed_domain
             continue
         collected_goals.append(goal)
     return collected_goals
+
+
+def build_domains_goal(goal_generator, domains=None):
+    from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal
+    found = False
+    while not found:
+        goal = Goal(goal_generator)
+        if domains is None:
+            found = True
+        if set(goal.domain_goals) == domains:
+            found = True
+    return goal
 
 
 def data_goals(num_goals, dataset="multiwoz21", dial_ids_order=0):
