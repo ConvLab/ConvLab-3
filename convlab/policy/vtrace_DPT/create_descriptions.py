@@ -3,6 +3,7 @@ import json
 
 from convlab.policy.vector.vector_binary import VectorBinary
 from convlab.util import load_ontology, load_database
+from convlab.util.custom_util import timeout
 
 
 def create_description_dicts(name='multiwoz21'):
@@ -13,8 +14,9 @@ def create_description_dicts(name='multiwoz21'):
     domains = list(ontology['domains'].keys())
 
     try:
-        db = load_database(name)
-        db_domains = db.domains
+        with timeout(seconds=10):
+            db = load_database(name)
+            db_domains = db.domains
     except:
         db = None
         db_domains = []

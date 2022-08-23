@@ -9,6 +9,7 @@ from convlab.util import load_policy_data, load_dataset
 from convlab.util.custom_util import flatten_acts
 from convlab.util.multiwoz.state import default_state
 from convlab.policy.vector.dataset import ActDatasetKG
+from tqdm import tqdm
 
 
 class PolicyDataVectorizer:
@@ -43,7 +44,7 @@ class PolicyDataVectorizer:
             self.data[split] = []
             raw_data = data_split[split]
 
-            for data_point in raw_data:
+            for data_point in tqdm(raw_data):
                 state = default_state()
 
                 state['belief_state'] = data_point['context'][-1]['state']
@@ -94,7 +95,7 @@ class PolicyDataVectorizer:
             description_batch, value_batch = [], [], [], [], [], []
             kg_list = []
 
-            for num, item in enumerate(self.data[part]):
+            for num, item in tqdm(enumerate(self.data[part])):
 
                 if item['action'].sum() == 0 or len(item['state']) == 0:
                     continue
@@ -115,6 +116,7 @@ class PolicyDataVectorizer:
 
                 small_act_batch.append(torch.Tensor(policy.action_embedder.real_action_to_small_action_list(torch.Tensor(item['action']))))
 
+            print("Creating action masks..")
             a_masks, max_length = policy.get_action_masks(action_batch)
             action_batch = torch.stack(action_batch)
             current_domain_mask_batch = torch.stack(current_domain_mask_batch)

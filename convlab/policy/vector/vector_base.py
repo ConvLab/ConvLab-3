@@ -6,7 +6,7 @@ import logging
 
 from copy import deepcopy
 from convlab.policy.vec import Vector
-from convlab.util.custom_util import flatten_acts
+from convlab.util.custom_util import flatten_acts, timeout
 from convlab.util.multiwoz.lexicalize import delexicalize_da, flat_da, deflat_da, lexicalize_da
 from convlab.util import load_ontology, load_database, load_dataset
 
@@ -28,7 +28,8 @@ class VectorBase(Vector):
         self.ontology = load_ontology(dataset_name)
         try:
             # execute to make sure that the database exists or is downloaded otherwise
-            load_database(dataset_name)
+            with timeout(seconds=10):
+                load_database(dataset_name)
             # the following two lines are needed for pickling correctly during multi-processing
             exec(f'from data.unified_datasets.{dataset_name}.database import Database')
             self.db = eval('Database()')
