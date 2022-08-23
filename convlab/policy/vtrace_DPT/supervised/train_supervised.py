@@ -60,6 +60,9 @@ class MLE_Trainer:
             self.policy_optim.zero_grad()
             loss_a = self.policy_loop(data)
             a_loss += loss_a.item()
+            if i % 20 == 0 and i != 0:
+                print("LOSS:", a_loss / 20.0)
+                a_loss = 0
             loss_a.backward()
             for p in self.policy.parameters():
                 if p.grad is not None:
