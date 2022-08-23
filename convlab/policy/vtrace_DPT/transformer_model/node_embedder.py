@@ -37,7 +37,7 @@ class NodeEmbedderRoberta(nn.Module):
 
         if roberta_path:
             embedded_descriptions_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                      'embedded_descriptions.pt')
+                                                      f'embedded_descriptions_{self.dataset_name}.pt')
             if os.path.exists(embedded_descriptions_path):
                 self.embedded_descriptions = torch.load(embedded_descriptions_path).to(DEVICE)
             else:
@@ -47,7 +47,7 @@ class NodeEmbedderRoberta(nn.Module):
 
         else:
             embedded_descriptions_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                      'embedded_descriptions_base.pt')
+                                                      f'embedded_descriptions_base_{self.dataset_name}.pt')
             if os.path.exists(embedded_descriptions_path):
                 self.embedded_descriptions = torch.load(embedded_descriptions_path).to(DEVICE)
             else:

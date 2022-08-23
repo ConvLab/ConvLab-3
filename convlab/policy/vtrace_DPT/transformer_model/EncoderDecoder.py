@@ -343,11 +343,11 @@ class EncoderDecoder(nn.Module):
         # Map the actions to action embeddings that are fed as input to decoder model
         # pad input and remove "eos" token
         padded_decoder_input = torch.stack(
-            [torch.cat([act[:-1], torch.zeros(max_length - len(act))], dim=-1) for act in action_targets], dim=0) \
+            [torch.cat([act[:-1], torch.zeros(max_length - len(act)).to(DEVICE)], dim=-1) for act in action_targets], dim=0) \
             .to(DEVICE).long()
 
         padded_action_targets = torch.stack(
-            [torch.cat([act, torch.zeros(max_length - len(act))], dim=-1) for act in action_targets], dim=0) \
+            [torch.cat([act, torch.zeros(max_length - len(act)).to(DEVICE)], dim=-1) for act in action_targets], dim=0) \
             .to(DEVICE)
 
         decoder_input = self.action_embedder.action_embeddings[padded_decoder_input]

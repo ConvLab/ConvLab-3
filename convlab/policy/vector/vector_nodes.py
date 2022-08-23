@@ -100,13 +100,15 @@ class VectorNodes(VectorBase):
 
         feature_type = 'user goal'
         for domain in self.belief_domains:
-            for slot, value in state['belief_state'][domain].items():
-                description = f"user goal-{domain}-{slot}".lower()
-                value = 1.0 if (value and value != "not mentioned") else 0.0
-                self.add_graph_node(domain, feature_type, description, value)
+            # the if case is needed because SGD only saves the dialogue state info for active domains
+            if domain in state['belief_state']:
+                for slot, value in state['belief_state'][domain].items():
+                    description = f"user goal-{domain}-{slot}".lower()
+                    value = 1.0 if (value and value != "not mentioned") else 0.0
+                    self.add_graph_node(domain, feature_type, description, value)
 
-            if [slot for slot, value in state['belief_state'][domain].items() if value]:
-                domain_active_dict[domain] = True
+                if [slot for slot, value in state['belief_state'][domain].items() if value]:
+                    domain_active_dict[domain] = True
         return domain_active_dict
 
     def get_sys_act_feature(self, state):

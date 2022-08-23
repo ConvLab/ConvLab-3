@@ -11,6 +11,7 @@ def create_description_dicts(name='multiwoz21'):
     ontology = load_ontology(name)
     default_state = ontology['state']
     domains = list(ontology['domains'].keys())
+
     try:
         db = load_database(name)
         db_domains = db.domains
@@ -31,22 +32,27 @@ def create_description_dicts(name='multiwoz21'):
 
     for domain in default_state:
         for slot in default_state[domain]:
+            domain = domain.lower()
             description_dict_semantic[f"user goal-{domain}-{slot.lower()}"] = f"user goal {domain} {slot}"
 
     if db_domains:
         for domain in db_domains:
+            domain = domain.lower()
             description_dict_semantic[f"db-{domain}-entities"] = f"data base {domain} number of entities"
             description_dict_semantic[f"general-{domain}-booked"] = f"general {domain} booked"
 
     for domain in domains:
+        domain = domain.lower()
         description_dict_semantic[f"general-{domain}"] = f"domain {domain}"
 
     for act in da_voc:
         domain, intent, slot, value = act.split("-")
+        domain = domain.lower()
         description_dict_semantic["system-"+act.lower()] = f"last system act {domain} {intent} {slot} {value}"
 
     for act in da_voc_opp:
         domain, intent, slot, value = [item.lower() for item in act.split("-")]
+        domain = domain.lower()
         description_dict_semantic["user-"+act.lower()] = f"user act {domain} {intent} {slot} {value}"
 
     root_dir = os.path.dirname(os.path.abspath(__file__))

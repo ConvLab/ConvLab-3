@@ -43,6 +43,8 @@ class PolicyDataVectorizer:
             self.data[split] = []
             raw_data = data_split[split]
 
+            num = 0
+
             for data_point in raw_data:
                 state = default_state()
 
@@ -52,13 +54,17 @@ class PolicyDataVectorizer:
                     if len(data_point['context']) > 1 else {}
                 state['system_action'] = flatten_acts(last_system_act)
                 state['terminated'] = data_point['terminated']
-                state['booked'] = data_point['booked']
+                if 'booked' in data_point:
+                    state['booked'] = data_point['booked']
                 dialogue_act = flatten_acts(data_point['dialogue_acts'])
 
                 vectorized_state, mask = self.vector.state_vectorize(state)
                 vectorized_action = self.vector.action_vectorize(dialogue_act)
                 self.data[split].append({"state": self.vector.kg_info, "action": vectorized_action, "mask": mask,
                                          "terminated": state['terminated']})
+                num += 1
+                if num > 500:
+                    break
 
             with open(os.path.join(processed_dir, '{}.pkl'.format(split)), 'wb') as f:
                 pickle.dump(self.data[split], f)

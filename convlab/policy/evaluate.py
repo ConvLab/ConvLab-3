@@ -58,7 +58,7 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
         from convlab.policy.gdpl import GDPL
         policy_sys = GDPL(vectorizer=conf['vectorizer_sys_activated'])
     elif model_name == "DDPT":
-        from convlab2.policy.vtrace_DPT import VTRACE
+        from convlab.policy.vtrace_DPT import VTRACE
         policy_sys = VTRACE(is_train=False, vectorizer=conf['vectorizer_sys_activated'])
 
     try:

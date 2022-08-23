@@ -61,6 +61,9 @@ class MLE_Trainer:
             loss_a = self.policy_loop(data)
             a_loss += loss_a.item()
             loss_a.backward()
+            for p in self.policy.parameters():
+                if p.grad is not None:
+                    p.grad[p.grad != p.grad] = 0.0
             self.policy_optim.step()
 
         self.policy.eval()
@@ -162,12 +165,17 @@ if __name__ == '__main__':
     with open(os.path.join(root_directory, 'config.json'), 'r') as f:
         cfg = json.load(f)
 
+    cfg['dataset_name'] = args.dataset_name
+
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), "info")
     save_config(vars(args), cfg, config_save_path)
 
     set_seed(args.seed)
     logging.info(f"Seed used: {args.seed}")
+    logging.info(f"Batch size: {cfg['batchsz']}")
+    logging.info(f"Epochs: {cfg['epoch']}")
+    logging.info(f"Learning rate: {cfg['supervised_lr']}")
 
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
     manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector)
