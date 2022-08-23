@@ -1,6 +1,6 @@
 {
 	"batchsz": 64,
-	"epoch": 16,
+	"epoch": 40,
 	"gamma": 0.99,
 	"policy_lr": 0.00005,
 	"supervised_lr": 1e-05,
@@ -26,7 +26,7 @@
 	"print_per_batch": 400,
 	"c": 1.0,
 	"rho_bar": 1,
-	"max_length": 10,
+	"max_length": 20,
 	"noisy_linear": false,
 	"dataset_name": "multiwoz21",
 

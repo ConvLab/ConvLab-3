@@ -126,7 +126,7 @@ class ActionEmbedder(nn.Module):
             # Domain was selected, need intent now
             for intent in self.intent_dict:
                 domain_intent = f"{domain}-{intent}"
-                valid = self.is_valid(domain_intent)
+                valid = self.is_valid(domain_intent + "-")
                 if valid:
                     action_mask[self.small_action_dict[intent]] = 0
         else:
