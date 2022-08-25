@@ -4,6 +4,7 @@ from .transformer import TransformerModelEncoder, TransformerModelDecoder
 from .action_embedder import ActionEmbedder
 from torch.distributions.categorical import Categorical
 from .noisy_linear import NoisyLinear
+from tqdm import tqdm
 
 import torch
 import torch.nn as nn
@@ -441,7 +442,7 @@ class EncoderDecoder(nn.Module):
         semantic_acts = [self.action_embedder.real_action_to_small_action_list(act, semantic=True) for act in actions]
         action_mask_list = []
         decoder_encoder_mask_list = []
-        for i, act_sequence in enumerate(semantic_acts):
+        for i, act_sequence in tqdm(enumerate(semantic_acts)):
             action_mask = [self.action_embedder.get_action_mask(start=True)]
 
             for t, act in enumerate(act_sequence):

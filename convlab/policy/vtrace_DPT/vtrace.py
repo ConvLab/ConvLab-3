@@ -48,6 +48,7 @@ class VTRACE(nn.Module, Policy):
         self.info_dict = {}
         self.use_regularization = False
         self.supervised_weight = cfg.get('supervised_weight', 0.0)
+
         logging.info(f"Entropy weight: {self.entropy_weight}")
         logging.info(f"Online-Offline-ratio: {self.online_offline_ratio}")
         logging.info(f"Behaviour cloning weight: {self.behaviour_cloning_weight}")
@@ -69,8 +70,6 @@ class VTRACE(nn.Module, Policy):
         if self.cfg['independent']:
             self.value = EncoderCritic(self.value_helper.node_embedder, self.value_helper.encoder, **self.cfg).to(
                 device=DEVICE)
-            self.smoothed_value = EncoderCritic(self.value_helper.node_embedder, self.value_helper.encoder, **self.cfg).\
-                to(device=DEVICE)
         else:
             self.value = EncoderCritic(self.policy.node_embedder, self.policy.encoder, **self.cfg).to(device=DEVICE)
 
@@ -79,10 +78,8 @@ class VTRACE(nn.Module, Policy):
         except Exception as e:
             print(f"Could not load the critic, Exception: {e}")
 
-        self.policy_optim = optim.RMSprop(
-            list(self.policy.parameters()), lr=cfg['policy_lr'])
-        self.value_optim = optim.Adam(
-            list(self.value.parameters()), lr=cfg['value_lr'])
+        self.optimizer = optim.Adam(list(self.policy.parameters()) + list(self.value.parameters()),
+                                    lr=cfg['value_lr'])
 
         try:
             self.load_optimizer_dicts(load_path)
@@ -127,8 +124,24 @@ class VTRACE(nn.Module, Policy):
 
         return action
 
-    def update(self, memory, supervised_trainer=None):
-        self.total_it += 1
+    def update(self, memory):
+        p_loss, v_loss = self.get_loss(memory)
+        loss = p_loss + v_loss
+
+        self.optimizer.zero_grad()
+        loss.backward()
+
+        #torch.nn.utils.clip_grad_norm_(self.value.parameters(), 40)
+        #torch.nn.utils.clip_grad_norm_(self.lifetime_value.parameters(), 40)
+        #for p in self.policy.parameters():
+        #    if p.grad is not None:
+        #        p.grad[p.grad != p.grad] = 0.0
+        #torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
+
+        self.optimizer.step()
+
+    def get_loss(self, memory):
+
         self.is_train = True
 
         if self.is_train:
@@ -138,63 +151,22 @@ class VTRACE(nn.Module, Policy):
             for param in self.value.parameters():
                 param.requires_grad = True
 
-            if self.use_regularization:
-                batch, num_online = memory.sample(self.online_offline_ratio)
-            else:
-                batch, num_online = memory.sample(0.0)
+            batch, num_online = self.get_batch(memory)
 
-            unflattened_states = batch['states']
-            states = [kg for kg_list in unflattened_states for kg in kg_list]
-
-            description_batch = batch['description_idx_list']
-            description_batch = [descr_ for descr_episode in description_batch for descr_ in descr_episode]
-
-            value_batch = batch['value_list']
-            value_batch = [value_ for value_episode in value_batch for value_ in value_episode]
-
-            current_domain_mask = batch['current_domain_mask']
-            current_domain_mask = torch.stack([curr_mask for curr_mask_episode in current_domain_mask
-                                              for curr_mask in curr_mask_episode]).to(DEVICE)
-
-            non_current_domain_mask = batch['non_current_domain_mask']
-            non_current_domain_mask = torch.stack([non_curr_mask for non_curr_mask_episode in non_current_domain_mask
-                                                   for non_curr_mask in non_curr_mask_episode]).to(DEVICE)
-
-            actions = batch['actions']
-            actions = torch.stack([act for act_list in actions for act in act_list], dim=0).to(DEVICE)
-
-            small_actions = batch['small_actions']
-            small_actions = [act for act_list in small_actions for act in act_list]
-
-            rewards = batch['rewards']
-            rewards = torch.stack([r for r_episode in rewards for r in r_episode]).to(DEVICE)
-            #rewards = torch.from_numpy(np.concatenate(np.array(rewards), axis=0)).to(DEVICE)
-
-            mu = batch['mu']
-            mu = torch.stack([mu_ for mu_list in mu for mu_ in mu_list], dim=0).to(DEVICE)
-
-            critic_v = batch['critic_value']
-            critic_v = torch.stack([v for v_list in critic_v for v in v_list]).to(DEVICE)
-
-            max_length = max(len(act) for act in small_actions)
-
-            action_masks = batch['action_masks']
-            action_mask_list = [mask for mask_list in action_masks for mask in mask_list]
-            action_masks = torch.stack([torch.cat([
-                action_mask.to(DEVICE),
-                torch.zeros(max_length - len(action_mask), len(self.policy.action_embedder.small_action_dict)).to(
-                    DEVICE)],
-                dim=0) for action_mask in action_mask_list]).to(DEVICE)
+            action_masks, actions, critic_v, current_domain_mask, description_batch, max_length, mu, \
+            non_current_domain_mask, rewards, small_actions, unflattened_states, value_batch \
+                = self.prepare_batch(batch)
 
             with torch.no_grad():
                 values = self.value(description_batch, value_batch).squeeze(-1)
+
                 pi_prob, _ = self.policy.get_prob(actions, action_masks, max_length, small_actions,
                                                   current_domain_mask, non_current_domain_mask,
                                                   description_batch, value_batch)
                 pi_prob = pi_prob.prod(dim=-1)
 
-                rho = torch.min(torch.Tensor([self.rho_bar]).to(DEVICE), pi_prob / mu).tolist()
-                cs = torch.min(torch.Tensor([self.c]).to(DEVICE), pi_prob / mu).tolist()
+                rho = torch.min(torch.Tensor([self.rho_bar]).to(DEVICE), pi_prob / mu)
+                cs = torch.min(torch.Tensor([self.c]).to(DEVICE), pi_prob / mu)
 
                 vtrace_target, advantages = self.compute_vtrace_advantage(unflattened_states, rewards, rho, cs, values)
 
@@ -202,20 +174,13 @@ class VTRACE(nn.Module, Policy):
             current_v = self.value(description_batch, value_batch).to(DEVICE)
             critic_loss = torch.square(vtrace_target.unsqueeze(-1).to(DEVICE) - current_v).mean()
 
-            # do behaviour cloning on the buffer data
-            num_online = sum([len(reward_list) for reward_list in batch['rewards'][:num_online]])
-
-            behaviour_loss_critic = torch.square(
-                critic_v[num_online:].unsqueeze(-1).to(DEVICE) - current_v[num_online:]).mean()
-
             if self.use_regularization:
-                critic_loss += self.behaviour_cloning_weight * behaviour_loss_critic
+                # do behaviour cloning on the buffer data
+                num_online = sum([len(reward_list) for reward_list in batch['rewards'][:num_online]])
 
-            # Optimize the critic
-            self.value_optim.zero_grad()
-            critic_loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.value.parameters(), 40)
-            self.value_optim.step()
+                behaviour_loss_critic = torch.square(
+                    critic_v[num_online:].unsqueeze(-1).to(DEVICE) - current_v[num_online:]).mean()
+                critic_loss += self.behaviour_cloning_weight * behaviour_loss_critic
 
             actor_loss = None
 
@@ -226,37 +191,67 @@ class VTRACE(nn.Module, Policy):
                                                                current_domain_mask, non_current_domain_mask,
                                                                description_batch, value_batch)
                 actor_loss = -1 * actor_loss
-                actor_loss = actor_loss * (advantages * torch.Tensor(rho)).to(DEVICE)
+                actor_loss = actor_loss * (advantages.to(DEVICE) * rho)
                 actor_loss = actor_loss.mean() - entropy * self.entropy_weight
 
-                log_prob, entropy = self.policy.get_log_prob(actions[num_online:], action_masks[num_online:],
-                                                             max_length, small_actions[num_online:],
-                                                             current_domain_mask[num_online:],
-                                                             non_current_domain_mask[num_online:],
-                                                             description_batch[num_online:],
-                                                             value_batch[num_online:])
-
                 if self.use_regularization:
+                    log_prob, entropy = self.policy.get_log_prob(actions[num_online:], action_masks[num_online:],
+                                                                 max_length, small_actions[num_online:],
+                                                                 current_domain_mask[num_online:],
+                                                                 non_current_domain_mask[num_online:],
+                                                                 description_batch[num_online:],
+                                                                 value_batch[num_online:])
                     actor_loss = actor_loss - log_prob.mean() * self.behaviour_cloning_weight
-
-                if supervised_trainer is not None:
-                    supervised_loss = supervised_trainer.supervised_loss(self.policy)
-                    actor_loss = actor_loss + self.supervised_weight * supervised_loss
-                # Optimize the actor
-                self.policy_optim.zero_grad()
-                actor_loss.backward()
-
-                for p in self.policy.parameters():
-                    if p.grad is not None:
-                        p.grad[p.grad != p.grad] = 0.0
-
-                torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
-                self.policy_optim.step()
 
             return actor_loss, critic_loss
 
         else:
             return np.nan
+
+    def get_batch(self, memory):
+
+        #if self.use_regularization or self.online_offline_ratio == 1.0:
+        if True:
+            batch, num_online = memory.sample(self.online_offline_ratio)
+        else:
+            batch, num_online = memory.sample(0.0)
+        return batch, num_online
+
+    def prepare_batch(self, batch):
+        unflattened_states = batch['states']
+        states = [kg for kg_list in unflattened_states for kg in kg_list]
+        description_batch = batch['description_idx_list']
+        description_batch = [descr_ for descr_episode in description_batch for descr_ in descr_episode]
+        value_batch = batch['value_list']
+        value_batch = [value_ for value_episode in value_batch for value_ in value_episode]
+
+        current_domain_mask = batch['current_domain_mask']
+        current_domain_mask = torch.stack([curr_mask for curr_mask_episode in current_domain_mask
+                                           for curr_mask in curr_mask_episode]).to(DEVICE)
+        non_current_domain_mask = batch['non_current_domain_mask']
+        non_current_domain_mask = torch.stack([non_curr_mask for non_curr_mask_episode in non_current_domain_mask
+                                               for non_curr_mask in non_curr_mask_episode]).to(DEVICE)
+        actions = batch['actions']
+        actions = torch.stack([act for act_list in actions for act in act_list], dim=0).to(DEVICE)
+        small_actions = batch['small_actions']
+        small_actions = [act for act_list in small_actions for act in act_list]
+        rewards = batch['rewards']
+        rewards = torch.stack([r for r_episode in rewards for r in r_episode]).to(DEVICE)
+        # rewards = torch.from_numpy(np.concatenate(np.array(rewards), axis=0)).to(DEVICE)
+        mu = batch['mu']
+        mu = torch.stack([mu_ for mu_list in mu for mu_ in mu_list], dim=0).to(DEVICE)
+        critic_v = batch['critic_value']
+        critic_v = torch.stack([v for v_list in critic_v for v in v_list]).to(DEVICE)
+        max_length = max(len(act) for act in small_actions)
+        action_masks = batch['action_masks']
+        action_mask_list = [mask for mask_list in action_masks for mask in mask_list]
+        action_masks = torch.stack([torch.cat([
+            action_mask.to(DEVICE),
+            torch.zeros(max_length - len(action_mask), len(self.policy.action_embedder.small_action_dict)).to(
+                DEVICE)],
+            dim=0) for action_mask in action_mask_list]).to(DEVICE)
+        return action_masks, actions, critic_v, current_domain_mask, description_batch, max_length, mu, \
+               non_current_domain_mask, rewards, small_actions, unflattened_states, value_batch
 
     def compute_vtrace_advantage(self, states, rewards, rho, cs, values):
 
@@ -289,10 +284,9 @@ class VTRACE(nn.Module, Policy):
 
         torch.save(self.value.state_dict(), directory + f'/{addition}_vtrace.val.mdl')
         torch.save(self.policy.state_dict(), directory + f'/{addition}_vtrace.pol.mdl')
-        torch.save(self.policy_optim.state_dict(), directory + f'/{addition}_vtrace.policy_optim')
-        torch.save(self.value_optim.state_dict(), directory + f'/{addition}_vtrace.value_optim')
+        torch.save(self.optimizer.state_dict(), directory + f'/{addition}_vtrace.optimizer')
 
-        logging.info(f"Saved policy, critic and memory.")
+        logging.info(f"Saved policy, critic and optimizer.")
 
     def load(self, filename):
 
@@ -361,8 +355,7 @@ class VTRACE(nn.Module, Policy):
                 break
 
     def load_optimizer_dicts(self, filename):
-        self.policy_optim.load_state_dict(torch.load(filename + f".policy_optim"))
-        self.value_optim.load_state_dict(torch.load(filename + f".value_optim"))
+        self.optimizer.load_state_dict(torch.load(filename + f".optimizer", map_location=DEVICE))
         logging.info('<<dialog policy>> loaded optimisers from file: {}'.format(filename))
 
     def from_pretrained(self):

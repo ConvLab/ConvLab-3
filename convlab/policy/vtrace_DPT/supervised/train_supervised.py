@@ -24,6 +24,7 @@ class MLE_Trainer:
     def __init__(self, manager, cfg, policy):
         self.policy = policy
         self.policy_optim = optim.Adam(list(self.policy.parameters()), lr=cfg['supervised_lr'])
+        self.entropy_weight = cfg['entropy_weight']
         self._init_data(manager, cfg)
 
     def _init_data(self, manager, cfg):
@@ -48,7 +49,7 @@ class MLE_Trainer:
                                  description_batch, value_batch)
         loss_a = -1 * log_prob.mean()
 
-        return loss_a
+        return loss_a, -entropy
 
     def imitating(self):
         """
@@ -58,8 +59,9 @@ class MLE_Trainer:
         a_loss = 0.
         for i, data in enumerate(self.data_train):
             self.policy_optim.zero_grad()
-            loss_a = self.policy_loop(data)
+            loss_a, entropy_loss = self.policy_loop(data)
             a_loss += loss_a.item()
+            loss_a += self.entropy_weight * entropy_loss
             if i % 20 == 0 and i != 0:
                 print("LOSS:", a_loss / 20.0)
                 a_loss = 0
