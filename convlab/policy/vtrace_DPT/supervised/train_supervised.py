@@ -157,6 +157,7 @@ def arg_parser():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--eval_freq", type=int, default=1)
     parser.add_argument("--dataset_name", type=str, default="multiwoz21")
+    parser.add_argument("--model_path", type=str, default="")
 
     args = parser.parse_args()
     return args
@@ -185,6 +186,10 @@ if __name__ == '__main__':
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
     manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector)
     policy = EncoderDecoder(**cfg, action_dict=vector.act2vec).to(device=DEVICE)
+    try:
+        policy.load_state_dict(torch.load(args.model_path, map_location=DEVICE))
+    except:
+        pass
     agent = MLE_Trainer(manager, cfg, policy)
 
     logging.info('Start training')
