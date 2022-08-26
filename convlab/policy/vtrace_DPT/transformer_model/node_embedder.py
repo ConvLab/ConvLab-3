@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 
 from transformers import RobertaTokenizer, RobertaModel
-
+from convlab.policy.vtrace_DPT.transformer_model.noisy_linear import NoisyLinear
 from convlab.policy.vtrace_DPT.create_descriptions import create_description_dicts
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -24,6 +24,7 @@ class NodeEmbedderRoberta(nn.Module):
         self.description_size = 768
         self.projection_dim = projection_dim
         self.feature_projection = torch.nn.Linear(2 * self.description_size, projection_dim).to(DEVICE)
+        #self.feature_projection = NoisyLinear(2 * self.description_size, projection_dim).to(DEVICE)
         self.value_embedding = torch.nn.Linear(1, self.description_size).to(DEVICE)
 
         self.semantic_descriptions = semantic_descriptions

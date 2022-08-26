@@ -248,7 +248,7 @@ class EncoderDecoder(nn.Module):
         return self.action_embedder.small_action_list_to_real_actions(action_list)
 
     def get_log_prob(self, actions, action_mask_list, max_length, action_targets,
-                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list):
+                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list, no_slots=False):
 
         action_probs, entropy_probs = self.get_prob(actions, action_mask_list, max_length, action_targets,
                  current_domain_mask, non_current_domain_mask, descriptions_list, value_list)
@@ -260,6 +260,12 @@ class EncoderDecoder(nn.Module):
 
         # sometimes a domain will be masked because it is inactive due to labelling error. Will ignore these cases.
         log_probs[log_probs == -float("Inf")] = 0
+
+        if no_slots:
+            time_steps = torch.arange(0, max_length)
+            slot_steps = torch.where(time_steps % 3 == 2, torch.zeros(max_length), torch.ones(max_length))\
+                .view(1, -1, 1).to(DEVICE)
+            log_probs *= slot_steps
 
         return log_probs.sum(-1), entropy
 

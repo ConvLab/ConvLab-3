@@ -188,8 +188,9 @@ if __name__ == '__main__':
     policy = EncoderDecoder(**cfg, action_dict=vector.act2vec).to(device=DEVICE)
     try:
         policy.load_state_dict(torch.load(args.model_path, map_location=DEVICE))
+        logging.info(f"Loaded model from {args.model_path}")
     except:
-        pass
+        logging.info("Didnt load a model")
     agent = MLE_Trainer(manager, cfg, policy)
 
     logging.info('Start training')

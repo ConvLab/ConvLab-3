@@ -5,6 +5,8 @@ import logging
 import json
 
 from copy import deepcopy
+from convlab.policy.vtrace_DPT.transformer_model.noisy_linear import NoisyLinear
+
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -50,6 +52,7 @@ class ActionEmbedder(nn.Module):
         self.small_action_dict_reversed = dict((value, key) for key, value in self.small_action_dict.items())
 
         self.linear = torch.nn.Linear(embedding_dim, action_embedding_dim).to(DEVICE)
+        #self.linear = NoisyLinear(embedding_dim, action_embedding_dim).to(DEVICE)
         self.random_matrix = torch.randn(embedding_dim, action_embedding_dim).to(DEVICE) / \
                              torch.sqrt(torch.Tensor([768])).to(DEVICE)
 
