@@ -23,40 +23,11 @@ import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 from tqdm import tqdm
 
-from convlab.dst.setsumbt.dataset.unified_format import UnifiedFormatDataset
+from convlab.dst.setsumbt.dataset.unified_format import UnifiedFormatDataset, change_batch_size
 from convlab.dst.setsumbt.modeling import EnsembleSetSUMBT
 from convlab.dst.setsumbt.modeling import training
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-
-def main():
-    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--model_path', type=str)
-    parser.add_argument('--model_type', type=str)
-    parser.add_argument('--set_type', type=str)
-    parser.add_argument('--batch_size', type=int)
-    parser.add_argument('--reduction', type=str, default='mean')
-    parser.add_argument('--get_ensemble_distributions', action='store_true')
-    parser.add_argument('--build_dataloaders', action='store_true')
-    args = parser.parse_args()
-
-    if args.get_ensemble_distributions:
-        get_ensemble_distributions(args)
-    elif args.build_dataloaders:
-        path = os.path.join(args.model_path, 'dataloaders', f'{args.set_type}.data')
-        data = torch.load(path)
-
-        reader = open(os.path.join(args.model_path, 'database', f'{args.set_type}.json'), 'r')
-        ontology = json.load(reader)
-        reader.close()
-
-        loader = get_loader(data, ontology, args.set_type, args.batch_size)
-
-        path = os.path.join(args.model_path, 'dataloaders', f'{args.set_type}.dataloader')
-        torch.save(loader, path)
-    else:
-        raise NameError("NotImplemented")
 
 
 def get_loader(data: dict, ontology: dict, set_type: str = 'train', batch_size: int = 3) -> DataLoader:
@@ -145,6 +116,9 @@ def get_ensemble_distributions(args):
     dataloader = torch.load(dataloader)
     database = torch.load(database)
 
+    if dataloader.batch_size != args.batch_size:
+        dataloader = change_batch_size(dataloader, args.batch_size)
+
     training.set_ontology_embeddings(model, database)
 
     print('Environment set up.')
@@ -185,9 +159,9 @@ def get_ensemble_distributions(args):
         if model.config.predict_actions:
             for slot in request_labels:
                 request_labels[slot].append(batch['request_labels-' + slot])
-            for domain in domain_labels:
-                domain_labels[domain].append(batch['active_domain_labels-' + domain])
-            greeting_labels.append(batch['general_act_labels'])
+            for domain in active_domain_labels:
+                active_domain_labels[domain].append(batch['active_domain_labels-' + domain])
+            general_act_labels.append(batch['general_act_labels'])
 
         with torch.no_grad():
             p, p_req, p_dom, p_gen, _ = model(ids, mask, tt_ids, reduction=args.reduction)
@@ -239,5 +213,65 @@ def get_ensemble_distributions(args):
     torch.save(data, file)
 
 
+def ensemble_distribution_data_to_predictions_format(model_path: str, set_type: str):
+    """
+    Convert ensemble predictions to predictions file format.
+
+    Args:
+        model_path: Path to ensemble location.
+        set_type: Evaluation dataset (train/dev/test).
+    """
+    data = torch.load(os.path.join(model_path, 'dataloaders', f"{set_type}.data"))
+
+    # Get oracle labels
+    if 'request_probs' in data:
+        data_new = {'state_labels': data['state_labels'],
+                    'request_labels': data['request_labels'],
+                    'active_domain_labels': data['active_domain_labels'],
+                    'general_act_labels': data['general_act_labels']}
+    else:
+        data_new = {'state_labels': data['state_labels']}
+
+    # Marginalising across ensemble distributions
+    data_new['belief_states'] = {slot: distribution.mean(-2) for slot, distribution in data['belief_state'].items()}
+    if 'request_probs' in data:
+        data_new['request_probs'] = {slot: distribution.mean(-1)
+                                     for slot, distribution in data['request_probs'].items()}
+        data_new['active_domain_probs'] = {domain: distribution.mean(-1)
+                                           for domain, distribution in data['active_domain_probs'].items()}
+        data_new['general_act_probs'] = data['general_act_probs'].mean(-2)
+
+    # Save predictions file
+    predictions_dir = os.path.join(model_path, 'predictions')
+    if not os.path.exists(predictions_dir):
+        os.mkdir(predictions_dir)
+    torch.save(data_new, os.path.join(predictions_dir, f"{set_type}.predictions"))
+
+
 if __name__ == "__main__":
-    main()
+    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--model_path', type=str)
+    parser.add_argument('--set_type', type=str)
+    parser.add_argument('--batch_size', type=int, default=3)
+    parser.add_argument('--reduction', type=str, default='none')
+    parser.add_argument('--get_ensemble_distributions', action='store_true')
+    parser.add_argument('--convert_distributions_to_predictions', action='store_true')
+    parser.add_argument('--build_dataloaders', action='store_true')
+    args = parser.parse_args()
+
+    if args.get_ensemble_distributions:
+        get_ensemble_distributions(args)
+    if args.convert_distributions_to_predictions:
+        ensemble_distribution_data_to_predictions_format(args.model_path, args.set_type)
+    if args.build_dataloaders:
+        path = os.path.join(args.model_path, 'dataloaders', f'{args.set_type}.data')
+        data = torch.load(path)
+
+        reader = open(os.path.join(args.model_path, 'database', f'{args.set_type}.json'), 'r')
+        ontology = json.load(reader)
+        reader.close()
+
+        loader = get_loader(data, ontology, args.set_type, args.batch_size)
+
+        path = os.path.join(args.model_path, 'dataloaders', f'{args.set_type}.dataloader')
+        torch.save(loader, path)

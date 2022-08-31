@@ -19,8 +19,10 @@ import logging
 import os
 from shutil import copy2 as copy
 import json
+from copy import deepcopy
 
 import torch
+import transformers
 from transformers import (BertModel, BertConfig, BertTokenizer,
                           RobertaModel, RobertaConfig, RobertaTokenizer)
 from tensorboardX import SummaryWriter
@@ -30,6 +32,7 @@ from convlab.dst.setsumbt.dataset import unified_format
 from convlab.dst.setsumbt.modeling import training
 from convlab.dst.setsumbt.dataset import ontology as embeddings
 from convlab.dst.setsumbt.utils import get_args, update_args
+from convlab.dst.setsumbt.modeling.ensemble_nbt import setup_ensemble
 
 
 # Available model
@@ -97,6 +100,7 @@ def main(args=None, config=None):
         args.fp16 = False
 
     # Initialise Model
+    transformers.utils.logging.set_verbosity_info()
     model = SetSumbtModel.from_pretrained(args.model_name_or_path, config=config)
     model = model.to(device)
 
@@ -109,29 +113,9 @@ def main(args=None, config=None):
     training.set_seed(args)
     embeddings.set_seed(args)
 
+    transformers.utils.logging.set_verbosity_error()
     if args.ensemble_size > 1:
-        logger.info('Building %i resampled dataloaders each of size %i' % (args.ensemble_size,
-                                                                           args.data_sampling_size))
-        dataloaders = [unified_format.get_dataloader(args.dataset,
-                                                     'train',
-                                                     args.train_batch_size,
-                                                     tokenizer,
-                                                     args.max_dialogue_len,
-                                                     args.max_turn_len,
-                                                     resampled_size=args.data_sampling_size,
-                                                     train_ratio=args.dataset_train_ratio,
-                                                     seed=args.seed)
-                       for _ in range(args.ensemble_size)]
-        logger.info('Dataloaders built.')
-
-        for i, loader in enumerate(dataloaders):
-            path = os.path.join(OUTPUT_DIR, 'ens-%i' % i)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            path = os.path.join(path, 'train.dataloader')
-            torch.save(loader, path)
-        logger.info('Dataloaders saved.')
-
+        # Build all dataloaders
         train_dataloader = unified_format.get_dataloader(args.dataset,
                                                          'train',
                                                          args.train_batch_size,
@@ -144,7 +128,7 @@ def main(args=None, config=None):
         torch.save(train_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'train.dataloader'))
         dev_dataloader = unified_format.get_dataloader(args.dataset,
                                                        'validation',
-                                                       args.train_batch_size,
+                                                       args.dev_batch_size,
                                                        tokenizer,
                                                        args.max_dialogue_len,
                                                        args.max_turn_len,
@@ -154,7 +138,7 @@ def main(args=None, config=None):
         torch.save(dev_dataloader, os.path.join(OUTPUT_DIR, 'dataloaders', 'dev.dataloader'))
         test_dataloader = unified_format.get_dataloader(args.dataset,
                                                         'test',
-                                                        args.train_batch_size,
+                                                        args.test_batch_size,
                                                         tokenizer,
                                                         args.max_dialogue_len,
                                                         args.max_turn_len,
@@ -166,6 +150,21 @@ def main(args=None, config=None):
         embeddings.get_slot_candidate_embeddings(train_dataloader.dataset.ontology, 'train', args, tokenizer, encoder)
         embeddings.get_slot_candidate_embeddings(dev_dataloader.dataset.ontology, 'dev', args, tokenizer, encoder)
         embeddings.get_slot_candidate_embeddings(test_dataloader.dataset.ontology, 'test', args, tokenizer, encoder)
+
+        setup_ensemble(OUTPUT_DIR, args.ensemble_size)
+
+        logger.info(f'Building {args.ensemble_size} resampled dataloaders each of size {args.data_sampling_size}.')
+        dataloaders = [unified_format.dataloader_sample_dialogues(deepcopy(train_dataloader), args.data_sampling_size)
+                       for _ in range(args.ensemble_size)]
+        logger.info('Dataloaders built.')
+
+        for i, loader in enumerate(dataloaders):
+            path = os.path.join(OUTPUT_DIR, 'ens-%i' % i)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            path = os.path.join(path, 'dataloaders', 'train.dataloader')
+            torch.save(loader, path)
+        logger.info('Dataloaders saved.')
 
         # Do not perform standard training after ensemble setup is created
         return 0

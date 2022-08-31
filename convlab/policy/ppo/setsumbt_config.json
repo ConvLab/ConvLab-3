@@ -1,35 +1,36 @@
 {
 	"model": {
-		"load_path": "supervised",
+		"load_path": "/gpfs/project/niekerk/src/ConvLab3/convlab/policy/mle/experiments/experiment_2022-08-11-23-55-55/save/supervised",
 		"pretrained_load_path": "",
 		"use_pretrained_initialisation": false,
 		"batchsz": 1000,
 		"seed": 0,
 		"epoch": 50,
 		"eval_frequency": 5,
-		"process_num": 4,
+		"process_num": 2,
 		"num_eval_dialogues": 500,
-		"sys_semantic_to_usr": false
+		"sys_semantic_to_usr": true
 	},
 	"vectorizer_sys": {
 		"uncertainty_vector_mul": {
-			"class_path": "convlab.policy.vector.vector_multiwoz_uncertainty.MultiWozVector",
+			"class_path": "convlab.policy.vector.vector_uncertainty.VectorUncertainty",
 			"ini_params": {
 				"use_masking": false,
-				"manually_add_entity_names": false,
-				"seed": 0
+				"manually_add_entity_names": true,
+				"seed": 0,
+				"use_confidence_scores": true,
+				"use_state_total_uncertainty": true
 			}
 		}
 	},
 	"nlu_sys": {},
 	"dst_sys": {
 		"setsumbt-mul": {
-			"class_path": "convlab.dst.setsumbt.multiwoz.Tracker.SetSUMBTTracker",
+			"class_path": "convlab.dst.setsumbt.SetSUMBTTracker",
 			"ini_params": {
-				"model_path": "https://zenodo.org/record/5497808/files/setsumbt_end.zip",
-				"get_confidence_scores": true,
-				"return_mutual_info": false,
-				"return_entropy": true
+				"model_path": "/gpfs/project/niekerk/src/SetSUMBT/models/SetSUMBT+ActPrediction-multiwoz21-roberta-gru-cosine-labelsmoothing-Seed0-10-08-22-12-42",
+				"return_confidence_scores": true,
+				"return_belief_state_entropy": true
 			}
 		}
 	},
@@ -41,16 +42,7 @@
 			}
 		}
 	},
-	"nlu_usr": {
-		"BERTNLU": {
-			"class_path": "convlab.nlu.jointBERT.multiwoz.BERTNLU",
-			"ini_params": {
-				"mode": "sys",
-				"config_file": "multiwoz_sys_context.json",
-				"model_file": "https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip"
-			}
-		}
-	},
+	"nlu_usr": {},
 	"dst_usr": {},
 	"policy_usr": {
 		"RulePolicy": {

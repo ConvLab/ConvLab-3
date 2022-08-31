@@ -16,6 +16,7 @@
 """Ensemble SetSUMBT"""
 
 import os
+from shutil import copy2 as copy
 
 import torch
 from torch.nn import Module
@@ -51,7 +52,7 @@ class EnsembleSetSUMBT(Module):
         """
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             idx = attr.split('_', 1)[-1]
-            state_dict = torch.load(os.path.join(path, f'pytorch_model_{idx}.bin'))
+            state_dict = torch.load(os.path.join(path, f'ens-{idx}/pytorch_model.bin'))
             getattr(self, attr).load_state_dict(state_dict)
 
     def add_slot_candidates(self, slot_candidates: tuple):
@@ -67,7 +68,7 @@ class EnsembleSetSUMBT(Module):
             getattr(self, attr).add_slot_candidates(slot_candidates)
         self.requestable_slot_ids = self.model_0.setsumbt.requestable_slot_ids
         self.informable_slot_ids = self.model_0.setsumbt.informable_slot_ids
-        self.domain_ids = self.setsumbt.model_0.domain_ids
+        self.domain_ids = self.model_0.setsumbt.domain_ids
 
     def add_value_candidates(self, slot: str, value_candidates: torch.Tensor, replace: bool = False):
         """
@@ -96,9 +97,9 @@ class EnsembleSetSUMBT(Module):
         Returns:
 
         """
-        belief_state_probs = {slot: [] for slot in self.model_0.informable_slot_ids}
-        request_probs = {slot: [] for slot in self.model_0.requestable_slot_ids}
-        active_domain_probs = {dom: [] for dom in self.model_0.domain_ids}
+        belief_state_probs = {slot: [] for slot in self.informable_slot_ids}
+        request_probs = {slot: [] for slot in self.requestable_slot_ids}
+        active_domain_probs = {dom: [] for dom in self.domain_ids}
         general_act_probs = []
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             # Prediction from each ensemble member
@@ -107,7 +108,7 @@ class EnsembleSetSUMBT(Module):
                                                 attention_mask=attention_mask)
             for slot in belief_state_probs:
                 belief_state_probs[slot].append(b[slot].unsqueeze(-2))
-            if self.config.predict_intents:
+            if self.config.predict_actions:
                 for slot in request_probs:
                     request_probs[slot].append(r[slot].unsqueeze(-1))
                 for dom in active_domain_probs:
@@ -115,7 +116,7 @@ class EnsembleSetSUMBT(Module):
                 general_act_probs.append(g.unsqueeze(-2))
         
         belief_state_probs = {slot: torch.cat(l, -2) for slot, l in belief_state_probs.items()}
-        if self.config.predict_intents:
+        if self.config.predict_actions:
             request_probs = {slot: torch.cat(l, -1) for slot, l in request_probs.items()}
             active_domain_probs = {dom: torch.cat(l, -1) for dom, l in active_domain_probs.items()}
             general_act_probs = torch.cat(general_act_probs, -2)
@@ -138,17 +139,42 @@ class EnsembleSetSUMBT(Module):
 
     @classmethod
     def from_pretrained(cls, path):
-        if not os.path.exists(os.path.join(path, 'config.json')):
+        config_path = os.path.join(path, 'ens-0', 'config.json')
+        if not os.path.exists(config_path):
             raise(NameError('Could not find config.json in model path.'))
-        if not os.path.exists(os.path.join(path, 'pytorch_model_0.bin')):
-            raise(NameError('Could not find a model binary in the model path.'))
         
         try:
-            config = RobertaConfig.from_pretrained(path)
+            config = RobertaConfig.from_pretrained(config_path)
         except:
-            config = BertConfig.from_pretrained(path)
+            config = BertConfig.from_pretrained(config_path)
+
+        config.ensemble_size = len([dir for dir in os.listdir(path) if 'ens-' in dir])
         
         model = cls(config)
-        model.load(path)
+        model._load(path)
 
         return model
+
+
+def setup_ensemble(model_path: str, ensemble_size: int):
+    """
+    Setup ensemble model directory structure.
+
+    Args:
+        model_path: Path to ensemble model directory
+        ensemble_size: Number of ensemble members
+    """
+    for i in range(ensemble_size):
+        path = os.path.join(model_path, f'ens-{i}')
+        if not os.path.exists(path):
+            os.mkdir(path)
+            os.mkdir(os.path.join(path, 'dataloaders'))
+            os.mkdir(os.path.join(path, 'database'))
+            # Add development set dataloader to each ensemble member directory
+            for set_type in ['dev']:
+                copy(os.path.join(model_path, 'dataloaders', f'{set_type}.dataloader'),
+                     os.path.join(path, 'dataloaders', f'{set_type}.dataloader'))
+            # Add training and development set ontologies to each ensemble member directory
+            for set_type in ['train', 'dev']:
+                copy(os.path.join(model_path, 'database', f'{set_type}.db'),
+                     os.path.join(path, 'database', f'{set_type}.db'))

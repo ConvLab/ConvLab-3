@@ -61,7 +61,11 @@ def set_ontology_embeddings(model, slots, load_slots=True):
     if load_slots:
         slots = {slot: embs for slot, embs in slots.items()}
         model.add_slot_candidates(slots)
-    for slot in model.setsumbt.informable_slot_ids:
+    try:
+        informable_slot_ids = model.setsumbt.informable_slot_ids
+    except:
+        informable_slot_ids = model.informable_slot_ids
+    for slot in informable_slot_ids:
         model.add_value_candidates(slot, values[slot], replace=True)
 
 
@@ -79,14 +83,16 @@ def log_info(global_step, loss, jg_acc=None, sl_acc=None, req_f1=None, dom_f1=No
         gen_f1: General action prediction F1 score
         stats: Uncertainty measure statistics of model
     """
-    info = f"{global_step} steps complete, " if type(global_step) == int else ""
-    if global_step == 'training_complete':
-        info += f"Training Complete"
+    if type(global_step) == int:
+        info = f"{global_step} steps complete, "
         info += f"Loss since last update: {loss}. Validation set stats: "
-    if global_step == 'dev':
-        info += f"Validation set stats: Loss: {loss}, "
-    if global_step == 'test':
-        info += f"Test set stats: Loss: {loss}, "
+    elif global_step == 'training_complete':
+        info = f"Training Complete"
+        info += f"Validation set stats: "
+    elif global_step == 'dev':
+        info = f"Validation set stats: Loss: {loss}, "
+    elif global_step == 'test':
+        info = f"Test set stats: Loss: {loss}, "
     info += f"Joint Goal Acc: {jg_acc}, Slot Acc: {sl_acc}, "
     if req_f1 is not None:
         info += f"Request F1 Score: {req_f1}, Active Domain F1 Score: {dom_f1}, "
@@ -134,8 +140,9 @@ def get_input_dict(batch: dict,
     input_dict['token_type_ids'] = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
     input_dict['attention_mask'] = batch['attention_mask'].to(device) if 'attention_mask' in batch else None
 
-    if 'belief_state' in batch:
-        input_dict['state_labels'] = {slot: batch['belief_state-' + slot].to(device) for slot in model_informable_slot_ids
+    if any('belief_state' in key for key in batch):
+        input_dict['state_labels'] = {slot: batch['belief_state-' + slot].to(device)
+                                      for slot in model_informable_slot_ids
                                       if ('belief_state-' + slot) in batch}
         if predict_actions:
             input_dict['request_labels'] = {slot: batch['request_probs-' + slot].to(device)
@@ -644,9 +651,12 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
 
         sl_acc = sum(jg_acc / len(model.setsumbt.informable_slot_ids)).float()
         jg_acc = sum((jg_acc == len(model.setsumbt.informable_slot_ids)).int()).float()
-        req_tp = sum(req_tp / len(model.setsumbt.requestable_slot_ids)).float() if req_tp is not None else torch.tensor(0.0)
-        req_fp = sum(req_fp / len(model.setsumbt.requestable_slot_ids)).float() if req_fp is not None else torch.tensor(0.0)
-        req_fn = sum(req_fn / len(model.setsumbt.requestable_slot_ids)).float() if req_fn is not None else torch.tensor(0.0)
+        if req_tp is not None and model.setsumbt.requestable_slot_ids:
+            req_tp = sum(req_tp / len(model.setsumbt.requestable_slot_ids)).float()
+            req_fp = sum(req_fp / len(model.setsumbt.requestable_slot_ids)).float()
+            req_fn = sum(req_fn / len(model.setsumbt.requestable_slot_ids)).float()
+        else:
+            req_tp, req_fp, req_fn = torch.tensor(0.0), torch.tensor(0.0), torch.tensor(0.0)
         dom_tp = sum(dom_tp / len(model.setsumbt.domain_ids)).float() if dom_tp is not None else torch.tensor(0.0)
         dom_fp = sum(dom_fp / len(model.setsumbt.domain_ids)).float() if dom_fp is not None else torch.tensor(0.0)
         dom_fn = sum(dom_fn / len(model.setsumbt.domain_ids)).float() if dom_fn is not None else torch.tensor(0.0)
