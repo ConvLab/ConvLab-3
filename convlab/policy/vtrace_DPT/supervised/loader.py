@@ -11,6 +11,8 @@ from convlab.util.multiwoz.state import default_state
 from convlab.policy.vector.dataset import ActDatasetKG
 from tqdm import tqdm
 
+mwoz_domains = ['restaurant', 'hotel', 'train', 'taxi', 'attraction']
+
 
 class PolicyDataVectorizer:
 
@@ -73,7 +75,22 @@ class PolicyDataVectorizer:
             with open(os.path.join(processed_dir, '{}.pkl'.format(part)), 'rb') as f:
                 self.data[part] = pickle.load(f)
 
-    def create_dataset(self, part, batchsz, policy):
+    def is_multiwoz_like(self, item):
+
+        state = item['state']
+        is_like = False
+        for node in state:
+            domain = node['domain'].lower()
+            for mw_domain in mwoz_domains:
+                # we check if the mw_domain as a string is contained in the domain of the node
+                if mw_domain in domain:
+                    is_like = True
+                    break
+            if is_like:
+                break
+        return is_like
+
+    def create_dataset(self, part, batchsz, policy, multiwoz_like=False):
         print('Start creating {} dataset'.format(part))
         time_now = time.time()
 
@@ -81,6 +98,8 @@ class PolicyDataVectorizer:
         data_dir = os.path.join(root_dir, "data", self.dataset_name)
         os.makedirs(data_dir, exist_ok=True)
         file_path = os.path.join(data_dir, part)
+        if multiwoz_like:
+            file_path += "mw"
 
         if os.path.exists(file_path):
             action_batch, a_masks, max_length, small_act_batch, \
@@ -99,6 +118,9 @@ class PolicyDataVectorizer:
 
                 if item['action'].sum() == 0 or len(item['state']) == 0:
                     continue
+                if multiwoz_like:
+                    if not self.is_multiwoz_like(item):
+                        continue
                 action_batch.append(torch.Tensor(item['action']))
 
                 kg = [item['state']]

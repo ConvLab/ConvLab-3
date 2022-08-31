@@ -29,6 +29,7 @@
 	"max_length": 20,
 	"noisy_linear": false,
 	"dataset_name": "multiwoz21",
+	"multiwoz_like": true,
 
 	"enc_input_dim": 128,
 	"enc_nhead": 2,

@@ -28,12 +28,13 @@ class MLE_Trainer:
         self._init_data(manager, cfg)
 
     def _init_data(self, manager, cfg):
+        multiwoz_like = cfg['multiwoz_like']
         self.data_train, self.max_length_train, self.small_act_train, self.descriptions_train, self.values_train, \
-            self.kg_train = manager.create_dataset('train', cfg['batchsz'], self.policy)
+            self.kg_train = manager.create_dataset('train', cfg['batchsz'], self.policy, multiwoz_like)
         self.data_valid, self.max_length_valid, self.small_act_valid, self.descriptions_valid, self.values_valid, \
-            self.kg_valid = manager.create_dataset('validation', cfg['batchsz'], self.policy)
+            self.kg_valid = manager.create_dataset('validation', cfg['batchsz'], self.policy, multiwoz_like)
         self.data_test, self.max_length_test, self.small_act_test, self.descriptions_test, self.values_test, \
-            self.kg_test = manager.create_dataset('test', cfg['batchsz'], self.policy)
+            self.kg_test = manager.create_dataset('test', cfg['batchsz'], self.policy, multiwoz_like)
         self.save_dir = cfg['save_dir']
 
     def policy_loop(self, data):
@@ -182,6 +183,8 @@ if __name__ == '__main__':
     logging.info(f"Batch size: {cfg['batchsz']}")
     logging.info(f"Epochs: {cfg['epoch']}")
     logging.info(f"Learning rate: {cfg['supervised_lr']}")
+    logging.info(f"Entropy weight: {cfg['entropy_weight']}")
+    logging.info(f"Only use multiwoz like domains: {cfg['multiwoz_like']}")
 
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
     manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector)

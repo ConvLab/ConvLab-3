@@ -264,7 +264,7 @@ class EncoderDecoder(nn.Module):
         if no_slots:
             time_steps = torch.arange(0, max_length)
             slot_steps = torch.where(time_steps % 3 == 2, torch.zeros(max_length), torch.ones(max_length))\
-                .view(1, -1, 1).to(DEVICE)
+                .view(1, -1).to(DEVICE)
             log_probs *= slot_steps
 
         return log_probs.sum(-1), entropy
