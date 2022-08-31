@@ -228,14 +228,6 @@ if __name__ == '__main__':
 
     env, sess = env_config(conf, policy_sys)
 
-    # Setup uncertainty thresholding
-    if env.sys_dst:
-        try:
-            if env.sys_dst.use_confidence_scores:
-                policy_sys.vector.setup_uncertain_query(env.sys_dst.thresholds)
-        except:
-            logging.info('Uncertainty threshold not set.')
-
     policy_sys.current_time = current_time
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
     policy_sys.save_dir = save_path

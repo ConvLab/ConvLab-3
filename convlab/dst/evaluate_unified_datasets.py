@@ -1,11 +1,25 @@
 import json
+import os
 from pprint import pprint
 
 import numpy as np
 
 
+def load_results(predict_results):
+    files = [file.strip() for file in predict_results.split(',')]
+    files = [file for file in files if os.path.isfile(file)]
+
+    predictions = []
+    for file in files:
+        reader = open(file, 'r')
+        predictions += json.load(reader)
+        reader.close()
+
+    return predictions
+
+
 def evaluate(predict_result):
-    predict_result = json.load(open(predict_result))
+    predict_result = load_results(predict_result)
 
     metrics = {'TP': 0, 'FP': 0, 'FN': 0}
     jga = []

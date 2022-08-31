@@ -13,6 +13,7 @@ from convlab.dst.dst import DST
 from convlab.util.custom_util import model_downloader
 
 USE_CUDA = torch.cuda.is_available()
+transformers.logging.set_verbosity_error()
 
 
 class SetSUMBTTracker(DST):
@@ -139,14 +140,17 @@ class SetSUMBTTracker(DST):
     def init_session(self):
         self.state = dict()
         self.state['belief_state'] = dict()
+        self.state['booked'] = dict()
         for domain, substate in self.ontology.items():
             self.state['belief_state'][domain] = dict()
             for slot, slot_info in substate.items():
                 if slot_info['possible_values'] and slot_info['possible_values'] != ['?']:
                     self.state['belief_state'][domain][slot] = ''
+            self.state['booked'][domain] = list()
         self.state['history'] = []
         self.state['system_action'] = []
         self.state['user_action'] = []
+        self.state['terminated'] = False
         self.active_domains = {}
         self.hidden_states = None
         self.info_dict = {}

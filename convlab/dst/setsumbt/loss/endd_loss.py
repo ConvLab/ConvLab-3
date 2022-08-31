@@ -201,7 +201,7 @@ class RKLDirichletMediatorLoss(Module):
 
         ensemble_stats = compute_ensemble_stats(targets)
 
-        alphas, precision = get_dirichlet_parameters(logits, self.parametrization, self.model_offset)
+        alphas, precision = get_dirichlet_parameters(logits, self.parameterization, self.model_offset)
 
         normalized_probs = alphas / precision.unsqueeze(1)
 
@@ -270,7 +270,7 @@ class BinaryRKLDirichletMediatorLoss(RKLDirichletMediatorLoss):
         # Convert single target probability p to distribution [1-p, p]
         targets = targets.reshape(-1, targets.size(-1), 1)
         targets = torch.cat([1 - targets, targets], -1)
-        targets[targets[:, 1] == self.ignore_index] = self.ignore_index
+        targets[targets[:, 0, 1] == self.ignore_index] = self.ignore_index
 
         # Convert input logits into predictive distribution [1-z, z]
         logits = torch.sigmoid(logits).unsqueeze(1)

@@ -383,3 +383,25 @@ def change_batch_size(loader: DataLoader, batch_size: int) -> DataLoader:
     loader = DataLoader(loader.dataset, sampler=sampler, batch_size=batch_size)
 
     return loader
+
+def dataloader_sample_dialogues(loader: DataLoader, sample_size: int) -> DataLoader:
+    """
+    Sample a subset of the dialogues in a dataloader
+
+    Args:
+        loader (DataLoader): Dataloader to train and evaluate the setsumbt model
+        sample_size (int): Number of dialogues to sample
+
+    Returns:
+        loader (DataLoader): Dataloader to train and evaluate the setsumbt model
+    """
+
+    loader.dataset = loader.dataset.resample(sample_size)
+
+    if 'SequentialSampler' in str(loader.sampler):
+        sampler = SequentialSampler(loader.dataset)
+    else:
+        sampler = RandomSampler(loader.dataset)
+    loader = DataLoader(loader.dataset, sampler=sampler, batch_size=loader.batch_size)
+
+    return loader

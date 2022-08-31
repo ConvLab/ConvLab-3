@@ -2,6 +2,9 @@ import os
 import pickle
 import torch
 import torch.utils.data as data
+from copy import deepcopy
+
+from tqdm import tqdm
 
 from convlab.policy.vector.vector_binary import VectorBinary
 from convlab.util import load_policy_data, load_dataset
@@ -12,18 +15,20 @@ from convlab.policy.vector.dataset import ActDataset
 
 class PolicyDataVectorizer:
     
-    def __init__(self, dataset_name='multiwoz21', vector=None):
+    def __init__(self, dataset_name='multiwoz21', vector=None, dst=None):
         self.dataset_name = dataset_name
         if vector is None:
             self.vector = VectorBinary(dataset_name)
         else:
             self.vector = vector
+        self.dst = dst
         self.process_data()
 
     def process_data(self):
-
-        processed_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                     f'processed_data/{self.dataset_name}_{type(self.vector).__name__}')
+        name = f"{self.dataset_name}_"
+        name += f"{type(self.dst).__name__}_" if self.dst is not None else ""
+        name += f"{type(self.vector).__name__}"
+        processed_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
         if os.path.exists(processed_dir):
             print('Load processed data file')
             self._load_data(processed_dir)
@@ -42,15 +47,27 @@ class PolicyDataVectorizer:
             self.data[split] = []
             raw_data = data_split[split]
 
-            for data_point in raw_data:
-                state = default_state()
+            if self.dst is not None:
+                self.dst.init_session()
 
-                state['belief_state'] = data_point['context'][-1]['state']
-                state['user_action'] = flatten_acts(data_point['context'][-1]['dialogue_acts'])
-                last_system_act = data_point['context'][-2]['dialogue_acts'] \
-                    if len(data_point['context']) > 1 else {}
+            for data_point in tqdm(raw_data):
+                if self.dst is None:
+                    state = default_state()
+
+                    state['belief_state'] = data_point['context'][-1]['state']
+                    state['user_action'] = flatten_acts(data_point['context'][-1]['dialogue_acts'])
+                else:
+                    last_system_utt = data_point['context'][-2]['utterance'] if len(data_point['context']) > 1 else ''
+                    self.dst.state['history'].append(['sys', last_system_utt])
+
+                    usr_utt = data_point['context'][-1]['utterance']
+                    state = deepcopy(self.dst.update(usr_utt))
+                    self.dst.state['history'].append(['usr', usr_utt])
+                last_system_act = data_point['context'][-2]['dialogue_acts'] if len(data_point['context']) > 1 else {}
                 state['system_action'] = flatten_acts(last_system_act)
                 state['terminated'] = data_point['terminated']
+                if self.dst is not None and state['terminated']:
+                    self.dst.init_session()
                 state['booked'] = data_point['booked']
                 dialogue_act = flatten_acts(data_point['dialogue_acts'])
 

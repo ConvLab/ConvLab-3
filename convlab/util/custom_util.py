@@ -205,6 +205,14 @@ def env_config(conf, policy_sys, check_book_constraints=True):
     policy_usr = conf['policy_usr_activated']
     usr_nlg = conf['usr_nlg_activated']
 
+    # Setup uncertainty thresholding
+    if dst_sys:
+        try:
+            if dst_sys.return_confidence_scores:
+                policy_sys.vector.setup_uncertain_query(dst_sys.confidence_thresholds)
+        except:
+            logging.info('Uncertainty threshold not set.')
+
     simulator = PipelineAgent(nlu_usr, dst_usr, policy_usr, usr_nlg, 'user')
     system_pipeline = PipelineAgent(nlu_sys, dst_sys, policy_sys, sys_nlg,
                                     'sys', return_semantic_acts=conf['model']['sys_semantic_to_usr'])
@@ -531,18 +539,21 @@ def get_config(filepath, args) -> dict:
     vec_name = [model for model in conf['vectorizer_sys']]
     vec_name = vec_name[0] if vec_name else None
     if dst_name and 'setsumbt' in dst_name.lower():
-        if 'get_confidence_scores' in conf['dst_sys'][dst_name]['ini_params']:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = conf['dst_sys'][dst_name]['ini_params']['get_confidence_scores']
+        if 'return_confidence_scores' in conf['dst_sys'][dst_name]['ini_params']:
+            param = conf['dst_sys'][dst_name]['ini_params']['return_confidence_scores']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = param
         else:
             conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = False
-        if 'return_mutual_info' in conf['dst_sys'][dst_name]['ini_params']:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_mutual_info'] = conf['dst_sys'][dst_name]['ini_params']['return_mutual_info']
+        if 'return_belief_state_mutual_info' in conf['dst_sys'][dst_name]['ini_params']:
+            param = conf['dst_sys'][dst_name]['ini_params']['return_belief_state_mutual_info']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_knowledge_uncertainty'] = param
         else:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_mutual_info'] = False
-        if 'return_entropy' in conf['dst_sys'][dst_name]['ini_params']:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_entropy'] = conf['dst_sys'][dst_name]['ini_params']['return_entropy']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_knowledge_uncertainty'] = False
+        if 'return_belief_state_entropy' in conf['dst_sys'][dst_name]['ini_params']:
+            param = conf['dst_sys'][dst_name]['ini_params']['return_belief_state_entropy']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_total_uncertainty'] = param
         else:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_entropy'] = False
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_total_uncertainty'] = False
 
     from convlab.nlu import NLU
     from convlab.dst import DST
@@ -571,8 +582,7 @@ def get_config(filepath, args) -> dict:
                 cls_path = infos.get('class_path', '')
                 cls = map_class(cls_path)
                 conf[unit + '_class'] = cls
-                conf[unit + '_activated'] = conf[unit +
-                                                 '_class'](**conf[unit][model]['ini_params'])
+                conf[unit + '_activated'] = conf[unit + '_class'](**conf[unit][model]['ini_params'])
                 print("Loaded " + model + " for " + unit)
     return conf
 
