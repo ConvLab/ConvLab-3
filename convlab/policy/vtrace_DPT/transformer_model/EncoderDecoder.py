@@ -330,7 +330,7 @@ class EncoderDecoder(nn.Module):
         # set padded time-steps to probability 1, so that log will be 0
         action_probs = action_probs + action_prob_helper_rev
 
-        entropy_probs = action_distribution * action_prob_helper.unsqueeze(-1) + action_prob_helper_rev.unsqueeze(-1)
+        entropy_probs = action_distribution_general * action_prob_helper.unsqueeze(-1) + action_prob_helper_rev.unsqueeze(-1)
         #entropy_probs = entropy_probs + domain_steps
         return action_probs, entropy_probs
 

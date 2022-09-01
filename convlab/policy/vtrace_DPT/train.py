@@ -121,7 +121,6 @@ if __name__ == '__main__':
     args = [('model', 'seed', seed)]
 
     environment_config = load_config_file(path)
-    save_config(vars(parser.parse_args()), environment_config, config_save_path)
 
     conf = get_config(path, args)
     seed = conf['model']['seed']
@@ -134,6 +133,8 @@ if __name__ == '__main__':
     policy_sys.current_time = current_time
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
     policy_sys.save_dir = save_path
+
+    save_config(vars(parser.parse_args()), environment_config, config_save_path, policy_config=policy_sys.cfg)
 
     env, sess = env_config(conf, policy_sys)
 
