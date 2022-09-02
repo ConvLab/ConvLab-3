@@ -210,8 +210,7 @@ class VTRACE(nn.Module, Policy):
 
     def get_batch(self, memory):
 
-        #if self.use_regularization or self.online_offline_ratio == 1.0:
-        if True:
+        if self.use_regularization or self.online_offline_ratio == 1.0:
             batch, num_online = memory.sample(self.online_offline_ratio)
         else:
             batch, num_online = memory.sample(0.0)
