@@ -133,9 +133,9 @@ class VTRACE(nn.Module, Policy):
 
         #torch.nn.utils.clip_grad_norm_(self.value.parameters(), 40)
         #torch.nn.utils.clip_grad_norm_(self.lifetime_value.parameters(), 40)
-        #for p in self.policy.parameters():
-        #    if p.grad is not None:
-        #        p.grad[p.grad != p.grad] = 0.0
+        for p in self.policy.parameters():
+            if p.grad is not None:
+                p.grad[p.grad != p.grad] = 0.0
         #torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
 
         self.optimizer.step()

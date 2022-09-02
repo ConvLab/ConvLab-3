@@ -197,6 +197,7 @@ if __name__ == '__main__':
     logging.info(f"Epochs: {cfg['epoch']}")
     logging.info(f"Learning rate: {cfg['supervised_lr']}")
     logging.info(f"Entropy weight: {cfg['entropy_weight']}")
+    logging.info(f"Regularization weight: {cfg['regularization_weight']}")
     logging.info(f"Only use multiwoz like domains: {cfg['multiwoz_like']}")
 
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
