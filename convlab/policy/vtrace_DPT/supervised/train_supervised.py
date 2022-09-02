@@ -6,7 +6,7 @@ import json
 import sys
 
 from torch import optim
-
+from copy import deepcopy
 from convlab.policy.vtrace_DPT.supervised.loader import PolicyDataVectorizer
 from convlab.util.custom_util import set_seed, init_logging, save_config
 from convlab.util.train_util import to_device
@@ -22,9 +22,11 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class MLE_Trainer:
     def __init__(self, manager, cfg, policy):
+        self.start_policy = deepcopy(policy)
         self.policy = policy
         self.policy_optim = optim.Adam(list(self.policy.parameters()), lr=cfg['supervised_lr'])
         self.entropy_weight = cfg['entropy_weight']
+        self.regularization_weight = cfg['regularization_weight']
         self._init_data(manager, cfg)
 
     def _init_data(self, manager, cfg):
@@ -50,7 +52,17 @@ class MLE_Trainer:
                                  description_batch, value_batch)
         loss_a = -1 * log_prob.mean()
 
-        return loss_a, -entropy
+        weight_loss = self.weight_loss()
+
+        return loss_a, -entropy, weight_loss
+
+    def weight_loss(self):
+
+        loss = 0
+        num_params = sum(p.numel() for p in self.policy.parameters() if p.requires_grad)
+        for paramA, paramB in zip(self.policy.parameters(), self.start_policy.parameters()):
+            loss += torch.sum(torch.abs(paramA - paramB.detach()))
+        return loss / num_params
 
     def imitating(self):
         """
@@ -60,9 +72,10 @@ class MLE_Trainer:
         a_loss = 0.
         for i, data in enumerate(self.data_train):
             self.policy_optim.zero_grad()
-            loss_a, entropy_loss = self.policy_loop(data)
+            loss_a, entropy_loss, weight_loss = self.policy_loop(data)
             a_loss += loss_a.item()
-            loss_a += self.entropy_weight * entropy_loss
+            loss_a = loss_a + self.entropy_weight * entropy_loss + self.regularization_weight * weight_loss
+
             if i % 20 == 0 and i != 0:
                 print("LOSS:", a_loss / 20.0)
                 a_loss = 0

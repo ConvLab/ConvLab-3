@@ -18,7 +18,7 @@
 	"supervised_weight": 0.0,
 	"online_offline_ratio": 0.20,
 	"smoothed_value_function": false,
-	"use_reservoir_sampling": true,
+	"use_reservoir_sampling": false,
 	"seed": 0,
 	"lambda": 1,
 	"tau": 0.001,
@@ -30,6 +30,7 @@
 	"noisy_linear": false,
 	"dataset_name": "multiwoz21",
 	"multiwoz_like": true,
+	"regularization_weight": 0.01,
 
 	"enc_input_dim": 128,
 	"enc_nhead": 2,
@@ -69,6 +70,5 @@
 	"independent": true,
 	"old_critic": false,
 	"pos_weight": 5,
-	"lr_supervised": 0.0001,
 	"weight_decay": 0.00001
 }
