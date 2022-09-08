@@ -6,6 +6,7 @@ import collections
 import logging
 
 import numpy as np
+import re
 
 from convlab.nlg import NLG
 from convlab.nlg.template.multiwoz.noise_functions import delete_random_token, random_token_permutation, spelling_noise
@@ -15,50 +16,149 @@ from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, 
 
 reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
 
-def lower_keys(x):
+def lower_keys(x, d=None):
     if isinstance(x, list):
         return [lower_keys(v) for v in x]
     elif isinstance(x, dict):
-        return {k.lower(): lower_keys(v) for k, v in x.items()}
+        #return {k.lower(): lower_keys(v) for k, v in x.items()}
+        return {SLOT_MAP_TO_UDF.get(k.title(), k.lower()): lower_keys(v) for k, v in x.items()}
     else:
-        return x
+        #return x
+        y = re.sub("#([^\-]+)-([^\-]+)-([^\-]+)#", lambda x: "#" + x.group(1) + "-" + x.group(2) + "-" + SLOT_MAP_TO_UDF[d].get(x.group(3).title(), x.group(3)).upper() + "#", x)
+        return y
 
 
 def read_json(filename):
+    raw_data = None
     with open(filename, 'r') as f:
-        return lower_keys(json.load(f))
+        raw_data = json.load(f)
+        #return lower_keys(json.load(f), None)
+    data = {}
+    for di in raw_data:
+        new_di = di.lower()
+        data[new_di] = {}
+        d, _ = di.split('-')
+        for s in raw_data[di]:
+            new_s = SLOT_MAP_TO_UDF[d].get(s.title(), s.lower()) if d in SLOT_MAP_TO_UDF else s.lower()
+            data[new_di][new_s] = []
+            for t in raw_data[di][s]:
+                new_t = re.sub("#([^\-]+)-([^\-]+)-([^\-]+)#", lambda x: "#" + x.group(1) + "-" + x.group(2) + "-" + SLOT_MAP_TO_UDF[d].get(x.group(3).title(), x.group(3)).upper() + "#" if d in SLOT_MAP_TO_UDF else x.group(3).upper() + "#", t)
+                data[new_di][new_s].append(new_t)
+    return data
 
 
 # supported slot
 Slot2word = {
-    'Fee': 'entrance fee',
+    'Fee': 'fee',
     'Addr': 'address',
     'Area': 'area',
-    'Stars': 'number of stars',
-    'Internet': 'internet',
+    'Stars': 'stars',
+    'Internet': 'Internet',
     'Department': 'department',
     'Choice': 'choice',
     'Ref': 'reference number',
     'Food': 'food',
     'Type': 'type',
     'Price': 'price range',
-    'Stay': 'length of the stay',
+    'Stay': 'stay',
     'Phone': 'phone number',
     'Post': 'postcode',
     'Day': 'day',
     'Name': 'name',
     'Car': 'car type',
-    'Leave': 'departure time',
+    'Leave': 'leave',
     'Time': 'time',
-    'Arrive': 'arrival time',
-    'Ticket': 'ticket price',
+    'Arrive': 'arrive',
+    'Ticket': 'ticket',
     'Depart': 'departure',
-    'People': 'number of people',
+    'People': 'people',
     'Dest': 'destination',
     'Parking': 'parking',
-    'Open': 'opening hours',
-    'Id': 'id',
+    'Open': 'open',
+    'Id': 'Id',
     # 'TrainID': 'TrainID'
+}
+
+
+SLOT_MAP_TO_UDF = {
+    'Attraction': {
+        'Addr': 'address',
+        'Post': 'postcode',
+        'Fee': 'entrance fee'
+    },
+    'Hospital': {
+        'Post': 'postcode',
+        'Addr': 'address'
+    },
+    'Hotel': {
+        'Addr': 'address',
+        'Post': 'postcode',
+        'Price': 'price range',
+        'Stay': 'book stay',
+        'Day': 'book day',
+        'People': 'book people'
+    },
+    'Police': {
+        'Post': 'postcode',
+        'Addr': 'address'
+    },
+    'Restaurant': {
+        'Price': 'price range',
+        'Time': 'book time',
+        'People': 'book people',
+        'Day': 'book day',
+        'Addr': 'address',
+        'Post': 'postcode'
+    },
+    'Taxi': {
+        'Leave': 'leave at',
+        'Arrive': 'arrive by',
+        'Dest': 'destination',
+        'Depart': 'departure',
+        'Car': 'type'
+    },
+    'Train': {
+        'Time': 'duration',
+        'Ticket': 'price',
+        'Leave': 'leave at',
+        'Id': 'train id',
+        'Arrive': 'arrive by',
+        'Depart': 'departure',
+        'People': 'book people',
+        'Dest': 'destination'
+    }
+}
+
+
+SLOT_MAP_TO_UDF2 = {
+    'Addr': 'address',
+    'Area': 'area',
+    'Arrive': 'arrive by',
+    'Car': 'type',
+    'Choice': 'choice',
+    'Day': 'day',
+    'Depart': 'departure',
+    'Department': 'department',
+    'Dest': 'destination',
+    'Fee': 'entrance fee',
+    'Food': 'food',
+    'Id': 'train id',
+    'Internet': 'internet',
+    'Leave': 'leave at',
+    'Name': 'name',
+    'Open': 'open',
+    'Parking': 'parking',
+    'People': 'book people',
+    'Phone': 'phone',
+    'Post': 'postcode',
+    'Price': 'price range',
+    'Ref': 'ref',
+    'Stars': 'stars',
+    'Stay': 'book stay',
+    'Ticket': 'price',
+    'Time': 'time',
+    'TrainID': 'train id',
+    'Type': 'type'
 }
 
 slot2word = dict((k.lower(), v.lower()) for k, v in Slot2word.items())
@@ -167,9 +267,13 @@ class TemplateNLG(NLG):
         Returns:
             generated sentence
         """
+        print("dialog_acts0:", dialog_acts)
         dialog_acts = unified_format(dialog_acts)
+        print("dialog_acts1:", dialog_acts)
         dialog_acts = reverse_da(dialog_acts)
+        print("dialog_acts2:", dialog_acts)
         dialog_acts = act_dict_to_flat_tuple(dialog_acts)
+        print("dialog_acts3:", dialog_acts)
         dialog_acts = self.noisy_dialog_acts(
             dialog_acts) if self.is_user else dialog_acts
         dialog_acts = self.sorted_dialog_act(dialog_acts)
@@ -179,6 +283,7 @@ class TemplateNLG(NLG):
             action.setdefault(k, [])
             action[k].append([slot.lower(), value])
         dialog_acts = action
+        print("dialog_acts4:", dialog_acts)
         mode = self.mode
         try:
             is_user = self.is_user
@@ -272,9 +377,11 @@ class TemplateNLG(NLG):
                 for slot, value in slot_value_pairs:
                     if dialog_act not in template or slot not in template[dialog_act]:
                         if dialog_act not in template:
-                            print("WARNING (nlg.py): (User?: %s) dialog_act '%s' not in template!" % (self.is_user, dialog_act))
+                            print("dialog_act not in template:", dialog_act)
                         else:
-                            print("WARNING (nlg.py): (User?: %s) slot '%s' of dialog_act '%s' not in template!" % (self.is_user, slot, dialog_act))
+                            print("slot not in template:", dialog_act, slot)
+                            import pdb
+                            pdb.set_trace()
                         sentence = 'What is the {} of {} ? '.format(
                             slot.lower(), dialog_act.split('-')[0].lower())
                         sentences += self._add_random_noise(sentence)
@@ -292,7 +399,7 @@ class TemplateNLG(NLG):
                         value_lower = value.lower()
                     if value in ["do nt care", "do n't care", "dontcare"]:
                         sentence = 'I don\'t care about the {} of the {}'.format(
-                            slot2word.get(slot, slot), dialog_act.split('-')[0])
+                            slot, dialog_act.split('-')[0])
                     elif self.is_user and dialog_act.split('-')[1] == 'inform' and slot == 'choice' and value_lower == 'any':
                         # user have no preference, any choice is ok
                         sentence = random.choice([

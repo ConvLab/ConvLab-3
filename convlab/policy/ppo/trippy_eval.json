@@ -1,0 +1,38 @@
+{
+	"model": {
+		"load_path": "/home/heckmi/gcp/supervised",
+		"pretrained_load_path": "",
+		"use_pretrained_initialisation": false,
+		"batchsz": 1000,
+		"seed": 0,
+		"epoch": 0,
+		"eval_frequency": 5,
+		"process_num": 2,
+		"num_eval_dialogues": 500,
+		"sys_semantic_to_usr": false
+	},
+        "vectorizer_sys": {},
+	"nlu_sys": {},
+	"dst_sys": {
+		"TripPy": {
+			"class_path": "convlab.dst.trippy.multiwoz.TRIPPY",
+		        "ini_params": {
+			        "model_type": "roberta",
+			        "model_path": "/home/heckmi/zim/checkpoints/trippy",
+			        "nlu_path": "https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_all_context.zip"
+			}
+		}
+	},
+	"sys_nlg": {},
+	"nlu_usr": {},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {}
+}
