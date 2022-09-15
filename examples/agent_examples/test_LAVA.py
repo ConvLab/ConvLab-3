@@ -14,7 +14,7 @@ from convlab.nlu.jointBERT.multiwoz import BERTNLU
 from convlab.dst.rule.multiwoz import RuleDST
 # from convlab.dst.mdbt.multiwoz import MDBT
 # from convlab.dst.sumbt.multiwoz import SUMBT
-from convlab.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
+# from convlab.dst.setsumbt.multiwoz.Tracker import SetSUMBTTracker
 # from convlab.dst.trippy.multiwoz import TRIPPY
 # from convlab.dst.trade.multiwoz import TRADE
 # from convlab.dst.comer.multiwoz import COMER
@@ -79,7 +79,8 @@ def test_end2end(args, model_dir):
 
 
     # where the models are saved from training
-    lava_dir = "/gpfs/project/lubis/ConvLab-3/convlab/policy/lava/multiwoz/experiments_woz/sys_config_log_model/"
+    # lava_dir = "/gpfs/project/lubis/ConvLab-3/convlab/policy/lava/multiwoz/experiments_woz/sys_config_log_model/"
+    lava_dir = "/gpfs/project/lubis/LAVA_code/LAVA_dev//experiments_woz/sys_config_log_model/"
 
     if "rl" in model_dir:
         # lava_path = "{}/{}/reward_best.model".format(lava_dir, model_path[args.lava_model_type])
@@ -140,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument("--US_trained", type=bool, default=False, help="whether to use model trained on US or not")
     parser.add_argument("--seed", type=int, default=20200202, help="seed for random processes")
     parser.add_argument("--US_type", type=str, default="ABUS", help="which user simulator to us, ABUS or TUS")
-    parser.add_argument("--dst_type", type=str, default="setsumbt", help="which DST to use, bertnlu_rule, setsumbt, or trippy")
+    parser.add_argument("--dst_type", type=str, default="bertnlu_rule", help="which DST to use, bertnlu_rule, setsumbt, or trippy")
     args = parser.parse_args()
 
     test_end2end(args, args.lava_dir)
