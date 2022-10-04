@@ -78,8 +78,10 @@ class VTRACE(nn.Module, Policy):
         except Exception as e:
             print(f"Could not load the critic, Exception: {e}")
 
-        self.optimizer = optim.Adam(list(self.policy.parameters()) + list(self.value.parameters()),
-                                    lr=cfg['value_lr'])
+        self.optimizer = optim.Adam([
+            {'params': self.policy.parameters(), 'lr': cfg['policy_lr'], 'betas': (0.0, 0.999)},
+            {'params': self.value.parameters(), 'lr': cfg['value_lr']}
+        ])
 
         try:
             self.load_optimizer_dicts(load_path)
