@@ -29,8 +29,9 @@
 	"max_length": 10,
 	"noisy_linear": false,
 	"dataset_name": "multiwoz21",
+	"data_percentage": 1.0,
 	"multiwoz_like": true,
-	"regularization_weight": 0.01,
+	"regularization_weight": 0.0,
 
 	"enc_input_dim": 128,
 	"enc_nhead": 2,

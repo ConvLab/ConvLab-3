@@ -16,8 +16,9 @@ mwoz_domains = ['restaurant', 'hotel', 'train', 'taxi', 'attraction']
 
 class PolicyDataVectorizer:
 
-    def __init__(self, dataset_name='multiwoz21', vector=None):
+    def __init__(self, dataset_name='multiwoz21', vector=None, percentage=1.0):
         self.dataset_name = dataset_name
+        self.percentage = percentage
         if vector is None:
             self.vector = VectorBinary(dataset_name)
         else:
@@ -28,6 +29,8 @@ class PolicyDataVectorizer:
 
         processed_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                      f'processed_data/{self.dataset_name}_{type(self.vector).__name__}')
+        if self.percentage != 1.0:
+            processed_dir += f"_{self.percentage}"
         if os.path.exists(processed_dir):
             print('Load processed data file')
             self._load_data(processed_dir)
@@ -39,7 +42,8 @@ class PolicyDataVectorizer:
         self.data = {}
 
         os.makedirs(processed_dir, exist_ok=True)
-        dataset = load_dataset(self.dataset_name)
+        dataset = load_dataset(self.dataset_name, split2ratio={'train': self.percentage,
+                                                               'validation': self.percentage, 'test': self.percentage})
         data_split = load_policy_data(dataset, context_window_size=2)
 
         for split in data_split:
@@ -100,6 +104,9 @@ class PolicyDataVectorizer:
         file_path = os.path.join(data_dir, part)
         if multiwoz_like:
             file_path += "mw"
+
+        if self.percentage != 1.0:
+            file_path += f"_{self.percentage}"
 
         if os.path.exists(file_path):
             action_batch, a_masks, max_length, small_act_batch, \

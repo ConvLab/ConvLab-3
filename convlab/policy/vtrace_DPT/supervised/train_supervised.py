@@ -201,7 +201,7 @@ if __name__ == '__main__':
     logging.info(f"Only use multiwoz like domains: {cfg['multiwoz_like']}")
 
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
-    manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector)
+    manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector, percentage=cfg['data_percentage'])
     policy = EncoderDecoder(**cfg, action_dict=vector.act2vec).to(device=DEVICE)
     try:
         policy.load_state_dict(torch.load(args.model_path, map_location=DEVICE))
