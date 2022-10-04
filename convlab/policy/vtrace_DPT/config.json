@@ -30,6 +30,7 @@
 	"noisy_linear": false,
 	"dataset_name": "multiwoz21",
 	"data_percentage": 1.0,
+	"dialogue_order": 0,
 	"multiwoz_like": true,
 	"regularization_weight": 0.0,
 

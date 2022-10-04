@@ -199,9 +199,12 @@ if __name__ == '__main__':
     logging.info(f"Entropy weight: {cfg['entropy_weight']}")
     logging.info(f"Regularization weight: {cfg['regularization_weight']}")
     logging.info(f"Only use multiwoz like domains: {cfg['multiwoz_like']}")
+    logging.info(f"We use: {cfg['data_percentage']*100}% of the data")
+    logging.info(f"Dialogue order used: {cfg['dialogue_order']}")
 
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
-    manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector, percentage=cfg['data_percentage'])
+    manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector,
+                                   percentage=cfg['data_percentage'], dialogue_order=cfg["dialogue_order"])
     policy = EncoderDecoder(**cfg, action_dict=vector.act2vec).to(device=DEVICE)
     try:
         policy.load_state_dict(torch.load(args.model_path, map_location=DEVICE))
