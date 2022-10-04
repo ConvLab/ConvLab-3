@@ -128,7 +128,9 @@ class VTRACE(nn.Module, Policy):
 
     def update(self, memory):
         p_loss, v_loss = self.get_loss(memory)
-        loss = p_loss + v_loss
+        loss = v_loss
+        if p_loss is not None:
+            loss += p_loss
 
         self.optimizer.zero_grad()
         loss.backward()
@@ -146,6 +148,7 @@ class VTRACE(nn.Module, Policy):
         self.is_train = True
 
         if self.is_train:
+            self.total_it += 1
 
             for param in self.policy.parameters():
                 param.requires_grad = True
