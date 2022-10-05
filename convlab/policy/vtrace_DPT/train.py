@@ -103,7 +103,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("--path", type=str, default='convlab/policy/vtrace_DPT/semantic_level_config.json',
                         help="Load path for config file")
-    parser.add_argument("--seed", type=int, default=0,
+    parser.add_argument("--seed", type=int, default=None,
                         help="Seed for the policy parameter initialization")
     parser.add_argument("--mode", type=str, default='info',
                         help="Set level for logger")
@@ -118,10 +118,9 @@ if __name__ == '__main__':
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
-    args = [('model', 'seed', seed)]
+    args = [('model', 'seed', seed)] if seed is not None else list()
 
     environment_config = load_config_file(path)
-    save_config(vars(parser.parse_args()), environment_config, config_save_path)
 
     conf = get_config(path, args)
     seed = conf['model']['seed']
@@ -134,6 +133,8 @@ if __name__ == '__main__':
     policy_sys.current_time = current_time
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
     policy_sys.save_dir = save_path
+
+    save_config(vars(parser.parse_args()), environment_config, config_save_path, policy_config=policy_sys.cfg)
 
     env, sess = env_config(conf, policy_sys)
 

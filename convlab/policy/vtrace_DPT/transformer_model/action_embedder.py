@@ -5,6 +5,8 @@ import logging
 import json
 
 from copy import deepcopy
+from convlab.policy.vtrace_DPT.transformer_model.noisy_linear import NoisyLinear
+
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -40,6 +42,7 @@ class ActionEmbedder(nn.Module):
             self.action_embeddings = nn.Parameter(self.action_embeddings)
         else:
             logging.info("We use Roberta to embed actions.")
+            self.dataset_name = node_embedder.dataset_name
             self.create_action_embeddings_roberta(node_embedder)
             self.action_embeddings.requires_grad = False
             embedding_dim = 768
@@ -49,6 +52,7 @@ class ActionEmbedder(nn.Module):
         self.small_action_dict_reversed = dict((value, key) for key, value in self.small_action_dict.items())
 
         self.linear = torch.nn.Linear(embedding_dim, action_embedding_dim).to(DEVICE)
+        #self.linear = NoisyLinear(embedding_dim, action_embedding_dim).to(DEVICE)
         self.random_matrix = torch.randn(embedding_dim, action_embedding_dim).to(DEVICE) / \
                              torch.sqrt(torch.Tensor([768])).to(DEVICE)
 
@@ -102,15 +106,15 @@ class ActionEmbedder(nn.Module):
 
         return action_mask.to(DEVICE)
 
-    def get_action_mask(self, domain="", intent="", start=False):
+    def get_action_mask(self, domain=None, intent="", start=False):
 
         action_mask = torch.ones(len(self.small_action_dict))
 
         # This is for predicting end of sequence token <eos>
-        if not start and not domain:
+        if not start and domain is None:
             action_mask[self.small_action_dict['eos']] = 0
 
-        if not domain:
+        if domain is None:
             #TODO: I allow all domains now for checking supervised training
             for domain in self.domain_dict:
                 if domain not in self.forbidden_domains:
@@ -125,7 +129,7 @@ class ActionEmbedder(nn.Module):
             # Domain was selected, need intent now
             for intent in self.intent_dict:
                 domain_intent = f"{domain}-{intent}"
-                valid = self.is_valid(domain_intent)
+                valid = self.is_valid(domain_intent + "-")
                 if valid:
                     action_mask[self.small_action_dict[intent]] = 0
         else:
@@ -135,6 +139,8 @@ class ActionEmbedder(nn.Module):
                 valid = self.is_valid(domain_intent_slot)
                 if valid:
                     action_mask[self.small_action_dict[slot_value]] = 0
+
+        assert not torch.equal(action_mask, torch.ones(len(self.small_action_dict)))
 
         return action_mask.to(DEVICE)
 
@@ -154,7 +160,7 @@ class ActionEmbedder(nn.Module):
     def is_valid(self, part_action):
 
         for act in self.action_dict:
-            if part_action in act:
+            if act.startswith(part_action):
                 return True
 
         return False
@@ -202,8 +208,10 @@ class ActionEmbedder(nn.Module):
         action_embeddings.append("pad")     #add the PAD token
         small_action_dict['pad'] = len(small_action_dict)
 
-        action_embeddings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'action_embeddings.pt')
-        small_action_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'small_action_dict.json')
+        action_embeddings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                              f'action_embeddings_{self.dataset_name}.pt')
+        small_action_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                              f'small_action_dict_{self.dataset_name}.json')
 
         if os.path.exists(action_embeddings_path):
             self.action_embeddings = torch.load(action_embeddings_path).to(DEVICE)

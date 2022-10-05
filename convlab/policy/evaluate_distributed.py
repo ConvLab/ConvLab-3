@@ -2,13 +2,9 @@
 
 import random
 import torch
-import sys
-import torch
-from pprint import pprint
-
-import matplotlib.pyplot as plt
 import numpy as np
-from convlab.policy.rlmodule import Memory_evaluator, Transition
+
+from convlab.policy.rlmodule import Memory_evaluator
 from torch import multiprocessing as mp
 
 
@@ -47,6 +43,7 @@ def sampler(pid, queue, evt, sess, seed_range, goals):
         request = 0
         select = 0
         offer = 0
+        recommend = 0
         task_success = {}
 
         for i in range(40):
@@ -71,6 +68,8 @@ def sampler(pid, queue, evt, sess, seed_range, goals):
                     select += 1
                 if intent.lower() == 'offerbook':
                     offer += 1
+                if intent.lower() == 'recommend':
+                    recommend += 1
 
             if session_over is True:
                 success = sess.evaluator.task_success()
@@ -85,7 +84,7 @@ def sampler(pid, queue, evt, sess, seed_range, goals):
             task_success[key].append(success_strict)
 
         buff.push(complete, success, success_strict, total_return_complete, total_return_success, turns, avg_actions / turns,
-                  task_success, book, inform, request, select, offer)
+                  task_success, book, inform, request, select, offer, recommend)
 
     # this is end of sampling all batchsz of items.
     # when sampling is over, push all buff data into queue
@@ -140,7 +139,7 @@ def evaluate_distributed(sess, seed_range, process_num, goals):
     return np.average(batch.complete), np.average(batch.success), np.average(batch.success_strict), \
            np.average(batch.total_return_success), np.average(batch.turns), np.average(batch.avg_actions), \
            batch.task_success, np.average(batch.book_actions), np.average(batch.inform_actions), np.average(batch.request_actions), \
-           np.average(batch.select_actions), np.average(batch.offer_actions)
+           np.average(batch.select_actions), np.average(batch.offer_actions), np.average(batch.recommend_actions)
 
 
 if __name__ == "__main__":

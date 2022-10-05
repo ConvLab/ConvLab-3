@@ -1,7 +1,0 @@
-{
-  "timeline": {"restaurant": 0, "hotel": 2000, "train": 4000, "attraction": 6000, "taxi": 7000,
-                "police": 8000, "hospital": 8500},
-  "budget": [["restaurant", 2000], ["hotel", 2000], ["train", 2000], ["taxi", 1000], ["attraction", 1000],
-              ["police", 500], ["hospital", 500]]
-}
-

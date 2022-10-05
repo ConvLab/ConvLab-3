@@ -4,6 +4,7 @@ from .transformer import TransformerModelEncoder, TransformerModelDecoder
 from .action_embedder import ActionEmbedder
 from torch.distributions.categorical import Categorical
 from .noisy_linear import NoisyLinear
+from tqdm import tqdm
 
 import torch
 import torch.nn as nn
@@ -23,11 +24,12 @@ class EncoderDecoder(nn.Module):
                  node_embedding_dim, roberta_path="", node_attention=True, max_length=25, semantic_descriptions=True,
                  freeze_roberta=True, use_pooled=False, verbose=False, mean=False, ignore_features=None,
                  only_active_values=False, roberta_actions=False, independent_descriptions=False, need_weights=True,
-                 random_matrix=False, distance_metric=False, noisy_linear=False, **kwargs):
+                 random_matrix=False, distance_metric=False, noisy_linear=False, dataset_name='multiwoz21', **kwargs):
         super(EncoderDecoder, self).__init__()
         self.node_embedder = NodeEmbedderRoberta(node_embedding_dim, freeze_roberta=freeze_roberta,
                                                  use_pooled=use_pooled, roberta_path=roberta_path,
-                                                 semantic_descriptions=semantic_descriptions, mean=mean).to(DEVICE)
+                                                 semantic_descriptions=semantic_descriptions, mean=mean,
+                                                 dataset_name=dataset_name).to(DEVICE)
         #TODO: Encoder input dim should be same as projection dim or use another linear layer?
         self.encoder = TransformerModelEncoder(enc_input_dim, enc_nhead, enc_d_hid, enc_nlayers, enc_dropout, need_weights).to(DEVICE)
         self.decoder = TransformerModelDecoder(action_embedding_dim, dec_nhead, dec_d_hid, dec_nlayers, dec_dropout, need_weights).to(DEVICE)
@@ -246,7 +248,7 @@ class EncoderDecoder(nn.Module):
         return self.action_embedder.small_action_list_to_real_actions(action_list)
 
     def get_log_prob(self, actions, action_mask_list, max_length, action_targets,
-                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list):
+                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list, no_slots=False):
 
         action_probs, entropy_probs = self.get_prob(actions, action_mask_list, max_length, action_targets,
                  current_domain_mask, non_current_domain_mask, descriptions_list, value_list)
@@ -258,6 +260,12 @@ class EncoderDecoder(nn.Module):
 
         # sometimes a domain will be masked because it is inactive due to labelling error. Will ignore these cases.
         log_probs[log_probs == -float("Inf")] = 0
+
+        if no_slots:
+            time_steps = torch.arange(0, max_length)
+            slot_steps = torch.where(time_steps % 3 == 2, torch.zeros(max_length), torch.ones(max_length))\
+                .view(1, -1).to(DEVICE)
+            log_probs *= slot_steps
 
         return log_probs.sum(-1), entropy
 
@@ -322,7 +330,7 @@ class EncoderDecoder(nn.Module):
         # set padded time-steps to probability 1, so that log will be 0
         action_probs = action_probs + action_prob_helper_rev
 
-        entropy_probs = action_distribution * action_prob_helper.unsqueeze(-1) + action_prob_helper_rev.unsqueeze(-1)
+        entropy_probs = action_distribution_general * action_prob_helper.unsqueeze(-1) + action_prob_helper_rev.unsqueeze(-1)
         #entropy_probs = entropy_probs + domain_steps
         return action_probs, entropy_probs
 
@@ -342,11 +350,11 @@ class EncoderDecoder(nn.Module):
         # Map the actions to action embeddings that are fed as input to decoder model
         # pad input and remove "eos" token
         padded_decoder_input = torch.stack(
-            [torch.cat([act[:-1], torch.zeros(max_length - len(act))], dim=-1) for act in action_targets], dim=0) \
+            [torch.cat([act[:-1].to(DEVICE), torch.zeros(max_length - len(act)).to(DEVICE)], dim=-1) for act in action_targets], dim=0) \
             .to(DEVICE).long()
 
         padded_action_targets = torch.stack(
-            [torch.cat([act, torch.zeros(max_length - len(act))], dim=-1) for act in action_targets], dim=0) \
+            [torch.cat([act.to(DEVICE), torch.zeros(max_length - len(act)).to(DEVICE)], dim=-1) for act in action_targets], dim=0) \
             .to(DEVICE)
 
         decoder_input = self.action_embedder.action_embeddings[padded_decoder_input]
@@ -440,7 +448,7 @@ class EncoderDecoder(nn.Module):
         semantic_acts = [self.action_embedder.real_action_to_small_action_list(act, semantic=True) for act in actions]
         action_mask_list = []
         decoder_encoder_mask_list = []
-        for i, act_sequence in enumerate(semantic_acts):
+        for i, act_sequence in tqdm(enumerate(semantic_acts)):
             action_mask = [self.action_embedder.get_action_mask(start=True)]
 
             for t, act in enumerate(act_sequence):
