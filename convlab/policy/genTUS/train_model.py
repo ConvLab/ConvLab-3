@@ -74,7 +74,8 @@ def postprocess_text(preds, labels):
         output = parse_output(label.strip())
         act["labels"].append(output["action"])
         text["labels"].append([output["text"]])
-
+    print(act)
+    print(text)
     return act, text
 
 def parse_output(in_str):

@@ -50,8 +50,6 @@ class Goal:
 
         elif isinstance(goal, ABUS_Goal):
             goal = old_goal2list(goal.domain_goals)
-        print("---> goal")
-        print(goal)
 
         # be careful of this order
         for domain, intent, slot, value in goal:
