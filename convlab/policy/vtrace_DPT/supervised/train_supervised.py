@@ -226,7 +226,7 @@ if __name__ == '__main__':
         agent.imitating()
         logging.info(f"Epoch: {e}")
 
-        if e % args.eval_freq == 0 and e != 0:
+        if e % args.eval_freq == 0:
             precision, recall, f1 = agent.validate()
 
         logging.info(f"Precision: {precision}")

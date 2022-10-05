@@ -171,20 +171,20 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-                select_acts, offer_acts = evaluate(sess,
+                select_acts, offer_acts, recommend_acts = evaluate(sess,
                                                 num_dialogues=conf['model']['num_eval_dialogues'],
                                                 sys_semantic_to_usr=conf['model'][
                                                     'sys_semantic_to_usr'],
                                                 save_flag=save_eval, save_path=log_save_path, goals=goals)
 
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
+        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts = \
+            select_acts, offer_acts, recommend_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'], goals)
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
+        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
 
         task_success_gathered = {}
         for task_dict in task_success:
@@ -199,7 +199,7 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
                  f"Average Return: {avg_return}, Turns: {turns}, Average Actions: {avg_actions}, "
                  f"Book Actions: {book_acts/total_acts}, Inform Actions: {inform_acts/total_acts}, "
                  f"Request Actions: {request_acts/total_acts}, Select Actions: {select_acts/total_acts}, "
-                 f"Offer Actions: {offer_acts/total_acts}")
+                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}")
 
     for key in task_success:
         logging.info(
@@ -303,7 +303,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     task_success = {'All_user_sim': [], 'All_evaluator': [], "All_evaluator_strict": [],
                     'total_return': [], 'turns': [], 'avg_actions': [],
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
-                    'total_select_acts': [], 'total_offer_acts': []}
+                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': []}
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
@@ -319,6 +319,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         request = 0
         select = 0
         offer = 0
+        recommend = 0
         # this 40 represents the max turn of dialogue
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
@@ -341,6 +342,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                     select += 1
                 if intent.lower() == 'offerbook':
                     offer += 1
+                if intent.lower() == 'recommend':
+                    recommend += 1
             avg_actions += len(acts)
             turn_counter += 1
             turns += 1
@@ -377,6 +380,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_request_acts'].append(request)
         task_success['total_select_acts'].append(select)
         task_success['total_offer_acts'].append(offer)
+        task_success['total_offer_acts'].append(offer)
+        task_success['total_recommend_acts'].append(recommend)
 
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
@@ -397,7 +402,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         np.average(task_success['turns']), np.average(task_success['avg_actions']), task_success, \
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
-        np.average(task_success['total_offer_acts'])
+        np.average(task_success['total_offer_acts']), np.average(task_success['total_recommend_acts'])
 
 
 def model_downloader(download_dir, model_path):
