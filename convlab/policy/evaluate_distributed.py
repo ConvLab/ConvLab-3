@@ -136,10 +136,10 @@ def sample(sess, seedrange, process_num, goals):
 def evaluate_distributed(sess, seed_range, process_num, goals):
 
     batch = sample(sess, seed_range, process_num, goals)
-    return np.average(batch.complete), np.average(batch.success), np.average(batch.success_strict), \
-           np.average(batch.total_return_success), np.average(batch.turns), np.average(batch.avg_actions), \
-           batch.task_success, np.average(batch.book_actions), np.average(batch.inform_actions), np.average(batch.request_actions), \
-           np.average(batch.select_actions), np.average(batch.offer_actions), np.average(batch.recommend_actions)
+    return batch.complete, batch.success, batch.success_strict, batch.total_return_success, batch.turns, \
+           batch.avg_actions, batch.task_success, np.average(batch.book_actions), np.average(batch.inform_actions), \
+           np.average(batch.request_actions), np.average(batch.select_actions), np.average(batch.offer_actions), \
+           np.average(batch.recommend_actions)
 
 
 if __name__ == "__main__":

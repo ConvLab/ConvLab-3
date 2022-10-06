@@ -73,7 +73,9 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
 
             value = np.array([d[plot_type][:max_step] for d in data[alg]])
             step = np.array([d['steps'][:max_step] for d in data[alg]][0])
+            seeds_used = value.shape[0]
             mean, err = np.mean(value, axis=0), np.std(value, axis=0)
+            err = err / np.sqrt(seeds_used)
             plt.plot(
                 step, mean, c=clrs[i], label=alg)
 
@@ -100,9 +102,9 @@ if __name__ == "__main__":
     args = get_args()
 
     y_label_dict = {"complete_rate": 'Complete rate', "success_rate": 'Success rate', 'turns': 'Average turns',
-                    'avg_return': 'Average Return'}
+                    'avg_return': 'Average Return', "success_rate_strict": 'Success rate strict'}
 
-    for plot_type in ["complete_rate", "success_rate", 'turns', 'avg_return']:
+    for plot_type in ["complete_rate", "success_rate", "success_rate_strict", 'turns', 'avg_return']:
         file_name, file_extension = os.path.splitext(args.out_file)
         os.makedirs(file_name, exist_ok=True)
         fig_name = f"{file_name}_{plot_type}{file_extension}"
