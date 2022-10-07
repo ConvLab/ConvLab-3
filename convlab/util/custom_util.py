@@ -222,7 +222,13 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
             "success_rate_strict": mean_success_strict,
             "avg_return": mean_return,
             "turns": mean_turns,
-            "avg_actions": mean_actions}
+            "avg_actions": mean_actions,
+            "book_acts": book_acts/total_acts,
+            "inform_acts": inform_acts/total_acts,
+            "request_acts": request_acts/total_acts,
+            "select_acts": select_acts/total_acts,
+            "offer_acts": offer_acts/total_acts,
+            "recommend_acts": recommend_acts/total_acts}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True):
