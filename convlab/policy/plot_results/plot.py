@@ -102,9 +102,10 @@ if __name__ == "__main__":
     args = get_args()
 
     y_label_dict = {"complete_rate": 'Complete rate', "success_rate": 'Success rate', 'turns': 'Average turns',
-                    'avg_return': 'Average Return', "success_rate_strict": 'Success rate strict'}
+                    'avg_return': 'Average Return', "success_rate_strict": 'Success rate strict',
+                    "avg_actions": "Average actions"}
 
-    for plot_type in ["complete_rate", "success_rate", "success_rate_strict", 'turns', 'avg_return']:
+    for plot_type in ["complete_rate", "success_rate", "success_rate_strict", 'turns', 'avg_return', 'avg_actions']:
         file_name, file_extension = os.path.splitext(args.out_file)
         os.makedirs(file_name, exist_ok=True)
         fig_name = f"{file_name}_{plot_type}{file_extension}"
