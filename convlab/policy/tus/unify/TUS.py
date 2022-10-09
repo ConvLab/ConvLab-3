@@ -50,7 +50,7 @@ class UserActionPolicy(Policy):
         self.user = TransformerActionPrediction(self.config).to(device=DEVICE)
         if pretrain:
             model_path = os.path.join(
-                self.config["model_dir"], self.config["model_name"])
+                self.config["model_dir"], "model-non-zero")# self.config["model_name"])
             print(f"loading model from {model_path}...")
             self.load(model_path)
         self.user.eval()
@@ -404,16 +404,32 @@ class UserPolicy(Policy):
             self.config = json.load(open(config))
         else:
             self.config = config
-        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}'
+        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}/multiwoz'
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),
                              "https://zenodo.org/record/5779832/files/default.zip")
+        self.slot2dbattr = {
+            'open hours': 'openhours',
+            'price range': 'pricerange',
+            'arrive by': 'arriveBy',
+            'leave at': 'leaveAt',
+            'train id': 'trainID'
+        }
+        self.dbattr2slot = {}
+        for k,v in self.slot2dbattr.items():
+            self.dbattr2slot[v] = k
 
         self.policy = UserActionPolicy(self.config)
 
     def predict(self, state):
-        return self.policy.predict(state)
+        raw_act = self.policy.predict(state)
+        act = []
+        for intent, domain, slot, value in raw_act:
+            if slot in self.dbattr2slot:
+                slot = self.dbattr2slot[slot]
+            act.append([intent, domain, slot, value])
+        return act
 
     def init_session(self, goal=None):
         self.policy.init_session(goal)
@@ -425,13 +441,6 @@ class UserPolicy(Policy):
         return self.policy.get_reward()
 
     def get_goal(self):
-        slot2dbattr = {
-            'open hours': 'openhours',
-            'price range': 'pricerange',
-            'arrive by': 'arriveBy',
-            'leave at': 'leaveAt',
-            'train id': 'trainID'
-        }
         if hasattr(self.policy, 'get_goal'):
             # workaround: convert goal to old format
             multiwoz_goal = {}
@@ -450,8 +459,8 @@ class UserPolicy(Policy):
                                 multiwoz_goal[domain]["book"] = {}
                             norm_slot = slot.split(' ')[-1]
                             multiwoz_goal[domain]["book"][norm_slot] = value
-                        elif slot in slot2dbattr:
-                            norm_slot = slot2dbattr[slot]
+                        elif slot in self.slot2dbattr:
+                            norm_slot = self.slot2dbattr[slot]
                             multiwoz_goal[domain][slot_type][norm_slot] = value
                         else:
                             multiwoz_goal[domain][slot_type][slot] = value
