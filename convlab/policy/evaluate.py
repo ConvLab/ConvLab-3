@@ -107,6 +107,8 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
             if verbose:
                 dialog.append({"usr": user_response})
                 dialog.append({"sys": sys_response})
+                logging.info(f"usr {user_response}")
+                logging.info(f"sys {sys_response}")
 
             actions += len(sys_response)
             length = len(sys_response)
@@ -135,7 +137,6 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
                 break
 
         if verbose:
-            pprint(dialog)nt.policy.policy.goal.status)
             logging.info(f"Complete: {complete}")
             logging.info(f"Success: {task_succ}")
 
