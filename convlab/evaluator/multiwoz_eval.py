@@ -5,14 +5,29 @@ import re
 import numpy as np
 
 from copy import deepcopy
+from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
+from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.evaluator.evaluator import Evaluator
 from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.util import relative_import_module_from_unified_datasets
-reverse_da = relative_import_module_from_unified_datasets(
-    'multiwoz21', 'preprocess.py', 'reverse_da')
+
+# import reflect table
+REF_SYS_DA_M = {}
+for dom, ref_slots in REF_SYS_DA.items():
+    dom = dom.lower()
+    REF_SYS_DA_M[dom] = {}
+    for slot_a, slot_b in ref_slots.items():
+        if slot_a == 'Ref':
+            slot_b = 'ref'
+        REF_SYS_DA_M[dom][slot_a.lower()] = slot_b
+    REF_SYS_DA_M[dom]['none'] = 'none'
+REF_SYS_DA_M['taxi']['phone'] = 'phone'
+REF_SYS_DA_M['taxi']['car'] = 'car type'
+
+reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
+
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -58,6 +73,14 @@ DEF_VAL_NUL = 'none'  # for none
 DEF_VAL_BOOKED = 'yes'  # for booked
 DEF_VAL_NOBOOK = 'no'  # for booked
 
+NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
+
+# Not sure values in inform
+DEF_VAL_UNK = '?'  # Unknown
+DEF_VAL_DNC = 'dontcare'  # Do not care
+DEF_VAL_NUL = 'none'  # for none
+DEF_VAL_BOOKED = 'yes'  # for booked
+DEF_VAL_NOBOOK = 'no'  # for booked
 NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
 
 
@@ -649,8 +672,8 @@ class MultiWozEvaluator(Evaluator):
             if intent.lower() in ['inform', 'recommend']:
                 if domain.lower() in goal:
                     if 'reqt' in goal[domain.lower()]:
-                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) in goal[domain.lower()][
-                                'reqt']:
+                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) \
+                                in goal[domain.lower()]['reqt']:
                             if val in NOT_SURE_VALS:
                                 val = '\"' + val + '\"'
                             goal[domain.lower()]['reqt'][
