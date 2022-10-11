@@ -27,40 +27,11 @@ from torch.nn import PairwiseDistance
 from torch.nn import MultiheadAttention
 import torch.nn.functional as F
 
-#from transformers.file_utils import (add_start_docstrings, add_start_docstrings_to_callable)
-#from transformers.modeling_utils import (PreTrainedModel)
-#from transformers.modeling_roberta import (RobertaModel, RobertaConfig, ROBERTA_PRETRAINED_MODEL_ARCHIVE_MAP,
-#                                           ROBERTA_START_DOCSTRING, ROBERTA_INPUTS_DOCSTRING, BertLayerNorm)
 from transformers import (RobertaModel, RobertaConfig, RobertaPreTrainedModel)
 
 import time
 
 
-#class RobertaPreTrainedModel(PreTrainedModel):
-#    """ An abstract class to handle weights initialization and
-#        a simple interface for dowloading and loading pretrained models.
-#    """
-#    config_class = RobertaConfig
-#    pretrained_model_archive_map = ROBERTA_PRETRAINED_MODEL_ARCHIVE_MAP
-#    base_model_prefix = "roberta"
-#    
-#    def _init_weights(self, module):
-#        """ Initialize the weights """
-#        if isinstance(module, (nn.Linear, nn.Embedding)):
-#            # Slightly different from the TF version which uses truncated_normal for initialization
-#            # cf https://github.com/pytorch/pytorch/pull/5617
-#            module.weight.data.normal_(mean=0.0, std=self.config.initializer_range)
-#        elif isinstance(module, BertLayerNorm):
-#            module.bias.data.zero_()
-#            module.weight.data.fill_(1.0)
-#        if isinstance(module, nn.Linear) and module.bias is not None:
-#            module.bias.data.zero_()
-
-
-#@add_start_docstrings(
-#    """RoBERTa Model with classification heads for the DST task. """,
-#    ROBERTA_START_DOCSTRING,
-#)
 class RobertaForDST(RobertaPreTrainedModel):
     def __init__(self, config):
         super(RobertaForDST, self).__init__(config)
@@ -268,7 +239,6 @@ class RobertaForDST(RobertaPreTrainedModel):
         loss *= sample_mask
         return loss
 
-    #@add_start_docstrings_to_callable(ROBERTA_INPUTS_DOCSTRING)
     def forward(self, batch, step=None, epoch=None, t_slot=None, mode=None):
         assert(mode in [None, "pretrain", "tag", "encode", "encode_vals", "represent"]) # TODO
 
@@ -833,7 +803,7 @@ class RobertaForDST(RobertaPreTrainedModel):
                 #per_slot_per_example_tp_loss[slot] = triplet_loss
                 per_slot_per_example_tp_loss[slot] = value_loss
         ccc_time = time.time()
-        #print(bbb_time - aaa_time, ccc_time - bbb_time) # 0.028620243072509766
+        #print("TIME:", bbb_time - aaa_time, ccc_time - bbb_time) # 0.028620243072509766
 
         # add hidden states and attention if they are here
         outputs = (total_loss,

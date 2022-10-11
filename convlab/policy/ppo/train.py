@@ -184,22 +184,28 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("--path", type=str, default='convlab/policy/ppo/semantic_level_config.json',
                         help="Load path for config file")
-    parser.add_argument("--seed", type=int, default=0,
+    parser.add_argument("--seed", type=int, default=None,
                         help="Seed for the policy parameter initialization")
     parser.add_argument("--mode", type=str, default='info',
                         help="Set level for logger")
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
+    parser.add_argument("--save_path", type=str, default=None, help="Custom save path other than the path of this script")
 
     path = parser.parse_args().path
     seed = parser.parse_args().seed
     mode = parser.parse_args().mode
     save_eval = parser.parse_args().save_eval_dials
+    custom_save_path = parser.parse_args().save_path
 
-    logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
-        init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
+    if custom_save_path:
+        logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
+            init_logging(custom_save_path, mode)
+    else:
+        logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
+            init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
-    args = [('model', 'seed', seed)]
+    args = [('model', 'seed', seed)] if seed else list()
 
     environment_config = load_config_file(path)
     save_config(vars(parser.parse_args()), environment_config, config_save_path)
@@ -280,5 +286,8 @@ if __name__ == '__main__':
     f.write(str(datetime.now() - begin_time))
     f.close()
 
-    move_finished_training(dir_path, os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))
+    if custom_save_path:
+        move_finished_training(dir_path, os.path.join(custom_save_path, "finished_experiments"))
+    else:
+        move_finished_training(dir_path, os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))

@@ -1,1 +1,1 @@
-from convlab2.dst.trippyr.multiwoz.trippyr import TRIPPYR
+from convlab.dst.trippyr.multiwoz.trippyr import TRIPPYR

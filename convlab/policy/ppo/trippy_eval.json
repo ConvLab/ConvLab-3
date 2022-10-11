@@ -1,29 +1,38 @@
 {
 	"model": {
-		"load_path": "/home/heckmi/gcp/supervised",
+		"load_path": "finished_experiments/experiment_2022-09-08-14-53-25/save/best_ppo",
 		"pretrained_load_path": "",
 		"use_pretrained_initialisation": false,
 		"batchsz": 1000,
 		"seed": 0,
 		"epoch": 0,
 		"eval_frequency": 5,
-		"process_num": 2,
+		"process_num": 1,
 		"num_eval_dialogues": 500,
 		"sys_semantic_to_usr": false
 	},
-        "vectorizer_sys": {},
+        "vectorizer_sys": {
+	        "uncertainty_vector_mul": {
+		        "class_path": "convlab.policy.vector.vector_binary.VectorBinary",
+		        "ini_params": {
+			        "use_masking": true,
+			        "manually_add_entity_names": true,
+			        "seed": 0
+			}
+		}
+	},
 	"nlu_sys": {},
 	"dst_sys": {
 		"TripPy": {
 			"class_path": "convlab.dst.trippy.multiwoz.TRIPPY",
 		        "ini_params": {
 			        "model_type": "roberta",
-			        "model_path": "/home/heckmi/zim/checkpoints/trippy",
-			        "nlu_path": "https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_all_context.zip"
+			        "model_path": "/gpfs/project/heckmi/trippy/multiwoz21/trippy.convlab3/results.42/checkpoint-28392",
+			        "nlu_path": "/home/heckmi/models/bert_multiwoz_all_context.zip"
 			}
 		}
 	},
-	"sys_nlg": {},
+        "sys_nlg": {},
 	"nlu_usr": {},
 	"dst_usr": {},
 	"policy_usr": {

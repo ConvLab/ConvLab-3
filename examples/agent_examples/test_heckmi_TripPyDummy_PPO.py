@@ -26,10 +26,10 @@ def test_end2end(seed=20200202, n_dialogues=1000):
     # Dialogue System, receiving user (simulator) output
     sys_nlu = None
     sys_dst = TRIPPY(model_type='roberta',
-                     model_path='/home/heckmi/zim/checkpoints/trippy',
-                     nlu_path='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_all_context.zip')
+                     model_path='/gpfs/project/heckmi/trippy/multiwoz21/trippy.convlab3/results.42/checkpoint-28392',
+                     nlu_path='/home/heckmi/models/bert_multiwoz_all_context.zip')
     sys_policy = PPO(False, seed=seed)
-    sys_policy.load('/home/heckmi/gcp/supervised')
+    sys_policy.load('/home/heckmi/models/supervised')
     sys_nlg = None
     sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys', return_semantic_acts=True)
 

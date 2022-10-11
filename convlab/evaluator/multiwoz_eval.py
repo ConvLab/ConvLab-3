@@ -268,14 +268,14 @@ class MultiWozEvaluator(Evaluator):
                 continue
             if 'book' in goal[domain] and goal[domain]['book']:
                 tot = len(goal[domain]['book'].keys())
-                #print("  > %s tot: %s" % (domain, tot), file=f)
+                print("  > %s tot: %s" % (domain, tot), file=f)
                 if tot == 0:
                     continue
                 state = booked_states.get(domain, None)
                 if state is None:
                     # nothing has been booked but should have been
                     score.append(0)
-                    #print("  > %s should have been booked but wasn't" % (domain), file=f)
+                    print("  > %s should have been booked but wasn't" % (domain), file=f)
                     continue
                 tracks_booking = False
                 for slot in state:
@@ -291,7 +291,7 @@ class MultiWozEvaluator(Evaluator):
                 for slot, value in goal[domain]['book'].items():
                     try:
                         value_predicted = state.get(f"book {slot}", "")
-                        #print("  > %s-%s %s == %s ? %s" % (domain, slot, value_predicted, value, value == value_predicted), file=f)
+                        print("  > %s-%s %s == %s ? %s" % (domain, slot, value_predicted, value, value == value_predicted), file=f)
                         if value == value_predicted:
                             match += 1
                     except Exception as e:
@@ -442,9 +442,9 @@ class MultiWozEvaluator(Evaluator):
 
         TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt = self._inform_F1_goal(
             goal, self.sys_da_array)
-        #print("  bad_inform:", bad_inform, file=f)
-        #print("  reqt_not_inform:", reqt_not_inform, file=f)
-        #print("  inform_not_reqt:", inform_not_reqt, file=f)
+        print("  bad_inform:", bad_inform, file=f)
+        print("  reqt_not_inform:", reqt_not_inform, file=f)
+        print("  inform_not_reqt:", inform_not_reqt, file=f)
         if aggregate:
             try:
                 rec = TP / (TP + FN)
@@ -469,14 +469,14 @@ class MultiWozEvaluator(Evaluator):
         inform_sess = self.inform_F1(f, ref2goal)
         goal_sess = self.final_goal_analyze(f)
 
-        #print("    booking_done:", booking_done, file=f)
-        #print("    book_sess:", book_sess, file=f)
-        #print("    book_constraint_sess:", book_constraint_sess, file=f)
-        #print("    booked_states:", self.booked_states, file=f)
-        #print("    inform_sess:", inform_sess, file=f)
-        #print("    goal_sess:", goal_sess, file=f)
+        print("    booking_done:", booking_done, file=f)
+        print("    book_sess:", book_sess, file=f)
+        print("    book_constraint_sess:", book_constraint_sess, file=f)
+        print("    booked_states:", self.booked_states, file=f)
+        print("    inform_sess:", inform_sess, file=f)
+        print("    goal_sess:", goal_sess, file=f)
 
-        if f is not None:
+        if 1: # f is not None:
             if book_sess is not None and book_sess < 1:
                 print("> Not all domains were booked (policy)", file=f)
             if inform_sess[1] is not None and inform_sess[1] < 1:
@@ -631,26 +631,26 @@ class MultiWozEvaluator(Evaluator):
                 domain, info_constraints + reqt_constraints)
             if not query_result:
                 mismatch += 1
-                #print("  no query result for %s, %s -> mismatch + 1" % (domain, info_constraints + reqt_constraints), file=f)
+                print("  no query result for %s, %s -> mismatch + 1" % (domain, info_constraints + reqt_constraints), file=f)
                 continue
 
             booked = self.booked[domain]
             if not self.goal[domain].get('book'):
                 match += 1
-                #print("  no book in goal -> match + 1", file=f)
+                print("  no book in goal -> match + 1", file=f)
             elif isinstance(booked, dict):
                 ref = booked['Ref']
-                #print("  booked:", booked, file=f)
-                #print("  found:", query_result, file=f)
+                print("  booked:", booked, file=f)
+                print("  found:", query_result, file=f)
                 if any(found['Ref'] == ref for found in query_result):
                     match += 1
-                    #print("  match -> match + 1", file=f)
+                    print("  match -> match + 1", file=f)
                 else:
                     mismatch += 1
-                    #print("  mismatch -> mismatch + 1", file=f)
+                    print("  mismatch -> mismatch + 1", file=f)
             else:
                 match += 1
-        #print("  match/mismatch:", match, mismatch, file=f)
+        print("  match/mismatch:", match, mismatch, file=f)
         return match, mismatch
 
     def final_goal_analyze(self, f=None):
