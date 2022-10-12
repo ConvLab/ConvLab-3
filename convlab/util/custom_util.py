@@ -372,6 +372,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                 complete = sess.evaluator.complete
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
+                if not task_succ:
+                    print("%s | %s %s | GOAL: %s" % (seed - 1000, task_succ, complete, sess.evaluator.goal))
                 break
         else:
             complete = 0

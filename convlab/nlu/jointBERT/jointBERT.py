@@ -12,7 +12,7 @@ class JointBERT(nn.Module):
         self.intent_weight = intent_weight if intent_weight is not None else torch.tensor([1.]*intent_dim)
 
         print(model_config['pretrained_weights'])
-        self.bert = BertModel.from_pretrained(model_config['pretrained_weights'])
+        self.bert = BertModel.from_pretrained(model_config['pretrained_weights'], local_files_only=True)
         self.dropout = nn.Dropout(model_config['dropout'])
         self.context = model_config['context']
         self.finetune = model_config['finetune']
