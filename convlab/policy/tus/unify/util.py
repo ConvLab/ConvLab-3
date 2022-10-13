@@ -8,7 +8,7 @@ NOT_MENTIONED = "not mentioned"
 
 def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2ratio=1):
     ratio = {'train': split2ratio, 'validation': split2ratio}
-    if data_name == "all" or data_name == "sgd+tm":
+    if data_name == "all" or data_name == "sgd+tm" or data_name == "tm":
         print("merge all datasets...")
         if data_name == "all":
             all_dataset = ["multiwoz21", "sgd", "tm1", "tm2", "tm3"]
