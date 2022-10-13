@@ -22,7 +22,7 @@ os.environ["WANDB_DISABLED"] = "true"
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
 TOKENIZER.add_tokens(["<?>"])
-
+MAX_LEN=1000
 def arg_parser():
     parser = ArgumentParser()
     # data_name, dial_ids_order, split2ratio
@@ -42,16 +42,17 @@ def gentus_compute_metrics(eval_preds):
     if isinstance(preds, tuple):
         preds = preds[0]
     decoded_preds = TOKENIZER.batch_decode(
-        preds, skip_special_tokens=True, max_length=400)
+        preds, skip_special_tokens=True, max_length=MAX_LEN)
 
     # Replace -100 in the labels as we can't decode them.
     labels = np.where(labels != -100, labels, TOKENIZER.pad_token_id)
     decoded_labels = TOKENIZER.batch_decode(
-        labels, skip_special_tokens=True, max_length=400)
+        labels, skip_special_tokens=True, max_length=MAX_LEN)
 
     act, text = postprocess_text(decoded_preds, decoded_labels)
 
     result = METRIC.compute(
+        # predictions=decoded_preds, references=decoded_labels)
         predictions=text["preds"], references=text["labels"])
     result = {"bleu": result["score"]}
     f1_scores = f1_measure(pred_acts=act["preds"], label_acts=act["labels"])
@@ -68,14 +69,14 @@ def postprocess_text(preds, labels):
     for pred in preds:
         output = parse_output(pred.strip())
         act["preds"].append(output.get("action", []))
-        text["preds"].append(output.get("text", ""))
+        text["preds"].append(output.get("text", pred.strip()))
 
-    for label in labels:
+    for i, label in enumerate(labels):
         output = parse_output(label.strip())
+        if len(output["text"]) < 1:
+            print("output", i, label)
         act["labels"].append(output["action"])
         text["labels"].append([output["text"]])
-    print(act)
-    print(text)
     return act, text
 
 def parse_output(in_str):
@@ -121,7 +122,7 @@ def tp_fn_fp(pred, label):
 
 
 class TrainerHelper:
-    def __init__(self, tokenizer, max_input_length=500, max_target_length=100):
+    def __init__(self, tokenizer, max_input_length=500, max_target_length=500):
         print("transformers version is: ", transformers.__version__)
         self.tokenizer = tokenizer
         self.max_input_length = max_input_length
@@ -177,11 +178,11 @@ class TrainerHelper:
 
         return model_inputs
 
-def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16):
+def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max_input_length=500, max_target_length=500):
     model_checkpoint = "facebook/bart-base"
     tokenizer = TOKENIZER
 
-    train_helper = TrainerHelper(tokenizer=tokenizer, max_input_length=500, max_target_length=100)
+    train_helper = TrainerHelper(tokenizer=tokenizer, max_input_length=max_input_length, max_target_length=max_target_length)
     data = train_helper.parse_data(model_type=model_type,
                                    data_name=data_name,
                                    dial_ids_order=dial_ids_order,
@@ -209,7 +210,7 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16):
         predict_with_generate=True,
         fp16=fp16,
         push_to_hub=False,
-        generation_max_length=400,
+        generation_max_length=max_target_length,
         logging_dir=os.path.join(model_dir, 'log')
     )
     data_collator = DataCollatorForSeq2Seq(
@@ -237,7 +238,9 @@ def main():
           data_name=args.data_name, 
           dial_ids_order=args.dial_ids_order, 
           split2ratio=args.split2ratio,
-          batch_size=args.batch_size)
+          batch_size=args.batch_size,
+          max_input_length=1000,
+          max_target_length=1000)
 
 if __name__ == "__main__":
     main()

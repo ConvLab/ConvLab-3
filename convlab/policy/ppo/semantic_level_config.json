@@ -1,6 +1,6 @@
 {
 	"model": {
-		"load_path": "",
+		"load_path": "convlab/policy/ppo/pretrained_models/supervised",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,
