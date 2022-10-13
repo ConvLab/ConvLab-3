@@ -21,7 +21,7 @@ def arg_parser():
     parser.add_argument("--model-weight", type=str,
                         help="the model weight", default="")
     parser.add_argument("--input-file", type=str, help="the testing input file",
-                        default="convlab2/policy/genTUS/data/data_validation_v1.py")
+                        default="")
     parser.add_argument("--generated-file", type=str, help="the generated results",
                         default="")
     parser.add_argument("--only-action", action="store_true")
