@@ -5,6 +5,7 @@ import json
 
 NOT_MENTIONED = "not mentioned"
 
+
 def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2ratio=1):
     ratio = {'train': split2ratio, 'validation': split2ratio}
     if data_name == "all" or data_name == "sgd+tm":
@@ -13,6 +14,8 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
             all_dataset = ["multiwoz21", "sgd", "tm1", "tm2", "tm3"]
         if data_name == "sgd+tm":
             all_dataset = ["sgd", "tm1", "tm2", "tm3"]
+        if data_name == "tm":
+            all_dataset = ["tm1", "tm2", "tm3"]
 
         datasets = {}
         for name in all_dataset:
@@ -29,6 +32,7 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
                                 split2ratio=ratio)
     return raw_data
 
+
 def merge_dataset(datasets, data_name):
     data_split = [x for x in datasets[data_name]]
     raw_data = {}
@@ -38,6 +42,7 @@ def merge_dataset(datasets, data_name):
             print(f"merge {dataname}...")
             raw_data[data_type] += dataset[data_type]
     return raw_data
+
 
 def int2onehot(index, output_dim=6, remove_zero=False):
     one_hot = [0] * output_dim
