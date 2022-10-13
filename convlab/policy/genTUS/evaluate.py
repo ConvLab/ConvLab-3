@@ -23,7 +23,7 @@ def arg_parser():
     parser.add_argument("--input-file", type=str, help="the testing input file",
                         default="convlab2/policy/genTUS/data/data_validation_v1.py")
     parser.add_argument("--generated-file", type=str, help="the generated results",
-                        default="convlab2/policy/genTUS/data/data_validation_v1.py")
+                        default="")
     parser.add_argument("--only-action", action="store_true")
     parser.add_argument("--dataset", default="multiwoz")
     parser.add_argument("--do-semantic", action="store_true",
