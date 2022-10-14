@@ -187,9 +187,9 @@ def preprocess():
                         "turns": []
                     }
                     cnt += 1
-                    init_state = {}
+                    prev_state = {}
                     for domain in dialogue['domains']:
-                        init_state.setdefault(domain, deepcopy(ontology['state'][domain]))
+                        prev_state.setdefault(domain, deepcopy(ontology['state'][domain]))
 
                     for utt_idx, t in enumerate(d['turns']):
                         speaker = t['speaker'].lower()
@@ -306,17 +306,22 @@ def preprocess():
                                                 assert value == 'dontcare', f'{action}-{slot_info}'
                                                 
                         if speaker == 'user':
-                            state = deepcopy(init_state)
+                            state = deepcopy(prev_state)
                             active_intent = {}
                             requested_slots = {}
                             for frame in t['frames']:
                                 domain = frame['service']
                                 active_intent[domain] = frame['state']['active_intent']
                                 requested_slots[domain] = frame['state']['requested_slots']
-                                for slot, value_list in frame['state']['slot_values'].items():
-                                    state[domain][slot] = value_list[0]
-                                    for value in value_list[1:]:
-                                        state[domain][slot] += '|' + value
+                                for slot in state[domain]:
+                                    if slot in frame['state']['slot_values']:
+                                        value_list = frame['state']['slot_values'][slot]
+                                        state[domain][slot] = value_list[0]
+                                        for value in value_list[1:]:
+                                            state[domain][slot] += '|' + value
+                                    else:
+                                        state[domain][slot] = ''
+                            prev_state = state
                             turn['state'] = state
                             turn['active_intent'] = active_intent
                             turn['requested_slots'] = requested_slots
