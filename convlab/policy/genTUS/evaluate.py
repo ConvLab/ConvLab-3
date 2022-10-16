@@ -91,13 +91,13 @@ class Evaluator:
                 r['dialog'].append({"predict_action": act,
                                     "answer_text": ans,
                                     "predict_text": pre})
-                if generated_file:
-                    print(f"update result in {generated_file}")
-                else:
-                    generated_file = os.path.join(
-                        self.model_checkpoint, 'generation_results.json')
-                    print(f"dump result to {generated_file}")
-                json.dump(r, open(generated_file, 'w'), indent=2)
+            if generated_file:
+                print(f"update result in {generated_file}")
+            else:
+                generated_file = os.path.join(
+                    self.model_checkpoint, 'generation_results.json')
+                print(f"dump result to {generated_file}")
+            json.dump(r, open(generated_file, 'w'), indent=2)
 
         elif generated_file:
             dialog_acts, golden_utts, gen_utts = self.self_ser(generated_file)
