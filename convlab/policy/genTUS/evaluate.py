@@ -135,7 +135,7 @@ class Evaluator:
         else:
             print("Calculate SER")
             missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-                nlg_eval["dialog_acts"], nlg_eval["gen_utts"])
+                nlg_eval["gen_acts"], nlg_eval["gen_utts"])
 
             print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
                 "genTUSNLG", missing, total, hallucinate, missing/total))
