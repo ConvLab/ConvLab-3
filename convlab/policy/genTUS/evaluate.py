@@ -199,6 +199,8 @@ def main():
                      args.dataset,
                      args.model_weight,
                      args.only_action)
+    print("generated_file", args.generated_file)
+    print("input_file", args.input_file)
     with torch.no_grad():
         if args.do_semantic:
             eval.evaluation(args.input_file)
