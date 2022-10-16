@@ -22,7 +22,9 @@ os.environ["WANDB_DISABLED"] = "true"
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
 TOKENIZER.add_tokens(["<?>"])
-MAX_LEN=1000
+MAX_LEN = 1000
+
+
 def arg_parser():
     parser = ArgumentParser()
     # data_name, dial_ids_order, split2ratio
@@ -33,8 +35,9 @@ def arg_parser():
     parser.add_argument("--dial-ids-order", type=int, default=0)
     parser.add_argument("--split2ratio", type=float, default=1)
     parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--model-checkpoint", type=str,
+                        default="facebook/bart-base")
     return parser.parse_args()
-
 
 
 def gentus_compute_metrics(eval_preds):
@@ -62,6 +65,7 @@ def gentus_compute_metrics(eval_preds):
     result = {k: round(v, 4) for k, v in result.items()}
     return result
 
+
 def postprocess_text(preds, labels):
     act = {"preds": [], "labels": []}
     text = {"preds": [], "labels": []}
@@ -78,6 +82,7 @@ def postprocess_text(preds, labels):
         act["labels"].append(output["action"])
         text["labels"].append([output["text"]])
     return act, text
+
 
 def parse_output(in_str):
     in_str = in_str.replace('<s>', '').replace('<\\s>', '')
@@ -99,6 +104,7 @@ def f1_measure(pred_acts, label_acts):
         result[m] = sum(result[m])/len(result[m])
 
     return result
+
 
 def tp_fn_fp(pred, label):
     tp, fn, fp = 0.0, 0.0, 0.0
@@ -138,13 +144,15 @@ class TrainerHelper:
         return os.path.join(self.base_name, model_type, 'data', self.dir_name)
 
     def get_model_folder(self, model_type):
-        folder_name = os.path.join(self.base_name, model_type, "experiments", self.dir_name)
+        folder_name = os.path.join(
+            self.base_name, model_type, "experiments", self.dir_name)
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
         return folder_name
 
     def parse_data(self, model_type, data_name, dial_ids_order=0, split2ratio=1):
-        data_folder = self._get_data_folder(model_type, data_name, dial_ids_order, split2ratio)
+        data_folder = self._get_data_folder(
+            model_type, data_name, dial_ids_order, split2ratio)
 
         raw_data = {}
         for d_type in ["train", "validation", "test"]:
@@ -178,11 +186,12 @@ class TrainerHelper:
 
         return model_inputs
 
-def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max_input_length=500, max_target_length=500):
-    model_checkpoint = "facebook/bart-base"
+
+def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max_input_length=500, max_target_length=500, model_checkpoint="facebook/bart-base"):
     tokenizer = TOKENIZER
 
-    train_helper = TrainerHelper(tokenizer=tokenizer, max_input_length=max_input_length, max_target_length=max_target_length)
+    train_helper = TrainerHelper(
+        tokenizer=tokenizer, max_input_length=max_input_length, max_target_length=max_target_length)
     data = train_helper.parse_data(model_type=model_type,
                                    data_name=data_name,
                                    dial_ids_order=dial_ids_order,
@@ -234,13 +243,15 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max
 def main():
     args = arg_parser()
     print("---> data_name", args.data_name)
-    train(model_type=args.model_type, 
-          data_name=args.data_name, 
-          dial_ids_order=args.dial_ids_order, 
+    train(model_type=args.model_type,
+          data_name=args.data_name,
+          dial_ids_order=args.dial_ids_order,
           split2ratio=args.split2ratio,
           batch_size=args.batch_size,
           max_input_length=1000,
-          max_target_length=1000)
+          max_target_length=1000,
+          model_checkpoint=args.model_checkpoint)
+
 
 if __name__ == "__main__":
     main()
