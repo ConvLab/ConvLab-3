@@ -149,6 +149,7 @@ class Evaluator:
         json.dump(nlg_eval,
                   open(os.path.join(dir_name, "nlg_eval.json"), 'w'),
                   indent=2)
+        return os.path.join(dir_name, "nlg_eval.json")
 
     def evaluation(self, input_file=None, generated_file=None):
         force_prediction = True
@@ -245,10 +246,15 @@ def main():
         if args.do_semantic:
             eval.evaluation(args.input_file)
         if args.do_nlg:
-            eval.nlg_evaluation(input_file=args.input_file,
-                                generated_file=args.generated_file,
-                                golden=args.do_golden_nlg)
-            eval.evaluation(args.input_file)
+            nlg_result = eval.nlg_evaluation(input_file=args.input_file,
+                                             generated_file=args.generated_file,
+                                             golden=args.do_golden_nlg)
+            if args.generated_file:
+                generated_file = args.generated_file
+            else:
+                generated_file = nlg_result
+            eval.evaluation(args.input_file,
+                            generated_file)
 
 
 if __name__ == '__main__':
