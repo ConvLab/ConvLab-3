@@ -61,6 +61,7 @@ class Evaluator:
             "gen_acts": [],
             "gen_utts": []
         }
+        i = 0
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
@@ -79,6 +80,9 @@ class Evaluator:
             r["golden_utts"].append(labels["text"])
             r["gen_acts"].append(usr_act)
             r["gen_utts"].append(usr_utt)
+            if i > 10:
+                break
+            i += 1
 
         return r
 

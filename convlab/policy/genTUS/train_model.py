@@ -22,7 +22,8 @@ os.environ["WANDB_DISABLED"] = "true"
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
 TOKENIZER.add_tokens(["<?>"])
-MAX_LEN = 500
+MAX_IN_LEN = 500
+MAX_OUT_LEN = 500
 
 
 def arg_parser():
@@ -45,12 +46,12 @@ def gentus_compute_metrics(eval_preds):
     if isinstance(preds, tuple):
         preds = preds[0]
     decoded_preds = TOKENIZER.batch_decode(
-        preds, skip_special_tokens=True, max_length=MAX_LEN)
+        preds, skip_special_tokens=True, max_length=MAX_OUT_LEN)
 
     # Replace -100 in the labels as we can't decode them.
     labels = np.where(labels != -100, labels, TOKENIZER.pad_token_id)
     decoded_labels = TOKENIZER.batch_decode(
-        labels, skip_special_tokens=True, max_length=MAX_LEN)
+        labels, skip_special_tokens=True, max_length=MAX_OUT_LEN)
 
     act, text = postprocess_text(decoded_preds, decoded_labels)
 
@@ -247,8 +248,8 @@ def main():
           dial_ids_order=args.dial_ids_order,
           split2ratio=args.split2ratio,
           batch_size=args.batch_size,
-          max_input_length=1000,
-          max_target_length=1000,
+          max_input_length=MAX_IN_LEN,
+          max_target_length=MAX_OUT_LEN,
           model_checkpoint=args.model_checkpoint)
 
 
