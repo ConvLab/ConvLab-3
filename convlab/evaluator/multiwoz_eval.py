@@ -5,29 +5,16 @@ import re
 import numpy as np
 
 from copy import deepcopy
-from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.evaluator.evaluator import Evaluator
 from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
+from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.util import relative_import_module_from_unified_datasets
 
-# import reflect table
-REF_SYS_DA_M = {}
-for dom, ref_slots in REF_SYS_DA.items():
-    dom = dom.lower()
-    REF_SYS_DA_M[dom] = {}
-    for slot_a, slot_b in ref_slots.items():
-        if slot_a == 'Ref':
-            slot_b = 'ref'
-        REF_SYS_DA_M[dom][slot_a.lower()] = slot_b
-    REF_SYS_DA_M[dom]['none'] = 'none'
-REF_SYS_DA_M['taxi']['phone'] = 'phone'
-REF_SYS_DA_M['taxi']['car'] = 'car type'
-
-reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
-
+DEBUG = False
+reverse_da = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', 'reverse_da')
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -73,14 +60,6 @@ DEF_VAL_NUL = 'none'  # for none
 DEF_VAL_BOOKED = 'yes'  # for booked
 DEF_VAL_NOBOOK = 'no'  # for booked
 
-NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
-
-# Not sure values in inform
-DEF_VAL_UNK = '?'  # Unknown
-DEF_VAL_DNC = 'dontcare'  # Do not care
-DEF_VAL_NUL = 'none'  # for none
-DEF_VAL_BOOKED = 'yes'  # for booked
-DEF_VAL_NOBOOK = 'no'  # for booked
 NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
 
 
@@ -226,6 +205,8 @@ class MultiWozEvaluator(Evaluator):
                     continue
                 match = 0
                 for k, v in goal[domain]['info'].items():
+                    if k == "arrive by":
+                        k = "arriveBy"
                     if k in ['destination', 'departure']:
                         tot -= 1
                     elif k == 'leaveAt':
@@ -255,7 +236,7 @@ class MultiWozEvaluator(Evaluator):
                     score.append(match / tot)
         return score
 
-    def _book_goal_constraints(self, goal, booked_states, domains=None, f=None):
+    def _book_goal_constraints(self, goal, booked_states, domains=None):
         """
         judge if the selected entity meets the booking constraint
         """
@@ -268,14 +249,12 @@ class MultiWozEvaluator(Evaluator):
                 continue
             if 'book' in goal[domain] and goal[domain]['book']:
                 tot = len(goal[domain]['book'].keys())
-                print("  > %s tot: %s" % (domain, tot), file=f)
                 if tot == 0:
                     continue
                 state = booked_states.get(domain, None)
                 if state is None:
                     # nothing has been booked but should have been
                     score.append(0)
-                    print("  > %s should have been booked but wasn't" % (domain), file=f)
                     continue
                 tracks_booking = False
                 for slot in state:
@@ -291,11 +270,11 @@ class MultiWozEvaluator(Evaluator):
                 for slot, value in goal[domain]['book'].items():
                     try:
                         value_predicted = state.get(f"book {slot}", "")
-                        print("  > %s-%s %s == %s ? %s" % (domain, slot, value_predicted, value, value == value_predicted), file=f)
                         if value == value_predicted:
                             match += 1
                     except Exception as e:
-                        print("Tracker probably does not track that slot.", e)
+                        if DEBUG:
+                            print("Tracker probably does not track that slot.", e)
                         # if tracker does not track it, it trivially matches since policy has no chance otherwise
                         match += 1
 
@@ -392,8 +371,7 @@ class MultiWozEvaluator(Evaluator):
         else:
             return score
 
-    # TODO: print matches
-    def book_rate_constrains(self, f=None, ref2goal=True, aggregate=True):
+    def book_rate_constrains(self, ref2goal=True, aggregate=True):
         if ref2goal:
             goal = self._expand(self.goal)
         else:
@@ -405,7 +383,7 @@ class MultiWozEvaluator(Evaluator):
                 d, i, s, v = da.split('-', 3)
                 if i in ['inform', 'recommend', 'offerbook', 'offerbooked'] and s in mapping[d]:
                     goal[d]['info'][mapping[d][s]] = v
-        score = self._book_goal_constraints(goal, self.booked_states, f=f)
+        score = self._book_goal_constraints(goal, self.booked_states)
         if aggregate:
             return np.mean(score) if score else None
         else:
@@ -428,7 +406,7 @@ class MultiWozEvaluator(Evaluator):
 
         return True
 
-    def inform_F1(self, f=None, ref2goal=True, aggregate=True):
+    def inform_F1(self, ref2goal=True, aggregate=True):
         if ref2goal:
             goal = self._expand(self.goal)
         else:
@@ -442,9 +420,6 @@ class MultiWozEvaluator(Evaluator):
 
         TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt = self._inform_F1_goal(
             goal, self.sys_da_array)
-        print("  bad_inform:", bad_inform, file=f)
-        print("  reqt_not_inform:", reqt_not_inform, file=f)
-        print("  inform_not_reqt:", inform_not_reqt, file=f)
         if aggregate:
             try:
                 rec = TP / (TP + FN)
@@ -459,32 +434,15 @@ class MultiWozEvaluator(Evaluator):
         else:
             return [TP, FP, FN]
 
-    def task_success(self, f=None, ref2goal=True):
+    def task_success(self, ref2goal=True):
         """
         judge if all the domains are successfully completed
         """
         booking_done = self.check_booking_done(ref2goal)
         book_sess = self.book_rate(ref2goal)
-        book_constraint_sess = self.book_rate_constrains(f, ref2goal)
-        inform_sess = self.inform_F1(f, ref2goal)
-        goal_sess = self.final_goal_analyze(f)
-
-        print("    booking_done:", booking_done, file=f)
-        print("    book_sess:", book_sess, file=f)
-        print("    book_constraint_sess:", book_constraint_sess, file=f)
-        print("    booked_states:", self.booked_states, file=f)
-        print("    inform_sess:", inform_sess, file=f)
-        print("    goal_sess:", goal_sess, file=f)
-
-        if 1: # f is not None:
-            if book_sess is not None and book_sess < 1:
-                print("> Not all domains were booked (policy)", file=f)
-            if inform_sess[1] is not None and inform_sess[1] < 1:
-                print("> Not all reqt slots were filled (policy)", file=f)
-            if goal_sess < 1:
-                print("> Not all predicted entities can be found in the database (check un- or wrongly filled slots -> DST, policy)", file=f)
-            if book_constraint_sess is not None and book_constraint_sess < 1:
-                print("> Not all booking constraints were fulfilled (check unfilled inform slots -> DST)", file=f)
+        book_constraint_sess = self.book_rate_constrains(ref2goal)
+        inform_sess = self.inform_F1(ref2goal)
+        goal_sess = self.final_goal_analyze()
 
         if ((book_sess == 1 and inform_sess[1] == 1)
             or (book_sess == 1 and inform_sess[1] is None)
@@ -612,7 +570,7 @@ class MultiWozEvaluator(Evaluator):
             match += 1
         return match, mismatch
 
-    def _final_goal_analyze(self, f=None):
+    def _final_goal_analyze(self):
         """whether the final goal satisfies constraints"""
         match = mismatch = 0
         for domain, dom_goal_dict in self.goal.items():
@@ -631,32 +589,25 @@ class MultiWozEvaluator(Evaluator):
                 domain, info_constraints + reqt_constraints)
             if not query_result:
                 mismatch += 1
-                print("  no query result for %s, %s -> mismatch + 1" % (domain, info_constraints + reqt_constraints), file=f)
                 continue
 
             booked = self.booked[domain]
             if not self.goal[domain].get('book'):
                 match += 1
-                print("  no book in goal -> match + 1", file=f)
             elif isinstance(booked, dict):
                 ref = booked['Ref']
-                print("  booked:", booked, file=f)
-                print("  found:", query_result, file=f)
                 if any(found['Ref'] == ref for found in query_result):
                     match += 1
-                    print("  match -> match + 1", file=f)
                 else:
                     mismatch += 1
-                    print("  mismatch -> mismatch + 1", file=f)
             else:
                 match += 1
-        print("  match/mismatch:", match, mismatch, file=f)
         return match, mismatch
 
-    def final_goal_analyze(self, f=None):
+    def final_goal_analyze(self):
         """percentage of domains, in which the final goal satisfies the database constraints.
         If there is no dialog action, returns 1."""
-        match, mismatch = self._final_goal_analyze(f)
+        match, mismatch = self._final_goal_analyze()
         if match == mismatch == 0:
             return 1
         else:
@@ -703,8 +654,8 @@ class MultiWozEvaluator(Evaluator):
             if intent.lower() in ['inform', 'recommend']:
                 if domain.lower() in goal:
                     if 'reqt' in goal[domain.lower()]:
-                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) \
-                                in goal[domain.lower()]['reqt']:
+                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) in goal[domain.lower()][
+                                'reqt']:
                             if val in NOT_SURE_VALS:
                                 val = '\"' + val + '\"'
                             goal[domain.lower()]['reqt'][
