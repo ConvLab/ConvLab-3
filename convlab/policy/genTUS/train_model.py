@@ -70,17 +70,16 @@ def postprocess_text(preds, labels):
     act = {"preds": [], "labels": []}
     text = {"preds": [], "labels": []}
 
-    for pred in preds:
-        output = parse_output(pred.strip())
-        act["preds"].append(output.get("action", []))
-        text["preds"].append(output.get("text", pred.strip()))
+    for pred, label in zip(preds, labels):
+        model_output = parse_output(pred.strip())
+        label_output = parse_output(label.strip())
+        if len(label["text"]) < 1:
+            continue
+        act["preds"].append(model_output.get("action", []))
+        text["preds"].append(model_output.get("text", pred.strip()))
+        act["labels"].append(label_output["action"])
+        text["labels"].append([label_output["text"]])
 
-    for i, label in enumerate(labels):
-        output = parse_output(label.strip())
-        if len(output["text"]) < 1:
-            print("output", i, label)
-        act["labels"].append(output["action"])
-        text["labels"].append([output["text"]])
     return act, text
 
 
