@@ -74,7 +74,7 @@ def postprocess_text(preds, labels):
     for pred, label in zip(preds, labels):
         model_output = parse_output(pred.strip())
         label_output = parse_output(label.strip())
-        if len(label["text"]) < 1:
+        if len(label_output["text"]) < 1:
             continue
         act["preds"].append(model_output.get("action", []))
         text["preds"].append(model_output.get("text", pred.strip()))
