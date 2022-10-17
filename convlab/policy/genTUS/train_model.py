@@ -22,7 +22,7 @@ os.environ["WANDB_DISABLED"] = "true"
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
 TOKENIZER.add_tokens(["<?>"])
-MAX_LEN = 1000
+MAX_LEN = 800
 
 
 def arg_parser():
