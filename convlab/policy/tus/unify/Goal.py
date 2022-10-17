@@ -1,7 +1,7 @@
 import time
 import json
 from convlab.policy.tus.unify.util import split_slot_name, slot_name_map
-from random import sample
+from random import sample, shuffle
 from pprint import pprint
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -34,6 +34,7 @@ def old_goal2list(goal: dict, reorder=False) -> list:
         for slot_type in ['info', 'book', 'reqt']:
             if slot_type not in goal[domain]:
                 continue
+            temp = []
             for slot in goal[domain][slot_type]:
                 s = slot
                 if slot in slot_name_map:
@@ -47,10 +48,12 @@ def old_goal2list(goal: dict, reorder=False) -> list:
                 else:
                     i = "request"
                     v = DEF_VAL_UNK
-                goal_list.append([domain, i, s, v])
-    shuffle_goal = goal_list[:1] + sample(goal_list[1:], len(goal_list)-1)
-    return shuffle_goal
-    # return goal_list
+                temp.append([domain, i, s, v])
+            shuffle(temp)
+            goal_list = goal_list + temp
+    # shuffle_goal = goal_list[:1] + sample(goal_list[1:], len(goal_list)-1)
+    # return shuffle_goal
+    return goal_list
 
 
 class Goal(object):
