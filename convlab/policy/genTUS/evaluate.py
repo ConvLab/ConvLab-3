@@ -182,9 +182,9 @@ class Evaluator:
                 dialog_result.append(d)
         else:
             gen_acts, golden_acts = [], []
-            for gen_act, golden_act in zip(gen_file['dialog']["gen_acts"], gen_file['dialog']["golden_acts"]):
-                gen_acts.append(usr_action)
-                golden_acts.append(ans_action)
+            for dialog in gen_file['dialog']:
+                gen_acts.append(dialog["gen_acts"])
+                golden_acts.append(dialog["golden_acts"])
             dialog_result = gen_file['dialog']
 
         scores = {"precision": [], "recall": [], "f1": [], "turn_acc": []}
