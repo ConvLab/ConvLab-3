@@ -29,16 +29,17 @@ belief_domains = requestable.keys()
 
 mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'name': 'name', 'phone': 'phone',
                           'post': 'postcode', 'price': 'pricerange', 'ref': 'ref',
-                          'price range': 'pricerange'},
+                          'price range': 'pricerange', 'address': 'address', 'postcode': 'postcode'},
            'hotel': {'addr': 'address', 'area': 'area', 'internet': 'internet', 'parking': 'parking', 'name': 'name',
                      'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type', 'ref': 'ref',
-                     'price range': 'pricerange'},
+                     'price range': 'pricerange', 'address': 'address', 'postcode': 'postcode'},
            'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
-                          'post': 'postcode', 'type': 'type'},
+                          'post': 'postcode', 'type': 'type', 'entrance fee': 'entrance fee'},
            'train': {'id': 'trainID', 'arrive': 'arriveBy', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
                      'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price', 'ref': 'ref',
-                     'arrive by': 'arriveBy', 'leave at': 'leaveAt'},
-           'taxi': {'car': 'car type', 'phone': 'phone'},
+                     'arrive by': 'arriveBy', 'leave at': 'leaveAt', 'departure': 'departure', 'destination': "destination", "duration": "duration", "price": "price"},
+           'taxi': {'car': 'car type', 'phone': 'phone',
+                    'car type': 'car type'},
            'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
            'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
 
@@ -208,8 +209,6 @@ class MultiWozEvaluator(Evaluator):
                     continue
                 match = 0
                 for k, v in goal[domain]['info'].items():
-                    if k == "arrive by":
-                        k = "arriveBy"
                     if k in ['destination', 'departure']:
                         tot -= 1
                     elif k == 'leaveAt':
