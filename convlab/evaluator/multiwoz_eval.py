@@ -28,13 +28,16 @@ requestable = \
 belief_domains = requestable.keys()
 
 mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'name': 'name', 'phone': 'phone',
-                          'post': 'postcode', 'price': 'pricerange', 'ref': 'ref'},
+                          'post': 'postcode', 'price': 'pricerange', 'ref': 'ref',
+                          'price range': 'pricerange'},
            'hotel': {'addr': 'address', 'area': 'area', 'internet': 'internet', 'parking': 'parking', 'name': 'name',
-                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type', 'ref': 'ref'},
+                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type', 'ref': 'ref',
+                     'price range': 'pricerange'},
            'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
                           'post': 'postcode', 'type': 'type'},
            'train': {'id': 'trainID', 'arrive': 'arriveBy', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
-                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price', 'ref': 'ref'},
+                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price', 'ref': 'ref',
+                     'arrive by': 'arriveBy', 'leave at': 'leaveAt'},
            'taxi': {'car': 'car type', 'phone': 'phone'},
            'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
            'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
