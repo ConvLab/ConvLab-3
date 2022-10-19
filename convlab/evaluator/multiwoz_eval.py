@@ -461,7 +461,6 @@ class MultiWozEvaluator(Evaluator):
                 inform_sess[1] == 1 or inform_sess[1] is None) else 0
             self.success = 0
             self.success_strict = 0
-            print("goal", self.goal)
             return 0
 
     def domain_reqt_inform_analyze(self, domain, ref2goal=True):
