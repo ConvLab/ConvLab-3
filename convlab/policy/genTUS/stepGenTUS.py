@@ -51,9 +51,9 @@ class UserActionPolicy(Policy):
 
         dataset = kwargs.get("dataset", "")
         self.kg = KnowledgeGraph(
-            tokenizer=self.tokenizer, 
+            tokenizer=self.tokenizer,
             dataset=dataset)
-        
+
         self.goal_gen = GoalGenerator()
 
         self.vector = stepGenTUSVector(
@@ -379,7 +379,24 @@ class UserActionPolicy(Policy):
         #     model_checkpoint)
 
     def get_goal(self):
-        return self.goal.domain_goals
+        goal = {}
+        for domain in self.goal.domain_goals:
+            if domain not in goal:
+                goal[domain] = {}
+            for intent in self.goal.domain_goals[domain]:
+                if intent == "inform":
+                    slot_type = "info"
+                elif intent == "request":
+                    slot_type = "reqt"
+                elif intent == "book":
+                    slot_type = "book"
+                else:
+                    print("unknown slot type")
+                if slot_type not in goal[domain]:
+                    goal[domain][slot_type] = {}
+                for slot, value in self.goal.domain_goals[domain][intent].items():
+                    goal[domain][slot_type][slot] = value
+        return goal
 
     def get_reward(self, sys_response=None):
         self.add_sys_from_reward = False if sys_response is None else True
@@ -526,7 +543,7 @@ class UserActionPolicy(Policy):
         task_complete = self.goal.task_complete()
         # goal_status = self.goal.all_mentioned()
         # should mentioned all slots
-        if task_complete :#and goal_status["complete"] > 0.6:
+        if task_complete:  # and goal_status["complete"] > 0.6:
             return True
         return False
 
@@ -631,4 +648,3 @@ if __name__ == "__main__":
     print(usr.policy.policy.goal.status)
     print(usr.response([["request", "attraction", "area", "?"]]))
     print(usr.policy.policy.goal.status)
-
