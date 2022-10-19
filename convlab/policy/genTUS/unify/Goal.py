@@ -127,8 +127,8 @@ class Goal:
                     if slot not in self.domain_goals[domain][slot_type]:
                         continue
                     # for strict success, turn this on
-                    # if status["status"] in [NOT_MENTIONED, CONFLICT]:
-                    #     return False
+                    if status["status"] in [NOT_MENTIONED]:
+                        return False
                     if "?" in status["value"]:
                         print(f"------> {domain} {slot} is not fulfilled.")
                         return False
