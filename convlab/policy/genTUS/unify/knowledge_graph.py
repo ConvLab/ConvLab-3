@@ -14,7 +14,7 @@ class KnowledgeGraph:
         print("dataset", dataset)
         self.debug = DEBUG
         self.tokenizer = tokenizer
-        
+
         if "multiwoz" in dataset:
             self.domain_intent = ["inform", "request"]
             self.general_intent = ["thank", "bye"]
@@ -98,9 +98,12 @@ class KnowledgeGraph:
             self.kg_map[map_type].add_token(token_name, token_name)
 
     def _get_max_score(self, outputs, candidate_list, map_type):
+        score = {}
         if not candidate_list:
             print(f"ERROR: empty candidate list for {map_type}")
-        score = {}
+            score[1] = {"token_id": self._get_token_id(
+                "none"), "token_name": "none"}
+
         for x in candidate_list:
             hash_id = self._get_token_id(x)[0]
             s = outputs[:, hash_id].item()

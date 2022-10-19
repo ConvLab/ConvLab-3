@@ -40,7 +40,8 @@ mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'na
                      'arrive by': 'arriveBy', 'leave at': 'leaveAt', 'departure': 'departure', 'destination': "destination", "duration": "duration", "price": "price"},
            'taxi': {'car': 'car type', 'phone': 'phone',
                     'car type': 'car type'},
-           'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
+           'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department',
+                        'postcode': 'postcode', 'address': 'address'},
            'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
 
 
