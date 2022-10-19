@@ -25,7 +25,7 @@ import signal
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
-                "Id": "trainid", "ref": "reference"}
+                "Id": "train id", "ref": "reference", "trainID": "train id"}
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
