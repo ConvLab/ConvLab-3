@@ -1,6 +1,8 @@
 import time
 import json
 from convlab.policy.tus.unify.util import split_slot_name, slot_name_map
+from convlab.util.custom_util import slot_mapping
+
 from random import sample, shuffle
 from pprint import pprint
 DEF_VAL_UNK = '?'  # Unknown
@@ -48,6 +50,7 @@ def old_goal2list(goal: dict, reorder=False) -> list:
                 else:
                     i = "request"
                     v = DEF_VAL_UNK
+                s = slot_mapping.get(s, s)
                 temp.append([domain, i, s, v])
             shuffle(temp)
             goal_list = goal_list + temp
@@ -130,7 +133,7 @@ class Goal(object):
                     if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
                         # print(f"not fulfilled request{domain}-{slot}")
                         return False
-        
+
         return True
 
     def init_local_id(self):
