@@ -33,7 +33,6 @@ class Goal:
         self._init_goal_from_data(goal)
         self._init_status()
 
-
     def __str__(self):
         return '-----Goal-----\n' + \
                json.dumps(self.domain_goals, indent=4) + \
@@ -130,6 +129,7 @@ class Goal:
                     # if status["status"] in [NOT_MENTIONED, CONFLICT]:
                     #     return False
                     if "?" in status["value"]:
+                        print(f"------> {domain} {slot} is not fulfilled.")
                         return False
 
         return True
