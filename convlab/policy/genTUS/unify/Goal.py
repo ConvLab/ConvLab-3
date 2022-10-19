@@ -5,7 +5,7 @@ import json
 from convlab.policy.tus.unify.Goal import old_goal2list
 from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal as ABUS_Goal
-
+from convlab.util.custom_util import slot_mapping
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
@@ -29,6 +29,7 @@ class Goal:
         self.domains = []
         self.domain_goals = {}
         self.status = {}
+        self.invert_slot_mapping = {v: k for k, v in slot_mapping.items()}
 
         self._init_goal_from_data(goal)
         self._init_status()
