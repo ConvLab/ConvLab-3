@@ -127,7 +127,7 @@ class Goal:
                     if slot not in self.domain_goals[domain][slot_type]:
                         continue
                     # for strict success, turn this on
-                    if status["status"] in [NOT_MENTIONED, CONFLICT, REQUESTED]:
+                    if status["status"] in [NOT_MENTIONED, CONFLICT]:
                         if status["status"] == CONFLICT and slot in ["arrive by", "leave at"]:
                             continue
                         print(
