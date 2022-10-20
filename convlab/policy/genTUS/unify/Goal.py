@@ -130,11 +130,8 @@ class Goal:
                     if status["status"] in [NOT_MENTIONED, CONFLICT]:
                         if status["status"] == CONFLICT and slot in ["arrive by", "leave at"]:
                             continue
-                        print(
-                            f"------> {domain} {slot} is {status['status']}", status)
                         return False
                     if "?" in status["value"]:
-                        print(f"------> {domain} {slot} is not fulfilled.")
                         return False
 
         return True

@@ -346,7 +346,6 @@ class UserActionPolicy(Policy):
             self._read_goal(goal)
 
         self.vector.init_session(goal=self.goal)
-        print("goal", self.goal)
 
         self.terminated = False
         self.add_sys_from_reward = False
