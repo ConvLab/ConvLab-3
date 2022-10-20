@@ -5,6 +5,7 @@ from zipfile import ZipFile
 import importlib
 from tabulate import tabulate
 import random
+import string
 
 special_values = ['', 'dontcare', None, '?']
 
@@ -135,7 +136,7 @@ def check_dialogues(name, dialogues, ontology):
         if 'domains' in dialogue:
             cur_domains = dialogue['domains']
             assert isinstance(cur_domains, list), f'{dialogue_id}\t`domains` is expected to be list type, '
-            assert len(set(cur_domains)) == len(cur_domains), f'{dialogue_id}\trepeated domains'
+            # assert len(set(cur_domains)) == len(cur_domains), f'{dialogue_id}\trepeated domains' # allow repeated domains
             cur_stat['domains'] += len(cur_domains)
             cur_domains = set(cur_domains)
             for domain_name in cur_domains:
@@ -193,7 +194,15 @@ def check_dialogues(name, dialogues, ontology):
                 assert turns[turn_id - 1]['speaker'] != turn['speaker'], f'{dialogue_id}:{turn_id}\tuser and system should speak alternatively'
 
             utterance = turn['utterance']
-            cur_stat['tokens'] += len(utterance.strip().split(' '))
+            count_zh = 0
+            for s in utterance.strip():
+                # for Chinese
+                if '\u4e00' <= s <= '\u9fff':
+                    count_zh += 1
+            if count_zh > 0:
+                cur_stat['tokens'] += count_zh
+            else:
+                cur_stat['tokens'] += len(utterance.strip().split(' '))
 
             if 'dialogue_acts' in turn:
                 dialogue_acts = turn['dialogue_acts']
@@ -235,7 +244,7 @@ def check_dialogues(name, dialogues, ontology):
                     db_results = turn['db_results']
                     assert isinstance(db_results, dict), f'{dialogue_id}:{turn_id}\db_results should be a dict'
                     for domain_name, results in db_results.items():
-                        assert domain_name in cur_domains, f'{dialogue_id}:{turn_id}:db_results\t{domain_name} not presented in current domains'
+                        # assert domain_name in cur_domains, f'{dialogue_id}:{turn_id}:db_results\t{domain_name} not presented in current domains' # allow query other domains
                         assert isinstance(results, list)
 
     for _, value_match in match_rate.items():

@@ -53,7 +53,7 @@ python ../run_seq2seq.py \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --learning_rate ${lr} \
     --num_train_epochs ${num_train_epochs} \
-    --adafactor \
+    --optim adafactor \
     --gradient_checkpointing
 
 python ../run_seq2seq.py \
@@ -78,7 +78,7 @@ python ../run_seq2seq.py \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --learning_rate ${lr} \
     --num_train_epochs ${num_train_epochs} \
-    --adafactor \
+    --optim adafactor \
     --gradient_checkpointing
 
 python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
