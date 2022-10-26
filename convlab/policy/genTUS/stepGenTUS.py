@@ -20,6 +20,7 @@ class UserActionPolicy(Policy):
         self.mode = mode
         # if mode == "semantic" and only_action:
         #     # only generate semantic action in prediction
+        print("model_checkpoint", model_checkpoint)
         self.only_action = only_action
         if self.only_action:
             print("change mode to semantic because only_action=True")
@@ -633,7 +634,7 @@ if __name__ == "__main__":
 
     set_seed(20220220)
     # Test semantic level behaviour
-    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21_0_1.0/22-10-10-13-55'
+    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21_0_1.0'
     usr_policy = UserPolicy(
         model_checkpoint,
         mode="semantic")

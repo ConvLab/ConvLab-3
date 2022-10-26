@@ -35,9 +35,9 @@ mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'na
                      'price range': 'pricerange', 'address': 'address', 'postcode': 'postcode'},
            'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
                           'post': 'postcode', 'type': 'type', 'entrance fee': 'entrance fee'},
-           'train': {'id': 'trainID', 'arrive': 'arriveBy', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
-                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price', 'ref': 'ref',
-                     'arrive by': 'arriveBy', 'leave at': 'leaveAt', 'departure': 'departure', 'destination': "destination", "duration": "duration", "price": "price"},
+           'train': {'id': 'train id', 'arrive': 'arrive by', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
+                     'time': 'duration', 'leave': 'leave at', 'ticket': 'price', 'ref': 'ref',
+                     'arrive by': 'arrive by', 'leave at': 'leave at', 'departure': 'departure', 'destination': "destination", "duration": "duration", "price": "price"},
            'taxi': {'car': 'car type', 'phone': 'phone',
                     'car type': 'car type'},
            'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department',
@@ -59,6 +59,7 @@ for dom, ref_slots in REF_SYS_DA.items():
     REF_SYS_DA_M[dom]['none'] = 'none'
 REF_SYS_DA_M['taxi']['phone'] = 'phone'
 REF_SYS_DA_M['taxi']['car'] = 'car type'
+REF_SYS_DA_M['train']['id'] = 'train id'
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
@@ -327,12 +328,13 @@ class MultiWozEvaluator(Evaluator):
                     # print('FP + 1 @2', k)
                     inform_not_reqt.add(('inform', domain, k,))
                     FP += 1
+
         return TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt
 
     def _check_value(self, domain, key, value):
         if key == "area":
             return value.lower() in ["centre", "east", "south", "west", "north"]
-        elif key == "arriveBy" or key == "leaveAt":
+        elif key == "arriveBy" or key == "leaveAt" or key == "arrive by" or key == "leave at":
             return time_re.match(value)
         elif key == "day":
             return value.lower() in ["monday", "tuesday", "wednesday", "thursday", "friday",
@@ -345,13 +347,13 @@ class MultiWozEvaluator(Evaluator):
             return re.match(r'^\d{11}$', value) or domain == "restaurant"
         elif key == "price":
             return 'pound' in value
-        elif key == "pricerange":
+        elif key == "pricerange" or key == "price range":
             return value in ["cheap", "expensive", "moderate", "free"] or domain == "attraction"
         elif key == "postcode":
             return re.match(r'^cb\d{1,3}[a-z]{2,3}$', value) or value == 'pe296fl'
         elif key == "stars":
             return re.match(r'^\d$', value)
-        elif key == "trainID":
+        elif key == "trainID" or key == "train id":
             return re.match(r'^tr\d{4}$', value.lower())
         else:
             return True
@@ -654,6 +656,7 @@ class MultiWozEvaluator(Evaluator):
                 slot = reverse_da_slot_name_map[domain][slot]
             else:
                 slot = slot.capitalize()
+
             if intent.lower() in ['inform', 'recommend']:
                 if domain.lower() in goal:
                     if 'reqt' in goal[domain.lower()]:
