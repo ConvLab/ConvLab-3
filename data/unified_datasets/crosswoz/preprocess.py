@@ -432,9 +432,6 @@ def preprocess():
             split = 'validation'
     
         for ori_dialog_id, ori_dialog in data.items():
-            if ori_dialog_id in ['10550', '11724']:
-                # skip error dialog
-                continue
             dialogue_id = f'{dataset}-{split}-{len(dialogues_by_split[split])}'
 
             # get user goal and involved domains
@@ -456,15 +453,20 @@ def preprocess():
             }
 
             for turn_id, turn in enumerate(ori_dialog['messages']):
+                # skip error turns
                 if ori_dialog_id == '2660' and turn_id in [8,9]:
-                    # skip error turns
                     continue
                 elif ori_dialog_id == '7467' and turn_id in [14,15]:
-                    # skip error turns
                     continue
                 elif ori_dialog_id == '11726' and turn_id in [4,5]:
-                    # skip error turns
                     continue
+                elif ori_dialog_id == '10550' and turn_id == 6:
+                    dialogue['user_state_final'] = dialogue['turns'][-2]['user_state']
+                    break
+                elif ori_dialog_id == '11724' and turn_id == 8:
+                    dialogue['user_state_final'] = dialogue['turns'][-2]['user_state']
+                    break
+
                 speaker = 'user' if turn['role'] == 'usr' else 'system'
                 utt = turn['content']
 
