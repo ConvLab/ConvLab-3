@@ -505,8 +505,7 @@ if __name__ == "__main__":
 
     from convlab.util.unified_datasets_util import BaseDatabase
     database = load_database('multiwoz21')
-    res = database.query("train", [['departure', 'cambridge'], [
-                         'destination', 'peterborough'], ['day', 'tuesday'], ['arrive by', '11:15']], topk=3)
+    res = database.query("train", {'train':{'departure':'cambridge', 'destination':'peterborough', 'day':'tuesday', 'arrive by':'11:15'}}, topk=3)
     print(res[0], len(res))
 
     data_by_split = load_nlu_data(dataset, data_split='test', speaker='user')

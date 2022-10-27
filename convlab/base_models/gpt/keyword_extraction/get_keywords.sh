@@ -1,23 +1,25 @@
 task_name="lm"
-dataset_name=$1
 model_type="gpt"
-data_dir="data/${task_name}/${dataset_name}/${model_type}"
 model_name_or_path="gpt2-large"
 keywords_num=100
-keywords_ratio=0.4
-keywords_th_ratio=0
+keywords_ratio=0.3
+keywords_loss_th=0
 stopwords=True
-for data_split in validation test train
+for dataset_name in dailydialog metalwoz tm1 tm2 tm3 sgd reddit wikidialog
 do
-    word_loss_file="${data_dir}/${model_name_or_path}_${dataset_name}_${data_split}_word_loss.json"
-    output_file="${data_dir}/${dataset_name}_${data_split}_keywords_${model_name_or_path}_topk_${keywords_num}_ratio_${keywords_ratio}_th_${keywords_th_ratio}_stopwords_${stopwords}.json"
-
-    python lmloss2keywords.py \
-        --model_type ${model_type} \
-        --word_loss_file ${word_loss_file} \
-        --keywords_num ${keywords_num} \
-        --keywords_ratio ${keywords_ratio} \
-        --keywords_th_ratio ${keywords_th_ratio} \
-        --stopwords ${stopwords} \
-        --output_file ${output_file}
+    data_dir="data/${task_name}/${model_type}/${dataset_name}"
+    for data_split in validation train
+    do
+        token_loss_file="${data_dir}/token_loss_${data_split}.json"
+        output_file="${data_dir}/keywords_${data_split}.json"
+        python lmloss2keywords.py \
+            --model_type ${model_type} \
+            --model_name_or_path ${model_name_or_path} \
+            --token_loss_file ${token_loss_file} \
+            --keywords_num ${keywords_num} \
+            --keywords_ratio ${keywords_ratio} \
+            --keywords_loss_th ${keywords_loss_th} \
+            --stopwords ${stopwords} \
+            --output_file ${output_file}
+    done
 done

@@ -11,19 +11,31 @@ def evaluate(predict_result):
     for sample in predict_result:
         pred_state = sample['predictions']['state']
         gold_state = sample['state']
-        predicts = sorted(list({(domain, slot, ''.join(value.split()).lower()) for domain in pred_state for slot, value in pred_state[domain].items() if len(value)>0}))
-        labels = sorted(list({(domain, slot, ''.join(value.split()).lower()) for domain in gold_state for slot, value in gold_state[domain].items() if len(value)>0}))
-
         flag = True
-        for ele in predicts:
-            if ele in labels:
-                metrics['TP'] += 1
-            else:
-                metrics['FP'] += 1
-        for ele in labels:
-            if ele not in predicts:
-                metrics['FN'] += 1
-        flag &= (predicts==labels)
+        for domain in gold_state:
+            for slot, values in gold_state[domain].items():
+                if domain not in pred_state or slot not in pred_state[domain]:
+                    predict_values = ''
+                else:
+                    predict_values = ''.join(pred_state[domain][slot].split()).lower()
+                if len(values) > 0:
+                    if len(predict_values) > 0:
+                        values = [''.join(value.split()).lower() for value in values.split('|')]
+                        predict_values = [''.join(value.split()).lower() for value in predict_values.split('|')]
+                        if any([value in values for value in predict_values]):
+                            metrics['TP'] += 1
+                        else:
+                            metrics['FP'] += 1
+                            metrics['FN'] += 1
+                            flag = False
+                    else:
+                        metrics['FN'] += 1
+                        flag = False
+                else:
+                    if len(predict_values) > 0:
+                        metrics['FP'] += 1
+                        flag = False
+
         acc.append(flag)
     
     TP = metrics.pop('TP')

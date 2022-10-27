@@ -38,7 +38,13 @@ class Database(BaseDatabase):
         }
 
     def query(self, domain: str, state: dict, topk: int, ignore_open=False, soft_contraints=(), fuzzy_match_ratio=60) -> list:
-        """return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state."""
+        """
+        return a list of topk entities (dict containing slot-value pairs) for a given domain based on the dialogue state.
+        :param state: support two formats: 1) [[slot,value], [slot,value]...]; 2) {domain: {slot: value, slot: value...}} (the same as belief state)
+        """
+        if isinstance(state, dict):
+            assert domain in state, print(f"domain {domain} not in state {state}")
+            state = state[domain].items()
         # query the db
         if domain == 'taxi':
             return [{'taxi_colors': random.choice(self.dbs[domain]['taxi_colors']),
@@ -106,6 +112,9 @@ if __name__ == '__main__':
     db = Database()
     assert issubclass(Database, BaseDatabase)
     assert isinstance(db, BaseDatabase)
-    res = db.query("restaurant", [['price range', 'expensive']], topk=3)
-    print(res, len(res))
+    # both calls will be ok
+    res1 = db.query("restaurant", [['price range', 'expensive']], topk=3)
+    res2 = db.query("restaurant", {'restaurant':{'price range': 'expensive'}}, topk=3)
+    assert res1 == res2
+    print(res1, len(res1))
     # print(db.query("hotel", [['price range', 'moderate'], ['stars','4'], ['type', 'guesthouse'], ['internet', 'yes'], ['parking', 'no'], ['area', 'east']]))

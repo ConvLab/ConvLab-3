@@ -36,6 +36,9 @@ def preprocess():
             'turns': []
         }
         for speaker, utterance in zip(item['author_num'], item['utterances']):
+            if len(utterance) > 256:
+                # remove dialogs that contain too long utterances
+                return None
             speaker = 'system' if speaker == 0 else 'user'
             turn = {
                 'speaker': speaker,
@@ -46,21 +49,25 @@ def preprocess():
         return dialogue
             
     data_split = 'train'
-    for shard in tqdm(range(1)):
+    for shard in tqdm(range(99)):
         with gzip.open(f'{original_data_dir}/data_train.jsonl-000{shard:02}-of-00099.gz','r') as fin:
             for line in fin:
                 dial_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
                 dialogue = process_dial(line, dial_id, data_split)
-                dialogues_by_split[data_split].append(dialogue)
+                if dialogue:
+                    dialogues_by_split[data_split].append(dialogue)
+                if len(dialogues_by_split[data_split]) >= 1e6:
+                    break
+        if len(dialogues_by_split[data_split]) >= 1e6:
+            break
 
     data_split = 'validation'
     with gzip.open(f'{original_data_dir}/data_validation.jsonl.gz','r') as fin:
         for line in fin:
+            dial_id = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
             dialogue = process_dial(line, dial_id, data_split)
-            dialogue['dialogue_id'] = f'{dataset}-{data_split}-{len(dialogues_by_split[data_split])}'
-            dialogues_by_split[data_split].append(dialogue)
-            if len(dialogues_by_split[data_split]) >= len(dialogues_by_split['train']) // 10:
-                break
+            if dialogue:
+                dialogues_by_split[data_split].append(dialogue)
     
     dialogues = dialogues_by_split['train']+dialogues_by_split['validation']
     json.dump(dialogues[:10], open(f'dummy_data.json', 'w', encoding='utf-8'), indent=2, ensure_ascii=False)

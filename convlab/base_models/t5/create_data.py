@@ -65,6 +65,11 @@ def create_dst_data(dataset, data_dir, args):
                 context = '\n'.join([f"{turn['speaker']}: {turn['utterance']}" for turn in sample['context']]+[response])
             else:
                 context = response
+            for domain in sample['state']:
+                for slot in sample['state'][domain]:
+                    vs = sample['state'][domain][slot].split('|')
+                    # only the first variation of value
+                    sample['state'][domain][slot] = vs[0]
             state_seq = serialize_dialogue_state(sample['state'])
             assert equal_state_seq(sample['state'], state_seq), print(sample['state'], state_seq, deserialize_dialogue_state(state_seq))
             data.append(json.dumps({'context': context, 'state_seq': state_seq}, ensure_ascii=False)+'\n')

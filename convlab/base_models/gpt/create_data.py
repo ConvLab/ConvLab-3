@@ -35,5 +35,5 @@ if __name__ == '__main__':
     for dataset_name in tqdm(args.datasets, desc='datasets'):
         dataset = load_dataset(dataset_name)
         for task_name in tqdm(args.tasks, desc='tasks', leave=False):
-            data_dir = os.path.join('data', task_name, dataset_name, args.model_type)
+            data_dir = os.path.join('data', task_name, args.model_type, dataset_name)
             eval(f"create_{task_name}_data")(dataset, data_dir, args)

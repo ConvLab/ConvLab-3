@@ -15,31 +15,6 @@ import csv
 import random
 
 
-def value_in_utt(value, utt):
-    """return character level (start, end) if value in utt"""
-    value = value.strip(punctuation).lower()
-    utt = utt
-    p = '(^|[\s,\.:\?!-])(?P<v>{})([\s,\.:\?!-\']|$)'.format(re.escape(value))
-    p = re.compile(p, re.I)
-    m = re.search(p, utt)
-    if m:
-        # very few value appears more than once, take the first span
-        return True, m.span('v')
-    else:
-        try:
-            # solve date representation, e.g. '3 pm' vs '3pm'
-            date_parser.parse(value)
-            if (value.endswith('pm') or value.endswith('am')) and ''.join(value.split(' ')) in ''.join(utt.split(' ')):
-                return True, None
-            
-        except:
-            if value in utt:
-                # value appears, but may be in the plural, -ing, -ly, etc.
-                return True, None
-
-    return False, None
-
-
 def preprocess():
     random.seed(42)
 

@@ -149,6 +149,9 @@ class DataTrainingArguments:
             "help": "An optional metric name or file to evaluate the model."
         },
     )
+    metric_config_name: Optional[str] = field(
+        default=None, metadata={"help": "The configuration name of the metric to use (via the datasets library)."}
+    )
     overwrite_cache: bool = field(
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
     )
@@ -317,8 +320,17 @@ def main():
     # download the dataset.
     if data_args.dataset_name is not None:
         # Downloading and loading a dataset from the hub.
+        data_files = {}
+        if data_args.train_file is not None:
+            data_files["train"] = data_args.train_file
+        if data_args.validation_file is not None:
+            data_files["validation"] = data_args.validation_file
+        if data_args.test_file is not None:
+            data_files["test"] = data_args.test_file
+        
         raw_datasets = load_dataset(
-            data_args.dataset_name, data_args.dataset_config_name, cache_dir=model_args.cache_dir
+            data_args.dataset_name, data_args.dataset_config_name, cache_dir=model_args.cache_dir,
+            data_files=data_files if len(data_files) > 0 else None
         )
     else:
         data_files = {}
@@ -528,7 +540,7 @@ def main():
 
     # compute custom metric at evaluation.
     if data_args.metric_name_or_path:
-        metric = load_metric(data_args.metric_name_or_path)
+        metric = load_metric(data_args.metric_name_or_path, data_args.metric_config_name)
     # Must take a EvalPrediction and return a dictionary string to metric values.
     def compute_metrics(p: EvalPrediction):
         preds, labels = p.predictions, p.label_ids
