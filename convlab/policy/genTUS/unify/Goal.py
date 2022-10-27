@@ -30,6 +30,7 @@ class Goal:
         self.domain_goals = {}
         self.status = {}
         self.invert_slot_mapping = {v: k for k, v in slot_mapping.items()}
+        self.raw_goal = None
 
         self._init_goal_from_data(goal)
         self._init_status()
@@ -43,12 +44,15 @@ class Goal:
         if not goal:
             goal_gen = GoalGenerator()
             old_goal = goal_gen.get_user_goal()
+            self.raw_goal = old_goal
             goal = old_goal2list(old_goal)
 
         elif isinstance(goal, dict):
+            self.raw_goal = goal
             goal = old_goal2list(goal)
 
         elif isinstance(goal, ABUS_Goal):
+            self.raw_goal = goal.domain_goals
             goal = old_goal2list(goal.domain_goals)
 
         # be careful of this order

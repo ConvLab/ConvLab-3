@@ -380,6 +380,8 @@ class UserActionPolicy(Policy):
         #     model_checkpoint)
 
     def get_goal(self):
+        if self.goal.raw_goal is not None:
+            return self.goal.raw_goal
         goal = {}
         for domain in self.goal.domain_goals:
             if domain not in goal:

@@ -35,7 +35,7 @@ mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'na
                      'price range': 'pricerange', 'address': 'address', 'postcode': 'postcode'},
            'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
                           'post': 'postcode', 'type': 'type', 'entrance fee': 'entrance fee'},
-           'train': {'id': 'train id', 'arrive': 'arrive by', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
+           'train': {'id': 'trainID', 'arrive': 'arrive by', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
                      'time': 'duration', 'leave': 'leave at', 'ticket': 'price', 'ref': 'ref',
                      'arrive by': 'arrive by', 'leave at': 'leave at', 'departure': 'departure', 'destination': "destination", "duration": "duration", "price": "price"},
            'taxi': {'car': 'car type', 'phone': 'phone',
