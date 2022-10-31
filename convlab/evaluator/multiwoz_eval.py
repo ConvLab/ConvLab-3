@@ -319,6 +319,7 @@ class MultiWozEvaluator(Evaluator):
                 else:
                     # print('FN + 1')
                     reqt_not_inform.add(('request', domain, k))
+                    print("reqt_not_inform.add(('request', domain, k))", domain, k)
                     FN += 1
             for k in inform_slot[domain]:
                 # exclude slots that are informed by users
@@ -425,6 +426,9 @@ class MultiWozEvaluator(Evaluator):
 
         TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt = self._inform_F1_goal(
             goal, self.sys_da_array)
+        if len(reqt_not_inform) > 0:
+            print("bad_inform", bad_inform)
+            print("reqt_not_inform", reqt_not_inform)
         if aggregate:
             try:
                 rec = TP / (TP + FN)
@@ -459,6 +463,14 @@ class MultiWozEvaluator(Evaluator):
                 book_constraint_sess == 1 or book_constraint_sess is None) else 0
             return self.success if not self.check_book_constraints else self.success_strict
         else:
+            print("===== fail reason =====")
+            if goal_sess != 1:
+                print("goal_sess", goal_sess)
+            if book_sess is not None and book_sess < 1:
+                print("book_sess", book_sess)
+            if inform_sess[1] is not None and inform_sess[1] < 1:
+                print("inform_sess", inform_sess)
+
             self.complete = 1 if booking_done and (
                 inform_sess[1] == 1 or inform_sess[1] is None) else 0
             self.success = 0

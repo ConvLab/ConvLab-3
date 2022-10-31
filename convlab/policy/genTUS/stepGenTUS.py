@@ -26,8 +26,9 @@ class UserActionPolicy(Policy):
             print("change mode to semantic because only_action=True")
             self.mode = "semantic"
         self.max_in_len = 500
-        self.max_out_len = 100 if only_action else 200
-        max_act_len = kwargs.get("max_act_len", 3)
+        self.max_out_len = 50 if only_action else 200
+        max_act_len = kwargs.get("max_act_len", 2)
+        print("max_act_len", max_act_len)
         self.max_action_len = max_act_len
         if "max_act_len" in kwargs:
             self.max_out_len = 30 * self.max_action_len
@@ -65,7 +66,7 @@ class UserActionPolicy(Policy):
         self.usr_act_penalize = kwargs.get("usr_act_penalize", 0)
         self.goal_list_type = kwargs.get("goal_list_type", "normal")
         self.update_mode = kwargs.get("update_mode", "normal")
-        self.max_history = kwargs.get("max_history", 1)
+        self.max_history = kwargs.get("max_history", 3)
         self.init_session()
 
     def _update_seq(self, sub_seq: list, pos: int):
@@ -347,6 +348,8 @@ class UserActionPolicy(Policy):
             self._read_goal(goal)
 
         self.vector.init_session(goal=self.goal)
+        print("="*20)
+        print("goal for GenTUS", self.goal)
 
         self.terminated = False
         self.add_sys_from_reward = False
