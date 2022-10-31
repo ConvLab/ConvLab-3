@@ -5,19 +5,18 @@ from copy import deepcopy
 
 import torch
 from convlab.policy.policy import Policy
-from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import (
-    act_dict_to_flat_tuple, unified_format)
 from convlab.policy.tus.multiwoz.transformer import TransformerActionPrediction
 from convlab.policy.tus.unify.Goal import Goal
 from convlab.policy.tus.unify.usermanager import BinaryFeature
-from convlab.policy.tus.unify.util import (create_goal, int2onehot,
-                                           metadata2state, parse_dialogue_act,
-                                           parse_user_goal, split_slot_name)
+from convlab.policy.tus.unify.util import create_goal, split_slot_name
 from convlab.util import (load_dataset,
                           relative_import_module_from_unified_datasets)
 from convlab.util.custom_util import model_downloader
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA
-from pprint import pprint
+from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.policy.tus.unify.Goal import old_goal2list
+from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal as ABUS_Goal
+
+
 reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
@@ -51,7 +50,7 @@ class UserActionPolicy(Policy):
         self.user = TransformerActionPrediction(self.config).to(device=DEVICE)
         if pretrain:
             model_path = os.path.join(
-                self.config["model_dir"], self.config["model_name"])
+                self.config["model_dir"], "model-non-zero")# self.config["model_name"])
             print(f"loading model from {model_path}...")
             self.load(model_path)
         self.user.eval()
@@ -61,6 +60,7 @@ class UserActionPolicy(Policy):
         self.reward = {"success": 40,
                        "fail": -20}
         self.sys_acts = []
+        self.goal_gen = GoalGenerator()
 
     def _no_offer(self, system_in):
         for intent, domain, slot, value in system_in:
@@ -127,13 +127,14 @@ class UserActionPolicy(Policy):
         self.topic = 'NONE'
         remove_domain = "police"  # remove police domain in inference
 
-        # if not goal:
-        #     self.new_goal(remove_domain=remove_domain)
-        # else:
-        #     self.read_goal(goal)
         if not goal:
-            data = load_dataset(self.dataset, 0)
-            goal = Goal(create_goal(data["test"][0]))
+            old_goal = self.goal_gen.get_user_goal()
+            goal_list = old_goal2list(old_goal)
+            goal = Goal(goal_list)
+
+        elif type(goal) == ABUS_Goal:
+            goal_list = old_goal2list(goal.domain_goals)
+            goal = Goal(goal_list)
 
         self.read_goal(goal)
         self.feat_handler.initFeatureHandeler(self.goal)
@@ -155,15 +156,15 @@ class UserActionPolicy(Policy):
         else:
             self.goal = Goal(goal=data_goal)
 
-    def new_goal(self, remove_domain="police", domain_len=None):
-        keep_generate_goal = True
-        while keep_generate_goal:
-            self.goal = Goal(goal_generator=self.goal_gen)
-            if (domain_len and len(self.goal.domains) != domain_len) or \
-                    (remove_domain and remove_domain in self.goal.domains):
-                keep_generate_goal = True
-            else:
-                keep_generate_goal = False
+    # def new_goal(self, remove_domain="police", domain_len=None):
+    #     keep_generate_goal = True
+    #     while keep_generate_goal:
+    #         self.goal = Goal(goal_generator=self.goal_gen)
+    #         if (domain_len and len(self.goal.domains) != domain_len) or \
+    #                 (remove_domain and remove_domain in self.goal.domains):
+    #             keep_generate_goal = True
+    #         else:
+    #             keep_generate_goal = False
 
     def load(self, model_path=None):
         self.user.load_state_dict(torch.load(model_path, map_location=DEVICE))
@@ -403,16 +404,32 @@ class UserPolicy(Policy):
             self.config = json.load(open(config))
         else:
             self.config = config
-        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}'
+        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}/multiwoz'
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),
                              "https://zenodo.org/record/5779832/files/default.zip")
+        self.slot2dbattr = {
+            'open hours': 'openhours',
+            'price range': 'pricerange',
+            'arrive by': 'arriveBy',
+            'leave at': 'leaveAt',
+            'train id': 'trainID'
+        }
+        self.dbattr2slot = {}
+        for k,v in self.slot2dbattr.items():
+            self.dbattr2slot[v] = k
 
         self.policy = UserActionPolicy(self.config)
 
     def predict(self, state):
-        return self.policy.predict(state)
+        raw_act = self.policy.predict(state)
+        act = []
+        for intent, domain, slot, value in raw_act:
+            if slot in self.dbattr2slot:
+                slot = self.dbattr2slot[slot]
+            act.append([intent, domain, slot, value])
+        return act
 
     def init_session(self, goal=None):
         self.policy.init_session(goal)
@@ -424,13 +441,6 @@ class UserPolicy(Policy):
         return self.policy.get_reward()
 
     def get_goal(self):
-        slot2dbattr = {
-            'open hours': 'openhours',
-            'price range': 'pricerange',
-            'arrive by': 'arriveBy',
-            'leave at': 'leaveAt',
-            'train id': 'trainID'
-        }
         if hasattr(self.policy, 'get_goal'):
             # workaround: convert goal to old format
             multiwoz_goal = {}
@@ -449,8 +459,8 @@ class UserPolicy(Policy):
                                 multiwoz_goal[domain]["book"] = {}
                             norm_slot = slot.split(' ')[-1]
                             multiwoz_goal[domain]["book"][norm_slot] = value
-                        elif slot in slot2dbattr:
-                            norm_slot = slot2dbattr[slot]
+                        elif slot in self.slot2dbattr:
+                            norm_slot = self.slot2dbattr[slot]
                             multiwoz_goal[domain][slot_type][norm_slot] = value
                         else:
                             multiwoz_goal[domain][slot_type][slot] = value

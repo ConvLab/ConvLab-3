@@ -18,7 +18,6 @@
 import os
 
 import torch
-import transformers
 from torch.nn import Module
 from transformers import RobertaConfig, BertConfig
 
@@ -29,8 +28,13 @@ MODELS = {'bert': BertSetSUMBT, 'roberta': RobertaSetSUMBT}
 
 
 class EnsembleSetSUMBT(Module):
+    """Ensemble SetSUMBT Model for joint ensemble prediction"""
 
     def __init__(self, config):
+        """
+        Args:
+            config (configuration): Model configuration class
+        """
         super(EnsembleSetSUMBT, self).__init__()
         self.config = config
 
@@ -38,75 +42,98 @@ class EnsembleSetSUMBT(Module):
         model_cls = MODELS[self.config.model_type]
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             setattr(self, attr, model_cls(config))
-    
 
-    # Load all ensemble memeber parameters
-    def load(self, path, config=None):
-        if config is None:
-            config = self.config
-        
+    def _load(self, path: str):
+        """
+        Load parameters
+        Args:
+            path: Location of model parameters
+        """
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             idx = attr.split('_', 1)[-1]
             state_dict = torch.load(os.path.join(path, f'pytorch_model_{idx}.bin'))
             getattr(self, attr).load_state_dict(state_dict)
-    
 
-    # Add new slot candidates to the ensemble members
-    def add_slot_candidates(self, slot_candidates):
+    def add_slot_candidates(self, slot_candidates: tuple):
+        """
+        Add slots to the model ontology, the tuples should contain the slot embedding, informable value embeddings
+        and a request indicator, if the informable value embeddings is None the slot is not informable and if
+        the request indicator is false the slot is not requestable.
+
+        Args:
+            slot_candidates: Tuple containing slot embedding, informable value embeddings and a request indicator
+        """
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             getattr(self, attr).add_slot_candidates(slot_candidates)
-        self.requestable_slot_ids = self.model_0.requestable_slot_ids
-        self.informable_slot_ids = self.model_0.informable_slot_ids
-        self.domain_ids = self.model_0.domain_ids
+        self.requestable_slot_ids = self.model_0.setsumbt.requestable_slot_ids
+        self.informable_slot_ids = self.model_0.setsumbt.informable_slot_ids
+        self.domain_ids = self.setsumbt.model_0.domain_ids
 
+    def add_value_candidates(self, slot: str, value_candidates: torch.Tensor, replace: bool = False):
+        """
+        Add value candidates for a slot
 
-    # Add new value candidates to the ensemble members
-    def add_value_candidates(self, slot, value_candidates, replace=False):
+        Args:
+            slot: Slot name
+            value_candidates: Value candidate embeddings
+            replace: If true existing value candidates are replaced
+        """
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             getattr(self, attr).add_value_candidates(slot, value_candidates, replace)
-        
 
-    # Forward pass of full ensemble
-    def forward(self, input_ids, attention_mask, token_type_ids=None, reduction='mean'):
-        logits, request_logits, domain_logits, goodbye_scores = [], [], [], []
-        logits = {slot: [] for slot in self.model_0.informable_slot_ids}
-        request_logits = {slot: [] for slot in self.model_0.requestable_slot_ids}
-        domain_logits = {dom: [] for dom in self.model_0.domain_ids}
-        goodbye_scores = []
+    def forward(self,
+                input_ids: torch.Tensor,
+                attention_mask: torch.Tensor,
+                token_type_ids: torch.Tensor = None,
+                reduction: str = 'mean') -> tuple:
+        """
+        Args:
+            input_ids: Input token ids
+            attention_mask: Input padding mask
+            token_type_ids: Token type indicator
+            reduction: Reduction of ensemble member predictive distributions (mean, none)
+
+        Returns:
+
+        """
+        belief_state_probs = {slot: [] for slot in self.model_0.informable_slot_ids}
+        request_probs = {slot: [] for slot in self.model_0.requestable_slot_ids}
+        active_domain_probs = {dom: [] for dom in self.model_0.domain_ids}
+        general_act_probs = []
         for attr in [f'model_{i}' for i in range(self.config.ensemble_size)]:
             # Prediction from each ensemble member
-            l, r, d, g, _ = getattr(self, attr)(input_ids=input_ids,
+            b, r, d, g, _ = getattr(self, attr)(input_ids=input_ids,
                                                 token_type_ids=token_type_ids,
                                                 attention_mask=attention_mask)
-            for slot in logits:
-                logits[slot].append(l[slot].unsqueeze(-2))
+            for slot in belief_state_probs:
+                belief_state_probs[slot].append(b[slot].unsqueeze(-2))
             if self.config.predict_intents:
-                for slot in request_logits:
-                    request_logits[slot].append(r[slot].unsqueeze(-1))
-                for dom in domain_logits:
-                    domain_logits[dom].append(d[dom].unsqueeze(-1))
-                goodbye_scores.append(g.unsqueeze(-2))
+                for slot in request_probs:
+                    request_probs[slot].append(r[slot].unsqueeze(-1))
+                for dom in active_domain_probs:
+                    active_domain_probs[dom].append(d[dom].unsqueeze(-1))
+                general_act_probs.append(g.unsqueeze(-2))
         
-        logits = {slot: torch.cat(l, -2) for slot, l in logits.items()}
+        belief_state_probs = {slot: torch.cat(l, -2) for slot, l in belief_state_probs.items()}
         if self.config.predict_intents:
-            request_logits = {slot: torch.cat(l, -1) for slot, l in request_logits.items()}
-            domain_logits = {dom: torch.cat(l, -1) for dom, l in domain_logits.items()}
-            goodbye_scores = torch.cat(goodbye_scores, -2)
+            request_probs = {slot: torch.cat(l, -1) for slot, l in request_probs.items()}
+            active_domain_probs = {dom: torch.cat(l, -1) for dom, l in active_domain_probs.items()}
+            general_act_probs = torch.cat(general_act_probs, -2)
         else:
-            request_logits = {}
-            domain_logits = {}
-            goodbye_scores = torch.tensor(0.0)
+            request_probs = {}
+            active_domain_probs = {}
+            general_act_probs = torch.tensor(0.0)
 
         # Apply reduction of ensemble to single posterior
         if reduction == 'mean':
-            logits = {slot: l.mean(-2) for slot, l in logits.items()}
-            request_logits = {slot: l.mean(-1) for slot, l in request_logits.items()}
-            domain_logits = {dom: l.mean(-1) for dom, l in domain_logits.items()}
-            goodbye_scores = goodbye_scores.mean(-2)
+            belief_state_probs = {slot: l.mean(-2) for slot, l in belief_state_probs.items()}
+            request_probs = {slot: l.mean(-1) for slot, l in request_probs.items()}
+            active_domain_probs = {dom: l.mean(-1) for dom, l in active_domain_probs.items()}
+            general_act_probs = general_act_probs.mean(-2)
         elif reduction != 'none':
             raise(NameError('Not Implemented!'))
 
-        return logits, request_logits, domain_logits, goodbye_scores, _
+        return belief_state_probs, request_probs, active_domain_probs, general_act_probs, _
     
 
     @classmethod
@@ -114,91 +141,6 @@ class EnsembleSetSUMBT(Module):
         if not os.path.exists(os.path.join(path, 'config.json')):
             raise(NameError('Could not find config.json in model path.'))
         if not os.path.exists(os.path.join(path, 'pytorch_model_0.bin')):
-            raise(NameError('Could not find a model binary in the model path.'))
-        
-        try:
-            config = RobertaConfig.from_pretrained(path)
-        except:
-            config = BertConfig.from_pretrained(path)
-        
-        model = cls(config)
-        model.load(path)
-
-        return model
-
-
-class DropoutEnsembleSetSUMBT(Module):
-
-    def __init__(self, config):
-        super(DropoutEnsembleBeliefTracker, self).__init__()
-        self.config = config
-
-        model_cls = MODELS[self.config.model_type]
-        self.model = model_cls(config)
-        self.model.train()
-    
-
-    def load(self, path, config=None):
-        if config is None:
-            config = self.config
-        state_dict = torch.load(os.path.join(path, f'pytorch_model.bin'))
-        self.model.load_state_dict(state_dict)
-    
-
-    # Add new slot candidates to the model
-    def add_slot_candidates(self, slot_candidates):
-        self.model.add_slot_candidates(slot_candidates)
-        self.requestable_slot_ids = self.model.requestable_slot_ids
-        self.informable_slot_ids = self.model.informable_slot_ids
-        self.domain_ids = self.model.domain_ids
-
-
-    # Add new value candidates to the model
-    def add_value_candidates(self, slot, value_candidates, replace=False):
-        self.model.add_value_candidates(slot, value_candidates, replace)
-        
-    
-    def forward(self, input_ids, attention_mask, token_type_ids=None, reduction='mean'):
-
-        input_ids = input_ids.unsqueeze(0).repeat((self.config.ensemble_size, 1, 1, 1))
-        input_ids = input_ids.reshape(-1, input_ids.size(-2), input_ids.size(-1))
-        if attention_mask is not None:
-            attention_mask = attention_mask.unsqueeze(0).repeat((10, 1, 1, 1))
-            attention_mask = attention_mask.reshape(-1, attention_mask.size(-2), attention_mask.size(-1))
-        if token_type_ids is not None:
-            token_type_ids = token_type_ids.unsqueeze(0).repeat((10, 1, 1, 1))
-            token_type_ids = token_type_ids.reshape(-1, token_type_ids.size(-2), token_type_ids.size(-1))
-        
-        self.model.train()
-        logits, request_logits, domain_logits, goodbye_scores, _ = self.model(input_ids=input_ids,
-                                                                            attention_mask=attention_mask,
-                                                                            token_type_ids=token_type_ids)
-        
-        logits = {s: l.reshape(self.config.ensemble_size, -1, l.size(-2), l.size(-1)).transpose(0, 1).transpose(1, 2)
-                for s, l in logits.items()}
-        request_logits = {s: l.reshape(self.config.ensemble_size, -1, l.size(-1)).transpose(0, 1).transpose(1, 2)
-                        for s, l in request_logits.items()}
-        domain_logits = {s: l.reshape(self.config.ensemble_size, -1, l.size(-1)).transpose(0, 1).transpose(1, 2)
-                        for s, l in domain_logits.items()}
-        goodbye_scores = goodbye_scores.reshape(self.config.ensemble_size, -1, goodbye_scores.size(-2), goodbye_scores.size(-1))
-        goodbye_scores = goodbye_scores.transpose(0, 1).transpose(1, 2)
-
-        if reduction == 'mean':
-            logits = {slot: l.mean(-2) for slot, l in logits.items()}
-            request_logits = {slot: l.mean(-1) for slot, l in request_logits.items()}
-            domain_logits = {dom: l.mean(-1) for dom, l in domain_logits.items()}
-            goodbye_scores = goodbye_scores.mean(-2)
-        elif reduction != 'none':
-            raise(NameError('Not Implemented!'))
-
-        return logits, request_logits, domain_logits, goodbye_scores, _
-    
-
-    @classmethod
-    def from_pretrained(cls, path):
-        if not os.path.exists(os.path.join(path, 'config.json')):
-            raise(NameError('Could not find config.json in model path.'))
-        if not os.path.exists(os.path.join(path, 'pytorch_model.bin')):
             raise(NameError('Could not find a model binary in the model path.'))
         
         try:

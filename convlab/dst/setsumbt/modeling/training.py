@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Training utils"""
+"""Training and evaluation utils"""
 
 import random
 import os
 import logging
+from copy import deepcopy
 
 import torch
 from torch.nn import DataParallel
 from torch.distributions import Categorical
 import numpy as np
-from transformers import AdamW, get_linear_schedule_with_warmup
+from transformers import get_linear_schedule_with_warmup
+from torch.optim import AdamW
 from tqdm import tqdm, trange
 try:
     from apex import amp
@@ -31,7 +33,7 @@ except:
     print('Apex not used')
 
 from convlab.dst.setsumbt.utils import clear_checkpoints
-from convlab.dst.setsumbt.modeling.temperature_scheduler import TemperatureScheduler
+from convlab.dst.setsumbt.modeling import LinearTemperatureScheduler
 
 
 # Load logger and tensorboard summary writer
@@ -59,18 +61,124 @@ def set_ontology_embeddings(model, slots, load_slots=True):
     if load_slots:
         slots = {slot: embs for slot, embs in slots.items()}
         model.add_slot_candidates(slots)
-    for slot in model.informable_slot_ids:
+    for slot in model.setsumbt.informable_slot_ids:
         model.add_value_candidates(slot, values[slot], replace=True)
 
 
-def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_dev, embeddings=None, tokenizer=None):
-    """Train model!"""
+def log_info(global_step, loss, jg_acc=None, sl_acc=None, req_f1=None, dom_f1=None, gen_f1=None, stats=None):
+    """
+    Log training statistics.
+
+    Args:
+        global_step: Number of global training steps completed
+        loss: Training loss
+        jg_acc: Joint goal accuracy
+        sl_acc: Slot accuracy
+        req_f1: Request prediction F1 score
+        dom_f1: Active domain prediction F1 score
+        gen_f1: General action prediction F1 score
+        stats: Uncertainty measure statistics of model
+    """
+    info = f"{global_step} steps complete, " if type(global_step) == int else ""
+    if global_step == 'training_complete':
+        info += f"Training Complete"
+        info += f"Loss since last update: {loss}. Validation set stats: "
+    if global_step == 'dev':
+        info += f"Validation set stats: Loss: {loss}, "
+    if global_step == 'test':
+        info += f"Test set stats: Loss: {loss}, "
+    info += f"Joint Goal Acc: {jg_acc}, Slot Acc: {sl_acc}, "
+    if req_f1 is not None:
+        info += f"Request F1 Score: {req_f1}, Active Domain F1 Score: {dom_f1}, "
+        info += f"General Action F1 Score: {gen_f1}"
+    logger.info(info)
+
+    if type(global_step) == int:
+        tb_writer.add_scalar('JointGoalAccuracy/Dev', jg_acc, global_step)
+        tb_writer.add_scalar('SlotAccuracy/Dev', sl_acc, global_step)
+        if req_f1 is not None:
+            tb_writer.add_scalar('RequestF1Score/Dev', req_f1, global_step)
+            tb_writer.add_scalar('ActiveDomainF1Score/Dev', dom_f1, global_step)
+            tb_writer.add_scalar('GeneralActionF1Score/Dev', gen_f1, global_step)
+        tb_writer.add_scalar('Loss/Dev', loss, global_step)
+
+        if stats:
+            for slot, stats_slot in stats.items():
+                for key, item in stats_slot.items():
+                    tb_writer.add_scalar(f'{key}_{slot}/Dev', item, global_step)
+
+
+def get_input_dict(batch: dict,
+                   predict_actions: bool,
+                   model_informable_slot_ids: list,
+                   model_requestable_slot_ids: list = None,
+                   model_domain_ids: list = None,
+                   device = 'cpu') -> dict:
+    """
+    Produce model input arguments
+
+    Args:
+        batch: Batch of data from the dataloader
+        predict_actions: Model should predict user actions if set true
+        model_informable_slot_ids: List of model dialogue state slots
+        model_requestable_slot_ids: List of model requestable slots
+        model_domain_ids: List of model domains
+        device: Current torch device in use
+
+    Returns:
+        input_dict: Dictrionary containing model inputs for the batch
+    """
+    input_dict = dict()
+
+    input_dict['input_ids'] = batch['input_ids'].to(device)
+    input_dict['token_type_ids'] = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
+    input_dict['attention_mask'] = batch['attention_mask'].to(device) if 'attention_mask' in batch else None
+
+    if 'belief_state' in batch:
+        input_dict['state_labels'] = {slot: batch['belief_state-' + slot].to(device) for slot in model_informable_slot_ids
+                                      if ('belief_state-' + slot) in batch}
+        if predict_actions:
+            input_dict['request_labels'] = {slot: batch['request_probs-' + slot].to(device)
+                                            for slot in model_requestable_slot_ids
+                                            if ('request_probs-' + slot) in batch}
+            input_dict['active_domain_labels'] = {domain: batch['active_domain_probs-' + domain].to(device)
+                                                  for domain in model_domain_ids
+                                                  if ('active_domain_probs-' + domain) in batch}
+            input_dict['general_act_labels'] = batch['general_act_probs'].to(device)
+    else:
+        input_dict['state_labels'] = {slot: batch['state_labels-' + slot].to(device)
+                                      for slot in model_informable_slot_ids if ('state_labels-' + slot) in batch}
+        if predict_actions:
+            input_dict['request_labels'] = {slot: batch['request_labels-' + slot].to(device)
+                                            for slot in model_requestable_slot_ids
+                                            if ('request_labels-' + slot) in batch}
+            input_dict['active_domain_labels'] = {domain: batch['active_domain_labels-' + domain].to(device)
+                                                  for domain in model_domain_ids
+                                                  if ('active_domain_labels-' + domain) in batch}
+            input_dict['general_act_labels'] = batch['general_act_labels'].to(device)
+
+    return input_dict
+
+
+def train(args, model, device, train_dataloader, dev_dataloader, slots: dict, slots_dev: dict):
+    """
+    Train the SetSUMBT model.
+
+    Args:
+        args: Runtime arguments
+        model: SetSUMBT Model instance to train
+        device: Torch device to use during training
+        train_dataloader: Dataloader containing the training data
+        dev_dataloader: Dataloader containing the validation set data
+        slots: Model ontology used for training
+        slots_dev: Model ontology used for evaluating on the validation set
+    """
 
     # Calculate the total number of training steps to be performed
     if args.max_training_steps > 0:
         t_total = args.max_training_steps
-        args.num_train_epochs = args.max_training_steps // (
-            (len(train_dataloader) // args.gradient_accumulation_steps) + 1)
+        args.num_train_epochs = (len(train_dataloader) // args.gradient_accumulation_steps) + 1
+        args.num_train_epochs = args.max_training_steps // args.num_train_epochs
     else:
         t_total = (len(train_dataloader) // args.gradient_accumulation_steps) * args.num_train_epochs
 
@@ -88,12 +196,12 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
         {
             "params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)],
             "weight_decay": 0.0,
-            "lr":args.learning_rate
+            "lr": args.learning_rate
         },
     ]
 
     # Initialise the optimizer
-    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate, correct_bias=False)
+    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate)
 
     # Initialise linear lr scheduler
     num_warmup_steps = int(t_total * args.warmup_proportion)
@@ -109,8 +217,7 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
 
     # Set up fp16 and multi gpu usage
     if args.fp16:
-        model, optimizer = amp.initialize(
-            model, optimizer, opt_level=args.fp16_opt_level)
+        model, optimizer = amp.initialize(model, optimizer, opt_level=args.fp16_opt_level)
     if args.n_gpu > 1:
         model = DataParallel(model)
 
@@ -118,7 +225,7 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
     best_model = {'joint goal accuracy': 0.0,
                   'request f1 score': 0.0,
                   'active domain f1 score': 0.0,
-                  'goodbye act f1 score': 0.0,
+                  'general act f1 score': 0.0,
                   'train loss': np.inf}
     if os.path.isfile(os.path.join(args.model_name_or_path, 'optimizer.pt')):
         logger.info("Optimizer loaded from previous run.")
@@ -136,27 +243,27 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
             model.eval()
             set_ontology_embeddings(model.module if args.n_gpu > 1 else model, slots_dev, load_slots=False)
 
-            jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, stats = train_eval(args, model, device, dev_dataloader)
+            jg_acc, sl_acc, req_f1, dom_f1, gen_f1, _, _ = evaluate(args, model, device, dev_dataloader, is_train=True)
 
             # Set model back to training mode
             model.train()
             model.zero_grad()
             set_ontology_embeddings(model.module if args.n_gpu > 1 else model, slots, load_slots=False)
         else:
-            jg_acc, req_f1, dom_f1, bye_f1 = 0.0, 0.0, 0.0, 0.0
+            jg_acc, req_f1, dom_f1, gen_f1 = 0.0, 0.0, 0.0, 0.0
 
         best_model['joint goal accuracy'] = jg_acc
         best_model['request f1 score'] = req_f1
         best_model['active domain f1 score'] = dom_f1
-        best_model['goodbye act f1 score'] = bye_f1
+        best_model['general act f1 score'] = gen_f1
 
     # Log training set up
-    logger.info("Device: %s, Number of GPUs: %s, FP16 training: %s" % (device, args.n_gpu, args.fp16))
+    logger.info(f"Device: {device}, Number of GPUs: {args.n_gpu}, FP16 training: {args.fp16}")
     logger.info("***** Running training *****")
-    logger.info("  Num Batches = %d" % len(train_dataloader))
-    logger.info("  Num Epochs = %d" % args.num_train_epochs)
-    logger.info("  Gradient Accumulation steps = %d" % args.gradient_accumulation_steps)
-    logger.info("  Total optimization steps = %d" % t_total)
+    logger.info(f"  Num Batches = {len(train_dataloader)}")
+    logger.info(f"  Num Epochs = {args.num_train_epochs}")
+    logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
+    logger.info(f"  Total optimization steps = {t_total}")
 
     # Initialise training parameters
     global_step = 0
@@ -173,11 +280,11 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
             steps_trained_in_current_epoch = global_step % (len(train_dataloader) // args.gradient_accumulation_steps)
 
             logger.info("  Continuing training from checkpoint, will skip to saved global_step")
-            logger.info("  Continuing training from epoch %d" % epochs_trained)
-            logger.info("  Continuing training from global step %d" % global_step)
-            logger.info("  Will skip the first %d steps in the first epoch" % steps_trained_in_current_epoch)
+            logger.info(f"  Continuing training from epoch {epochs_trained}")
+            logger.info(f"  Continuing training from global step {global_step}")
+            logger.info(f"  Will skip the first {steps_trained_in_current_epoch} steps in the first epoch")
         except ValueError:
-            logger.info("  Starting fine-tuning.")
+            logger.info(f"  Starting fine-tuning.")
 
     # Prepare model for training
     tr_loss, logging_loss = 0.0, 0.0
@@ -196,43 +303,15 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
                 continue
 
             # Extract all label dictionaries from the batch
-            if 'goodbye_belief' in batch:
-                labels = {slot: batch['belief-' + slot].to(device) for slot in model.informable_slot_ids
-                          if ('belief-' + slot) in batch}
-                request_labels = {slot: batch['request_belief-' + slot].to(device)
-                                  for slot in model.requestable_slot_ids
-                                  if ('request_belief-' + slot) in batch} if args.predict_actions else None
-                domain_labels = {domain: batch['domain_belief-' + domain].to(device) for domain in model.domain_ids
-                                 if ('domain_belief-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye_belief'].to(
-                    device) if args.predict_actions else None
-            else:
-                labels = {slot: batch['labels-' + slot].to(device) for slot in model.informable_slot_ids
-                          if ('labels-' + slot) in batch}
-                request_labels = {slot: batch['request-' + slot].to(device) for slot in model.requestable_slot_ids
-                                  if ('request-' + slot) in batch} if args.predict_actions else None
-                domain_labels = {domain: batch['active-' + domain].to(device) for domain in model.domain_ids
-                                 if ('active-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye'].to(
-                    device) if args.predict_actions else None
-
-            # Extract all model inputs from batch
-            input_ids = batch['input_ids'].to(device)
-            token_type_ids = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
-            attention_mask = batch['attention_mask'].to(device) if 'attention_mask' in batch else None
+            input_dict = get_input_dict(batch, args.predict_actions, model.setsumbt.informable_slot_ids,
+                                        model.setsumbt.requestable_slot_ids, model.setsumbt.domain_ids, device)
 
             # Set up temperature scaling for the model
             if temp_scheduler is not None:
-                model.temp = temp_scheduler.temp()
+                model.setsumbt.temp = temp_scheduler.temp()
 
             # Forward pass to obtain loss
-            loss, _, _, _, _, _, stats = model(input_ids=input_ids,
-                                               token_type_ids=token_type_ids,
-                                               attention_mask=attention_mask,
-                                               inform_labels=labels,
-                                               request_labels=request_labels,
-                                               domain_labels=domain_labels,
-                                               goodbye_labels=goodbye_labels)
+            loss, _, _, _, _, _, stats = model(**input_dict)
 
             if args.n_gpu > 1:
                 loss = loss.mean()
@@ -258,7 +337,6 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
                 tb_writer.add_scalar('LearningRate', lr, global_step)
 
                 if stats:
-                    # print(stats.keys())
                     for slot, stats_slot in stats.items():
                         for key, item in stats_slot.items():
                             tb_writer.add_scalar(f'{key}_{slot}/Train', item, global_step)
@@ -273,7 +351,6 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
 
                 tr_loss += loss.float().item()
                 epoch_iterator.set_postfix(loss=loss.float().item())
-                loss = 0.0
                 global_step += 1
 
             # Save model checkpoint
@@ -286,52 +363,34 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
                     model.eval()
                     set_ontology_embeddings(model.module if args.n_gpu > 1 else model, slots_dev, load_slots=False)
 
-                    jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, stats = train_eval(args, model, device, dev_dataloader)
+                    jg_acc, sl_acc, req_f1, dom_f1, gen_f1, loss, stats = evaluate(args, model, device, dev_dataloader,
+                                                                                   is_train=True)
                     # Log model eval information
-                    if req_f1 is not None:
-                        logger.info('%i steps complete, Loss since last update = %f, Dev Joint goal acc = %f, Dev Slot acc = %f, Dev Request F1 Score = %f, Dev Domain F1 Score = %f, Dev Goodbye F1 Score = %f'
-                                    % (global_step, logging_loss / args.save_steps, jg_acc, sl_acc, req_f1, dom_f1, bye_f1))
-                        tb_writer.add_scalar('JointGoalAccuracy/Dev', jg_acc, global_step)
-                        tb_writer.add_scalar('SlotAccuracy/Dev', sl_acc, global_step)
-                        tb_writer.add_scalar('RequestF1Score/Dev', req_f1, global_step)
-                        tb_writer.add_scalar('DomainF1Score/Dev', dom_f1, global_step)
-                        tb_writer.add_scalar('GoodbyeF1Score/Dev', bye_f1, global_step)
-                    else:
-                        logger.info('%i steps complete, Loss since last update = %f, Dev Joint goal acc = %f, Dev Slot acc = %f'
-                                    % (global_step, logging_loss / args.save_steps, jg_acc, sl_acc))
-                        tb_writer.add_scalar('JointGoalAccuracy/Dev', jg_acc, global_step)
-                        tb_writer.add_scalar('SlotAccuracy/Dev', sl_acc, global_step)
-                    tb_writer.add_scalar('Loss/Dev', loss, global_step)
-                    if stats:
-                        for slot, stats_slot in stats.items():
-                            for key, item in stats_slot.items():
-                                tb_writer.add_scalar(f'{key}_{slot}/Dev', item, global_step)
+                    log_info(global_step, logging_loss / args.save_steps, jg_acc, sl_acc, req_f1, dom_f1, gen_f1, stats)
 
                     # Set model back to training mode
                     model.train()
                     model.zero_grad()
                     set_ontology_embeddings(model.module if args.n_gpu > 1 else model, slots, load_slots=False)
                 else:
-                    jg_acc, req_f1 = 0.0, None
-                    logger.info('%i steps complete, Loss since last update = %f' % (global_step, logging_loss / args.save_steps))
+                    log_info(global_step, logging_loss / args.save_steps)
 
                 logging_loss = tr_loss
 
                 # Compute the score of the best model
                 try:
-                    best_score = (best_model['request f1 score'] * model.config.user_request_loss_weight) + \
-                        (best_model['active domain f1 score'] * model.config.active_domain_loss_weight) + \
-                        (best_model['goodbye act f1 score'] *
-                         model.config.user_general_act_loss_weight)
+                    best_score = best_model['request f1 score'] * model.config.user_request_loss_weight
+                    best_score += best_model['active domain f1 score'] * model.config.active_domain_loss_weight
+                    best_score += best_model['general act f1 score'] * model.config.user_general_act_loss_weight
                 except AttributeError:
                     best_score = 0.0
                 best_score += best_model['joint goal accuracy']
 
                 # Compute the score of the current model
                 try:
-                    current_score = (req_f1 * model.config.user_request_loss_weight) + \
-                        (dom_f1 * model.config.active_domain_loss_weight) + \
-                        (bye_f1 * model.config.user_general_act_loss_weight) if req_f1 is not None else 0.0
+                    current_score = req_f1 * model.config.user_request_loss_weight if req_f1 is not None else 0.0
+                    current_score += dom_f1 * model.config.active_domain_loss_weight if dom_f1 is not None else 0.0
+                    current_score += gen_f1 * model.config.user_general_act_loss_weight if gen_f1 is not None else 0.0
                 except AttributeError:
                     current_score = 0.0
                 current_score += jg_acc
@@ -353,10 +412,10 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
                     if req_f1:
                         best_model['request f1 score'] = req_f1
                         best_model['active domain f1 score'] = dom_f1
-                        best_model['goodbye act f1 score'] = bye_f1
+                        best_model['general act f1 score'] = gen_f1
                     best_model['train loss'] = tr_loss / global_step
 
-                    output_dir = os.path.join(args.output_dir, "checkpoint-{}".format(global_step))
+                    output_dir = os.path.join(args.output_dir, f"checkpoint-{global_step}")
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir, exist_ok=True)
 
@@ -386,14 +445,14 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
                 epoch_iterator.close()
                 break
 
-        logger.info('Epoch %i complete, average training loss = %f' % (e + 1, tr_loss / global_step))
+        logger.info(f'Epoch {e + 1} complete, average training loss = {tr_loss / global_step}')
 
         if args.max_training_steps > 0 and global_step > args.max_training_steps:
             train_iterator.close()
             break
         if args.patience > 0 and steps_since_last_update >= args.patience:
             train_iterator.close()
-            logger.info('Model has not improved for at least %i steps. Training stopped!' % args.patience)
+            logger.info(f'Model has not improved for at least {args.patience} steps. Training stopped!')
             break
 
     # Evaluate final model
@@ -401,30 +460,25 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
         model.eval()
         set_ontology_embeddings(model.module if args.n_gpu > 1 else model, slots_dev, load_slots=False)
 
-        jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, stats = train_eval(args, model, device, dev_dataloader)
-        if req_f1 is not None:
-            logger.info('Training complete, Training Loss = %f, Dev Joint goal acc = %f, Dev Slot acc = %f, Dev Request F1 Score = %f, Dev Domain F1 Score = %f, Dev Goodbye F1 Score = %f'
-                        % (tr_loss / global_step, jg_acc, sl_acc, req_f1, dom_f1, bye_f1))
-        else:
-            logger.info('Training complete, Training Loss = %f, Dev Joint goal acc = %f, Dev Slot acc = %f'
-                        % (tr_loss / global_step, jg_acc, sl_acc))
+        jg_acc, sl_acc, req_f1, dom_f1, gen_f1, loss, stats = evaluate(args, model, device, dev_dataloader,
+                                                                       is_train=True)
+
+        log_info('training_complete', tr_loss / global_step, jg_acc, sl_acc, req_f1, dom_f1, gen_f1)
     else:
-        jg_acc = 0.0
         logger.info('Training complete!')
 
     # Store final model
     try:
-        best_score = (best_model['request f1 score'] * model.config.user_request_loss_weight) + \
-            (best_model['active domain f1 score'] * model.config.active_domain_loss_weight) + \
-            (best_model['goodbye act f1 score'] *
-             model.config.user_general_act_loss_weight)
+        best_score = best_model['request f1 score'] * model.config.user_request_loss_weight
+        best_score += best_model['active domain f1 score'] * model.config.active_domain_loss_weight
+        best_score += best_model['general act f1 score'] * model.config.user_general_act_loss_weight
     except AttributeError:
         best_score = 0.0
     best_score += best_model['joint goal accuracy']
     try:
-        current_score = (req_f1 * model.config.user_request_loss_weight) + \
-                        (dom_f1 * model.config.active_domain_loss_weight) + \
-                        (bye_f1 * model.config.user_general_act_loss_weight) if req_f1 is not None else 0.0
+        current_score = req_f1 * model.config.user_request_loss_weight if req_f1 is not None else 0.0
+        current_score += dom_f1 * model.config.active_domain_loss_weight if dom_f1 is not None else 0.0
+        current_score += gen_f1 * model.config.user_general_act_loss_weight if gen_f1 is not None else 0.0
     except AttributeError:
         current_score = 0.0
     current_score += jg_acc
@@ -456,225 +510,85 @@ def train(args, model, device, train_dataloader, dev_dataloader, slots, slots_de
             torch.save(amp.state_dict(), os.path.join(output_dir, "amp.pt"))
         clear_checkpoints(args.output_dir)
     else:
-        logger.info(
-            'Final model not saved, since it is not the best performing model.')
+        logger.info('Final model not saved, as it is not the best performing model.')
 
 
-# Function for validation
-def train_eval(args, model, device, dev_dataloader):
-    """Evaluate Model during training!"""
-    accuracy_jg = []
-    accuracy_sl = []
-    accuracy_req = []
-    truepos_req, falsepos_req, falseneg_req = [], [], []
-    truepos_dom, falsepos_dom, falseneg_dom = [], [], []
-    truepos_bye, falsepos_bye, falseneg_bye = [], [], []
-    accuracy_dom = []
-    accuracy_bye = []
-    turns = []
-    for batch in dev_dataloader:
-        # Perform with no gradients stored
-        with torch.no_grad():
-            if 'goodbye_belief' in batch:
-                labels = {slot: batch['belief-' + slot].to(device) for slot in model.informable_slot_ids
-                          if ('belief-' + slot) in batch}
-                request_labels = {slot: batch['request_belief-' + slot].to(device) for slot in model.requestable_slot_ids
-                                  if ('request_belief-' + slot) in batch} if args.predict_actions else None
-                domain_labels = {domain: batch['domain_belief-' + domain].to(device) for domain in model.domain_ids
-                                 if ('domain_belief-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye_belief'].to(
-                    device) if args.predict_actions else None
-            else:
-                labels = {slot: batch['labels-' + slot].to(device) for slot in model.informable_slot_ids
-                          if ('labels-' + slot) in batch}
-                request_labels = {slot: batch['request-' + slot].to(device) for slot in model.requestable_slot_ids
-                                  if ('request-' + slot) in batch} if args.predict_actions else None
-                domain_labels = {domain: batch['active-' + domain].to(device) for domain in model.domain_ids
-                                 if ('active-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye'].to(
-                    device) if args.predict_actions else None
+def evaluate(args, model, device, dataloader, return_eval_output=False, is_train=False):
+    """
+    Evaluate model
 
-            input_ids = batch['input_ids'].to(device)
-            token_type_ids = batch['token_type_ids'].to(
-                device) if 'token_type_ids' in batch else None
-            attention_mask = batch['attention_mask'].to(
-                device) if 'attention_mask' in batch else None
+    Args:
+        args: Runtime arguments
+        model: SetSUMBT model instance
+        device: Torch device in use
+        dataloader: Dataloader of data to evaluate on
+        return_eval_output: If true return predicted and true states for all dialogues evaluated in semantic format
+        is_train: If true model is training and no logging is performed
 
-            loss, p, p_req, p_dom, p_bye, _, stats = model(input_ids=input_ids,
-                                                           token_type_ids=token_type_ids,
-                                                           attention_mask=attention_mask,
-                                                           inform_labels=labels,
-                                                           request_labels=request_labels,
-                                                           domain_labels=domain_labels,
-                                                           goodbye_labels=goodbye_labels)
-
-        jg_acc = 0.0
-        req_acc = 0.0
-        req_tp, req_fp, req_fn = 0.0, 0.0, 0.0
-        dom_tp, dom_fp, dom_fn = 0.0, 0.0, 0.0
-        dom_acc = 0.0
-        for slot in model.informable_slot_ids:
-            labels = batch['labels-' + slot].to(device)
-            p_ = p[slot]
-
-            acc = (p_.argmax(-1) == labels).reshape(-1).float()
-            jg_acc += acc
-
-        if model.config.predict_actions:
-            for slot in model.requestable_slot_ids:
-                p_req_ = p_req[slot]
-                request_labels = batch['request-' + slot].to(device)
-
-                acc = (p_req_.round().int() == request_labels).reshape(-1).float()
-                tp = (p_req_.round().int() * (request_labels == 1)).reshape(-1).float()
-                fp = (p_req_.round().int() * (request_labels == 0)).reshape(-1).float()
-                fn = ((1 - p_req_.round().int()) * (request_labels == 1)).reshape(-1).float()
-                req_acc += acc
-                req_tp += tp
-                req_fp += fp
-                req_fn += fn
-
-            for domain in model.domain_ids:
-                p_dom_ = p_dom[domain]
-                domain_labels = batch['active-' + domain].to(device)
-
-                acc = (p_dom_.round().int() == domain_labels).reshape(-1).float()
-                tp = (p_dom_.round().int() * (domain_labels == 1)).reshape(-1).float()
-                fp = (p_dom_.round().int() * (domain_labels == 0)).reshape(-1).float()
-                fn = ((1 - p_dom_.round().int()) * (domain_labels == 1)).reshape(-1).float()
-                dom_acc += acc
-                dom_tp += tp
-                dom_fp += fp
-                dom_fn += fn
-
-            goodbye_labels = batch['goodbye'].to(device)
-            bye_acc = (p_bye.argmax(-1) == goodbye_labels).reshape(-1).float().sum()
-            bye_tp = ((p_bye.argmax(-1) > 0) * (goodbye_labels > 0)).reshape(-1).float().sum()
-            bye_fp = ((p_bye.argmax(-1) > 0) * (goodbye_labels == 0)).reshape(-1).float().sum()
-            bye_fn = ((p_bye.argmax(-1) == 0) * (goodbye_labels > 0)).reshape(-1).float().sum()
-        else:
-            req_acc, dom_acc, bye_acc = None, None, torch.tensor(0.0)
-            req_tp, req_fp, req_fn = None, None, None
-            dom_tp, dom_fp, dom_fn = None, None, None
-            bye_tp, bye_fp, bye_fn = torch.tensor(
-                0.0), torch.tensor(0.0), torch.tensor(0.0)
-
-        sl_acc = sum(jg_acc / len(model.informable_slot_ids)).float()
-        jg_acc = sum((jg_acc / len(model.informable_slot_ids)).int()).float()
-        req_acc = sum(req_acc / len(model.requestable_slot_ids)).float() if req_acc is not None else torch.tensor(0.0)
-        req_tp = sum(req_tp / len(model.requestable_slot_ids)).float() if req_tp is not None else torch.tensor(0.0)
-        req_fp = sum(req_fp / len(model.requestable_slot_ids)).float() if req_fp is not None else torch.tensor(0.0)
-        req_fn = sum(req_fn / len(model.requestable_slot_ids)).float() if req_fn is not None else torch.tensor(0.0)
-        dom_tp = sum(dom_tp / len(model.domain_ids)).float() if dom_tp is not None else torch.tensor(0.0)
-        dom_fp = sum(dom_fp / len(model.domain_ids)).float() if dom_fp is not None else torch.tensor(0.0)
-        dom_fn = sum(dom_fn / len(model.domain_ids)).float() if dom_fn is not None else torch.tensor(0.0)
-        dom_acc = sum(dom_acc / len(model.domain_ids)).float() if dom_acc is not None else torch.tensor(0.0)
-        n_turns = (labels >= 0).reshape(-1).sum().float().item()
-
-        accuracy_jg.append(jg_acc.item())
-        accuracy_sl.append(sl_acc.item())
-        accuracy_req.append(req_acc.item())
-        truepos_req.append(req_tp.item())
-        falsepos_req.append(req_fp.item())
-        falseneg_req.append(req_fn.item())
-        accuracy_dom.append(dom_acc.item())
-        truepos_dom.append(dom_tp.item())
-        falsepos_dom.append(dom_fp.item())
-        falseneg_dom.append(dom_fn.item())
-        accuracy_bye.append(bye_acc.item())
-        truepos_bye.append(bye_tp.item())
-        falsepos_bye.append(bye_fp.item())
-        falseneg_bye.append(bye_fn.item())
-        turns.append(n_turns)
-
-    # Global accuracy reduction across batches
-    turns = sum(turns)
-    jg_acc = sum(accuracy_jg) / turns
-    sl_acc = sum(accuracy_sl) / turns
-    if model.config.predict_actions:
-        req_acc = sum(accuracy_req) / turns
-        req_tp = sum(truepos_req)
-        req_fp = sum(falsepos_req)
-        req_fn = sum(falseneg_req)
-        req_f1 = req_tp / (req_tp + 0.5 * (req_fp + req_fn))
-        dom_acc = sum(accuracy_dom) / turns
-        dom_tp = sum(truepos_dom)
-        dom_fp = sum(falsepos_dom)
-        dom_fn = sum(falseneg_dom)
-        dom_f1 = dom_tp / (dom_tp + 0.5 * (dom_fp + dom_fn))
-        bye_tp = sum(truepos_bye)
-        bye_fp = sum(falsepos_bye)
-        bye_fn = sum(falseneg_bye)
-        bye_f1 = bye_tp / (bye_tp + 0.5 * (bye_fp + bye_fn))
-        bye_acc = sum(accuracy_bye) / turns
-    else:
-        req_acc, dom_acc, bye_acc = None, None, None
-        req_f1, dom_f1, bye_f1 = None, None, None
-
-    return jg_acc, sl_acc, req_f1, dom_f1, bye_f1, loss, stats
-
-
-def evaluate(args, model, device, dataloader):
-    """Evaluate Model!"""
-    # Evaluate!
-    logger.info("***** Running evaluation *****")
-    logger.info("  Num Batches = %d", len(dataloader))
+    Returns:
+        out: Evaluted model statistics
+    """
+    return_eval_output = False if is_train else return_eval_output
+    if not is_train:
+        logger.info("***** Running evaluation *****")
+        logger.info("  Num Batches = %d", len(dataloader))
 
     tr_loss = 0.0
     model.eval()
+    if return_eval_output:
+        ontology = dataloader.dataset.ontology
 
-    # logits = {slot: [] for slot in model.informable_slot_ids}
     accuracy_jg = []
     accuracy_sl = []
-    accuracy_req = []
     truepos_req, falsepos_req, falseneg_req = [], [], []
     truepos_dom, falsepos_dom, falseneg_dom = [], [], []
-    truepos_bye, falsepos_bye, falseneg_bye = [], [], []
-    accuracy_dom = []
-    accuracy_bye = []
+    truepos_gen, falsepos_gen, falseneg_gen = [], [], []
     turns = []
-    epoch_iterator = tqdm(dataloader, desc="Iteration")
+    if return_eval_output:
+        evaluation_output = []
+    epoch_iterator = tqdm(dataloader, desc="Iteration") if not is_train else dataloader
     for batch in epoch_iterator:
         with torch.no_grad():
-            if 'goodbye_belief' in batch:
-                labels = {slot: batch['belief-' + slot].to(device) for slot in model.informable_slot_ids
-                          if ('belief-' + slot) in batch}
-                request_labels = {slot: batch['request_belief-' + slot].to(device) for slot in model.requestable_slot_ids
-                                  if ('request_belief-' + slot) in batch} if args.predict_actions else None
-                domain_labels = {domain: batch['domain_belief-' + domain].to(device) for domain in model.domain_ids
-                                 if ('domain_belief-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye_belief'].to(
-                    device) if args.predict_actions else None
-            else:
-                labels = {slot: batch['labels-' + slot].to(device) for slot in model.informable_slot_ids
-                          if ('labels-' + slot) in batch}
-                request_labels = {slot: batch['request-' + slot].to(device) for slot in model.requestable_slot_ids
-                                  if ('request-' + slot) in batch} if args.predict_actions else None
-                domain_labels = {domain: batch['active-' + domain].to(device) for domain in model.domain_ids
-                                 if ('active-' + domain) in batch} if args.predict_actions else None
-                goodbye_labels = batch['goodbye'].to(
-                    device) if args.predict_actions else None
+            input_dict = get_input_dict(batch, args.predict_actions, model.setsumbt.informable_slot_ids,
+                                        model.setsumbt.requestable_slot_ids, model.setsumbt.domain_ids, device)
 
-            input_ids = batch['input_ids'].to(device)
-            token_type_ids = batch['token_type_ids'].to(device) if 'token_type_ids' in batch else None
-            attention_mask = batch['attention_mask'].to(device) if 'attention_mask' in batch else None
-
-            loss, p, p_req, p_dom, p_bye, _, _ = model(input_ids=input_ids,
-                                                       token_type_ids=token_type_ids,
-                                                       attention_mask=attention_mask,
-                                                       inform_labels=labels,
-                                                       request_labels=request_labels,
-                                                       domain_labels=domain_labels,
-                                                       goodbye_labels=goodbye_labels)
+            loss, p, p_req, p_dom, p_gen, _, stats = model(**input_dict)
 
         jg_acc = 0.0
         req_acc = 0.0
         req_tp, req_fp, req_fn = 0.0, 0.0, 0.0
         dom_tp, dom_fp, dom_fn = 0.0, 0.0, 0.0
         dom_acc = 0.0
-        for slot in model.informable_slot_ids:
+
+        if return_eval_output:
+            eval_output_batch = []
+            for dial_id, dial in enumerate(input_dict['input_ids']):
+                for turn_id, turn in enumerate(dial):
+                    if turn.sum() != 0:
+                        eval_output_batch.append({'dial_idx': dial_id,
+                                                  'utt_idx': turn_id,
+                                                  'state': {domain: {slot: '' for slot in substate}
+                                                            for domain, substate in ontology.items()},
+                                                  'predictions': {'state': {domain: {slot: '' for slot in substate}
+                                                                            for domain, substate in ontology.items()}}
+                                                  })
+
+        for slot in model.setsumbt.informable_slot_ids:
             p_ = p[slot]
-            labels = batch['labels-' + slot].to(device)
+            state_labels = batch['state_labels-' + slot].to(device)
+
+            if return_eval_output:
+                prediction = p_.argmax(-1)
+
+                for sample in eval_output_batch:
+                    dom, slt = slot.split('-', 1)
+                    pred = prediction[sample['dial_idx']][sample['utt_idx']].item()
+                    pred = ontology[dom][slt]['possible_values'][pred]
+                    lab = state_labels[sample['dial_idx']][sample['utt_idx']].item()
+                    lab = ontology[dom][slt]['possible_values'][lab]
+
+                    sample['state'][dom][slt] = lab if lab != 'none' else ''
+                    sample['predictions']['state'][dom][slt] = pred if pred != 'none' else ''
 
             if args.temp_scaling > 0.0:
                 p_ = torch.log(p_ + 1e-10) / args.temp_scaling
@@ -683,28 +597,18 @@ def evaluate(args, model, device, dataloader):
                 p_ = torch.log(p_ + 1e-10) / 1.0
                 p_ = torch.softmax(p_, -1)
 
-            # logits[slot].append(p_)
-
-            if args.accuracy_samples > 0:
-                dist = Categorical(probs=p_.reshape(-1, p_.size(-1)))
-                lab_sample = dist.sample((args.accuracy_samples,))
-                lab_sample = lab_sample.transpose(0, 1)
-                acc = [lab in s for lab, s in zip(labels.reshape(-1), lab_sample)]
-                acc = torch.tensor(acc).float()
-            elif args.accuracy_topn > 0:
-                labs = p_.reshape(-1, p_.size(-1)).argsort(dim=-1, descending=True)
-                labs = labs[:, :args.accuracy_topn]
-                acc = [lab in s for lab, s in zip(labels.reshape(-1), labs)]
-                acc = torch.tensor(acc).float()
-            else:
-                acc = (p_.argmax(-1) == labels).reshape(-1).float()
+            acc = (p_.argmax(-1) == state_labels).reshape(-1).float()
 
             jg_acc += acc
 
+        if return_eval_output:
+            evaluation_output += deepcopy(eval_output_batch)
+            eval_output_batch = []
+
         if model.config.predict_actions:
-            for slot in model.requestable_slot_ids:
+            for slot in model.setsumbt.requestable_slot_ids:
                 p_req_ = p_req[slot]
-                request_labels = batch['request-' + slot].to(device)
+                request_labels = batch['request_labels-' + slot].to(device)
 
                 acc = (p_req_.round().int() == request_labels).reshape(-1).float()
                 tp = (p_req_.round().int() * (request_labels == 1)).reshape(-1).float()
@@ -715,85 +619,88 @@ def evaluate(args, model, device, dataloader):
                 req_fp += fp
                 req_fn += fn
 
-            for domain in model.domain_ids:
+            domains = [domain for domain in model.setsumbt.domain_ids if f'active_domain_labels-{domain}' in batch]
+            for domain in domains:
                 p_dom_ = p_dom[domain]
-                domain_labels = batch['active-' + domain].to(device)
+                active_domain_labels = batch['active_domain_labels-' + domain].to(device)
 
-                acc = (p_dom_.round().int() == domain_labels).reshape(-1).float()
-                tp = (p_dom_.round().int() * (domain_labels == 1)).reshape(-1).float()
-                fp = (p_dom_.round().int() * (domain_labels == 0)).reshape(-1).float()
-                fn = ((1 - p_dom_.round().int()) * (domain_labels == 1)).reshape(-1).float()
+                acc = (p_dom_.round().int() == active_domain_labels).reshape(-1).float()
+                tp = (p_dom_.round().int() * (active_domain_labels == 1)).reshape(-1).float()
+                fp = (p_dom_.round().int() * (active_domain_labels == 0)).reshape(-1).float()
+                fn = ((1 - p_dom_.round().int()) * (active_domain_labels == 1)).reshape(-1).float()
                 dom_acc += acc
                 dom_tp += tp
                 dom_fp += fp
                 dom_fn += fn
 
-            goodbye_labels = batch['goodbye'].to(device)
-            bye_acc = (p_bye.argmax(-1) == goodbye_labels).reshape(-1).float().sum()
-            bye_tp = ((p_bye.argmax(-1) > 0) * (goodbye_labels > 0)).reshape(-1).float().sum()
-            bye_fp = ((p_bye.argmax(-1) > 0) * (goodbye_labels == 0)).reshape(-1).float().sum()
-            bye_fn = ((p_bye.argmax(-1) == 0) * (goodbye_labels > 0)).reshape(-1).float().sum()
+            general_act_labels = batch['general_act_labels'].to(device)
+            gen_tp = ((p_gen.argmax(-1) > 0) * (general_act_labels > 0)).reshape(-1).float().sum()
+            gen_fp = ((p_gen.argmax(-1) > 0) * (general_act_labels == 0)).reshape(-1).float().sum()
+            gen_fn = ((p_gen.argmax(-1) == 0) * (general_act_labels > 0)).reshape(-1).float().sum()
         else:
-            req_acc, dom_acc, bye_acc = None, None, torch.tensor(0.0)
             req_tp, req_fp, req_fn = None, None, None
             dom_tp, dom_fp, dom_fn = None, None, None
-            bye_tp, bye_fp, bye_fn = torch.tensor(
-                0.0), torch.tensor(0.0), torch.tensor(0.0)
+            gen_tp, gen_fp, gen_fn = torch.tensor(0.0), torch.tensor(0.0), torch.tensor(0.0)
 
-        sl_acc = sum(jg_acc / len(model.informable_slot_ids)).float()
-        jg_acc = sum((jg_acc / len(model.informable_slot_ids)).int()).float()
-        req_acc = sum(req_acc / len(model.requestable_slot_ids)).float() if req_acc is not None else torch.tensor(0.0)
-        req_tp = sum(req_tp / len(model.requestable_slot_ids)).float() if req_tp is not None else torch.tensor(0.0)
-        req_fp = sum(req_fp / len(model.requestable_slot_ids)).float() if req_fp is not None else torch.tensor(0.0)
-        req_fn = sum(req_fn / len(model.requestable_slot_ids)).float() if req_fn is not None else torch.tensor(0.0)
-        dom_tp = sum(dom_tp / len(model.domain_ids)).float() if dom_tp is not None else torch.tensor(0.0)
-        dom_fp = sum(dom_fp / len(model.domain_ids)).float() if dom_fp is not None else torch.tensor(0.0)
-        dom_fn = sum(dom_fn / len(model.domain_ids)).float() if dom_fn is not None else torch.tensor(0.0)
-        dom_acc = sum(dom_acc / len(model.domain_ids)).float() if dom_acc is not None else torch.tensor(0.0)
-        n_turns = (labels >= 0).reshape(-1).sum().float().item()
+        sl_acc = sum(jg_acc / len(model.setsumbt.informable_slot_ids)).float()
+        jg_acc = sum((jg_acc == len(model.setsumbt.informable_slot_ids)).int()).float()
+        req_tp = sum(req_tp / len(model.setsumbt.requestable_slot_ids)).float() if req_tp is not None else torch.tensor(0.0)
+        req_fp = sum(req_fp / len(model.setsumbt.requestable_slot_ids)).float() if req_fp is not None else torch.tensor(0.0)
+        req_fn = sum(req_fn / len(model.setsumbt.requestable_slot_ids)).float() if req_fn is not None else torch.tensor(0.0)
+        dom_tp = sum(dom_tp / len(model.setsumbt.domain_ids)).float() if dom_tp is not None else torch.tensor(0.0)
+        dom_fp = sum(dom_fp / len(model.setsumbt.domain_ids)).float() if dom_fp is not None else torch.tensor(0.0)
+        dom_fn = sum(dom_fn / len(model.setsumbt.domain_ids)).float() if dom_fn is not None else torch.tensor(0.0)
+        n_turns = (state_labels >= 0).reshape(-1).sum().float().item()
 
         accuracy_jg.append(jg_acc.item())
         accuracy_sl.append(sl_acc.item())
-        accuracy_req.append(req_acc.item())
         truepos_req.append(req_tp.item())
         falsepos_req.append(req_fp.item())
         falseneg_req.append(req_fn.item())
-        accuracy_dom.append(dom_acc.item())
         truepos_dom.append(dom_tp.item())
         falsepos_dom.append(dom_fp.item())
         falseneg_dom.append(dom_fn.item())
-        accuracy_bye.append(bye_acc.item())
-        truepos_bye.append(bye_tp.item())
-        falsepos_bye.append(bye_fp.item())
-        falseneg_bye.append(bye_fn.item())
+        truepos_gen.append(gen_tp.item())
+        falsepos_gen.append(gen_fp.item())
+        falseneg_gen.append(gen_fn.item())
         turns.append(n_turns)
         tr_loss += loss.item()
-
-    # for slot in logits:
-    #     logits[slot] = torch.cat(logits[slot], 0)
 
     # Global accuracy reduction across batches
     turns = sum(turns)
     jg_acc = sum(accuracy_jg) / turns
     sl_acc = sum(accuracy_sl) / turns
     if model.config.predict_actions:
-        req_acc = sum(accuracy_req) / turns
         req_tp = sum(truepos_req)
         req_fp = sum(falsepos_req)
         req_fn = sum(falseneg_req)
-        req_f1 = req_tp / (req_tp + 0.5 * (req_fp + req_fn))
-        dom_acc = sum(accuracy_dom) / turns
+        req_f1 = req_tp + 0.5 * (req_fp + req_fn)
+        req_f1 = req_tp / req_f1 if req_f1 != 0.0 else 0.0
         dom_tp = sum(truepos_dom)
         dom_fp = sum(falsepos_dom)
         dom_fn = sum(falseneg_dom)
-        dom_f1 = dom_tp / (dom_tp + 0.5 * (dom_fp + dom_fn))
-        bye_tp = sum(truepos_bye)
-        bye_fp = sum(falsepos_bye)
-        bye_fn = sum(falseneg_bye)
-        bye_f1 = bye_tp / (bye_tp + 0.5 * (bye_fp + bye_fn))
-        bye_acc = sum(accuracy_bye) / turns
+        dom_f1 = dom_tp + 0.5 * (dom_fp + dom_fn)
+        dom_f1 = dom_tp / dom_f1 if dom_f1 != 0.0 else 0.0
+        gen_tp = sum(truepos_gen)
+        gen_fp = sum(falsepos_gen)
+        gen_fn = sum(falseneg_gen)
+        gen_f1 = gen_tp + 0.5 * (gen_fp + gen_fn)
+        gen_f1 = gen_tp / gen_f1 if gen_f1 != 0.0 else 0.0
     else:
-        req_acc, dom_acc, bye_acc = None, None, None
-        req_f1, dom_f1, bye_f1 = None, None, None
+        req_f1, dom_f1, gen_f1 = None, None, None
 
-    return jg_acc, sl_acc, req_f1, dom_f1, bye_f1, tr_loss / len(dataloader)
+    if return_eval_output:
+        dial_idx = 0
+        for sample in evaluation_output:
+            if dial_idx == 0 and sample['dial_idx'] == 0 and sample['utt_idx'] == 0:
+                dial_idx = 0
+            elif dial_idx == 0 and sample['dial_idx'] != 0 and sample['utt_idx'] == 0:
+                dial_idx += 1
+            elif sample['utt_idx'] == 0:
+                dial_idx += 1
+            sample['dial_idx'] = dial_idx
+
+        return jg_acc, sl_acc, req_f1, dom_f1, gen_f1, tr_loss / len(dataloader), evaluation_output
+    if is_train:
+        return jg_acc, sl_acc, req_f1, dom_f1, gen_f1, tr_loss / len(dataloader), stats
+    return jg_acc, sl_acc, req_f1, dom_f1, gen_f1, tr_loss / len(dataloader)

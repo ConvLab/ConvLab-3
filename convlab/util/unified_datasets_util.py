@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from pprint import pprint
 from convlab.util.file_util import cached_path
 import shutil
-from sentence_transformers import SentenceTransformer, util
+# from sentence_transformers import SentenceTransformer, util
 import torch
 from tqdm import tqdm
 

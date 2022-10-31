@@ -25,8 +25,7 @@ import signal
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
-                "Id": "trainid", "ref": "reference"}
-
+                "Id": "train id", "ref": "reference", "trainID": "train id"}
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -103,7 +102,8 @@ def load_config_file(filepath: str = None) -> dict:
 
 def save_config(terminal_args, config_file_args, config_save_path, policy_config=None):
     config_save_path = os.path.join(config_save_path, f'config_saved.json')
-    args_dict = {"args": terminal_args, "config": config_file_args, "policy_config": policy_config}
+    args_dict = {"args": terminal_args,
+                 "config": config_file_args, "policy_config": policy_config}
     json.dump(args_dict, open(config_save_path, 'w'))
 
 
@@ -165,26 +165,29 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     goals = []
     for seed in range(1000, 1000 + conf['model']['num_eval_dialogues']):
         set_seed(seed)
-        goal = create_goals(goal_generator, 1, single_domain_goals, allowed_domains)
+        goal = create_goals(goal_generator, 1,
+                            single_domain_goals, allowed_domains)
         goals.append(goal[0])
 
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-                select_acts, offer_acts, recommend_acts = evaluate(sess,
-                                                num_dialogues=conf['model']['num_eval_dialogues'],
-                                                sys_semantic_to_usr=conf['model'][
-                                                    'sys_semantic_to_usr'],
-                                                save_flag=save_eval, save_path=log_save_path, goals=goals)
+            select_acts, offer_acts, recommend_acts = evaluate(sess,
+                                                               num_dialogues=conf['model']['num_eval_dialogues'],
+                                                               sys_semantic_to_usr=conf['model'][
+                                                                   'sys_semantic_to_usr'],
+                                                               save_flag=save_eval, save_path=log_save_path, goals=goals)
 
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
+        total_acts = book_acts + inform_acts + request_acts + \
+            select_acts + offer_acts + recommend_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
             select_acts, offer_acts, recommend_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'], goals)
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
+        total_acts = book_acts + inform_acts + request_acts + \
+            select_acts + offer_acts + recommend_acts
 
         task_success_gathered = {}
         for task_dict in task_success:
@@ -196,12 +199,18 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
 
     policy_sys.is_train = True
 
-    mean_complete, err_complete = np.average(complete_rate), np.std(complete_rate) / np.sqrt(len(complete_rate))
-    mean_success, err_success = np.average(success_rate), np.std(success_rate) / np.sqrt(len(success_rate))
-    mean_success_strict, err_success_strict = np.average(success_rate_strict), np.std(success_rate_strict) / np.sqrt(len(success_rate_strict))
-    mean_return, err_return = np.average(avg_return), np.std(avg_return) / np.sqrt(len(avg_return))
-    mean_turns, err_turns = np.average(turns), np.std(turns) / np.sqrt(len(turns))
-    mean_actions, err_actions = np.average(avg_actions), np.std(avg_actions) / np.sqrt(len(avg_actions))
+    mean_complete, err_complete = np.average(complete_rate), np.std(
+        complete_rate) / np.sqrt(len(complete_rate))
+    mean_success, err_success = np.average(success_rate), np.std(
+        success_rate) / np.sqrt(len(success_rate))
+    mean_success_strict, err_success_strict = np.average(success_rate_strict), np.std(
+        success_rate_strict) / np.sqrt(len(success_rate_strict))
+    mean_return, err_return = np.average(avg_return), np.std(
+        avg_return) / np.sqrt(len(avg_return))
+    mean_turns, err_turns = np.average(
+        turns), np.std(turns) / np.sqrt(len(turns))
+    mean_actions, err_actions = np.average(avg_actions), np.std(
+        avg_actions) / np.sqrt(len(avg_actions))
 
     logging.info(f"Complete: {mean_complete}+-{round(err_complete, 2)}, "
                  f"Success: {mean_success}+-{round(err_success, 2)}, "
@@ -372,6 +381,9 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                 complete = sess.evaluator.complete
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
+                if not task_succ:
+                    print("%s | %s %s | GOAL: %s" %
+                          (seed - 1000, task_succ, complete, sess.evaluator.goal))
                 break
         else:
             complete = 0
@@ -416,10 +428,11 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     # save dialogue_info and clear mem
 
     return task_success['All_user_sim'], task_success['All_evaluator'], task_success['All_evaluator_strict'], \
-           task_success['total_return'], task_success['turns'], task_success['avg_actions'], task_success, \
+        task_success['total_return'], task_success['turns'], task_success['avg_actions'], task_success, \
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
-        np.average(task_success['total_offer_acts']), np.average(task_success['total_recommend_acts'])
+        np.average(task_success['total_offer_acts']), np.average(
+            task_success['total_recommend_acts'])
 
 
 def model_downloader(download_dir, model_path):

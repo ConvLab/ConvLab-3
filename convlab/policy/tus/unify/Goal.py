@@ -1,6 +1,9 @@
 import time
 import json
-from convlab.policy.tus.unify.util import split_slot_name
+from convlab.policy.tus.unify.util import split_slot_name, slot_name_map
+from convlab.util.custom_util import slot_mapping
+
+from random import sample, shuffle
 from pprint import pprint
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
@@ -25,6 +28,35 @@ def isTimeFormat(input):
         return True
     except ValueError:
         return False
+
+
+def old_goal2list(goal: dict, reorder=False) -> list:
+    goal_list = []
+    for domain in goal:
+        for slot_type in ['info', 'book', 'reqt']:
+            if slot_type not in goal[domain]:
+                continue
+            temp = []
+            for slot in goal[domain][slot_type]:
+                s = slot
+                if slot in slot_name_map:
+                    s = slot_name_map[slot]
+                elif slot in slot_name_map[domain]:
+                    s = slot_name_map[domain][slot]
+                # domain, intent, slot, value
+                if slot_type in ['info', 'book']:
+                    i = "inform"
+                    v = goal[domain][slot_type][slot]
+                else:
+                    i = "request"
+                    v = DEF_VAL_UNK
+                s = slot_mapping.get(s, s)
+                temp.append([domain, i, s, v])
+            shuffle(temp)
+            goal_list = goal_list + temp
+    # shuffle_goal = goal_list[:1] + sample(goal_list[1:], len(goal_list)-1)
+    # return shuffle_goal
+    return goal_list
 
 
 class Goal(object):
@@ -101,6 +133,7 @@ class Goal(object):
                     if self.domain_goals[domain]["reqt"][slot] == DEF_VAL_UNK:
                         # print(f"not fulfilled request{domain}-{slot}")
                         return False
+
         return True
 
     def init_local_id(self):
@@ -169,6 +202,10 @@ class Goal(object):
 
     def _update_status(self, action: list, char: str):
         for intent, domain, slot, value in action:
+            if slot == "arrive by":
+                slot = "arriveBy"
+            elif slot == "leave at":
+                slot = "leaveAt"
             if domain not in self.status:
                 self.status[domain] = {}
             # update info
@@ -180,6 +217,10 @@ class Goal(object):
     def _update_goal(self, action: list, char: str):
         # update requt slots in goal
         for intent, domain, slot, value in action:
+            if slot == "arrive by":
+                slot = "arriveBy"
+            elif slot == "leave at":
+                slot = "leaveAt"
             if "info" not in intent:
                 continue
             if self._check_update_request(domain, slot) and value != "?":

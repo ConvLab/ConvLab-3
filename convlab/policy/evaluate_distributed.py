@@ -73,7 +73,9 @@ def sampler(pid, queue, evt, sess, seed_range, goals):
 
             if session_over is True:
                 success = sess.evaluator.task_success()
-                complete = sess.evaluator.complete
+                # TODO check the differenct between complete and success
+                # complete = sess.evaluator.complete
+                complete = sess.user_agent.policy.policy.goal.task_complete()
                 success = sess.evaluator.success
                 success_strict = sess.evaluator.success_strict
                 break
