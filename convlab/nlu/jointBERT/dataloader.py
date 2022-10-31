@@ -21,7 +21,7 @@ class Dataloader:
         self.intent2id = dict([(x, i) for i, x in enumerate(intent_vocab)])
         self.id2tag = dict([(i, x) for i, x in enumerate(tag_vocab)])
         self.tag2id = dict([(x, i) for i, x in enumerate(tag_vocab)])
-        self.tokenizer = BertTokenizer.from_pretrained(pretrained_weights, local_files_only=True)
+        self.tokenizer = BertTokenizer.from_pretrained(pretrained_weights)
         self.data = {}
         self.intent_weight = [1] * len(self.intent2id)
 

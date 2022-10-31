@@ -34,6 +34,7 @@ except RuntimeError:
 
 
 def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
+
     """
     This is a sampler function, and it will be called by multiprocess.Process to sample data from environment by multiple
     processes.
@@ -108,6 +109,7 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
 
 
 def sample(env, policy, batchsz, process_num, seed):
+
     """
     Given batchsz number of task, the batchsz will be splited equally to each processes
     and when processes return, it merge all data and return
@@ -135,8 +137,7 @@ def sample(env, policy, batchsz, process_num, seed):
     evt = mp.Event()
     processes = []
     for i in range(process_num):
-        process_args = (i, queue, evt, env, policy,
-                        process_batchsz, train_seeds[i])
+        process_args = (i, queue, evt, env, policy, process_batchsz, train_seeds[i])
         processes.append(mp.Process(target=sampler, args=process_args))
     for p in processes:
         # set the process as daemon, and it will be killed once the main process is stoped.
@@ -189,41 +190,31 @@ if __name__ == '__main__':
                         help="Set level for logger")
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
-    parser.add_argument("--save_path", type=str, default=None,
-                        help="Custom save path other than the path of this script")
 
     path = parser.parse_args().path
     seed = parser.parse_args().seed
     mode = parser.parse_args().mode
     save_eval = parser.parse_args().save_eval_dials
-    custom_save_path = parser.parse_args().save_path
 
-    if custom_save_path:
-        logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
-            init_logging(custom_save_path, mode)
-    else:
-        logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
-            init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
+    logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
+        init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
     args = [('model', 'seed', seed)] if seed is not None else list()
 
     environment_config = load_config_file(path)
-    save_config(vars(parser.parse_args()),
-                environment_config, config_save_path)
+    save_config(vars(parser.parse_args()), environment_config, config_save_path)
 
     conf = get_config(path, args)
     seed = conf['model']['seed']
     logging.info('Train seed is ' + str(seed))
     set_seed(seed)
 
-    policy_sys = PPO(True, seed=conf['model']['seed'],
-                     vectorizer=conf['vectorizer_sys_activated'])
+    policy_sys = PPO(True, seed=conf['model']['seed'], vectorizer=conf['vectorizer_sys_activated'])
 
     # Load model
     if conf['model']['use_pretrained_initialisation']:
         logging.info("Loading supervised model checkpoint.")
-        policy_sys.load_from_pretrained(
-            conf['model'].get('pretrained_load_path', ""))
+        policy_sys.load_from_pretrained(conf['model'].get('pretrained_load_path', ""))
     elif conf['model']['load_path']:
         try:
             policy_sys.load(conf['model']['load_path'])
@@ -251,8 +242,7 @@ if __name__ == '__main__':
 
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
-    eval_dict = eval_policy(conf, policy_sys, env, sess,
-                            save_eval, log_save_path)
+    eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
     logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
 
     for key in eval_dict:
@@ -267,15 +257,13 @@ if __name__ == '__main__':
     for i in range(conf['model']['epoch']):
         idx = i + 1
         # print("Epoch :{}".format(str(idx)))
-        update(env, policy_sys, conf['model']['batchsz'],
-               idx, conf['model']['process_num'], seed=seed)
+        update(env, policy_sys, conf['model']['batchsz'], idx, conf['model']['process_num'], seed=seed)
 
         if idx % conf['model']['eval_frequency'] == 0 and idx != 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
             logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
 
-            eval_dict = eval_policy(
-                conf, policy_sys, env, sess, save_eval, log_save_path)
+            eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
             best_complete_rate, best_success_rate, best_return = \
                 save_best(policy_sys, best_complete_rate, best_success_rate, best_return,
@@ -283,8 +271,7 @@ if __name__ == '__main__':
                           eval_dict["avg_return"], save_path)
             policy_sys.save(save_path, "last")
             for key in eval_dict:
-                tb_writer.add_scalar(
-                    key, eval_dict[key], idx * conf['model']['batchsz'])
+                tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
 
     logging.info("End of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
@@ -293,9 +280,5 @@ if __name__ == '__main__':
     f.write(str(datetime.now() - begin_time))
     f.close()
 
-    if custom_save_path:
-        move_finished_training(dir_path, os.path.join(
-            custom_save_path, "finished_experiments"))
-    else:
-        move_finished_training(dir_path, os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))
+    move_finished_training(dir_path, os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))

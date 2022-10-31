@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2021 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,11 @@
 """BERT SetSUMBT"""
 
 import torch
+import transformers
 from torch.autograd import Variable
 from transformers import BertModel, BertPreTrainedModel
 
-from convlab.dst.setsumbt.modeling.setsumbt import SetSUMBTHead
+from convlab.dst.setsumbt.modeling.functional import _initialise, _nbt_forward
 
 
 class BertSetSUMBT(BertPreTrainedModel):
@@ -34,37 +35,59 @@ class BertSetSUMBT(BertPreTrainedModel):
             for p in self.bert.parameters():
                 p.requires_grad = False
 
-        self.setsumbt = SetSUMBTHead(config)
-        self.add_slot_candidates = self.setsumbt.add_slot_candidates
-        self.add_value_candidates = self.setsumbt.add_value_candidates
+        _initialise(self, config)
 
-    def forward(self,
-                input_ids: torch.Tensor,
-                attention_mask: torch.Tensor,
-                token_type_ids: torch.Tensor = None,
-                hidden_state: torch.Tensor = None,
-                state_labels: torch.Tensor = None,
-                request_labels: torch.Tensor = None,
-                active_domain_labels: torch.Tensor = None,
-                general_act_labels: torch.Tensor = None,
-                get_turn_pooled_representation: bool = False,
-                calculate_state_mutual_info: bool = False):
-        """
-        Args:
-            input_ids: Input token ids
-            attention_mask: Input padding mask
-            token_type_ids: Token type indicator
-            hidden_state: Latent internal dialogue belief state
-            state_labels: Dialogue state labels
-            request_labels: User request action labels
-            active_domain_labels: Current active domain labels
-            general_act_labels: General user action labels
-            get_turn_pooled_representation: Return pooled representation of the current dialogue turn
-            calculate_state_mutual_info: Return mutual information in the dialogue state
+    # Add new slot candidates to the model
+    def add_slot_candidates(self, slot_candidates):
+        """slot_candidates is a list of tuples for each slot.
+        - The tuples contains the slot embedding, informable value embeddings and a request indicator.
+        - If the informable value embeddings is None the slot is not informable
+        - If the request indicator is false the slot is not requestable"""
+        if self.slot_embeddings.size(0) != 0:
+            embeddings = self.slot_embeddings.detach()
+        else:
+            embeddings = torch.zeros(0)
 
-        Returns:
-            out: Tuple containing loss, predictive distributions, model statistics and state mutual information
-        """
+        for slot in slot_candidates:
+            if slot in self.slot_ids:
+                index = self.slot_ids[slot]
+                embeddings[index, :] = slot_candidates[slot][0]
+            else:
+                index = embeddings.size(0)
+                emb = slot_candidates[slot][0].unsqueeze(0).to(embeddings.device)
+                embeddings = torch.cat((embeddings, emb), 0)
+                self.slot_ids[slot] = index
+                setattr(self, slot + '_value_embeddings', Variable(torch.zeros(0), requires_grad=False))
+            # Add slot to relevant requestable and informable slot lists
+            if slot_candidates[slot][2]:
+                self.requestable_slot_ids[slot] = index
+            if slot_candidates[slot][1] is not None:
+                self.informable_slot_ids[slot] = index
+            
+            domain = slot.split('-', 1)[0]
+            if domain not in self.domain_ids:
+                self.domain_ids[domain] = []
+            self.domain_ids[domain].append(index)
+            self.domain_ids[domain] = list(set(self.domain_ids[domain]))
+        
+        self.slot_embeddings = Variable(embeddings, requires_grad=False)
+
+
+    # Add new value candidates to the model
+    def add_value_candidates(self, slot, value_candidates, replace=False):
+        embeddings = getattr(self, slot + '_value_embeddings')
+
+        if embeddings.size(0) == 0 or replace:
+            embeddings = value_candidates
+        else:
+            embeddings = torch.cat((embeddings, value_candidates), 0)
+        
+        setattr(self, slot + '_value_embeddings', embeddings)
+
+    
+    def forward(self, input_ids, token_type_ids, attention_mask, hidden_state=None, inform_labels=None,
+                request_labels=None, domain_labels=None, goodbye_labels=None,
+                get_turn_pooled_representation=False, calculate_inform_mutual_info=False):
 
         # Encode Dialogues
         batch_size, dialogue_size, turn_size = input_ids.size()
@@ -80,10 +103,9 @@ class BertSetSUMBT(BertPreTrainedModel):
         turn_embeddings = turn_embeddings.reshape(batch_size * dialogue_size, turn_size, -1)
 
         if get_turn_pooled_representation:
-            return self.setsumbt(turn_embeddings, bert_output.pooler_output, attention_mask,
-                                 batch_size, dialogue_size, hidden_state, state_labels,
-                                 request_labels, active_domain_labels, general_act_labels,
-                                 calculate_state_mutual_info) + (bert_output.pooler_output,)
-        return self.setsumbt(turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
-                             dialogue_size, hidden_state, state_labels, request_labels, active_domain_labels,
-                             general_act_labels, calculate_state_mutual_info)
+            return _nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size,
+                                dialogue_size, turn_size, hidden_state, inform_labels, request_labels, domain_labels,
+                                goodbye_labels, calculate_inform_mutual_info) + (bert_output.pooler_output,)
+        return _nbt_forward(self, turn_embeddings, bert_output.pooler_output, attention_mask, batch_size, dialogue_size,
+                            turn_size, hidden_state, inform_labels, request_labels, domain_labels, goodbye_labels,
+                            calculate_inform_mutual_info)

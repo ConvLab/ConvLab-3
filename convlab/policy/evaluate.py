@@ -14,7 +14,6 @@ from convlab.policy.rule.multiwoz import RulePolicy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.util.custom_util import set_seed, get_config, env_config, create_goals, data_goals
 from tqdm import tqdm
-from pprint import pprint
 
 
 def init_logging(log_dir_path, path_suffix=None):
@@ -60,10 +59,7 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
         policy_sys = GDPL(vectorizer=conf['vectorizer_sys_activated'])
     elif model_name == "DDPT":
         from convlab.policy.vtrace_DPT import VTRACE
-        policy_sys = VTRACE(
-            is_train=False, vectorizer=conf['vectorizer_sys_activated'])
-    else:
-        print("Unknown model name", model_name)
+        policy_sys = VTRACE(is_train=False, vectorizer=conf['vectorizer_sys_activated'])
 
     try:
         if model_path:
@@ -83,7 +79,6 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
     if goals_from_data:
         logging.info("read goals from dataset...")
         goals = data_goals(dialogues, dataset="multiwoz21", dial_ids_order=0)
-
     else:
         logging.info("create goals from goal_generator...")
         goals = create_goals(goal_generator, num_goals=dialogues,
@@ -100,21 +95,18 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
         task_succ_strict = 0
         complete = 0
 
-        # if verbose:
-        #     logging.info("NEW EPISODE!!!!" + "-" * 80)
-        #     logging.info(f"\n Seed: {seed}")
-        #     logging.info(f"GOAL: {sess.evaluator.goal}")
-        #     logging.info("\n")
-        dialog = []
+        if verbose:
+            logging.info("NEW EPISODE!!!!" + "-" * 80)
+            logging.info(f"\n Seed: {seed}")
+            logging.info(f"GOAL: {sess.evaluator.goal}")
+            logging.info("\n")
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
 
             if verbose:
-                dialog.append({"usr": user_response})
-                dialog.append({"sys": sys_response})
-                logging.info(f"usr {user_response}")
-                logging.info(f"sys {sys_response}")
+                logging.info(f"USER RESPONSE: {user_response}")
+                logging.info(f"SYS RESPONSE: {sys_response}")
 
             actions += len(sys_response)
             length = len(sys_response)
@@ -133,19 +125,18 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
                 task_succ = sess.evaluator.task_success()
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
-                complete = sess.evaluator.complete
-                # TODO check the definision of complete rate
-                # complete = sess.user_agent.policy.policy.goal.task_complete()
-
-                # if goals_from_data:
-                #     complete = sess.user_agent.policy.policy.goal.task_complete()
-                # else:
-                #     complete = sess.evaluator.complete
+                if goals_from_data:
+                    complete = sess.user_agent.policy.policy.goal.task_complete()
+                else:
+                    complete = sess.evaluator.complete
                 break
 
         if verbose:
             logging.info(f"Complete: {complete}")
             logging.info(f"Success: {task_succ}")
+            logging.info(f"Success strict: {task_succ_strict}")
+            logging.info(f"Return: {total_return}")
+            logging.info(f"Average actions: {actions / turns}")
 
         task_success['Complete'].append(complete)
         task_success['Success'].append(task_succ)

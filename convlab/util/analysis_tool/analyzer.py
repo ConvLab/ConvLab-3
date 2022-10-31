@@ -109,7 +109,6 @@ class Analyzer:
 
             step = 0
 
-            print('Goal:', sess.evaluator.goal, file=flog)
             # print('init goal:',file=f)
             # # print(sess.evaluator.goal, file=f)
             # # pprint(sess.evaluator.goal)
@@ -156,7 +155,7 @@ class Analyzer:
                 if session_over:
                     break
 
-            task_success = sess.evaluator.task_success(f=flog)
+            task_success = sess.evaluator.task_success()
             task_complete = sess.user_agent.policy.policy.goal.task_complete()
             book_rate = sess.evaluator.book_rate()
             stats = sess.evaluator.inform_F1()
@@ -164,7 +163,6 @@ class Analyzer:
             if task_success:
                 print('Dialogue succesfully completed!', file=flog)
             else:
-                print("> final goal:", sess.evaluator.goal, file=flog)
                 print('Dialogue NOT completed succesfully!', file=flog)
 
             percentage = sess.evaluator.final_goal_analyze()

@@ -1,11 +1,11 @@
 {
 	"model": {
-		"load_path": "convlab/policy/ppo/pretrained_models/supervised",
+		"load_path": "convlab/policy/mle/experiments/experiment_2022-05-23-14-08-43/save/supervised",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"batchsz": 1000,
 		"seed": 0,
-		"epoch": 200,
+		"epoch": 50,
 		"eval_frequency": 5,
 		"process_num": 4,
 		"sys_semantic_to_usr": false,
@@ -35,7 +35,7 @@
 		"TUSPolicy": {
 			"class_path": "convlab.policy.tus.unify.TUS.UserPolicy",
 			"ini_params": {
-				"config": "convlab/policy/tus/unify/exp/multiwoz.json"
+				"config": "convlab/policy/tus/unify/exp/all.json"
 			}
 		}
 	},
