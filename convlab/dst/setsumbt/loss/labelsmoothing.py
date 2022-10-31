@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2020 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Label smoothing loss function"""
+"""Inhibited Softmax Activation and Loss Functions"""
 
 
 import torch
@@ -23,87 +23,66 @@ from torch.nn.functional import kl_div
 
 class LabelSmoothingLoss(Module):
     """
-    Label smoothing loss minimises the KL-divergence between q_{smoothed ground truth prob}(w)
-    and p_{prob. computed by model}(w).
+    With label smoothing,
+    KL-divergence between q_{smoothed ground truth prob.}(w)
+    and p_{prob. computed by model}(w) is minimized.
     """
-
-    def __init__(self, label_smoothing: float = 0.05, ignore_index: int = -1) -> Module:
-        """
-        Args:
-            label_smoothing (float): Label smoothing constant
-            ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
-        """
+    def __init__(self, label_smoothing=0.05, ignore_index=-1):
         super(LabelSmoothingLoss, self).__init__()
 
         assert 0.0 < label_smoothing <= 1.0
         self.ignore_index = ignore_index
         self.label_smoothing = float(label_smoothing)
 
-    def forward(self, inputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    def forward(self, logits, targets):
         """
-        Args:
-            input (Tensor): Predictive distribution
-            labels (Tensor): Label indices
-
-        Returns:
-            loss (Tensor): Loss value
+        output (FloatTensor): batch_size x n_classes
+        target (LongTensor): batch_size
         """
-        # Assert input sizes
-        assert inputs.dim() == 2
-        assert labels.dim() == 1
-        assert self.label_smoothing <= ((inputs.size(-1) - 1) / inputs.size(-1))
+        assert logits.dim() == 2
+        assert targets.dim() == 1
+        assert self.label_smoothing <= ((logits.size(-1) - 1) / logits.size(-1))
 
-        # Confirm predictive distribution dimension
-        if labels.max() <= inputs.size(-1):
-            dimension = inputs.size(-1)
-        else:
-            raise NameError(f'Label dimension {labels.max()} is larger than prediction dimension {inputs.size(-1)}.')
+        logits = logits[targets != self.ignore_index]
+        targets = targets[targets != self.ignore_index]
 
-        # Remove observations to be ignored in loss calculation
-        inputs = inputs[labels != self.ignore_index]
-        labels = labels[labels != self.ignore_index]
+        logits = torch.log(torch.softmax(logits, -1))
+        labels = torch.ones(logits.size()).float().to(logits.device)
+        labels *= self.label_smoothing / (logits.size(-1) - 1)
+        labels[range(labels.size(0)), targets] = 1.0 - self.label_smoothing
 
-        # Create target distribution
-        inputs = torch.log(torch.softmax(inputs, -1))
-        targets = torch.ones(inputs.size()).float().to(inputs.device)
-        targets *= self.label_smoothing / (dimension - 1)
-        targets[range(labels.size(0)), labels] = 1.0 - self.label_smoothing
-
-        return kl_div(inputs, targets, reduction='none').sum(-1).mean()
+        kl = kl_div(logits, labels, reduction='none').sum(-1).mean()
+        del logits, targets, labels
+        return kl
 
 
-class BinaryLabelSmoothingLoss(LabelSmoothingLoss):
+class BinaryLabelSmoothingLoss(Module):
     """
-    Label smoothing loss minimises the KL-divergence between q_{smoothed ground truth prob}(w)
-    and p_{prob. computed by model}(w).
+    With label smoothing,
+    KL-divergence between q_{smoothed ground truth prob.}(w)
+    and p_{prob. computed by model}(w) is minimized.
     """
+    def __init__(self, label_smoothing=0.05):
+        super(BinaryLabelSmoothingLoss, self).__init__()
 
-    def __init__(self, label_smoothing: float = 0.05, ignore_index: int = -1) -> Module:
-        """
-        Args:
-            label_smoothing (float): Label smoothing constant
-            ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
-        """
-        super(BinaryLabelSmoothingLoss, self).__init__(label_smoothing, ignore_index)
+        assert 0.0 < label_smoothing <= 1.0
+        self.label_smoothing = float(label_smoothing)
 
-    def forward(self, inputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    def forward(self, logits, targets):
         """
-        Args:
-            input (Tensor): Predictive distribution
-            labels (Tensor): Label indices
-
-        Returns:
-            loss (Tensor): Loss value
+        output (FloatTensor): batch_size x n_classes
+        target (LongTensor): batch_size
         """
-        # Assert input sizes
-        assert inputs.dim() == 1
-        assert labels.dim() == 1
+        assert logits.dim() == 1
+        assert targets.dim() == 1
         assert self.label_smoothing <= 0.5
 
-        inputs = torch.sigmoid(inputs).reshape(-1, 1)
-        inputs = torch.log(torch.cat((1 - inputs, inputs), 1))
-        targets = torch.ones(inputs.size()).float().to(inputs.device)
-        targets *= self.label_smoothing
-        targets[range(labels.size(0)), labels.long()] = 1.0 - self.label_smoothing
+        logits = torch.sigmoid(logits).reshape(-1, 1)
+        logits = torch.log(torch.cat((1 - logits, logits), 1))
+        labels = torch.ones(logits.size()).float().to(logits.device)
+        labels *= self.label_smoothing
+        labels[range(labels.size(0)), targets.long()] = 1.0 - self.label_smoothing
 
-        return kl_div(inputs, targets, reduction='none').sum(-1).mean()
+        kl = kl_div(logits, labels, reduction='none').sum(-1).mean()
+        del logits, targets
+        return kl

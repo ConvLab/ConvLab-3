@@ -74,8 +74,7 @@ class BERTNLU(NLU):
         for token in token_list:
             token = token.strip()
             self.nlp.tokenizer.add_special_case(
-                #token, [{ORTH: token, LEMMA: token, POS: u'NOUN'}])
-                token, [{ORTH: token}])
+                token, [{ORTH: token, LEMMA: token, POS: u'NOUN'}])
         logging.info("BERTNLU loaded")
 
     def predict(self, utterance, context=list()):

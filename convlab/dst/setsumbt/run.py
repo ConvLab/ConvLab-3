@@ -33,8 +33,8 @@ def main():
     if args.run_nbt:
         from convlab.dst.setsumbt.do.nbt import main
         main(args, config)
-    if args.run_evaluation:
-        from convlab.dst.setsumbt.do.evaluate import main
+    if args.run_calibration:
+        from convlab.dst.setsumbt.do.calibration import main
         main(args, config)
 
 

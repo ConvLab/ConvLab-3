@@ -5,16 +5,29 @@ import re
 import numpy as np
 
 from copy import deepcopy
+from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
+from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.evaluator.evaluator import Evaluator
 from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
-from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.util import relative_import_module_from_unified_datasets
 
-DEBUG = False
-reverse_da = relative_import_module_from_unified_datasets(
-    'multiwoz21', 'preprocess.py', 'reverse_da')
+# import reflect table
+REF_SYS_DA_M = {}
+for dom, ref_slots in REF_SYS_DA.items():
+    dom = dom.lower()
+    REF_SYS_DA_M[dom] = {}
+    for slot_a, slot_b in ref_slots.items():
+        if slot_a == 'Ref':
+            slot_b = 'ref'
+        REF_SYS_DA_M[dom][slot_a.lower()] = slot_b
+    REF_SYS_DA_M[dom]['none'] = 'none'
+REF_SYS_DA_M['taxi']['phone'] = 'phone'
+REF_SYS_DA_M['taxi']['car'] = 'car type'
+
+reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
+
 
 requestable = \
     {'attraction': ['post', 'phone', 'addr', 'fee', 'area', 'type'],
@@ -28,20 +41,15 @@ requestable = \
 belief_domains = requestable.keys()
 
 mapping = {'restaurant': {'addr': 'address', 'area': 'area', 'food': 'food', 'name': 'name', 'phone': 'phone',
-                          'post': 'postcode', 'price': 'pricerange', 'ref': 'ref',
-                          'price range': 'pricerange', 'address': 'address', 'postcode': 'postcode'},
+                          'post': 'postcode', 'price': 'pricerange', 'ref': 'ref'},
            'hotel': {'addr': 'address', 'area': 'area', 'internet': 'internet', 'parking': 'parking', 'name': 'name',
-                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type', 'ref': 'ref',
-                     'price range': 'pricerange', 'address': 'address', 'postcode': 'postcode'},
+                     'phone': 'phone', 'post': 'postcode', 'price': 'pricerange', 'stars': 'stars', 'type': 'type', 'ref': 'ref'},
            'attraction': {'addr': 'address', 'area': 'area', 'fee': 'entrance fee', 'name': 'name', 'phone': 'phone',
-                          'post': 'postcode', 'type': 'type', 'entrance fee': 'entrance fee'},
-           'train': {'id': 'trainID', 'arrive': 'arrive by', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
-                     'time': 'duration', 'leave': 'leave at', 'ticket': 'price', 'ref': 'ref',
-                     'arrive by': 'arrive by', 'leave at': 'leave at', 'departure': 'departure', 'destination': "destination", "duration": "duration", "price": "price"},
-           'taxi': {'car': 'car type', 'phone': 'phone',
-                    'car type': 'car type'},
-           'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department',
-                        'postcode': 'postcode', 'address': 'address'},
+                          'post': 'postcode', 'type': 'type'},
+           'train': {'id': 'trainID', 'arrive': 'arriveBy', 'day': 'day', 'depart': 'departure', 'dest': 'destination',
+                     'time': 'duration', 'leave': 'leaveAt', 'ticket': 'price', 'ref': 'ref'},
+           'taxi': {'car': 'car type', 'phone': 'phone'},
+           'hospital': {'post': 'postcode', 'phone': 'phone', 'addr': 'address', 'department': 'department'},
            'police': {'post': 'postcode', 'phone': 'phone', 'addr': 'address'}}
 
 
@@ -59,13 +67,20 @@ for dom, ref_slots in REF_SYS_DA.items():
     REF_SYS_DA_M[dom]['none'] = 'none'
 REF_SYS_DA_M['taxi']['phone'] = 'phone'
 REF_SYS_DA_M['taxi']['car'] = 'car type'
-REF_SYS_DA_M['train']['id'] = 'train id'
 DEF_VAL_UNK = '?'  # Unknown
 DEF_VAL_DNC = 'dontcare'  # Do not care
 DEF_VAL_NUL = 'none'  # for none
 DEF_VAL_BOOKED = 'yes'  # for booked
 DEF_VAL_NOBOOK = 'no'  # for booked
 
+NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
+
+# Not sure values in inform
+DEF_VAL_UNK = '?'  # Unknown
+DEF_VAL_DNC = 'dontcare'  # Do not care
+DEF_VAL_NUL = 'none'  # for none
+DEF_VAL_BOOKED = 'yes'  # for booked
+DEF_VAL_NOBOOK = 'no'  # for booked
 NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
 
 
@@ -277,8 +292,7 @@ class MultiWozEvaluator(Evaluator):
                         if value == value_predicted:
                             match += 1
                     except Exception as e:
-                        if DEBUG:
-                            print("Tracker probably does not track that slot.", e)
+                        print("Tracker probably does not track that slot.", e)
                         # if tracker does not track it, it trivially matches since policy has no chance otherwise
                         match += 1
 
@@ -319,7 +333,6 @@ class MultiWozEvaluator(Evaluator):
                 else:
                     # print('FN + 1')
                     reqt_not_inform.add(('request', domain, k))
-                    print("reqt_not_inform.add(('request', domain, k))", domain, k)
                     FN += 1
             for k in inform_slot[domain]:
                 # exclude slots that are informed by users
@@ -329,13 +342,12 @@ class MultiWozEvaluator(Evaluator):
                     # print('FP + 1 @2', k)
                     inform_not_reqt.add(('inform', domain, k,))
                     FP += 1
-
         return TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt
 
     def _check_value(self, domain, key, value):
         if key == "area":
             return value.lower() in ["centre", "east", "south", "west", "north"]
-        elif key == "arriveBy" or key == "leaveAt" or key == "arrive by" or key == "leave at":
+        elif key == "arriveBy" or key == "leaveAt":
             return time_re.match(value)
         elif key == "day":
             return value.lower() in ["monday", "tuesday", "wednesday", "thursday", "friday",
@@ -348,13 +360,13 @@ class MultiWozEvaluator(Evaluator):
             return re.match(r'^\d{11}$', value) or domain == "restaurant"
         elif key == "price":
             return 'pound' in value
-        elif key == "pricerange" or key == "price range":
+        elif key == "pricerange":
             return value in ["cheap", "expensive", "moderate", "free"] or domain == "attraction"
         elif key == "postcode":
             return re.match(r'^cb\d{1,3}[a-z]{2,3}$', value) or value == 'pe296fl'
         elif key == "stars":
             return re.match(r'^\d$', value)
-        elif key == "trainID" or key == "train id":
+        elif key == "trainID":
             return re.match(r'^tr\d{4}$', value.lower())
         else:
             return True
@@ -426,9 +438,6 @@ class MultiWozEvaluator(Evaluator):
 
         TP, FP, FN, bad_inform, reqt_not_inform, inform_not_reqt = self._inform_F1_goal(
             goal, self.sys_da_array)
-        if len(reqt_not_inform) > 0:
-            print("bad_inform", bad_inform)
-            print("reqt_not_inform", reqt_not_inform)
         if aggregate:
             try:
                 rec = TP / (TP + FN)
@@ -463,14 +472,6 @@ class MultiWozEvaluator(Evaluator):
                 book_constraint_sess == 1 or book_constraint_sess is None) else 0
             return self.success if not self.check_book_constraints else self.success_strict
         else:
-            print("===== fail reason =====")
-            if goal_sess != 1:
-                print("goal_sess", goal_sess)
-            if book_sess is not None and book_sess < 1:
-                print("book_sess", book_sess)
-            if inform_sess[1] is not None and inform_sess[1] < 1:
-                print("inform_sess", inform_sess)
-
             self.complete = 1 if booking_done and (
                 inform_sess[1] == 1 or inform_sess[1] is None) else 0
             self.success = 0
@@ -668,12 +669,11 @@ class MultiWozEvaluator(Evaluator):
                 slot = reverse_da_slot_name_map[domain][slot]
             else:
                 slot = slot.capitalize()
-
             if intent.lower() in ['inform', 'recommend']:
                 if domain.lower() in goal:
                     if 'reqt' in goal[domain.lower()]:
-                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) in goal[domain.lower()][
-                                'reqt']:
+                        if REF_SYS_DA_M.get(domain.lower(), {}).get(slot.lower(), slot.lower()) \
+                                in goal[domain.lower()]['reqt']:
                             if val in NOT_SURE_VALS:
                                 val = '\"' + val + '\"'
                             goal[domain.lower()]['reqt'][
