@@ -91,7 +91,7 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
             plt.ylabel(y_label)
         else:
             plt.ylabel(plot_type)
-        plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower left')
+        plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower right')
         plt.savefig(out_file, bbox_inches='tight')
 
         if show_image:

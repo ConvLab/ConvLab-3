@@ -1,10 +1,30 @@
 [
   {
-    "dir": "ppo",
-    "legend": "PPO"
+    "dir": "mwoz",
+    "legend": "mwoz"
   },
   {
-    "dir": "pg",
-    "legend": "PG"
+    "dir": "scratch",
+    "legend": "scratch"
+  },
+    {
+    "dir": "sgd",
+    "legend": "sgd"
+  },
+    {
+    "dir": "sgd_mw",
+    "legend": "sgd_mw"
+  },
+    {
+    "dir": "ppo_scratch",
+    "legend": "ppo scratch"
+  },
+    {
+    "dir": "ppo_mwoz",
+    "legend": "ppo full"
+  },
+    {
+    "dir": "mwoz_full",
+    "legend": "ddpt full"
   }
 ]
