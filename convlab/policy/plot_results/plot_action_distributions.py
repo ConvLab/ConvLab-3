@@ -60,7 +60,9 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
     # aggregate across seeds
     for step in distribution_per_step_dict:
         for action in distribution_per_step_dict[step]:
-            distribution_per_step_dict[step][action] = round(np.mean(distribution_per_step_dict[step][action]), 2)
+            mean = round(np.mean(distribution_per_step_dict[step][action]), 2)
+            std_error = round(np.std(distribution_per_step_dict[step][action]), 2) / np.sqrt(len(seed_dir_paths))
+            distribution_per_step_dict[step][action] = {"mean": mean, "error": std_error}
 
     return distribution_per_step_dict
 
