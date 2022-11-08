@@ -4,6 +4,7 @@ import os
 from glob import glob
 
 import matplotlib.pyplot as plt
+from scipy.stats import t as t_dist
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -58,7 +59,7 @@ def read_tb_data(in_path):
     return df
 
 
-def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label=''):
+def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label='', width=0.95):
 
     legends = [alg for alg in data]
     clrs = sns.color_palette("husl", len(legends))
@@ -77,12 +78,13 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
             seeds_used = value.shape[0]
             mean, err = np.mean(value, axis=0), np.std(value, axis=0)
             err = err / np.sqrt(seeds_used)
+            width = t_dist.ppf(q=1 - (1 - width) / 2, df=seeds_used - 1 if seeds_used > 1 else 1)
             plt.plot(
                 step, mean, c=clrs[i], label=alg)
 
             plt.fill_between(
-                step, mean - err,
-                mean + err, alpha=fill_between, facecolor=clrs[i])
+                step, mean - width * err,
+                mean + width * err, alpha=fill_between, facecolor=clrs[i])
         # locs, labels = plt.xticks()
         # plt.xticks(locs, labels)
         #plt.yticks(np.arange(10) / 10)
