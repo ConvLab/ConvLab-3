@@ -93,7 +93,7 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
         else:
             plt.ylabel(plot_type)
         plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower right')
-        plt.savefig(out_file, bbox_inches='tight')
+        plt.savefig(out_file + ".pdf", bbox_inches='tight')
 
         if show_image:
             plt.show()
