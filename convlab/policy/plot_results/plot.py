@@ -4,14 +4,16 @@ import os
 from glob import glob
 
 import matplotlib.pyplot as plt
-from scipy.stats import t as t_dist
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import sys
 from tensorboard.backend.event_processing import event_accumulator
 from tqdm import tqdm
 
 from convlab.policy.plot_results.plot_action_distributions import plot_distributions
+
+plt.rcParams["font.family"] = "Times New Roman"
 
 
 def get_args():
@@ -59,12 +61,14 @@ def read_tb_data(in_path):
     return df
 
 
-def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label='', width=0.95):
+def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label=''):
 
     legends = [alg for alg in data]
     clrs = sns.color_palette("husl", len(legends))
     plt.figure(plot_type)
 
+    largest_max = -sys.maxsize
+    smallest_min = sys.maxsize
     with sns.axes_style("darkgrid"):
         for i, alg in enumerate(legends):
 
@@ -78,18 +82,16 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
             seeds_used = value.shape[0]
             mean, err = np.mean(value, axis=0), np.std(value, axis=0)
             err = err / np.sqrt(seeds_used)
-            width = t_dist.ppf(q=1 - (1 - width) / 2, df=seeds_used - 1 if seeds_used > 1 else 1)
             plt.plot(
                 step, mean, c=clrs[i], label=alg)
-
             plt.fill_between(
-                step, mean - width * err,
-                mean + width * err, alpha=fill_between, facecolor=clrs[i])
-        # locs, labels = plt.xticks()
-        # plt.xticks(locs, labels)
-        #plt.yticks(np.arange(10) / 10)
-        #plt.yticks([0.5, 0.6, 0.7])
+                step, mean - err,
+                mean + err, alpha=fill_between, facecolor=clrs[i])
+            largest_max = mean.max() if mean.max() > largest_max else largest_max
+            smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
+
         plt.xlabel('Training dialogues')
+        #plt.gca().yaxis.set_major_locator(plt.MultipleLocator(round((largest_max - smallest_min) / 10.0, 2)))
         if len(y_label) > 0:
             plt.ylabel(y_label)
         else:

@@ -4,6 +4,8 @@ import os
 import seaborn as sns
 import pandas as pd
 
+plt.rcParams["font.family"] = "Times New Roman"
+
 
 def extract_action_distributions_across_seeds(algorithm_dir_path):
     '''
@@ -57,17 +59,10 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
 
                     evaluation_found = False
 
-    # aggregate across seeds
-    for step in distribution_per_step_dict:
-        for action in distribution_per_step_dict[step]:
-            mean = round(np.mean(distribution_per_step_dict[step][action]), 2)
-            std_error = round(np.std(distribution_per_step_dict[step][action]), 2) / np.sqrt(len(seed_dir_paths))
-            distribution_per_step_dict[step][action] = {"mean": mean, "error": std_error}
-
     return distribution_per_step_dict
 
 
-def plot_distributions(dir_path, alg_maps, output_dir):
+def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
     clrs = sns.color_palette("husl", len(alg_maps))
 
     alg_paths = [os.path.join(dir_path, alg_map['dir']) for alg_map in alg_maps]
@@ -78,22 +73,36 @@ def plot_distributions(dir_path, alg_maps, output_dir):
 
     for action in possible_actions:
         plt.clf()
+
+        largest_max = 0
+        smallest_min = 1
         for i, alg_distribution in enumerate(action_distributions):
             steps = alg_distribution.keys()
             try:
-                distributions = [alg_distribution[step][action] for step in steps]
+                distributions = np.array([alg_distribution[step][action] for step in steps])
+                # length = num_Evaluations * num_seeds
+                mean, std_dev = np.mean(distributions, axis=1), np.std(distributions, axis=1)
+                seeds_used = distributions.shape[1]
+                std_error = std_dev / np.sqrt(seeds_used)
 
                 with sns.axes_style("darkgrid"):
-                    plt.plot(steps, distributions, c=clrs[i], label=f"{alg_maps[i]['legend']}")
-                    plt.yticks(np.arange(0, 1, 0.1))
-                    plt.xticks(fontsize=7, rotation=0)
-            except:
-                # catch if an algorithm does not have a specific action
-                pass
+                    plt.plot(steps, mean, c=clrs[i], label=f"{alg_maps[i]['legend']}")
+                    plt.fill_between(
+                        steps, mean - std_error,
+                              mean + std_error, alpha=fill_between, facecolor=clrs[i])
 
+                largest_max = mean.max() if mean.max() > largest_max else largest_max
+                smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
+
+            except Exception as e:
+                # catch if an algorithm does not have a specific action
+                print(e)
+
+        plt.gca().yaxis.set_major_locator(plt.MultipleLocator(round((largest_max - smallest_min) / 10.0, 2)))
+        plt.xticks(fontsize=7, rotation=0)
         plt.xlabel('Training dialogues')
         plt.ylabel(f"{action} action probability")
-        plt.title(f"{action} action probability")
+        plt.title(f"{action.upper()} action probability")
         plt.legend(fancybox=True, shadow=False, ncol=1, loc='upper left')
         plt.savefig(output_dir + f'/{action}_probability.pdf', bbox_inches='tight')
 
@@ -107,7 +116,7 @@ def create_bar_plots(action_distributions, alg_maps, possible_actions, output_di
     for action in possible_actions:
         action_list = [action]
         for distribution in final_distributions:
-            action_list.append(distribution[action])
+            action_list.append(np.mean(distribution[action]))
         df_list.append(action_list)
 
     df = pd.DataFrame(df_list, columns=['Probabilities'] + [alg_map["legend"] for alg_map in alg_maps])
