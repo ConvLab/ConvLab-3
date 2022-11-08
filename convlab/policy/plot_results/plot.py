@@ -10,6 +10,8 @@ import seaborn as sns
 from tensorboard.backend.event_processing import event_accumulator
 from tqdm import tqdm
 
+from convlab.policy.plot_results.plot_action_distributions import plot_distributions
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Export tensorboard data')
@@ -69,7 +71,6 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
             if max_dialogues > 0:
                 max_length = min([len([s for s in d['steps'] if s <= max_dialogues]) for d in data[alg]])
                 max_step = min([max_length, max_step])
-            print("max_step: ", max_step)
 
             value = np.array([d[plot_type][:max_step] for d in data[alg]])
             step = np.array([d['steps'][:max_step] for d in data[alg]][0])
@@ -118,3 +119,6 @@ if __name__ == "__main__":
              fill_between=args.fill_between,
              max_dialogues=args.max_dialogues,
              y_label=y_label_dict[plot_type])
+
+    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file)
+

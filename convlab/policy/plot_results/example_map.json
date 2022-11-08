@@ -14,17 +14,5 @@
     {
     "dir": "sgd_mw",
     "legend": "sgd_mw"
-  },
-    {
-    "dir": "ppo_scratch",
-    "legend": "ppo scratch"
-  },
-    {
-    "dir": "ppo_mwoz",
-    "legend": "ppo full"
-  },
-    {
-    "dir": "mwoz_full",
-    "legend": "ddpt full"
   }
 ]
