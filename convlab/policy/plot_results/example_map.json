@@ -1,18 +1,18 @@
 [
   {
-    "dir": "mwoz",
-    "legend": "mwoz"
-  },
-  {
     "dir": "scratch",
     "legend": "scratch"
   },
     {
     "dir": "sgd",
-    "legend": "sgd"
+    "legend": "SGD"
+  },
+  {
+    "dir": "mwoz",
+    "legend": "1%MWOZ"
   },
     {
     "dir": "sgd_mw",
-    "legend": "sgd_mw"
+    "legend": "SGD->1%MWOZ"
   }
 ]

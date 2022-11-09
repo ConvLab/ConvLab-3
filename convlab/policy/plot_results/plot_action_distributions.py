@@ -122,6 +122,6 @@ def create_bar_plots(action_distributions, alg_maps, possible_actions, output_di
     df = pd.DataFrame(df_list, columns=['Probabilities'] + [alg_map["legend"] for alg_map in alg_maps])
 
     fig = df.plot(x='Probabilities', kind='bar', stacked=False, title='Final Action Distributions',
-                  rot=0, grid=True).get_figure()
+                  rot=0, grid=True, color=sns.color_palette("husl", len(alg_maps))).get_figure()
     plt.yticks(np.arange(0, 1, 0.1))
     fig.savefig(os.path.join(output_dir, "final_action_probabilities.pdf"))
