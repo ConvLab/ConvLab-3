@@ -97,7 +97,7 @@ class TUSDataManager(Dataset):
                     action_list, user_goal, cur_state, usr_act)
                 domain_label = self.feature_handler.domain_label(
                     user_goal, usr_act)
-                pre_state = user_goal.update(action=usr_act, char="user")
+                # pre_state = user_goal.update(action=usr_act, char="user") # trick?
                 feature["id"].append(dialog["dialogue_id"])
                 feature["input"].append(input_feature)
                 feature["mask"].append(mask)
