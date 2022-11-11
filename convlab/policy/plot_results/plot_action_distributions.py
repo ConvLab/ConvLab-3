@@ -18,8 +18,10 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
     Complete: 0.786+-0.02, Success: 0.686+-0.02, Success strict: 0.634+-0.02, Average Return: 24.42.......
     '''
 
-    seed_dir_paths = [f.path for f in os.scandir(algorithm_dir_path) if f.is_dir()]
-    seed_dir_names = [f.name for f in os.scandir(algorithm_dir_path) if f.is_dir()]
+    seed_dir_paths = [f.path for f in os.scandir(
+        algorithm_dir_path) if f.is_dir()]
+    seed_dir_names = [f.name for f in os.scandir(
+        algorithm_dir_path) if f.is_dir()]
 
     # dict below will have the form {0: {book: [], inform: [], ..}, 1000: {book: [], inform: [], ..}, ...}
     # where 0 and 1000 are evaluation steps and the list will be as long as the number of seeds used
@@ -45,17 +47,22 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
                     if num_dialogues in distribution_per_step_dict:
                         for action_string in action_distribution_string:
                             action = action_string.lower().split(" ")[0]
-                            distribution = float(action_string.lower().split(": ")[-1])
+                            distribution = float(
+                                action_string.lower().split(": ")[-1])
                             if action in distribution_per_step_dict[num_dialogues]:
-                                distribution_per_step_dict[num_dialogues][action].append(distribution)
+                                distribution_per_step_dict[num_dialogues][action].append(
+                                    distribution)
                             else:
-                                distribution_per_step_dict[num_dialogues][action] = [distribution]
+                                distribution_per_step_dict[num_dialogues][action] = [
+                                    distribution]
                     else:
                         distribution_per_step_dict[num_dialogues] = {}
                         for action_string in action_distribution_string:
                             action = action_string.lower().split(" ")[0]
-                            distribution = float(action_string.lower().split(": ")[-1])
-                            distribution_per_step_dict[num_dialogues][action] = [distribution]
+                            distribution = float(
+                                action_string.lower().split(": ")[-1])
+                            distribution_per_step_dict[num_dialogues][action] = [
+                                distribution]
 
                     evaluation_found = False
 
@@ -65,11 +72,14 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
 def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
     clrs = sns.color_palette("husl", len(alg_maps))
 
-    alg_paths = [os.path.join(dir_path, alg_map['dir']) for alg_map in alg_maps]
-    action_distributions = [extract_action_distributions_across_seeds(path) for path in alg_paths]
+    alg_paths = [os.path.join(dir_path, alg_map['dir'])
+                 for alg_map in alg_maps]
+    action_distributions = [
+        extract_action_distributions_across_seeds(path) for path in alg_paths]
     possible_actions = action_distributions[0][0].keys()
 
-    create_bar_plots(action_distributions, alg_maps, possible_actions, output_dir)
+    create_bar_plots(action_distributions, alg_maps,
+                     possible_actions, output_dir)
 
     for action in possible_actions:
         plt.clf()
@@ -79,17 +89,20 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
         for i, alg_distribution in enumerate(action_distributions):
             steps = alg_distribution.keys()
             try:
-                distributions = np.array([alg_distribution[step][action] for step in steps])
+                distributions = np.array(
+                    [alg_distribution[step][action] for step in steps])
                 # length = num_Evaluations * num_seeds
-                mean, std_dev = np.mean(distributions, axis=1), np.std(distributions, axis=1)
+                mean, std_dev = np.mean(distributions, axis=1), np.std(
+                    distributions, axis=1)
                 seeds_used = distributions.shape[1]
                 std_error = std_dev / np.sqrt(seeds_used)
 
                 with sns.axes_style("darkgrid"):
-                    plt.plot(steps, mean, c=clrs[i], label=f"{alg_maps[i]['legend']}")
+                    plt.plot(steps, mean, c=clrs[i],
+                             label=f"{alg_maps[i]['legend']}")
                     plt.fill_between(
                         steps, mean - std_error,
-                              mean + std_error, alpha=fill_between, facecolor=clrs[i])
+                        mean + std_error, alpha=fill_between, facecolor=clrs[i])
 
                 largest_max = mean.max() if mean.max() > largest_max else largest_max
                 smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
@@ -97,20 +110,24 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
             except Exception as e:
                 # catch if an algorithm does not have a specific action
                 print(e)
-
-        plt.gca().yaxis.set_major_locator(plt.MultipleLocator(round((largest_max - smallest_min) / 10.0, 2)))
+        print(action)
+        if round((largest_max - smallest_min) / 10.0, 2) > 0:
+            plt.gca().yaxis.set_major_locator(plt.MultipleLocator(
+                round((largest_max - smallest_min) / 10.0, 2)))
         plt.xticks(fontsize=7, rotation=0)
         plt.xlabel('Training dialogues')
         plt.ylabel(f"{action} action probability")
         plt.title(f"{action.upper()} action probability")
         plt.legend(fancybox=True, shadow=False, ncol=1, loc='upper left')
-        plt.savefig(output_dir + f'/{action}_probability.pdf', bbox_inches='tight')
+        plt.savefig(
+            output_dir + f'/{action}_probability.pdf', bbox_inches='tight')
 
 
 def create_bar_plots(action_distributions, alg_maps, possible_actions, output_dir):
 
     max_step = max(action_distributions[0].keys())
-    final_distributions = [distribution[max_step] for distribution in action_distributions]
+    final_distributions = [distribution[max_step]
+                           for distribution in action_distributions]
 
     df_list = []
     for action in possible_actions:
@@ -119,7 +136,8 @@ def create_bar_plots(action_distributions, alg_maps, possible_actions, output_di
             action_list.append(np.mean(distribution[action]))
         df_list.append(action_list)
 
-    df = pd.DataFrame(df_list, columns=['Probabilities'] + [alg_map["legend"] for alg_map in alg_maps])
+    df = pd.DataFrame(df_list, columns=[
+                      'Probabilities'] + [alg_map["legend"] for alg_map in alg_maps])
 
     fig = df.plot(x='Probabilities', kind='bar', stacked=False, title='Final Action Distributions',
                   rot=0, grid=True, color=sns.color_palette("husl", len(alg_maps))).get_figure()
