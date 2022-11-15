@@ -33,7 +33,7 @@ class SCGPT(NLG):
             sents = [sent + ' ' + START_OF_PRED for sent in sents]
             sent_ids = [self.tokenizer.encode(sent) for sent in sents]
             max_len = max([len(sent) for sent in sent_ids])
-            sent_ids = [sent + [self.tokenizer.pad_token_id] * (max_len - len(sent)) for sent in sent_ids]
+            sent_ids = [[self.tokenizer.pad_token_id] * (max_len - len(sent)) + sent  for sent in sent_ids]
             inputs = torch.LongTensor(sent_ids).to(self.device)
             model_to_run = self.model.module if type(self.model) is DDP else self.model
             outputs = model_to_run.generate(inputs, max_length=256,
@@ -41,5 +41,6 @@ class SCGPT(NLG):
                                             pad_token_id=self.tokenizer.pad_token_id)  # greedy
             # outputs = model_to_run.generate(inputs, num_beams=4, max_length=513, eos_token_id=gpt2_tokenizer.eos_token_id,
             #                                 pad_token_id=gpt2_tokenizer.pad_token_id)  # beam search
+            
             output_strs = [self.tokenizer.decode(item) for item in outputs]
             return output_strs
