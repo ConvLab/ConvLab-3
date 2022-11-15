@@ -4,8 +4,6 @@ import os
 import seaborn as sns
 import pandas as pd
 
-plt.rcParams["font.family"] = "Times New Roman"
-
 
 def extract_action_distributions_across_seeds(algorithm_dir_path):
     '''
@@ -69,7 +67,8 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
     return distribution_per_step_dict
 
 
-def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
+def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3, fontsize=16, font="Times New Roman"):
+    plt.rcParams["font.family"] = font
     clrs = sns.color_palette("husl", len(alg_maps))
 
     alg_paths = [os.path.join(dir_path, alg_map['dir'])
@@ -79,10 +78,13 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
     possible_actions = action_distributions[0][0].keys()
 
     create_bar_plots(action_distributions, alg_maps,
-                     possible_actions, output_dir)
+                     possible_actions, output_dir,
+                     fontsize)
 
     for action in possible_actions:
         plt.clf()
+        plt.gca().patch.set_facecolor('#E6E6E6')
+        plt.grid(color='w', linestyle='solid')
 
         largest_max = 0
         smallest_min = 1
@@ -97,12 +99,12 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
                 seeds_used = distributions.shape[1]
                 std_error = std_dev / np.sqrt(seeds_used)
 
-                with sns.axes_style("darkgrid"):
-                    plt.plot(steps, mean, c=clrs[i],
-                             label=f"{alg_maps[i]['legend']}")
-                    plt.fill_between(
-                        steps, mean - std_error,
-                        mean + std_error, alpha=fill_between, facecolor=clrs[i])
+                # with sns.axes_style("darkgrid"):
+                plt.plot(steps, mean, c=clrs[i],
+                         label=f"{alg_maps[i]['legend']}")
+                plt.fill_between(
+                    steps, mean - std_error,
+                    mean + std_error, alpha=fill_between, facecolor=clrs[i])
 
                 largest_max = mean.max() if mean.max() > largest_max else largest_max
                 smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
@@ -114,16 +116,17 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3):
         if round((largest_max - smallest_min) / 10.0, 2) > 0:
             plt.gca().yaxis.set_major_locator(plt.MultipleLocator(
                 round((largest_max - smallest_min) / 10.0, 2)))
-        plt.xticks(fontsize=7, rotation=0)
-        plt.xlabel('Training dialogues')
-        plt.ylabel(f"{action} action probability")
-        plt.title(f"{action.upper()} action probability")
+        plt.xticks(fontsize=fontsize-4, rotation=0)
+        plt.yticks(fontsize=fontsize-4)
+        plt.xlabel('Training dialogues', fontsize=fontsize)
+        plt.ylabel(f"{action.title()} action probability", fontsize=fontsize)
+        plt.title(f"{action.title()} action probability", fontsize=fontsize)
         plt.legend(fancybox=True, shadow=False, ncol=1, loc='upper left')
         plt.savefig(
             output_dir + f'/{action}_probability.pdf', bbox_inches='tight')
 
 
-def create_bar_plots(action_distributions, alg_maps, possible_actions, output_dir):
+def create_bar_plots(action_distributions, alg_maps, possible_actions, output_dir, fontsize):
 
     max_step = max(action_distributions[0].keys())
     final_distributions = [distribution[max_step]
@@ -131,15 +134,20 @@ def create_bar_plots(action_distributions, alg_maps, possible_actions, output_di
 
     df_list = []
     for action in possible_actions:
-        action_list = [action]
+        action_list = [action.title()]
         for distribution in final_distributions:
             action_list.append(np.mean(distribution[action]))
         df_list.append(action_list)
 
     df = pd.DataFrame(df_list, columns=[
                       'Probabilities'] + [alg_map["legend"] for alg_map in alg_maps])
-
+    plt.figure()
+    plt.rcParams.update({'font.size': fontsize})
     fig = df.plot(x='Probabilities', kind='bar', stacked=False, title='Final Action Distributions',
-                  rot=0, grid=True, color=sns.color_palette("husl", len(alg_maps))).get_figure()
-    plt.yticks(np.arange(0, 1, 0.1))
+                  rot=0, grid=True, color=sns.color_palette("husl", len(alg_maps)),
+                  fontsize=fontsize).get_figure()
+    plt.gca().patch.set_facecolor('#E6E6E6')
+    plt.grid(color='w', linestyle='solid')
+    plt.yticks(np.arange(0, 1, 0.1), fontsize=fontsize-4)
+    plt.xticks(fontsize=fontsize-4)
     fig.savefig(os.path.join(output_dir, "final_action_probabilities.pdf"))

@@ -13,8 +13,6 @@ from tqdm import tqdm
 
 from convlab.policy.plot_results.plot_action_distributions import plot_distributions
 
-plt.rcParams["font.family"] = "Times New Roman"
-
 
 def get_args():
     parser = argparse.ArgumentParser(description='Export tensorboard data')
@@ -27,8 +25,11 @@ def get_args():
     parser.add_argument("--max-dialogues", type=int, default=0)
     parser.add_argument("--fill-between", type=float, default=0.3,
                         help="the transparency of the std err area")
+    parser.add_argument("--fontsize", type=int, default=16)
+    parser.add_argument("--font", type=str, default="Times New Roman")
 
     args = parser.parse_args()
+    plt.rcParams["font.family"] = args.font
     return args
 
 
@@ -61,46 +62,50 @@ def read_tb_data(in_path):
     return df
 
 
-def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label=''):
+def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label='',
+         fontsize=16):
 
     legends = [alg for alg in data]
     clrs = sns.color_palette("husl", len(legends))
     plt.figure(plot_type)
+    plt.gca().patch.set_facecolor('#E6E6E6')
+    plt.grid(color='w', linestyle='solid')
 
     largest_max = -sys.maxsize
     smallest_min = sys.maxsize
-    with sns.axes_style("darkgrid"):
-        for i, alg in enumerate(legends):
+    for i, alg in enumerate(legends):
 
-            max_step = min([len(d[plot_type]) for d in data[alg]])
-            if max_dialogues > 0:
-                max_length = min([len([s for s in d['steps'] if s <= max_dialogues]) for d in data[alg]])
-                max_step = min([max_length, max_step])
+        max_step = min([len(d[plot_type]) for d in data[alg]])
+        if max_dialogues > 0:
+            max_length = min([len([s for s in d['steps'] if s <= max_dialogues]) for d in data[alg]])
+            max_step = min([max_length, max_step])
 
-            value = np.array([d[plot_type][:max_step] for d in data[alg]])
-            step = np.array([d['steps'][:max_step] for d in data[alg]][0])
-            seeds_used = value.shape[0]
-            mean, err = np.mean(value, axis=0), np.std(value, axis=0)
-            err = err / np.sqrt(seeds_used)
-            plt.plot(
-                step, mean, c=clrs[i], label=alg)
-            plt.fill_between(
-                step, mean - err,
-                mean + err, alpha=fill_between, facecolor=clrs[i])
-            largest_max = mean.max() if mean.max() > largest_max else largest_max
-            smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
+        value = np.array([d[plot_type][:max_step] for d in data[alg]])
+        step = np.array([d['steps'][:max_step] for d in data[alg]][0])
+        seeds_used = value.shape[0]
+        mean, err = np.mean(value, axis=0), np.std(value, axis=0)
+        err = err / np.sqrt(seeds_used)
+        plt.plot(
+            step, mean, c=clrs[i], label=alg)
+        plt.fill_between(
+            step, mean - err,
+            mean + err, alpha=fill_between, facecolor=clrs[i])
+        largest_max = mean.max() if mean.max() > largest_max else largest_max
+        smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
 
-        plt.xlabel('Training dialogues')
-        #plt.gca().yaxis.set_major_locator(plt.MultipleLocator(round((largest_max - smallest_min) / 10.0, 2)))
-        if len(y_label) > 0:
-            plt.ylabel(y_label)
-        else:
-            plt.ylabel(plot_type)
-        plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower right')
-        plt.savefig(out_file + ".pdf", bbox_inches='tight')
+    plt.xlabel('Training dialogues', fontsize=fontsize)
+    #plt.gca().yaxis.set_major_locator(plt.MultipleLocator(round((largest_max - smallest_min) / 10.0, 2)))
+    if len(y_label) > 0:
+        plt.ylabel(y_label, fontsize=fontsize)
+    else:
+        plt.ylabel(plot_type, fontsize=fontsize)
+    plt.xticks(fontsize=fontsize-4)
+    plt.yticks(fontsize=fontsize-4)
+    plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower right', fontsize=fontsize)
+    plt.savefig(out_file + ".pdf", bbox_inches='tight')
 
-        if show_image:
-            plt.show()
+    if show_image:
+        plt.show()
 
 
 if __name__ == "__main__":
@@ -122,7 +127,8 @@ if __name__ == "__main__":
              plot_type=plot_type,
              fill_between=args.fill_between,
              max_dialogues=args.max_dialogues,
-             y_label=y_label_dict[plot_type])
+             y_label=y_label_dict[plot_type],
+             fontsize=args.fontsize)
 
-    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file)
+    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file, fontsize=args.fontsize, font=args.font)
 
