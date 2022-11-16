@@ -95,7 +95,7 @@ You can specify the seed either in the environment config or through the argumen
 Once the training started, it will automatically generate an **experiment** folder and a corresponding experiment-TIMESTEP folder in it. Inside of that, there are 4 subfolders configs, logs, save and TB_summary:
 
 - **configs**: containts information about which config was used
-- **logs**: will save information created by a logger during training.
+- **logs**: will save information created by a logger during training
 - **save**: a folder for saving model checkpoints
 - **TB_summary**: saves a tensorboard summary that will be later used for plotting graphs
 
@@ -114,7 +114,7 @@ If you would like to add a new policy, start by creating a subfolder for it. The
 
 Here you define your algorithm and policy network. Please ensure that you also load a vectoriser here that is inherited from the vector/vector_base.py class. 
 
-In addition your policy module is required to have a **predict** method where the skeleton usually looks something like:
+In addition, your policy module is required to have a **predict** method where the skeleton usually looks something like:
 
     def predict(self, state):
         """
@@ -150,7 +150,7 @@ The train.py script is responsible for several different functions. In the follo
    save_config(vars(parser.parse_args()), environment_config, config_save_path)
     ```
 
-2. saves addition information (through a logger and tensorboard writer)
+2. saves additional information (through a logger and tensorboard writer)
 
     ```
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
