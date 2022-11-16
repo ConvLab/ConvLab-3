@@ -8,7 +8,7 @@ from .vector_base import VectorBase
 class VectorBinary(VectorBase):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
-                 seed=0):
+                 seed=0, **kwargs):
 
         super().__init__(dataset_name, character, use_masking, manually_add_entity_names, seed)
 
