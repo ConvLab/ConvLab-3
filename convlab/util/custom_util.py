@@ -21,7 +21,6 @@ from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab.util import load_dataset
 
 import shutil
-import signal
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
@@ -33,22 +32,6 @@ sys.path.append(os.path.dirname(os.path.dirname(
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 device = DEVICE
-
-
-class timeout:
-    def __init__(self, seconds=10, error_message='Timeout'):
-        self.seconds = seconds
-        self.error_message = error_message
-
-    def handle_timeout(self, signum, frame):
-        raise TimeoutError(self.error_message)
-
-    def __enter__(self):
-        signal.signal(signal.SIGALRM, self.handle_timeout)
-        signal.alarm(self.seconds)
-
-    def __exit__(self, type, value, traceback):
-        signal.alarm(0)
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -171,20 +154,20 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-                select_acts, offer_acts, recommend_acts = evaluate(sess,
+                select_acts, offer_acts = evaluate(sess,
                                                 num_dialogues=conf['model']['num_eval_dialogues'],
                                                 sys_semantic_to_usr=conf['model'][
                                                     'sys_semantic_to_usr'],
                                                 save_flag=save_eval, save_path=log_save_path, goals=goals)
 
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
+        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts, recommend_acts = \
+            select_acts, offer_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'], goals)
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
+        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
 
         task_success_gathered = {}
         for task_dict in task_success:
@@ -195,40 +178,22 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
         task_success = task_success_gathered
 
     policy_sys.is_train = True
-
-    mean_complete, err_complete = np.average(complete_rate), np.std(complete_rate) / np.sqrt(len(complete_rate))
-    mean_success, err_success = np.average(success_rate), np.std(success_rate) / np.sqrt(len(success_rate))
-    mean_success_strict, err_success_strict = np.average(success_rate_strict), np.std(success_rate_strict) / np.sqrt(len(success_rate_strict))
-    mean_return, err_return = np.average(avg_return), np.std(avg_return) / np.sqrt(len(avg_return))
-    mean_turns, err_turns = np.average(turns), np.std(turns) / np.sqrt(len(turns))
-    mean_actions, err_actions = np.average(avg_actions), np.std(avg_actions) / np.sqrt(len(avg_actions))
-
-    logging.info(f"Complete: {mean_complete}+-{round(err_complete, 2)}, "
-                 f"Success: {mean_success}+-{round(err_success, 2)}, "
-                 f"Success strict: {mean_success_strict}+-{round(err_success_strict, 2)}, "
-                 f"Average Return: {mean_return}+-{round(err_return, 2)}, "
-                 f"Turns: {mean_turns}+-{round(err_turns, 2)}, "
-                 f"Average Actions: {mean_actions}+-{round(err_actions, 2)}, "
+    logging.info(f"Complete: {complete_rate}, Success: {success_rate}, Success strict: {success_rate_strict}, "
+                 f"Average Return: {avg_return}, Turns: {turns}, Average Actions: {avg_actions}, "
                  f"Book Actions: {book_acts/total_acts}, Inform Actions: {inform_acts/total_acts}, "
                  f"Request Actions: {request_acts/total_acts}, Select Actions: {select_acts/total_acts}, "
-                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}")
+                 f"Offer Actions: {offer_acts/total_acts}")
 
     for key in task_success:
         logging.info(
             f"{key}: Num: {len(task_success[key])} Success: {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}")
 
-    return {"complete_rate": mean_complete,
-            "success_rate": mean_success,
-            "success_rate_strict": mean_success_strict,
-            "avg_return": mean_return,
-            "turns": mean_turns,
-            "avg_actions": mean_actions,
-            "book_acts": book_acts/total_acts,
-            "inform_acts": inform_acts/total_acts,
-            "request_acts": request_acts/total_acts,
-            "select_acts": select_acts/total_acts,
-            "offer_acts": offer_acts/total_acts,
-            "recommend_acts": recommend_acts/total_acts}
+    return {"complete_rate": complete_rate,
+            "success_rate": success_rate,
+            "success_rate_strict": success_rate_strict,
+            "avg_return": avg_return,
+            "turns": turns,
+            "avg_actions": avg_actions}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True):
@@ -239,6 +204,14 @@ def env_config(conf, policy_sys, check_book_constraints=True):
     dst_usr = conf['dst_usr_activated']
     policy_usr = conf['policy_usr_activated']
     usr_nlg = conf['usr_nlg_activated']
+
+    # Setup uncertainty thresholding
+    if dst_sys:
+        try:
+            if dst_sys.return_confidence_scores:
+                policy_sys.vector.setup_uncertain_query(dst_sys.confidence_thresholds)
+        except:
+            logging.info('Uncertainty threshold not set.')
 
     simulator = PipelineAgent(nlu_usr, dst_usr, policy_usr, usr_nlg, 'user')
     system_pipeline = PipelineAgent(nlu_sys, dst_sys, policy_sys, sys_nlg,
@@ -321,7 +294,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     task_success = {'All_user_sim': [], 'All_evaluator': [], "All_evaluator_strict": [],
                     'total_return': [], 'turns': [], 'avg_actions': [],
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
-                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': []}
+                    'total_select_acts': [], 'total_offer_acts': []}
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
@@ -337,7 +310,6 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         request = 0
         select = 0
         offer = 0
-        recommend = 0
         # this 40 represents the max turn of dialogue
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
@@ -360,8 +332,6 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                     select += 1
                 if intent.lower() == 'offerbook':
                     offer += 1
-                if intent.lower() == 'recommend':
-                    recommend += 1
             avg_actions += len(acts)
             turn_counter += 1
             turns += 1
@@ -398,8 +368,6 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_request_acts'].append(request)
         task_success['total_select_acts'].append(select)
         task_success['total_offer_acts'].append(offer)
-        task_success['total_offer_acts'].append(offer)
-        task_success['total_recommend_acts'].append(recommend)
 
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
@@ -415,11 +383,12 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         save_file.close()
     # save dialogue_info and clear mem
 
-    return task_success['All_user_sim'], task_success['All_evaluator'], task_success['All_evaluator_strict'], \
-           task_success['total_return'], task_success['turns'], task_success['avg_actions'], task_success, \
+    return np.average(task_success['All_user_sim']), np.average(task_success['All_evaluator']), \
+        np.average(task_success['All_evaluator_strict']), np.average(task_success['total_return']), \
+        np.average(task_success['turns']), np.average(task_success['avg_actions']), task_success, \
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
-        np.average(task_success['total_offer_acts']), np.average(task_success['total_recommend_acts'])
+        np.average(task_success['total_offer_acts'])
 
 
 def model_downloader(download_dir, model_path):
@@ -570,18 +539,21 @@ def get_config(filepath, args) -> dict:
     vec_name = [model for model in conf['vectorizer_sys']]
     vec_name = vec_name[0] if vec_name else None
     if dst_name and 'setsumbt' in dst_name.lower():
-        if 'get_confidence_scores' in conf['dst_sys'][dst_name]['ini_params']:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = conf['dst_sys'][dst_name]['ini_params']['get_confidence_scores']
+        if 'return_confidence_scores' in conf['dst_sys'][dst_name]['ini_params']:
+            param = conf['dst_sys'][dst_name]['ini_params']['return_confidence_scores']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = param
         else:
             conf['vectorizer_sys'][vec_name]['ini_params']['use_confidence_scores'] = False
-        if 'return_mutual_info' in conf['dst_sys'][dst_name]['ini_params']:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_mutual_info'] = conf['dst_sys'][dst_name]['ini_params']['return_mutual_info']
+        if 'return_belief_state_mutual_info' in conf['dst_sys'][dst_name]['ini_params']:
+            param = conf['dst_sys'][dst_name]['ini_params']['return_belief_state_mutual_info']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_knowledge_uncertainty'] = param
         else:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_mutual_info'] = False
-        if 'return_entropy' in conf['dst_sys'][dst_name]['ini_params']:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_entropy'] = conf['dst_sys'][dst_name]['ini_params']['return_entropy']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_knowledge_uncertainty'] = False
+        if 'return_belief_state_entropy' in conf['dst_sys'][dst_name]['ini_params']:
+            param = conf['dst_sys'][dst_name]['ini_params']['return_belief_state_entropy']
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_total_uncertainty'] = param
         else:
-            conf['vectorizer_sys'][vec_name]['ini_params']['use_entropy'] = False
+            conf['vectorizer_sys'][vec_name]['ini_params']['use_state_total_uncertainty'] = False
 
     from convlab.nlu import NLU
     from convlab.dst import DST
@@ -610,8 +582,7 @@ def get_config(filepath, args) -> dict:
                 cls_path = infos.get('class_path', '')
                 cls = map_class(cls_path)
                 conf[unit + '_class'] = cls
-                conf[unit + '_activated'] = conf[unit +
-                                                 '_class'](**conf[unit][model]['ini_params'])
+                conf[unit + '_activated'] = conf[unit + '_class'](**conf[unit][model]['ini_params'])
                 print("Loaded " + model + " for " + unit)
     return conf
 

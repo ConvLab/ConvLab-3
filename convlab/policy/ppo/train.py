@@ -199,7 +199,7 @@ if __name__ == '__main__':
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
-    args = [('model', 'seed', seed)] if seed is not None else list()
+    args = [('model', 'seed', seed)] if seed else list()
 
     environment_config = load_config_file(path)
     save_config(vars(parser.parse_args()), environment_config, config_save_path)
@@ -228,14 +228,6 @@ if __name__ == '__main__':
 
     env, sess = env_config(conf, policy_sys)
 
-    # Setup uncertainty thresholding
-    if env.sys_dst:
-        try:
-            if env.sys_dst.use_confidence_scores:
-                policy_sys.vector.setup_uncertain_query(env.sys_dst.thresholds)
-        except:
-            logging.info('Uncertainty threshold not set.')
-
     policy_sys.current_time = current_time
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
     policy_sys.save_dir = save_path
@@ -261,7 +253,7 @@ if __name__ == '__main__':
 
         if idx % conf['model']['eval_frequency'] == 0 and idx != 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-            logging.info(f"Evaluating after Dialogues: {idx * conf['model']['batchsz']} - {time_now}" + '-' * 60)
+            logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
 
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
