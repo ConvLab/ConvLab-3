@@ -25,10 +25,13 @@ def get_args():
     parser.add_argument("--max-dialogues", type=int, default=0)
     parser.add_argument("--fill-between", type=float, default=0.3,
                         help="the transparency of the std err area")
-    parser.add_argument("--fontsize", type=int, default=16)
+    parser.add_argument("--fontsize", type=int, default=18)
     parser.add_argument("--font", type=str, default="Times New Roman")
+    parser.add_argument("--figure-size", type=str, help="Format 'width,height', eg '6,5'", default='6,5')
+    parser.add_argument("--figure-face-color", type=str, default='#E6E6E6')
 
     args = parser.parse_args()
+    args.figure_size = eval(args.figure_size)
     plt.rcParams["font.family"] = args.font
     return args
 
@@ -63,13 +66,13 @@ def read_tb_data(in_path):
 
 
 def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label='',
-         fontsize=16):
+         fontsize=16, figsize=(12, 8), facecolor='#E6E6E6'):
 
     legends = [alg for alg in data]
     clrs = sns.color_palette("husl", len(legends))
-    plt.figure(plot_type)
-    plt.gca().patch.set_facecolor('#E6E6E6')
-    plt.grid(color='w', linestyle='solid')
+    plt.figure(plot_type, figsize=figsize)
+    plt.gca().patch.set_facecolor(facecolor)
+    plt.grid(color='w', linestyle='solid', alpha=0.5)
 
     largest_max = -sys.maxsize
     smallest_min = sys.maxsize
@@ -93,16 +96,16 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
         largest_max = mean.max() if mean.max() > largest_max else largest_max
         smallest_min = mean.min() if mean.min() < smallest_min else smallest_min
 
-    plt.xlabel('Training dialogues', fontsize=fontsize)
+    plt.xlabel('Training Dialogues', fontsize=fontsize)
     #plt.gca().yaxis.set_major_locator(plt.MultipleLocator(round((largest_max - smallest_min) / 10.0, 2)))
     if len(y_label) > 0:
-        plt.ylabel(y_label, fontsize=fontsize)
+        plt.ylabel(y_label.title(), fontsize=fontsize)
     else:
-        plt.ylabel(plot_type, fontsize=fontsize)
+        plt.ylabel(plot_type.title(), fontsize=fontsize)
     plt.xticks(fontsize=fontsize-4)
     plt.yticks(fontsize=fontsize-4)
-    plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower right', fontsize=fontsize)
-    plt.savefig(out_file + ".pdf", bbox_inches='tight')
+    plt.legend(fancybox=True, shadow=False, ncol=1, loc='best', fontsize=fontsize)
+    plt.savefig(out_file + ".pdf", bbox_inches='tight', dpi=400, pad_inches=0)
 
     if show_image:
         plt.show()
@@ -111,9 +114,9 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
 if __name__ == "__main__":
     args = get_args()
 
-    y_label_dict = {"complete_rate": 'Complete rate', "success_rate": 'Success rate', 'turns': 'Average turns',
-                    'avg_return': 'Average Return', "success_rate_strict": 'Success rate strict',
-                    "avg_actions": "Average actions"}
+    y_label_dict = {"complete_rate": 'Complete Rate', "success_rate": 'Success Rate', 'turns': 'Average Turns',
+                    'avg_return': 'Average Return', "success_rate_strict": 'Strict Success Rate',
+                    "avg_actions": "Average Actions"}
 
     for plot_type in ["complete_rate", "success_rate", "success_rate_strict", 'turns', 'avg_return', 'avg_actions']:
         file_name, file_extension = os.path.splitext(args.out_file)
@@ -128,7 +131,10 @@ if __name__ == "__main__":
              fill_between=args.fill_between,
              max_dialogues=args.max_dialogues,
              y_label=y_label_dict[plot_type],
-             fontsize=args.fontsize)
+             fontsize=args.fontsize,
+             figsize=args.figure_size,
+             facecolor=args.figure_face_color)
 
-    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file, fontsize=args.fontsize, font=args.font)
+    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file, fontsize=args.fontsize, font=args.font,
+                       figsize=args.figure_size, facecolor=args.figure_face_color)
 
