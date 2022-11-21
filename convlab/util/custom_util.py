@@ -195,8 +195,20 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
         task_success = task_success_gathered
 
     policy_sys.is_train = True
-    logging.info(f"Complete: {complete_rate}, Success: {success_rate}, Success strict: {success_rate_strict}, "
-                 f"Average Return: {avg_return}, Turns: {turns}, Average Actions: {avg_actions}, "
+
+    mean_complete, err_complete = np.average(complete_rate), np.std(complete_rate) / np.sqrt(len(complete_rate))
+    mean_success, err_success = np.average(success_rate), np.std(success_rate) / np.sqrt(len(success_rate))
+    mean_success_strict, err_success_strict = np.average(success_rate_strict), np.std(success_rate_strict) / np.sqrt(len(success_rate_strict))
+    mean_return, err_return = np.average(avg_return), np.std(avg_return) / np.sqrt(len(avg_return))
+    mean_turns, err_turns = np.average(turns), np.std(turns) / np.sqrt(len(turns))
+    mean_actions, err_actions = np.average(avg_actions), np.std(avg_actions) / np.sqrt(len(avg_actions))
+
+    logging.info(f"Complete: {mean_complete}+-{round(err_complete, 2)}, "
+                 f"Success: {mean_success}+-{round(err_success, 2)}, "
+                 f"Success strict: {mean_success_strict}+-{round(err_success_strict, 2)}, "
+                 f"Average Return: {mean_return}+-{round(err_return, 2)}, "
+                 f"Turns: {mean_turns}+-{round(err_turns, 2)}, "
+                 f"Average Actions: {mean_actions}+-{round(err_actions, 2)}, "
                  f"Book Actions: {book_acts/total_acts}, Inform Actions: {inform_acts/total_acts}, "
                  f"Request Actions: {request_acts/total_acts}, Select Actions: {select_acts/total_acts}, "
                  f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}")
@@ -205,12 +217,18 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
         logging.info(
             f"{key}: Num: {len(task_success[key])} Success: {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}")
 
-    return {"complete_rate": complete_rate,
-            "success_rate": success_rate,
-            "success_rate_strict": success_rate_strict,
-            "avg_return": avg_return,
-            "turns": turns,
-            "avg_actions": avg_actions}
+    return {"complete_rate": mean_complete,
+            "success_rate": mean_success,
+            "success_rate_strict": mean_success_strict,
+            "avg_return": mean_return,
+            "turns": mean_turns,
+            "avg_actions": mean_actions,
+            "book_acts": book_acts/total_acts,
+            "inform_acts": inform_acts/total_acts,
+            "request_acts": request_acts/total_acts,
+            "select_acts": select_acts/total_acts,
+            "offer_acts": offer_acts/total_acts,
+            "recommend_acts": recommend_acts/total_acts}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True):
