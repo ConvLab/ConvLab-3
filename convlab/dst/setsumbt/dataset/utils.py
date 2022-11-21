@@ -52,17 +52,23 @@ def get_ontology_slots(dataset_name: str) -> dict:
     return ontology_slots
 
 
-def get_values_from_data(dataset: dict) -> dict:
+def get_values_from_data(dataset: dict, data_split: str = "train") -> dict:
     """
     Function to extract slots, slot descriptions and categorical slot values from the dataset ontology.
 
     Args:
         dataset (dict): Dataset dictionary obtained using the load_dataset function
+        data_split (str): Dataset split: train/validation/test
 
     Returns:
         value_sets (dict): Dictionary containing possible values obtained from dataset
     """
     data = load_dst_data(dataset, data_split='all', speaker='user')
+
+    # Remove test data from the data when building training/validation ontology
+    if data_split in ['train', 'validation']:
+        data = {key: itm for key, itm in data.items() if key in ['train', 'validation']}
+
     value_sets = {}
     for set_type, dataset in data.items():
         for turn in dataset:
@@ -141,18 +147,22 @@ def clean_values(value_sets: dict, value_map: dict = VALUE_MAP) -> dict:
     return clean_vals
 
 
-def ontology_add_values(ontology_slots: dict, value_sets: dict) -> dict:
+def ontology_add_values(ontology_slots: dict, value_sets: dict, data_split: str = "train") -> dict:
     """
     Add value sets obtained from the dataset to the ontology
     Args:
         ontology_slots (dict): Ontology dictionary containing slots, descriptions and categorical slot values
         value_sets (dict): Cleaned Dictionary containing possible values obtained from dataset
+        data_split (str): Dataset split: train/validation/test
 
     Returns:
         ontology_slots (dict): Ontology dictionary containing slots, slot descriptions and possible value sets
     """
     ontology = {}
     for domain in sorted(ontology_slots):
+        if data_split in ['train', 'validation']:
+            if domain not in value_sets:
+                continue
         ontology[domain] = {}
         for slot in sorted(ontology_slots[domain]):
             if not ontology_slots[domain][slot]['possible_values']:
@@ -172,7 +182,7 @@ def get_requestable_slots(datasets: list) -> dict:
     """
     Function to get set of requestable slots from the dataset action labels.
     Args:
-        dataset (dict): Dataset dictionary obtained using the load_dataset function
+        datasets (dict): Dataset dictionary obtained using the load_dataset function
 
     Returns:
         slots (dict): Dictionary containing requestable domain-slot pairs

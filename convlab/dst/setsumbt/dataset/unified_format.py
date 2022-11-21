@@ -258,8 +258,8 @@ class UnifiedFormatDataset(Dataset):
                 dataset_args = [{"dataset_name": dataset_name}]
             self.dataset_dicts = [load_dataset(**dataset_args_) for dataset_args_ in dataset_args]
             self.ontology = get_ontology_slots(dataset_name)
-            values = [get_values_from_data(dataset) for dataset in self.dataset_dicts]
-            self.ontology = ontology_add_values(self.ontology, combine_value_sets(values))
+            values = [get_values_from_data(dataset, set_type) for dataset in self.dataset_dicts]
+            self.ontology = ontology_add_values(self.ontology, combine_value_sets(values), set_type)
             self.ontology = ontology_add_requestable_slots(self.ontology, get_requestable_slots(self.dataset_dicts))
 
             if train_ratio != 1.0:

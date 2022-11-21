@@ -21,6 +21,7 @@ from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from convlab.util import load_dataset
 
 import shutil
+import signal
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
@@ -32,6 +33,22 @@ sys.path.append(os.path.dirname(os.path.dirname(
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 device = DEVICE
+
+
+class timeout:
+    def __init__(self, seconds=10, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -154,20 +171,20 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     if conf['model']['process_num'] == 1:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-                select_acts, offer_acts = evaluate(sess,
+                select_acts, offer_acts, recommend_acts = evaluate(sess,
                                                 num_dialogues=conf['model']['num_eval_dialogues'],
                                                 sys_semantic_to_usr=conf['model'][
                                                     'sys_semantic_to_usr'],
                                                 save_flag=save_eval, save_path=log_save_path, goals=goals)
 
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
+        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts = \
+            select_acts, offer_acts, recommend_acts = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'], goals)
-        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts
+        total_acts = book_acts + inform_acts + request_acts + select_acts + offer_acts + recommend_acts
 
         task_success_gathered = {}
         for task_dict in task_success:
@@ -178,22 +195,40 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
         task_success = task_success_gathered
 
     policy_sys.is_train = True
-    logging.info(f"Complete: {complete_rate}, Success: {success_rate}, Success strict: {success_rate_strict}, "
-                 f"Average Return: {avg_return}, Turns: {turns}, Average Actions: {avg_actions}, "
+
+    mean_complete, err_complete = np.average(complete_rate), np.std(complete_rate) / np.sqrt(len(complete_rate))
+    mean_success, err_success = np.average(success_rate), np.std(success_rate) / np.sqrt(len(success_rate))
+    mean_success_strict, err_success_strict = np.average(success_rate_strict), np.std(success_rate_strict) / np.sqrt(len(success_rate_strict))
+    mean_return, err_return = np.average(avg_return), np.std(avg_return) / np.sqrt(len(avg_return))
+    mean_turns, err_turns = np.average(turns), np.std(turns) / np.sqrt(len(turns))
+    mean_actions, err_actions = np.average(avg_actions), np.std(avg_actions) / np.sqrt(len(avg_actions))
+
+    logging.info(f"Complete: {mean_complete}+-{round(err_complete, 2)}, "
+                 f"Success: {mean_success}+-{round(err_success, 2)}, "
+                 f"Success strict: {mean_success_strict}+-{round(err_success_strict, 2)}, "
+                 f"Average Return: {mean_return}+-{round(err_return, 2)}, "
+                 f"Turns: {mean_turns}+-{round(err_turns, 2)}, "
+                 f"Average Actions: {mean_actions}+-{round(err_actions, 2)}, "
                  f"Book Actions: {book_acts/total_acts}, Inform Actions: {inform_acts/total_acts}, "
                  f"Request Actions: {request_acts/total_acts}, Select Actions: {select_acts/total_acts}, "
-                 f"Offer Actions: {offer_acts/total_acts}")
+                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}")
 
     for key in task_success:
         logging.info(
             f"{key}: Num: {len(task_success[key])} Success: {np.average(task_success[key]) if len(task_success[key]) > 0 else 0}")
 
-    return {"complete_rate": complete_rate,
-            "success_rate": success_rate,
-            "success_rate_strict": success_rate_strict,
-            "avg_return": avg_return,
-            "turns": turns,
-            "avg_actions": avg_actions}
+    return {"complete_rate": mean_complete,
+            "success_rate": mean_success,
+            "success_rate_strict": mean_success_strict,
+            "avg_return": mean_return,
+            "turns": mean_turns,
+            "avg_actions": mean_actions,
+            "book_acts": book_acts/total_acts,
+            "inform_acts": inform_acts/total_acts,
+            "request_acts": request_acts/total_acts,
+            "select_acts": select_acts/total_acts,
+            "offer_acts": offer_acts/total_acts,
+            "recommend_acts": recommend_acts/total_acts}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True):
@@ -294,7 +329,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     task_success = {'All_user_sim': [], 'All_evaluator': [], "All_evaluator_strict": [],
                     'total_return': [], 'turns': [], 'avg_actions': [],
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
-                    'total_select_acts': [], 'total_offer_acts': []}
+                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': []}
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
@@ -310,6 +345,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         request = 0
         select = 0
         offer = 0
+        recommend = 0
         # this 40 represents the max turn of dialogue
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
@@ -332,6 +368,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                     select += 1
                 if intent.lower() == 'offerbook':
                     offer += 1
+                if intent.lower() == 'recommend':
+                    recommend += 1
             avg_actions += len(acts)
             turn_counter += 1
             turns += 1
@@ -368,6 +406,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_request_acts'].append(request)
         task_success['total_select_acts'].append(select)
         task_success['total_offer_acts'].append(offer)
+        task_success['total_offer_acts'].append(offer)
+        task_success['total_recommend_acts'].append(recommend)
 
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
@@ -388,7 +428,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         np.average(task_success['turns']), np.average(task_success['avg_actions']), task_success, \
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
-        np.average(task_success['total_offer_acts'])
+        np.average(task_success['total_offer_acts']), np.average(task_success['total_recommend_acts'])
 
 
 def model_downloader(download_dir, model_path):
