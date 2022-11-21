@@ -27,7 +27,7 @@ def get_args():
                         help="the transparency of the std err area")
     parser.add_argument("--fontsize", type=int, default=18)
     parser.add_argument("--font", type=str, default="Times New Roman")
-    parser.add_argument("--figure-size", type=str, help="Format '(width,height)', eg '(6,5)'", default='(6,5)')
+    parser.add_argument("--figure-size", type=str, help="Format 'width,height', eg '6,5'", default='6,5')
     parser.add_argument("--figure-face-color", type=str, default='#E6E6E6')
 
     args = parser.parse_args()
