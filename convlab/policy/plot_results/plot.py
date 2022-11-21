@@ -114,9 +114,9 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
 if __name__ == "__main__":
     args = get_args()
 
-    y_label_dict = {"complete_rate": 'Complete rate', "success_rate": 'Success rate', 'turns': 'Average turns',
-                    'avg_return': 'Average Return', "success_rate_strict": 'Strict success rate',
-                    "avg_actions": "Average actions"}
+    y_label_dict = {"complete_rate": 'Complete Rate', "success_rate": 'Success Rate', 'turns': 'Average Turns',
+                    'avg_return': 'Average Return', "success_rate_strict": 'Strict Success Rate',
+                    "avg_actions": "Average Actions"}
 
     for plot_type in ["complete_rate", "success_rate", "success_rate_strict", 'turns', 'avg_return', 'avg_actions']:
         file_name, file_extension = os.path.splitext(args.out_file)
