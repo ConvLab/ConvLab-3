@@ -13,6 +13,8 @@ from tqdm import tqdm
 
 from convlab.policy.plot_results.plot_action_distributions import plot_distributions
 
+FIGSIZE=(6,5)
+
 
 def get_args():
     parser = argparse.ArgumentParser(description='Export tensorboard data')
@@ -25,7 +27,7 @@ def get_args():
     parser.add_argument("--max-dialogues", type=int, default=0)
     parser.add_argument("--fill-between", type=float, default=0.3,
                         help="the transparency of the std err area")
-    parser.add_argument("--fontsize", type=int, default=16)
+    parser.add_argument("--fontsize", type=int, default=18)
     parser.add_argument("--font", type=str, default="Times New Roman")
 
     args = parser.parse_args()
@@ -63,11 +65,11 @@ def read_tb_data(in_path):
 
 
 def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_between=0.3, max_dialogues=0, y_label='',
-         fontsize=16):
+         fontsize=16, figsize=(12, 8)):
 
     legends = [alg for alg in data]
     clrs = sns.color_palette("husl", len(legends))
-    plt.figure(plot_type)
+    plt.figure(plot_type, figsize=figsize)
     plt.gca().patch.set_facecolor('#E6E6E6')
     plt.grid(color='w', linestyle='solid')
 
@@ -101,8 +103,8 @@ def plot(data, out_file, plot_type="complete_rate", show_image=False, fill_betwe
         plt.ylabel(plot_type, fontsize=fontsize)
     plt.xticks(fontsize=fontsize-4)
     plt.yticks(fontsize=fontsize-4)
-    plt.legend(fancybox=True, shadow=False, ncol=1, loc='lower right', fontsize=fontsize)
-    plt.savefig(out_file + ".pdf", bbox_inches='tight')
+    plt.legend(fancybox=True, shadow=False, ncol=1, loc='best', fontsize=fontsize)
+    plt.savefig(out_file + ".pdf", bbox_inches='tight', dpi=400, pad_inches=0)
 
     if show_image:
         plt.show()
@@ -128,7 +130,9 @@ if __name__ == "__main__":
              fill_between=args.fill_between,
              max_dialogues=args.max_dialogues,
              y_label=y_label_dict[plot_type],
-             fontsize=args.fontsize)
+             fontsize=args.fontsize,
+             figsize=FIGSIZE)
 
-    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file, fontsize=args.fontsize, font=args.font)
+    plot_distributions(args.dir, json.load(open(args.map_file)), args.out_file, fontsize=args.fontsize, font=args.font,
+                       figsize=FIGSIZE)
 
