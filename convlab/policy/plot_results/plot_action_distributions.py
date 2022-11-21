@@ -68,7 +68,7 @@ def extract_action_distributions_across_seeds(algorithm_dir_path):
 
 
 def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3, fontsize=16, font="Times New Roman",
-                       figsize=(12, 8)):
+                       figsize=(12, 8), facecolor='#E6E6E6'):
     plt.rcParams["font.family"] = font
     clrs = sns.color_palette("husl", len(alg_maps))
 
@@ -80,13 +80,13 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3, fontsiz
 
     create_bar_plots(action_distributions, alg_maps,
                      possible_actions, output_dir,
-                     fontsize, figsize)
+                     fontsize, figsize, facecolor)
 
     for action in possible_actions:
         plt.clf()
         plt.figure(figsize=figsize)
-        plt.gca().patch.set_facecolor('#E6E6E6')
-        plt.grid(color='w', linestyle='solid')
+        plt.gca().patch.set_facecolor(facecolor)
+        plt.grid(color='w', linestyle='solid', alpha=0.5)
 
         largest_max = 0
         smallest_min = 1
@@ -120,15 +120,15 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3, fontsiz
                 round((largest_max - smallest_min) / 10.0, 2)))
         plt.xticks(fontsize=fontsize-4, rotation=0)
         plt.yticks(fontsize=fontsize-4)
-        plt.xlabel('Training dialogues', fontsize=fontsize)
-        plt.ylabel(f"{action.title()} action probability", fontsize=fontsize)
+        plt.xlabel('Training Dialogues', fontsize=fontsize)
+        plt.ylabel(f"{action.title()} Action Probability", fontsize=fontsize)
         plt.legend(fancybox=True, shadow=False, ncol=1, loc='best')
         plt.savefig(
             output_dir + f'/{action}_probability.pdf', bbox_inches='tight',
             dpi=400, pad_inches=0)
 
 
-def create_bar_plots(action_distributions, alg_maps, possible_actions, output_dir, fontsize, figsize):
+def create_bar_plots(action_distributions, alg_maps, possible_actions, output_dir, fontsize, figsize, facecolor):
 
     max_step = max(action_distributions[0].keys())
     final_distributions = [distribution[max_step]
@@ -148,8 +148,8 @@ def create_bar_plots(action_distributions, alg_maps, possible_actions, output_di
     fig = df.plot(x='Probabilities', kind='bar', stacked=False,
                   rot=0, grid=True, color=sns.color_palette("husl", len(alg_maps)),
                   fontsize=fontsize, figsize=figsize).get_figure()
-    plt.gca().patch.set_facecolor('#E6E6E6')
-    plt.grid(color='w', linestyle='solid')
+    plt.gca().patch.set_facecolor(facecolor)
+    plt.grid(color='w', linestyle='solid', alpha=0.5)
     plt.yticks(np.arange(0, 1, 0.1), fontsize=fontsize-4)
     plt.xticks(fontsize=fontsize-4)
     plt.xlabel('Actions', fontsize=fontsize)
