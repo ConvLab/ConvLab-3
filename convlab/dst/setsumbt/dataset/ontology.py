@@ -22,6 +22,7 @@ from copy import deepcopy
 
 import torch
 import numpy as np
+from tqdm import tqdm
 
 
 def set_seed(args):
@@ -94,8 +95,8 @@ def get_slot_candidate_embeddings(ontology: dict, set_type: str, args, tokenizer
     embedding_model.eval()
 
     slots = dict()
-    for domain, subset in ontology.items():
-        for slot, slot_info in subset.items():
+    for domain, subset in tqdm(ontology.items(), desc='Domains'):
+        for slot, slot_info in tqdm(subset.items(), desc='Slots'):
             # Get description or use "domain-slot"
             if args.use_descriptions:
                 desc = slot_info['description']
