@@ -121,7 +121,7 @@ def plot_distributions(dir_path, alg_maps, output_dir, fill_between=0.3, fontsiz
         plt.xticks(fontsize=fontsize-4, rotation=0)
         plt.yticks(fontsize=fontsize-4)
         plt.xlabel('Training Dialogues', fontsize=fontsize)
-        plt.ylabel(f"{action.title()} Action Probability", fontsize=fontsize)
+        plt.ylabel(f"{action.title()} Intent Probability", fontsize=fontsize)
         plt.legend(fancybox=True, shadow=False, ncol=1, loc='best')
         plt.savefig(
             output_dir + f'/{action}_probability.pdf', bbox_inches='tight',
@@ -152,7 +152,7 @@ def create_bar_plots(action_distributions, alg_maps, possible_actions, output_di
     plt.grid(color='w', linestyle='solid', alpha=0.5)
     plt.yticks(np.arange(0, 1, 0.1), fontsize=fontsize-4)
     plt.xticks(fontsize=fontsize-4)
-    plt.xlabel('Actions', fontsize=fontsize)
+    plt.xlabel('Intents', fontsize=fontsize)
     plt.ylabel('Probability', fontsize=fontsize)
     fig.savefig(os.path.join(output_dir, "final_action_probabilities.pdf"),
                 dpi=400, bbox_inches='tight', pad_inches=0)
