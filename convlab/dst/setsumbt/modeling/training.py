@@ -615,6 +615,8 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
             num_inform_slots += (state_labels != -1).float().reshape(-1)
 
         if return_eval_output:
+            for sample in eval_output_batch:
+                sample['dial_idx'] = batch['dialogue_ids'][sample['utt_idx']][sample['dial_idx']]
             evaluation_output += deepcopy(eval_output_batch)
             eval_output_batch = []
 

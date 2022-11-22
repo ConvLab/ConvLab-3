@@ -15,6 +15,8 @@
 # limitations under the License.
 """Convlab3 Unified dataset data processing utilities"""
 
+import numpy
+
 from convlab.util import load_ontology, load_dst_data, load_nlu_data
 from convlab.dst.setsumbt.dataset.value_maps import VALUE_MAP, DOMAINS_MAP, QUANTITIES, TIME
 
@@ -228,12 +230,13 @@ def ontology_add_requestable_slots(ontology_slots: dict, requestable_slots: dict
     return ontology_slots
 
 
-def extract_turns(dialogue: list, dataset_name: str) -> list:
+def extract_turns(dialogue: list, dataset_name: str, dialogue_id: str) -> list:
     """
     Extract the required information from the data provided by unified loader
     Args:
         dialogue (list): List of turns within a dialogue
         dataset_name (str): Name of the dataset to which the dialogue belongs
+        dialogue_str (str): ID of the dialogue
 
     Returns:
         turns (list): List of turns within a dialogue
@@ -261,6 +264,7 @@ def extract_turns(dialogue: list, dataset_name: str) -> list:
 
             turn_info['state'] = turn['state']
             turn_info['dataset_name'] = dataset_name
+            turn_info['dialogue_id'] = dialogue_id
 
         if 'system_utterance' in turn_info and 'user_utterance' in turn_info:
             turns.append(turn_info)
@@ -399,6 +403,17 @@ def get_active_domains(turns: list) -> list:
     return turns
 
 
+class IdTensor:
+    def __init__(self, values):
+        self.values = numpy.array(values)
+
+    def __getitem__(self, index: int):
+        return self.values[index].tolist()
+
+    def to(self, device):
+        return self
+
+
 def extract_dialogues(data: list, dataset_name: str) -> list:
     """
     Extract all dialogues from dataset
@@ -411,7 +426,8 @@ def extract_dialogues(data: list, dataset_name: str) -> list:
     """
     dialogues = []
     for dial in data:
-        turns = extract_turns(dial['turns'], dataset_name)
+        dial_id = dial['dialogue_id']
+        turns = extract_turns(dial['turns'], dataset_name, dial_id)
         turns = clean_states(turns)
         turns = get_active_domains(turns)
         dialogues.append(turns)
