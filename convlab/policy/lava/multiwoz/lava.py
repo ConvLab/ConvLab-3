@@ -998,6 +998,262 @@ class LAVA(Policy):
                     elif slot == 'place':
                         if 'arriv' in " ".join(tokens[index-2:index]) or "to" in " ".join(tokens[index-2:index]):
                             if active_domain == "train":
+                                try:
+                                    response.append(
+                                        top_results[active_domain]["destination"])
+                                except:
+                                    response.append(
+                                        state[active_domain]['semi']["destination"])
+                            elif active_domain == "taxi":
+                                response.append(
+                                    state[active_domain]["destination"])
+                        elif 'leav' in " ".join(tokens[index-2:index]) or "from" in tokens[index-2:index] or "depart" in " ".join(tokens[index-2:index]):
+                            if active_domain == "train":
+                                try:
+                                    response.append(
+                                        top_results[active_domain]["departure"])
+                                except:
+                                    response.append(
+                                        state[active_domain]['semi']["departure"])
+                            elif active_domain == "taxi":
+                                response.append(
+                                    state[active_domain]['semi']["departure"])
+                        elif "hospital" in template:
+                            response.append("Cambridge")
+                        else:
+                            try:
+                                for d in state:
+                                    if d == 'history':
+                                        continue
+                                    for s in ['destination', 'departure']:
+                                        if s in state[d]:
+                                            response.append(
+                                                state[d][s])
+                                            raise
+                            except:
+                                pass
+                            else:
+                                response.append(token)
+                    elif slot == 'time':
+                        if 'arrive' in ' '.join(response[-5:]) or 'arrival' in ' '.join(response[-5:]) or 'arriving' in ' '.join(response[-3:]):
+                            if active_domain == "train" and 'arriveBy' in top_results[active_domain]:
+                                # print('{} -> {}'.format(token, top_results[active_domain]['arriveBy']))
+                                response.append(
+                                    top_results[active_domain]['arriveBy'])
+                                continue
+                            for d in state:
+                                if d == 'history':
+                                    continue
+                                if 'arrive by' in state[d]:
+                                    response.append(
+                                        state[d]['arrive by'])
+                                    break
+                        elif 'leave' in ' '.join(response[-5:]) or 'leaving' in ' '.join(response[-5:]) or 'departure' in ' '.join(response[-3:]):
+                            if active_domain == "train" and 'leaveAt' in top_results[active_domain]:
+                                # print('{} -> {}'.format(token, top_results[active_domain]['leaveAt']))
+                                response.append(
+                                    top_results[active_domain]['leaveAt'])
+                                continue
+                            for d in state:
+                                if d == 'history':
+                                    continue
+                                if 'leave at' in state[d]:
+                                    response.append(
+                                        state[d]['leave at'])
+                                    break
+                        elif 'book' in response or "booked" in response:
+                            if state['restaurant']['book time'] != "":
+                                response.append(
+                                    state['restaurant']['book time'])
+                        else:
+                            try:
+                                for d in state:
+                                    if d == 'history':
+                                        continue
+                                    for s in ['arrive by', 'leave at']:
+                                        if s in state[d]:
+                                            response.append(
+                                                state[d][s])
+                                            raise
+                            except:
+                                pass
+                            else:
+                                response.append(token)
+                    elif slot == 'price':
+                        if active_domain == 'attraction':
+                            # .split()[0]
+                            value = top_results['attraction']['entrance fee']
+                            if "?" in value:
+                                value = "unknown"
+                            # if "?" not in value:
+                            #    try:
+                            #        value = str(int(value))
+                            #    except:
+                            #        value = 'free'
+                            # else:
+                            #    value = "unknown"
+                            response.append(value)
+                        elif active_domain == "train":
+                            value = top_results[active_domain][slot].split()[0]
+                            if state[active_domain]['book people'] not in ["", "dontcare"]:
+                                try:
+                                    value = str(float(value) * int(state[active_domain]['book people']))
+                                except ValueError:
+                                    int_map = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+                                    value = str(float(value) * int_map[state[active_domain]['book people']])
+                            response.append(value)
+                    elif slot == "day" and active_domain in ["restaurant", "hotel"]:
+                        if state[active_domain]['book day'] != "":
+                            response.append(
+                                state[active_domain]['book day'])
+
+                    else:
+                        # slot-filling based on query results
+                        for d in top_results:
+                            if slot in top_results[d]:
+                                response.append(top_results[d][slot])
+                                break
+                        else:
+                            # slot-filling based on belief state
+                            for d in state:
+                                if d == 'history':
+                                    continue
+                                if slot in state[d]:
+                                    response.append(state[d][slot])
+                                    break
+                            else:
+                                response.append(token)
+                else:
+                    if domain == 'hospital':
+                        if slot == 'phone':
+                            response.append('01223216297')
+                        elif slot == 'department':
+                            if state['hospital']['department'] != "":
+                                response.append(state['hospital']['department'])
+                            else:
+                                response.append('neurosciences critical care unit')
+                        elif slot == 'address':
+                            response.append("56 Lincoln street")
+                        elif slot == "postcode":
+                            response.append('533421')
+                    elif domain == 'police':
+                        if slot == 'phone':
+                            response.append('01223358966')
+                        elif slot == 'name':
+                            response.append('Parkside Police Station')
+                        elif slot == 'address':
+                            response.append('Parkside, Cambridge')
+                        elif slot == 'postcode':
+                            response.append('533420')
+                    elif domain == 'taxi':
+                        if slot == 'phone':
+                            response.append('01223358966')
+                        elif slot == 'color':
+                            # response.append(random.choice(["black","white","red","yellow","blue",'grey']))
+                            response.append("black")
+                        elif slot == 'type':
+                            # response.append(random.choice(["toyota","skoda","bmw",'honda','ford','audi','lexus','volvo','volkswagen','tesla']))
+                            response.append("toyota")
+                    else:
+                        # print(token)
+                        response.append(token)
+            else:
+                if token == "pounds" and len(response) > 0 and ("pounds" in response[-1] or "unknown" in response[-1] or "free" in response[-1]):
+                    pass
+                else:
+                    response.append(token)
+
+        try:
+            response = ' '.join(response)
+        except Exception as e:
+            # pprint(response)
+            raise
+        response = response.replace(' -s', 's')
+        response = response.replace(' -ly', 'ly')
+        response = response.replace(' .', '.')
+        response = response.replace(' ?', '?')
+
+        # if "not mentioned" in response:
+        #    pdb.set_trace()
+
+        return response
+
+    def populate_template_unified(self, template, top_results, num_results, state, active_domain):
+        print("template:",template)
+        # print("top_results:",top_results)
+        # active_domain = None if len(
+        #    top_results.keys()) == 0 else list(top_results.keys())[0]
+
+        template = template.replace(
+            'book [value_count] of', 'book one of')
+        tokens = template.split()
+        response = []
+        for index, token in enumerate(tokens):
+            if token.startswith('[') and (token.endswith(']') or token.endswith('].') or token.endswith('],')):
+                domain = token[1:-1].split('_')[0]
+                slot = token[1:-1].split('_')[1]
+                if slot.endswith(']'):
+                    slot = slot[:-1]
+                if domain == 'train' and slot == 'id':
+                    slot = 'trainID'
+                elif active_domain != 'train' and slot == 'price':
+                    slot = 'price range'
+                elif slot == 'reference':
+                    slot = 'Ref'
+                if domain in top_results and len(top_results[domain]) > 0 and slot in top_results[domain]:
+                    # print('{} -> {}'.format(token, top_results[domain][slot]))
+                    response.append(top_results[domain][slot])
+                elif domain == 'value':
+                    if slot == 'count':
+                        if "there are" in " ".join(tokens[index-2:index]) or "i have" in " ".join(tokens[index-2:index]):
+                            response.append(str(num_results))
+                        # the first [value_count], the last [value_count]
+                        elif "the" in tokens[index-2]:
+                            response.append("one")
+                        elif active_domain == "restaurant":
+                            if "people" in tokens[index:index+1] or "table" in tokens[index-2:index]:
+                                response.append(
+                                    state[active_domain]["book people"])
+                        elif active_domain == "train":
+                            if "ticket" in " ".join(tokens[index-2:index+1]) or "people" in tokens[index:]:
+                                response.append(
+                                    state[active_domain]["book people"])
+                            elif index+1 < len(tokens) and "minute" in tokens[index+1]:
+                                response.append(
+                                    top_results['train']['duration'].split()[0])
+                        elif active_domain == "hotel":
+                            if index+1 < len(tokens):
+                                if "star" in tokens[index+1]:
+                                    response.append(top_results['hotel']['stars'])
+                                elif "nights" in tokens[index+1]:
+                                    response.append(
+                                        state[active_domain]["book stay"])
+                                elif "people" in tokens[index+1]:
+                                    response.append(
+                                        state[active_domain]["book people"])
+                        elif active_domain == "attraction":
+                            if index + 1 < len(tokens):
+                                if "pounds" in tokens[index+1] and "entrance fee" in " ".join(tokens[index-3:index]):
+                                    value = top_results[active_domain]['entrance fee']
+                                    if "?" in value:
+                                        value = "unknown"
+                                    # if "?" not in value:
+                                    #    try:
+                                    #        value = str(int(value))
+                                    #    except:
+                                    #        value = 'free'
+                                    # else:
+                                    #    value = "unknown"
+                                    response.append(value)
+                        # if "there are" in " ".join(tokens[index-2:index]):
+                            # response.append(str(num_results))
+                        # elif "the" in tokens[index-2]: # the first [value_count], the last [value_count]
+                            # response.append("1")
+                        else:
+                            response.append(str(num_results))
+                    elif slot == 'place':
+                        if 'arriv' in " ".join(tokens[index-2:index]) or "to" in " ".join(tokens[index-2:index]):
+                            if active_domain == "train":
                                 response.append(
                                     top_results[active_domain]["destination"])
                             elif active_domain == "taxi":

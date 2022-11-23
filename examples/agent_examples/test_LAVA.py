@@ -9,7 +9,11 @@ import random
 from pprint import pprint
 from argparse import ArgumentParser
 from convlab.nlu.jointBERT.unified_datasets import BERTNLU
+<<<<<<< HEAD
 # from convlab.nlu.jointBERT.multiwoz import BERTNLU as BERTNLU_woz
+=======
+from convlab.nlu.jointBERT.multiwoz import BERTNLU as BERTNLU_woz
+>>>>>>> 4b3d84a0a205661b8bbb445a48452c4013f43805
 # from convlab.nlu.milu.multiwoz import MILU
 # available DST models
 from convlab.dst.rule.multiwoz import RuleDST
@@ -80,6 +84,7 @@ def test_end2end(args, model_dir):
 
 
     # where the models are saved from training
+    # lava_dir = "/gpfs/project/lubis/ConvLab-3/convlab/policy/lava/multiwoz/experiments_woz/sys_config_log_model/"
     lava_dir = "/gpfs/project/lubis/LAVA_code/LAVA_published/experiments_woz/sys_config_log_model/"
 
     if "rl" in model_dir:
@@ -121,7 +126,11 @@ def test_end2end(args, model_dir):
     user_agent = PipelineAgent(
         user_nlu, user_dst, user_policy, user_nlg, name='user')
     sys_agent = PipelineAgent(
+<<<<<<< HEAD
         sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
+=======
+        sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys', return_semantic_acts=True, word_level_policy_nlu=user_nlu)
+>>>>>>> 4b3d84a0a205661b8bbb445a48452c4013f43805
 
     sys_agent.add_booking_info = False
 
@@ -132,7 +141,11 @@ def test_end2end(args, model_dir):
     set_seed(args.seed)
 
     model_name = '{}_{}_lava_{}'.format(args.US_type, args.dst_type, model_dir)
+<<<<<<< HEAD
     analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=model_name, total_dialog=500)
+=======
+    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=model_name, total_dialog=10)
+>>>>>>> 4b3d84a0a205661b8bbb445a48452c4013f43805
 
 if __name__ == '__main__':
     parser = ArgumentParser()
