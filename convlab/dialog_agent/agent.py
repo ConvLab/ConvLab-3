@@ -64,12 +64,7 @@ class PipelineAgent(Agent):
            =====   =====    ======  ===     ==      ===
     """
 
-<<<<<<< HEAD
     def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str):
-=======
-    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str, return_semantic_acts: bool = False,
-                 word_level_policy_nlu: NLU = None):
->>>>>>> 4b3d84a0a205661b8bbb445a48452c4013f43805
         """The constructor of PipelineAgent class.
 
         Here are some special combination cases:
@@ -186,27 +181,14 @@ class PipelineAgent(Agent):
             model_response = self.output_action
         # print(model_response)
 
-        if self.policy_nlu and type(self.output_action) != list:
-            self.semantic_output_action = self.policy_nlu.predict(self.output_action,
-                                                                  context=[x[1] for x in self.history])
-        else:
-            self.semantic_output_action = None
-
         if self.dst is not None:
             self.dst.state['history'].append([self.name, model_response])
             if self.name == 'sys':
-                self.dst.state['system_action'] = self.semantic_output_action if self.semantic_output_action else self.output_action
+                self.dst.state['system_action'] = self.output_action
 
                 if type(self.output_action) == list:
                     for intent, domain, slot, value in self.output_action:
                         if intent.lower() == "book":
-<<<<<<< HEAD
-=======
-                            self.dst.state['booked'][domain] = [{slot: value}]
-                elif self.semantic_output_action:
-                    for intent, domain, slot, value in self.semantic_output_action:
-                        if intent.lower() == "book":
->>>>>>> 4b3d84a0a205661b8bbb445a48452c4013f43805
                             self.dst.state['booked'][domain] = [{slot: value}]
             else:
                 self.dst.state['user_action'] = self.output_action
@@ -269,9 +251,6 @@ class PipelineAgent(Agent):
 
     def get_in_da_eval(self):
         return self.input_action_eval
-
-    def get_out_da_eval(self):
-        return self.semantic_output_action
 
     def get_in_da(self):
         return self.input_action

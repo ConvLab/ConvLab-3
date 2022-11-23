@@ -237,7 +237,7 @@ def delexicaliseReferenceNumber(sent, state):
                'train', 'taxi', 'hospital']  # , 'police']
 
     if state['history'][-1][0]=="sys":
-        print(state["booked"])
+        # print(state["booked"])
         for domain in domains:
             if state['booked'][domain]:
                 for slot in state['booked'][domain][0]:
@@ -751,8 +751,8 @@ class LAVA(Policy):
         # mark_not_mentioned(prev_state)
         #active_domain = self.get_active_domain_convlab(self.prev_active_domain, prev_bstate, bstate)
         active_domain = self.get_active_domain_unified(self.prev_active_domain, self.prev_state, state)
-        print("---------")
-        print("active domain: ", active_domain)
+        # print("---------")
+        # print("active domain: ", active_domain)
         # if active_domain is not None:
             # print(f"DST on {active_domain}: {bstate[active_domain]}")
 
@@ -761,7 +761,7 @@ class LAVA(Policy):
         top_results, num_results = None, None
         for t_id in range(len(context)):
             usr = context[t_id]
-            print(usr)
+            # print(usr)
 
             if t_id == 0: #system turns
                 if usr == "null":
@@ -1179,7 +1179,7 @@ class LAVA(Policy):
         return response
 
     def populate_template_unified(self, template, top_results, num_results, state, active_domain):
-        print("template:",template)
+        # print("template:",template)
         # print("top_results:",top_results)
         # active_domain = None if len(
         #    top_results.keys()) == 0 else list(top_results.keys())[0]
