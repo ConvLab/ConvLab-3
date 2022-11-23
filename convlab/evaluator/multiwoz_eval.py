@@ -3,6 +3,7 @@
 import logging
 import re
 import numpy as np
+import pdb
 
 from copy import deepcopy
 from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
@@ -157,6 +158,15 @@ class MultiWozEvaluator(Evaluator):
             da_turn:
                 list[intent, domain, slot, value]
         """
+
+        new_acts = list()
+        for intent, domain, slot, value in da_turn:
+            if intent.lower() == 'book':
+                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain == domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
+                ref = ref[0] if ref else ''
+                value = ref
+            new_acts.append([intent, domain, slot, value])
+        da_turn = new_acts
 
         da_turn = self._convert_action(da_turn)
 

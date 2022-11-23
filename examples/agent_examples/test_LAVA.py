@@ -8,7 +8,8 @@ import json
 import random
 from pprint import pprint
 from argparse import ArgumentParser
-from convlab.nlu.jointBERT.multiwoz import BERTNLU
+from convlab.nlu.jointBERT.unified_datasets import BERTNLU
+# from convlab.nlu.jointBERT.multiwoz import BERTNLU as BERTNLU_woz
 # from convlab.nlu.milu.multiwoz import MILU
 # available DST models
 from convlab.dst.rule.multiwoz import RuleDST
@@ -31,7 +32,7 @@ from convlab.policy.rule.multiwoz import RulePolicy
 from convlab.policy.lava.multiwoz import LAVA
 # available NLG models
 from convlab.nlg.template.multiwoz import TemplateNLG
-from convlab.nlg.sclstm.multiwoz import SCLSTM
+# from convlab.nlg.sclstm.multiwoz import SCLSTM
 # available E2E models
 # from convlab.e2e.sequicity.multiwoz import Sequicity
 # from convlab.e2e.damd.multiwoz import Damd
@@ -60,7 +61,7 @@ def set_seed(r_seed):
 def test_end2end(args, model_dir):
     # BERT nlu
     if args.dst_type=="bertnlu_rule":
-        sys_nlu = BERTNLU()
+        sys_nlu = BERTNLU("user", config_file="multiwoz21_user_context3.json", model_file="bertnlu_unified_multiwoz21_user_context3")
     elif args.dst_type in ["setsumbt", "trippy"]:
         sys_nlu = None
     
@@ -79,11 +80,9 @@ def test_end2end(args, model_dir):
 
 
     # where the models are saved from training
-    # lava_dir = "/gpfs/project/lubis/ConvLab-3/convlab/policy/lava/multiwoz/experiments_woz/sys_config_log_model/"
-    lava_dir = "/gpfs/project/lubis/LAVA_code/LAVA_dev//experiments_woz/sys_config_log_model/"
+    lava_dir = "/gpfs/project/lubis/LAVA_code/LAVA_published/experiments_woz/sys_config_log_model/"
 
     if "rl" in model_dir:
-        # lava_path = "{}/{}/reward_best.model".format(lava_dir, model_path[args.lava_model_type])
         lava_path = "{}/{}/reward_best.model".format(lava_dir, model_dir)
     else:
         # default saved model format
@@ -97,14 +96,9 @@ def test_end2end(args, model_dir):
 
     # template NLG
     sys_nlg = None
-    # assemble
-    sys_agent = PipelineAgent(
-        sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
-    sys_agent.add_booking_info = False
 
     # BERT nlu trained on sys utterance
-    user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json',
-                       model_file='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip')
+    user_nlu = BERTNLU("sys", config_file="multiwoz21_system_context3_new.json", model_file="bertnlu_unified_multiwoz21_system_context3")
     if args.US_type == "ABUS":
         # not use dst
         user_dst = None
@@ -123,9 +117,14 @@ def test_end2end(args, model_dir):
         user_policy = UserPolicy(user_config)
     # template NLG
     user_nlg = TemplateNLG(is_user=True)
-    # assemble
+    # assemble agents
     user_agent = PipelineAgent(
         user_nlu, user_dst, user_policy, user_nlg, name='user')
+    sys_agent = PipelineAgent(
+        sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
+
+    sys_agent.add_booking_info = False
+
 
     analyzer = Analyzer(user_agent=user_agent, dataset='multiwoz')
 
@@ -133,11 +132,11 @@ def test_end2end(args, model_dir):
     set_seed(args.seed)
 
     model_name = '{}_{}_lava_{}'.format(args.US_type, args.dst_type, model_dir)
-    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=model_name, total_dialog=1000)
+    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=model_name, total_dialog=500)
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument("--lava_dir", type=str, default="2020-05-12-14-51-49-actz_cat")
+    parser.add_argument("--lava_dir", type=str, default="2020-05-12-14-51-49-actz_cat/rl-2020-05-18-10-50-48")
     parser.add_argument("--US_trained", type=bool, default=False, help="whether to use model trained on US or not")
     parser.add_argument("--seed", type=int, default=20200202, help="seed for random processes")
     parser.add_argument("--US_type", type=str, default="ABUS", help="which user simulator to us, ABUS or TUS")
