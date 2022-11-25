@@ -1,10 +1,10 @@
 {
   "model_type": "SetSUMBT",
-  "dataset": "sgd",
+  "dataset": "sgd+tm1+tm2+tm3",
   "no_action_prediction": true,
   "model_name_or_path": "/gpfs/project/niekerk/models/transformers/roberta-base",
   "train_batch_size": 3,
-  "dev_batch_size": 6,
-  "test_batch_size": 6,
+  "dev_batch_size": 12,
+  "test_batch_size": 12,
   "run_nbt": true
 }
