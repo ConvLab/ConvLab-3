@@ -58,6 +58,8 @@ def get_args(base_models: dict):
     parser.add_argument('--model_name_or_path', help='Name or path of the pretrained model.', default=None)
     parser.add_argument('--candidate_embedding_model_name', default=None,
                         help='Name of the pretrained candidate embedding model.')
+    parser.add_argument('--transformers_local_files_only', help='Use local files only for huggingface transformers',
+                        action='store_true')
 
     # Architecture
     parser.add_argument('--freeze_encoder', help='No training performed on the turn encoder Bert Model',
