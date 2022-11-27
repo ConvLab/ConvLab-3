@@ -134,7 +134,7 @@ class UserActionPolicy(Policy):
             goal = Goal(goal_list)
         else:
             goal = ABUS_Goal(self.goal_gen)
-            self.raw_gaol = goal.domain_goals
+            self.raw_goal = goal.domain_goals
             goal_list = old_goal2list(goal.domain_goals)
             goal = Goal(goal_list)
 
@@ -411,7 +411,8 @@ class UserPolicy(Policy):
             self.config = json.load(open(config))
         else:
             self.config = config
-        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}/multiwoz'
+        self.config["model_dir"] = f'{self.config["model_dir"]}_{dial_ids_order}'
+        print("model_dir", self.config['model_dir'])
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),

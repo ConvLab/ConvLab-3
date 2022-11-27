@@ -26,7 +26,7 @@ class UserActionPolicy(Policy):
             print("change mode to semantic because only_action=True")
             self.mode = "semantic"
         self.max_in_len = 500
-        self.max_out_len = 50 if only_action else 200
+        self.max_out_len = 100 if only_action else 200
         max_act_len = kwargs.get("max_act_len", 2)
         print("max_act_len", max_act_len)
         self.max_action_len = max_act_len
