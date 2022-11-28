@@ -14,8 +14,6 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Intended Audience :: Science/Research',
@@ -24,6 +22,10 @@ setup(
     ],
     setup_requires=['setuptools-git'],
     install_requires=[
+        'joblib>=1.2.0',
+        'pillow>=9.3.0',
+        'protobuf>=3.19.5',
+        'oauthlib>=3.2.1',
         'accelerate',
         'rouge-score',
         'sacrebleu',
@@ -74,6 +76,6 @@ setup(
     url='https://github.com/ConvLab/ConvLab-3',
     author='convlab',
     author_email='convlab@googlegroups.com',
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     zip_safe=False
 )
