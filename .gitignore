@@ -102,8 +102,9 @@ convlab/dst/trade/multiwoz_config/
 convlab/deploy/bert_multiwoz_all.zip
 convlab/deploy/templates/dialog_eg.html
 test.py
-
+*budget*.pdf
 *convlab/policy/vector/action_dicts
+
 *.egg-info
 pre-trained-models/
 venv

@@ -44,10 +44,10 @@ class Goal(object):
         elif goal_generator is None and goal is not None:
             self.domains = []
             self.domain_goals = {}
-            for domain in goal:
-                if domain in SysDa2Goal and goal[domain]:  # TODO check order
+            for domain in goal.domains:
+                if domain in SysDa2Goal and goal.domain_goals[domain]:  # TODO check order
                     self.domains.append(domain)
-                    self.domain_goals[domain] = goal[domain]
+                    self.domain_goals[domain] = goal.domain_goals[domain]
         else:
             print("Warning!!! One of goal_generator or goal should not be None!!!")
 
