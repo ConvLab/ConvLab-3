@@ -132,6 +132,8 @@ class UserActionPolicy(Policy):
             self.raw_goal = goal.domain_goals
             goal_list = old_goal2list(goal.domain_goals)
             goal = Goal(goal_list)
+        elif type(goal) == Goal:
+            self.raw_goal = goal.domain_goals
         else:
             goal = ABUS_Goal(self.goal_gen)
             self.raw_goal = goal.domain_goals
@@ -416,7 +418,7 @@ class UserPolicy(Policy):
         if not os.path.exists(self.config["model_dir"]):
             # os.mkdir(self.config["model_dir"])
             model_downloader(os.path.dirname(self.config["model_dir"]),
-                             "https://zenodo.org/record/5779832/files/default.zip")
+                             "https://zenodo.org/record/7369429/files/multiwoz_0.zip")
         self.slot2dbattr = {
             'open hours': 'openhours',
             'price range': 'pricerange',
@@ -451,30 +453,4 @@ class UserPolicy(Policy):
     def get_goal(self):
         if hasattr(self.policy, 'get_goal'):
             return self.policy.get_goal()
-            # workaround: convert goal to old format
-            multiwoz_goal = {}
-            goal = self.policy.get_goal()
-            for domain in goal:
-                multiwoz_goal[domain] = {}
-                for slot_type in ["info", "reqt"]:
-                    if slot_type not in goal[domain]:
-                        continue
-                    if slot_type not in multiwoz_goal[domain]:
-                        multiwoz_goal[domain][slot_type] = {}
-                    for slot in goal[domain][slot_type]:
-                        value = goal[domain][slot_type][slot].lower()
-                        if "book" in slot:
-                            if "book" not in multiwoz_goal[domain]:
-                                multiwoz_goal[domain]["book"] = {}
-                            norm_slot = slot.split(' ')[-1]
-                            multiwoz_goal[domain]["book"][norm_slot] = value
-                        elif slot in self.slot2dbattr:
-                            norm_slot = self.slot2dbattr[slot]
-                            multiwoz_goal[domain][slot_type][norm_slot] = value
-                        else:
-                            multiwoz_goal[domain][slot_type][slot] = value
-            for domain in multiwoz_goal:
-                if "book" in multiwoz_goal[domain]:
-                    multiwoz_goal[domain]["booked"] = '?'
-            return multiwoz_goal
         return None
