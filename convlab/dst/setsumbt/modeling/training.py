@@ -590,17 +590,16 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
                 for sample in eval_output_batch:
                     dom, slt = slot.split('-', 1)
                     lab = state_labels[sample['dial_idx']][sample['utt_idx']].item()
-                    if lab != -1:
-                        lab = ontology[dom][slt]['possible_values'][lab]
-                        pred = prediction[sample['dial_idx']][sample['utt_idx']].item()
-                        pred = ontology[dom][slt]['possible_values'][pred]
+                    lab = ontology[dom][slt]['possible_values'][lab] if lab != -1 else 'NOT_IN_ONTOLOGY'
+                    pred = prediction[sample['dial_idx']][sample['utt_idx']].item()
+                    pred = ontology[dom][slt]['possible_values'][pred]
 
-                        if dom not in sample['state']:
-                            sample['state'][dom] = dict()
-                            sample['predictions']['state'][dom] = dict()
+                    if dom not in sample['state']:
+                        sample['state'][dom] = dict()
+                        sample['predictions']['state'][dom] = dict()
 
-                        sample['state'][dom][slt] = lab if lab != 'none' else ''
-                        sample['predictions']['state'][dom][slt] = pred if pred != 'none' else ''
+                    sample['state'][dom][slt] = lab if lab != 'none' else ''
+                    sample['predictions']['state'][dom][slt] = pred if pred != 'none' else ''
 
             if args.temp_scaling > 0.0:
                 p_ = torch.log(p_ + 1e-10) / args.temp_scaling
@@ -615,7 +614,9 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
             num_inform_slots += (state_labels != -1).float().reshape(-1)
 
         if return_eval_output:
-            evaluation_output += deepcopy(eval_output_batch)
+            for sample in eval_output_batch:
+                sample['dial_idx'] = batch['dialogue_ids'][sample['utt_idx']][sample['dial_idx']]
+                evaluation_output.append(deepcopy(sample))
             eval_output_batch = []
 
         if model.config.predict_actions:
@@ -708,16 +709,6 @@ def evaluate(args, model, device, dataloader, return_eval_output=False, is_train
         req_f1, dom_f1, gen_f1 = None, None, None
 
     if return_eval_output:
-        dial_idx = 0
-        for sample in evaluation_output:
-            if dial_idx == 0 and sample['dial_idx'] == 0 and sample['utt_idx'] == 0:
-                dial_idx = 0
-            elif dial_idx == 0 and sample['dial_idx'] != 0 and sample['utt_idx'] == 0:
-                dial_idx += 1
-            elif sample['utt_idx'] == 0:
-                dial_idx += 1
-            sample['dial_idx'] = dial_idx
-
         return jg_acc, sl_acc, req_f1, dom_f1, gen_f1, tr_loss / len(dataloader), evaluation_output
     if is_train:
         return jg_acc, sl_acc, req_f1, dom_f1, gen_f1, tr_loss / len(dataloader), stats

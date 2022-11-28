@@ -65,13 +65,15 @@ def main(args=None, config=None):
     paths = os.listdir(args.output_dir) if os.path.exists(args.output_dir) else []
     if 'pytorch_model.bin' in paths and 'config.json' in paths:
         args.model_name_or_path = args.output_dir
-        config = ConfigClass.from_pretrained(args.model_name_or_path)
+        config = ConfigClass.from_pretrained(args.model_name_or_path,
+                                             local_files_only=args.transformers_local_files_only)
     else:
         paths = [os.path.join(args.output_dir, p) for p in paths if 'checkpoint-' in p]
         if paths:
             paths = paths[0]
             args.model_name_or_path = paths
-            config = ConfigClass.from_pretrained(args.model_name_or_path)
+            config = ConfigClass.from_pretrained(args.model_name_or_path,
+                                                 local_files_only=args.transformers_local_files_only)
 
     args = update_args(args, config)
 
@@ -102,12 +104,15 @@ def main(args=None, config=None):
 
     # Initialise Model
     transformers.utils.logging.set_verbosity_info()
-    model = SetSumbtModel.from_pretrained(args.model_name_or_path, config=config)
+    model = SetSumbtModel.from_pretrained(args.model_name_or_path, config=config,
+                                          local_files_only=args.transformers_local_files_only)
     model = model.to(device)
 
     # Create Tokenizer and embedding model for Data Loaders and ontology
-    encoder = CandidateEncoderModel.from_pretrained(config.candidate_embedding_model_name)
-    tokenizer = Tokenizer.from_pretrained(config.tokenizer_name, config=config)
+    encoder = CandidateEncoderModel.from_pretrained(config.candidate_embedding_model_name,
+                                                    local_files_only=args.transformers_local_files_only)
+    tokenizer = Tokenizer.from_pretrained(config.tokenizer_name, config=config,
+                                          local_files_only=args.transformers_local_files_only)
 
     # Set up model training/evaluation
     training.set_logger(logger, tb_writer)
