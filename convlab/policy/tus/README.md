@@ -1,30 +1,48 @@
-**TUS** is a domain-independent user simulator with transformers for task-oriented dialogue systems. It is based on the [ConvLab-2](https://github.com/thu-coai/ConvLab-2) framework. Therefore, you should follow their instruction to install the package.
+**TUS** is a domain-independent user simulator with transformers for task-oriented dialogue systems.
 
 ## Introduction
-Our model is a domain-independent user simulator, which means it is not based on any domain-dependent freatures and the output representation is also domain-independent. Therefore, it can easily adapt to a new domain, without additional feature engineering and model retraining.
+Our model is a domain-independent user simulator, which means its input and output representations are domain agnostic. Therefore, it can easily adapt to a new domain, without additional feature engineering and model retraining.
 
-The code of TUS is in `convlab/policy/tus` and a rule-based DST of user is also created in `convlab/dst/rule/multiwoz/dst.py` based on the rule-based DST in `convlab/dst/rule/multiwoz/dst.py`.
+The code of TUS is in `convlab/policy/tus`.
 
-## How to run the model
-### Train the user simulator
-`python3 convlab/policy/tus/multiwoz/train.py --user_config convlab/policy/tus/multiwoz/exp/default.json`
+## Usage
+### Train TUS from scratch
 
-One default configuration is placed in `convlab/policy/tus/multiwoz/exp/default.json`. They can be modified based on your requirements. For example, the output directory can be specified in the configuration (`model_dir`).
+```
+python3 convlab/policy/tus/unify/train.py --dataset $dataset --dial-ids-order $dial_ids_order --split2ratio $split2ratio --user-config $config
+```
+
+`dataset` can be `multiwoz21`, `sgd`, `tm`, `sgd+tm`, or `all`.
+`dial_ids_order` can be 0, 1 or 2
+`split2ratio` can be 0.01, 0.1 or 1
+Default configurations are placed in `convlab/policy/tus/unify/exp`. They can be modified based on your requirements. 
+
+For example, you can train TUS for multiwoz21 by 
+`python3 convlab/policy/tus/unify/train.py --dataset multiwoz21 --dial-ids-order 0 --split2ratio 1 --user-config "convlab/policy/tus/unify/exp/multiwoz.json"`
+
+### Evaluate TUS
 
 ### Train a dialogue policy with TUS
 You can use it as a normal user simulator by `PipelineAgent`. For example,
 ```python
 import json
 from convlab.dialog_agent.agent import PipelineAgent
-from convlab.dst.rule.multiwoz.usr_dst import UserRuleDST
-from convlab.policy.tus.multiwoz.TUS import UserPolicy
+from convlab.policy.tus.unify.TUS import UserPolicy
 
-user_config_file = "convlab/policy/tus/multiwoz/exp/default.json"
-dst_usr = UserRuleDST()
+user_config_file = "convlab/policy/tus/unify/exp/multiwoz.json"
 user_config = json.load(open(user_config_file))
 policy_usr = UserPolicy(user_config)
-simulator = PipelineAgent(None, dst_usr, policy_usr, None, 'user')
+simulator = PipelineAgent(None, None, policy_usr, None, 'user')
 ```
+then you can train your system with this simulator.
+
+There is an example config, which trains a PPO policy with TUS in semantic level, in `convlab/policy/ppo/tus_semantic_level_config.json`.
+You can train a PPO policy as following, 
+```
+config="convlab/policy/ppo/tus_semantic_level_config.json"
+python3 convlab/policy/ppo/train.py --path $config
+```
+notice: You should name your pretrained policy as `convlab/policy/ppo/pretrained_models/mle` or modify the `load_path` of `model` in the config `convlab/policy/ppo/tus_semantic_level_config.json`.
 
 
 <!---citation--->
