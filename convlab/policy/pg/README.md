@@ -35,24 +35,15 @@ For creating evaluation plots and running evaluation dialogues, please have a lo
 ## References
 
 ```
-@inproceedings{devlin2019bert,
-  title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
-  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)},
-  pages={4171--4186},
-  year={2019}
-}
-
-@inproceedings{zhu-etal-2020-convlab,
-    title = "{C}onv{L}ab-2: An Open-Source Toolkit for Building, Evaluating, and Diagnosing Dialogue Systems",
-    author = "Zhu, Qi and Zhang, Zheng and Fang, Yan and Li, Xiang and Takanobu, Ryuichi and Li, Jinchao and Peng, Baolin and Gao, Jianfeng and Zhu, Xiaoyan and Huang, Minlie",
-    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics: System Demonstrations",
-    month = jul,
-    year = "2020",
-    address = "Online",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2020.acl-demos.19",
-    doi = "10.18653/v1/2020.acl-demos.19",
-    pages = "142--149"
+@inproceedings{NIPS1999_464d828b,
+ author = {Sutton, Richard S and McAllester, David and Singh, Satinder and Mansour, Yishay},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {S. Solla and T. Leen and K. M\"{u}ller},
+ pages = {},
+ publisher = {MIT Press},
+ title = {Policy Gradient Methods for Reinforcement Learning with Function Approximation},
+ url = {https://proceedings.neurips.cc/paper/1999/file/464d828b85b0bed98e80ade0a5c43b0f-Paper.pdf},
+ volume = {12},
+ year = {1999}
 }
 ```

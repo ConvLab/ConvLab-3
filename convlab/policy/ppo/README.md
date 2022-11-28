@@ -35,24 +35,21 @@ For creating evaluation plots and running evaluation dialogues, please have a lo
 ## References
 
 ```
-@inproceedings{devlin2019bert,
-  title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
-  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)},
-  pages={4171--4186},
-  year={2019}
-}
-
-@inproceedings{zhu-etal-2020-convlab,
-    title = "{C}onv{L}ab-2: An Open-Source Toolkit for Building, Evaluating, and Diagnosing Dialogue Systems",
-    author = "Zhu, Qi and Zhang, Zheng and Fang, Yan and Li, Xiang and Takanobu, Ryuichi and Li, Jinchao and Peng, Baolin and Gao, Jianfeng and Zhu, Xiaoyan and Huang, Minlie",
-    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics: System Demonstrations",
-    month = jul,
-    year = "2020",
-    address = "Online",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2020.acl-demos.19",
-    doi = "10.18653/v1/2020.acl-demos.19",
-    pages = "142--149"
+@article{DBLP:journals/corr/SchulmanWDRK17,
+  author    = {John Schulman and
+               Filip Wolski and
+               Prafulla Dhariwal and
+               Alec Radford and
+               Oleg Klimov},
+  title     = {Proximal Policy Optimization Algorithms},
+  journal   = {CoRR},
+  volume    = {abs/1707.06347},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1707.06347},
+  eprinttype = {arXiv},
+  eprint    = {1707.06347},
+  timestamp = {Mon, 13 Aug 2018 16:47:34 +0200},
+  biburl    = {https://dblp.org/rec/journals/corr/SchulmanWDRK17.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 ```

@@ -35,24 +35,19 @@ For creating evaluation plots and running evaluation dialogues, please have a lo
 ## References
 
 ```
-@inproceedings{devlin2019bert,
-  title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
-  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)},
-  pages={4171--4186},
-  year={2019}
-}
-
-@inproceedings{zhu-etal-2020-convlab,
-    title = "{C}onv{L}ab-2: An Open-Source Toolkit for Building, Evaluating, and Diagnosing Dialogue Systems",
-    author = "Zhu, Qi and Zhang, Zheng and Fang, Yan and Li, Xiang and Takanobu, Ryuichi and Li, Jinchao and Peng, Baolin and Gao, Jianfeng and Zhu, Xiaoyan and Huang, Minlie",
-    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics: System Demonstrations",
-    month = jul,
-    year = "2020",
-    address = "Online",
+@inproceedings{takanobu-etal-2019-guided,
+    title = "Guided Dialog Policy Learning: Reward Estimation for Multi-Domain Task-Oriented Dialog",
+    author = "Takanobu, Ryuichi  and
+      Zhu, Hanlin  and
+      Huang, Minlie",
+    booktitle = "Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)",
+    month = nov,
+    year = "2019",
+    address = "Hong Kong, China",
     publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2020.acl-demos.19",
-    doi = "10.18653/v1/2020.acl-demos.19",
-    pages = "142--149"
+    url = "https://aclanthology.org/D19-1010",
+    doi = "10.18653/v1/D19-1010",
+    pages = "100--110",
+    abstract = "Dialog policy decides what and how a task-oriented dialog system will respond, and plays a vital role in delivering effective conversations. Many studies apply Reinforcement Learning to learn a dialog policy with the reward function which requires elaborate design and pre-specified user goals. With the growing needs to handle complex goals across multiple domains, such manually designed reward functions are not affordable to deal with the complexity of real-world tasks. To this end, we propose Guided Dialog Policy Learning, a novel algorithm based on Adversarial Inverse Reinforcement Learning for joint reward estimation and policy optimization in multi-domain task-oriented dialog. The proposed approach estimates the reward signal and infers the user goal in the dialog sessions. The reward estimator evaluates the state-action pairs so that it can guide the dialog policy at each dialog turn. Extensive experiments on a multi-domain dialog dataset show that the dialog policy guided by the learned reward function achieves remarkably higher task success than state-of-the-art baselines.",
 }
 ```
