@@ -27,7 +27,7 @@ from convlab.util import load_dataset
 from convlab.dst.setsumbt.dataset.utils import (get_ontology_slots, ontology_add_values,
                                                 get_values_from_data, ontology_add_requestable_slots,
                                                 get_requestable_slots, load_dst_data, extract_dialogues,
-                                                combine_value_sets)
+                                                combine_value_sets, IdTensor)
 
 transformers.logging.set_verbosity_error()
 
@@ -77,6 +77,11 @@ def convert_examples_to_features(data: list,
     del dial_feats
 
     # Perform turn level padding
+    dial_ids = list()
+    for dial in data:
+        _ids = [turn['dialogue_id'] for turn in dial][:max_turns]
+        _ids += [''] * (max_turns - len(_ids))
+        dial_ids.append(_ids)
     input_ids = [[turn['input_ids'] for turn in dial] + [[0] * max_seq_len] * (max_turns - len(dial))
                  for dial in input_feats]
     if 'token_type_ids' in input_feats[0][0]:
@@ -92,6 +97,7 @@ def convert_examples_to_features(data: list,
     del input_feats
 
     # Create torch data tensors
+    features['dialogue_ids'] = IdTensor(dial_ids)
     features['input_ids'] = torch.tensor(input_ids)
     features['token_type_ids'] = torch.tensor(token_type_ids) if token_type_ids else None
     features['attention_mask'] = torch.tensor(attention_mask) if attention_mask else None

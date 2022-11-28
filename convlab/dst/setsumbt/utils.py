@@ -16,6 +16,7 @@
 """SetSUMBT utils"""
 
 import os
+import json
 import shutil
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from datetime import datetime
@@ -26,6 +27,9 @@ from git import Repo
 def get_args(base_models: dict):
     # Get arguments
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+
+    # Config file usage
+    parser.add_argument('--starting_config_name', default=None, type=str)
 
     # Optional
     parser.add_argument('--tensorboard_path', help='Path to tensorboard', default='')
@@ -54,6 +58,8 @@ def get_args(base_models: dict):
     parser.add_argument('--model_name_or_path', help='Name or path of the pretrained model.', default=None)
     parser.add_argument('--candidate_embedding_model_name', default=None,
                         help='Name of the pretrained candidate embedding model.')
+    parser.add_argument('--transformers_local_files_only', help='Use local files only for huggingface transformers',
+                        action='store_true')
 
     # Architecture
     parser.add_argument('--freeze_encoder', help='No training performed on the turn encoder Bert Model',
@@ -143,6 +149,12 @@ def get_args(base_models: dict):
     parser.add_argument('--do_test', help='Evaluate model on test data', action='store_true')
     args = parser.parse_args()
 
+    if args.starting_config_name:
+        args = get_starting_config(args)
+
+    if args.do_train:
+        args.do_eval = True
+
     # Simplify args
     args.set_similarity = not args.no_set_similarity
     args.use_descriptions = not args.no_descriptions
@@ -215,6 +227,31 @@ def get_args(base_models: dict):
         raise NameError('NotImplemented')
     config = build_config(config_class, args)
     return args, config
+
+
+def get_starting_config(args):
+    path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(path, 'configs', f"{args.starting_config_name}.json")
+    reader = open(path, 'r')
+    config = json.load(reader)
+    reader.close()
+
+    if "model_type" in config:
+        if config["model_type"].lower() == 'setsumbt':
+            config["model_type"] = 'roberta'
+            config["no_set_similarity"] = False
+            config["no_descriptions"] = False
+        elif config["model_type"].lower() == 'sumbt':
+            config["model_type"] = 'bert'
+            config["no_set_similarity"] = True
+            config["no_descriptions"] = False
+
+    variables = vars(args).keys()
+    for key, value in config.items():
+        if key in variables:
+            setattr(args, key, value)
+
+    return args
 
 
 def get_git_info():
