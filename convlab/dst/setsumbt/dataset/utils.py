@@ -15,6 +15,9 @@
 # limitations under the License.
 """Convlab3 Unified dataset data processing utilities"""
 
+import numpy
+import pdb
+
 from convlab.util import load_ontology, load_dst_data, load_nlu_data
 from convlab.dst.setsumbt.dataset.value_maps import VALUE_MAP, DOMAINS_MAP, QUANTITIES, TIME
 
@@ -66,7 +69,9 @@ def get_values_from_data(dataset: dict, data_split: str = "train") -> dict:
     data = load_dst_data(dataset, data_split='all', speaker='user')
 
     # Remove test data from the data when building training/validation ontology
-    if data_split in ['train', 'validation']:
+    if data_split == 'train':
+        data = {key: itm for key, itm in data.items() if key == 'train'}
+    elif data_split == 'validation':
         data = {key: itm for key, itm in data.items() if key in ['train', 'validation']}
 
     value_sets = {}
@@ -74,13 +79,14 @@ def get_values_from_data(dataset: dict, data_split: str = "train") -> dict:
         for turn in dataset:
             for domain, substate in turn['state'].items():
                 domain_name = DOMAINS_MAP.get(domain, domain.lower())
-                if domain not in value_sets:
+                if domain_name not in value_sets:
                     value_sets[domain_name] = {}
                 for slot, value in substate.items():
                     if slot not in value_sets[domain_name]:
                         value_sets[domain_name][slot] = []
                     if value and value not in value_sets[domain_name][slot]:
                         value_sets[domain_name][slot].append(value)
+            # pdb.set_trace()
 
     return clean_values(value_sets)
 
@@ -163,6 +169,9 @@ def ontology_add_values(ontology_slots: dict, value_sets: dict, data_split: str 
         if data_split in ['train', 'validation']:
             if domain not in value_sets:
                 continue
+            possible_values = [v for slot, vals in value_sets[domain].items() for v in vals]
+            if len(possible_values) == 0:
+                continue
         ontology[domain] = {}
         for slot in sorted(ontology_slots[domain]):
             if not ontology_slots[domain][slot]['possible_values']:
@@ -228,12 +237,13 @@ def ontology_add_requestable_slots(ontology_slots: dict, requestable_slots: dict
     return ontology_slots
 
 
-def extract_turns(dialogue: list, dataset_name: str) -> list:
+def extract_turns(dialogue: list, dataset_name: str, dialogue_id: str) -> list:
     """
     Extract the required information from the data provided by unified loader
     Args:
         dialogue (list): List of turns within a dialogue
         dataset_name (str): Name of the dataset to which the dialogue belongs
+        dialogue_str (str): ID of the dialogue
 
     Returns:
         turns (list): List of turns within a dialogue
@@ -261,6 +271,7 @@ def extract_turns(dialogue: list, dataset_name: str) -> list:
 
             turn_info['state'] = turn['state']
             turn_info['dataset_name'] = dataset_name
+            turn_info['dialogue_id'] = dialogue_id
 
         if 'system_utterance' in turn_info and 'user_utterance' in turn_info:
             turns.append(turn_info)
@@ -399,6 +410,17 @@ def get_active_domains(turns: list) -> list:
     return turns
 
 
+class IdTensor:
+    def __init__(self, values):
+        self.values = numpy.array(values)
+
+    def __getitem__(self, index: int):
+        return self.values[index].tolist()
+
+    def to(self, device):
+        return self
+
+
 def extract_dialogues(data: list, dataset_name: str) -> list:
     """
     Extract all dialogues from dataset
@@ -411,7 +433,8 @@ def extract_dialogues(data: list, dataset_name: str) -> list:
     """
     dialogues = []
     for dial in data:
-        turns = extract_turns(dial['turns'], dataset_name)
+        dial_id = dial['dialogue_id']
+        turns = extract_turns(dial['turns'], dataset_name, dial_id)
         turns = clean_states(turns)
         turns = get_active_domains(turns)
         dialogues.append(turns)

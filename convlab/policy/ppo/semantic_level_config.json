@@ -1,15 +1,15 @@
 {
 	"model": {
-		"load_path": "",
+		"load_path": "convlab/policy/ppo/pretrained_models/mle",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
-		"batchsz": 1000,
+		"batchsz": 500,
 		"seed": 0,
 		"epoch": 10,
 		"eval_frequency": 5,
 		"process_num": 4,
 		"sys_semantic_to_usr": false,
-		"num_eval_dialogues": 500
+		"num_eval_dialogues": 200
 	},
 	"vectorizer_sys": {
 		"uncertainty_vector_mul": {
