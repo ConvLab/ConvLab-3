@@ -199,7 +199,7 @@ if __name__ == '__main__':
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
-    args = [('model', 'seed', seed)] if seed else list()
+    args = [('model', 'seed', seed)] if seed is not None else list()
 
     environment_config = load_config_file(path)
     save_config(vars(parser.parse_args()), environment_config, config_save_path)
@@ -227,6 +227,7 @@ if __name__ == '__main__':
     logging.info(f"New episodes per epoch: {conf['model']['batchsz']}")
 
     env, sess = env_config(conf, policy_sys)
+
 
     policy_sys.current_time = current_time
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
