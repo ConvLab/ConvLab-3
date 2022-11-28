@@ -43,7 +43,7 @@ The necessary step before starting a training is to set up the environment and p
 ```
 {
 	"model": {
-		"load_path": "", # specify a loading path to load a pre-trained model 
+		"load_path": "", # specify a loading path to load a pre-trained model, omit the ending .pol.mdl
 		"use_pretrained_initialisation": false, # will download a provided ConvLab-3 model
 		"pretrained_load_path": "",
 		"seed": 0, # the seed for the experiment

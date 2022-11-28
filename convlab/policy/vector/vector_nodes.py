@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import sys
 import numpy as np
+import logging
+
 from convlab.util.multiwoz.lexicalize import delexicalize_da, flat_da
 from .vector_base import VectorBase
 
@@ -8,9 +10,11 @@ from .vector_base import VectorBase
 class VectorNodes(VectorBase):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
-                 seed=0):
+                 seed=0, filter_state=True):
 
         super().__init__(dataset_name, character, use_masking, manually_add_entity_names, seed)
+        self.filter_state = filter_state
+        logging.info(f"We filter state by active domains: {self.filter_state}")
 
     def get_state_dim(self):
         self.belief_state_dim = 0
@@ -56,8 +60,15 @@ class VectorNodes(VectorBase):
         self.get_user_act_feature(state)
         self.get_sys_act_feature(state)
         domain_active_dict = self.get_user_goal_feature(state, domain_active_dict)
-        number_entities_dict = self.get_db_features()
         self.get_general_features(state, domain_active_dict)
+
+        if self.db is not None:
+            number_entities_dict = self.get_db_features()
+        else:
+            number_entities_dict = None
+
+        if self.filter_state:
+            self.kg_info = self.filter_inactive_domains(domain_active_dict)
 
         if self.use_mask:
             mask = self.get_mask(domain_active_dict, number_entities_dict)
@@ -89,13 +100,15 @@ class VectorNodes(VectorBase):
 
         feature_type = 'user goal'
         for domain in self.belief_domains:
-            for slot, value in state['belief_state'][domain].items():
-                description = f"user goal-{domain}-{slot}".lower()
-                value = 1.0 if (value and value != "not mentioned") else 0.0
-                self.add_graph_node(domain, feature_type, description, value)
+            # the if case is needed because SGD only saves the dialogue state info for active domains
+            if domain in state['belief_state']:
+                for slot, value in state['belief_state'][domain].items():
+                    description = f"user goal-{domain}-{slot}".lower()
+                    value = 1.0 if (value and value != "not mentioned") else 0.0
+                    self.add_graph_node(domain, feature_type, description, value)
 
-            if [slot for slot, value in state['belief_state'][domain].items() if value]:
-                domain_active_dict[domain] = True
+                if [slot for slot, value in state['belief_state'][domain].items() if value]:
+                    domain_active_dict[domain] = True
         return domain_active_dict
 
     def get_sys_act_feature(self, state):
@@ -128,11 +141,12 @@ class VectorNodes(VectorBase):
     def get_general_features(self, state, domain_active_dict):
 
         feature_type = 'general'
-        for i, domain in enumerate(self.db_domains):
-            if domain in state['booked']:
-                description = f"general-{domain}-booked".lower()
-                value = 1.0 if state['booked'][domain] else 0.0
-                self.add_graph_node(domain, feature_type, description, value)
+        if 'booked' in state:
+            for i, domain in enumerate(self.db_domains):
+                if domain in state['booked']:
+                    description = f"general-{domain}-booked".lower()
+                    value = 1.0 if state['booked'][domain] else 0.0
+                    self.add_graph_node(domain, feature_type, description, value)
 
         for domain in self.domains:
             if domain == 'general':
@@ -140,3 +154,17 @@ class VectorNodes(VectorBase):
             value = 1.0 if domain_active_dict[domain] else 0
             description = f"general-{domain}".lower()
             self.add_graph_node(domain, feature_type, description, value)
+
+    def filter_inactive_domains(self, domain_active_dict):
+
+        kg_filtered = []
+        for node in self.kg_info:
+            domain = node['domain']
+            if domain in domain_active_dict:
+                if domain_active_dict[domain]:
+                    kg_filtered.append(node)
+            else:
+                kg_filtered.append(node)
+
+        return kg_filtered
+

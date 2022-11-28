@@ -20,7 +20,11 @@ You can specify the dataset that you would like to use, e.g. "multiwoz21" or "sg
 
 You can specify hyperparamters such as epoch, supervised_lr and data_percentage (how much of the data you want to use) in the config.json file.
 
+We provide several supervised trained models on hugging-face to reproduce the results:
 
+- pre-trained on SGD: https://huggingface.co/ConvLab/ddpt-policy-sgd
+- pre-trained on 1% multiwoz21: https://huggingface.co/ConvLab/ddpt-policy-0.01multiwoz21
+- pre-trained on SGD and afterwards on 1% multiwoz21: https://huggingface.co/ConvLab/ddpt-policy-sgd_0.01multiwoz21
 
 ## RL training
 

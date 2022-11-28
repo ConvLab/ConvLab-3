@@ -14,6 +14,9 @@ The dataset name can be "multiwoz21" or "sgd" for instance. The first time you r
 
 Other hyperparameters such as learning rate or number of epochs can be set in the config.json file.
 
+We provide a model trained on multiwoz21 on hugging-face: https://huggingface.co/ConvLab/mle-policy-multiwoz21
+
+
 ## Evaluation
 
 Evaluation on the validation data set takes place during training.
