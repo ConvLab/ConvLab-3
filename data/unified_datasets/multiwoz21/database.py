@@ -52,17 +52,22 @@ class Database(BaseDatabase):
                 if key == 'department':
                     department = val
             if not department:
+                for key, val in soft_contraints:
+                    if key == 'department':
+                        department = val
+            if not department:
                 return deepcopy(self.dbs['hospital'])
             else:
                 return [deepcopy(x) for x in self.dbs['hospital'] if x['department'].lower() == department.strip().lower()]
         state = list(map(lambda ele: (self.slot2dbattr.get(ele[0], ele[0]), ele[1]) if not(ele[0] == 'area' and ele[1] == 'center') else ('area', 'centre'), state))
+        soft_contraints = list(map(lambda ele: (self.slot2dbattr.get(ele[0], ele[0]), ele[1]) if not(ele[0] == 'area' and ele[1] == 'center') else ('area', 'centre'), soft_contraints))
 
         found = []
         for i, record in enumerate(self.dbs[domain]):
             constraints_iterator = zip(state, [False] * len(state))
             soft_contraints_iterator = zip(soft_contraints, [True] * len(soft_contraints))
             for (key, val), fuzzy_match in chain(constraints_iterator, soft_contraints_iterator):
-                if val in ["", "dont care", 'not mentioned', "don't care", "dontcare", "do n't care"]:
+                if val in ["", "dont care", 'not mentioned', "don't care", "dontcare", "do n't care", "do not care"]:
                     pass
                 else:
                     try:
