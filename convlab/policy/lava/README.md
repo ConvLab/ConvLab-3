@@ -13,4 +13,5 @@ and using it as the policy module in the ConvLab pipeline (NLG should be set to 
 Code example can be found at
 - ConvLab-3/examples/agent_examples/test_LAVA.py
 
+A trained LAVA model can be found at https://huggingface.co/ConvLab/lava-policy-multiwoz21.
 
