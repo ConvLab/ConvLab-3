@@ -61,8 +61,8 @@ class SetSUMBTTracker(DST):
             if not os.path.exists(download_path):
                 os.mkdir(download_path)
             model_downloader(download_path, self.model_path)
-            # Downloadable model path format http://.../setsumbt_model_name.zip
-            self.model_path = self.model_path.split('/')[-1].split('_', 1)[-1].replace('.zip', '')
+            # Downloadable model path format http://.../model_name.zip
+            self.model_path = self.model_path.split('/')[-1].replace('.zip', '')
             self.model_path = os.path.join(download_path, self.model_path)
 
         # Select model type based on the encoder
