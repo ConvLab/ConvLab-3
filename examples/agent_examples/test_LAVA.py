@@ -132,8 +132,8 @@ def test_end2end(args, model_dir):
     #seed = 2020
     set_seed(args.seed)
 
-    model_name = '{}_{}_lava_{}_tmp'.format(args.US_type, args.dst_type, model_dir)
-    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=model_name, total_dialog=100)
+    model_name = '{}_{}_lava_{}'.format(args.US_type, args.dst_type, model_dir)
+    analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=model_name, total_dialog=500)
 
 if __name__ == '__main__':
     parser = ArgumentParser()
