@@ -54,8 +54,8 @@ class Goal:
             self.raw_goal = goal.domain_goals
             goal = old_goal2list(goal.domain_goals)
 
-        else:
-            print("unknow goal")
+        # else:
+        #     print("unknow goal")
 
         # be careful of this order
         for domain, intent, slot, value in goal:

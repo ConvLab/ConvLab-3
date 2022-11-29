@@ -43,7 +43,7 @@ The necessary step before starting a training is to set up the environment and p
 ```
 {
 	"model": {
-		"load_path": "", # specify a loading path to load a pre-trained model 
+		"load_path": "", # specify a loading path to load a pre-trained model, omit the ending .pol.mdl
 		"use_pretrained_initialisation": false, # will download a provided ConvLab-3 model
 		"pretrained_load_path": "",
 		"seed": 0, # the seed for the experiment
@@ -88,7 +88,9 @@ The necessary step before starting a training is to set up the environment and p
 
 Once you set up your configuration, you are ready to start an experiment by executing
 
-```python convlab/policy/policy_subfolder/train.py --path=your_environment_config --seed=your_seed```
+```sh
+$ python convlab/policy/policy_subfolder/train.py --path=your_environment_config --seed=your_seed
+```
 
 You can specify the seed either in the environment config or through the argument parser. If you do not specify an environment config, it will automatically load the default config. 
 
@@ -105,6 +107,18 @@ Once the training finished, it will move the experiment-TIMESTAMP folder into th
 
 The evaluation tools can be found in the folder convlab/policy/plot_results. Please have a look in the README for detailed instructions. 
 
+#### Running Evaluation Dialogues
+
+You can run evaluation dialogues with a trained model using 
+
+```sh
+$ python convlab/policy/evaluate.py --model_name=NAME --config_path=PATH --num_dialogues=NUM --verbose
+```
+
+- model_name: specify which model is used, i.e. MLE, PPO, PG, DDPT
+- config_path: specify the config-path that was used during RL training, for instance semantic_level_config.json
+- num_dialogues: number of evaluation dialogues
+- verbose: can be also excluded. If used, it will print the dialogues in the termain consoloe together with its goal. That helps in analysing the behaviour of the policy.
 
 ## Adding a new policy
 

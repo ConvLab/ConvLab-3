@@ -11,6 +11,8 @@ from convlab.policy.genTUS.unify.Goal import Goal
 from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.policy import Policy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.util.custom_util import model_downloader
+
 
 DEBUG = False
 
@@ -589,10 +591,10 @@ class UserPolicy(Policy):
                  action_penalty=False,
                  **kwargs):
         # self.config = config
-        # if not os.path.exists(self.config["model_dir"]):
-        #     os.mkdir(self.config["model_dir"])
-        #     model_downloader(self.config["model_dir"],
-        #                      "https://zenodo.org/record/5779832/files/default.zip")
+        if not os.path.exists(os.path.dirname(model_checkpoint)):
+            os.mkdir(os.path.dirname(model_checkpoint))
+            model_downloader(os.path.dirname(model_checkpoint),
+                             "https://zenodo.org/record/7372442/files/multiwoz21-exp.zip")
 
         self.policy = UserActionPolicy(
             model_checkpoint,
@@ -636,11 +638,11 @@ if __name__ == "__main__":
 
     set_seed(20220220)
     # Test semantic level behaviour
-    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21_0_1.0'
+    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21-exp'
     usr_policy = UserPolicy(
         model_checkpoint,
         mode="semantic")
-    usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
+    # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
     print(usr.policy.get_goal())
