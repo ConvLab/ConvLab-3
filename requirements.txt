@@ -64,7 +64,7 @@ pathy==0.10.0
 Pillow==9.3.0
 portalocker==2.6.0
 preshed==3.0.8
-protobuf==3.20.1
+protobuf==3.20.2
 psutil==5.9.4
 pyarrow==10.0.1
 pyasn1==0.4.8
@@ -103,7 +103,7 @@ tabulate==0.9.0
 tensorboard==2.11.0
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
-tensorboardX==2.5.1
+tensorboardX==2.5
 thinc==8.1.5
 threadpoolctl==3.1.0
 tokenizers==0.13.2
