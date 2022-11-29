@@ -1,6 +1,6 @@
 # ConvLab-3
 
-![PyPI](https://img.shields.io/pypi/v/convlab)![PyPI - Python Version](https://img.shields.io/pypi/pyversions/convlab)![GitHub](https://img.shields.io/github/license/ConvLab/ConvLab-3)
+![PyPI](https://img.shields.io/pypi/v/convlab) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/convlab) ![GitHub](https://img.shields.io/github/license/ConvLab/ConvLab-3)
 
 **ConvLab-3** is a flexible dialog system platform based on a **unified data format** for task-oriented dialog (TOD) datasets. The unified format serves as the adapter between TOD datasets and models: datasets are first transformed to the unified format and then loaded by models. In this way, the cost of adapting $M$ models to $N$ datasets is reduced from $M\times N$ to $M+N$. While retaining all features of [ConvLab-2](https://github.com/thu-coai/ConvLab-2),  ConvLab-3 greatly enlarges supported datasets and models thanks to the unified format, and enhances the utility of reinforcement learning (RL) toolkit for dialog policy module. For typical usage, see our [paper](). Datasets and Trained models are also available on [Hugging Face Hub](https://huggingface.co/ConvLab).
 
@@ -20,7 +20,7 @@
 
 ## Installation
 
-You can install ConvLab-3 in the following ways according to your need. Higher versions of `torch` and `transformers` may also work.
+You can install ConvLab-3 in one of the following ways according to your need. Higher versions of `torch` and `transformers` may also work.
 
 ### Git clone and pip install in development mode (Recommend)
 
@@ -65,13 +65,15 @@ docker exec -it CONTAINER_ID bash
 
 ## Tutorials
 
-- [Getting Started](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Getting_Started.ipynb) (Have a try on [Colab](https://colab.research.google.com/github/thu-coai/ConvLab-2/blob/master/tutorials/Getting_Started.ipynb)!) 
-- [Introduction to unified data format](https://github.com/ConvLab/ConvLab-3/tree/master/data/unified_datasets)
-- [Utility functions for unified datasets](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/util/unified_datasets_util.py)
-- [How to add a new dataset](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Add_New_Model.md)
-- How to add a new model
-- [How to use RL toolkit](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Train_RL_Policies)
-- [Interactive tool](https://github.com/thu-coai/ConvLab-2/blob/master/deploy) [[demo video]](https://youtu.be/00VWzbcx26E)
+| Section                                                      | Description |
+| ------------------------------------------------------------ | ----------- |
+| [Getting Started](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Getting_Started.ipynb) (Have a try on [Colab](https://colab.research.google.com/github/thu-coai/ConvLab-2/blob/master/tutorials/Getting_Started.ipynb)!) |             |
+| [Unified Data Format](https://github.com/ConvLab/ConvLab-3/tree/master/data/unified_datasets) |             |
+| [Utility functions for unified datasets](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/util/unified_datasets_util.py) |             |
+| [RL Toolkit](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy) |             |
+| [How to add a new dataset](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Add_New_Model.md) |             |
+| How to add a new model                                       |             |
+| [Interactive Tool](https://github.com/ConvLab/ConvLab-3/blob/master/deploy) [[demo video]](https://youtu.be/00VWzbcx26E) |             |
 
 ## Unified Datasets
 
@@ -102,11 +104,11 @@ We list newly integrated models in ConvLab-3 that support unified data format an
 | Response Generation            | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Context         | Response         |
 | Goal-to-Dialogue                 | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Goal            | Dialog           |
 | Natural Language Understanding | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [BERTNLU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/jointBERT), [MILU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/milu) | Context         | DA-U             |
-| Dialog State Tracking          | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), SUMBT, SetSUMBT, TripPy | Context         | State            |
-| RL Policy                      | DDPT, PPO, PG                                                | State, DA-U, DB | DA-S             |
+| Dialog State Tracking          | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/sumbt), [SetSUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/setsumbt), TripPy | Context         | State            |
+| RL Policy                      | [DDPT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/vtrace_DPT), [PPO](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/ppo), [PG](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/pg) | State, DA-U, DB | DA-S             |
 | Natural Language Generation    | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), SC-GPT | DA-S            | Response         |
 | End-to-End                     | SOLOIST                                                      | Context, DB     | State, Response  |
-| User simulator                 | TUS, GenTUS                                                  | Goal, DA-S      | DA-U, (Response) |
+| User simulator                 | [TUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/tus), [GenTUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/genTUS) | Goal, DA-S      | DA-U, (Response) |
 
 Trained models are available on [Hugging Face Hub](https://huggingface.co/ConvLab).
 

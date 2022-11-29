@@ -24,7 +24,7 @@ setup(
     install_requires=[
         'joblib>=1.2.0',
         'pillow>=9.3.0',
-        'protobuf>=3.19.5',
+        'protobuf>=3.20.2',
         'oauthlib>=3.2.1',
         'accelerate',
         'rouge-score',
