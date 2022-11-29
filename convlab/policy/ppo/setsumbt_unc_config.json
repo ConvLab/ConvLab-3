@@ -1,0 +1,65 @@
+{
+	"model": {
+		"load_path": "/gpfs/project/niekerk/src/ConvLab3/convlab/policy/mle/experiments/experiment_2022-11-10-10-37-30/save/supervised",
+		"pretrained_load_path": "",
+		"use_pretrained_initialisation": false,
+		"batchsz": 1000,
+		"seed": 0,
+		"epoch": 50,
+		"eval_frequency": 5,
+		"process_num": 2,
+		"num_eval_dialogues": 500,
+		"sys_semantic_to_usr": true
+	},
+	"vectorizer_sys": {
+		"uncertainty_vector_mul": {
+			"class_path": "convlab.policy.vector.vector_uncertainty.VectorUncertainty",
+			"ini_params": {
+				"use_masking": false,
+				"manually_add_entity_names": true,
+				"seed": 0,
+				"use_confidence_scores": true,
+				"use_state_knowledge_uncertainty": true
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"setsumbt-mul": {
+			"class_path": "convlab.dst.setsumbt.SetSUMBTTracker",
+			"ini_params": {
+				"model_path": "/gpfs/project/niekerk/models/setsumbt_models/SetSUMBT+ActPrediction-multiwoz21-roberta-gru-cosine-distribution_distillation-Seed0-30-08-22-15-00",
+				"return_confidence_scores": true,
+				"return_belief_state_mutual_info": true
+			}
+		}
+	},
+	"sys_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": false
+			}
+		}
+	},
+	"nlu_usr": {},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": true,
+				"label_noise": 0.05,
+				"text_noise": 0.0
+			}
+		}
+	}
+}
