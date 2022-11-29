@@ -46,6 +46,7 @@ To use ConvLab-3 as an off-the-shelf tool, you can install via:
 ```bash
 pip install convlab
 ```
+Note that the `data` directory will not be included due to the package size limitation.
 
 ### Using Docker
 
@@ -99,7 +100,7 @@ We list newly integrated models in ConvLab-3 that support unified data format an
 | Task                           | Models                                                       | Input           | Output           |
 | ------------------------------ | ------------------------------------------------------------ | --------------- | ---------------- |
 | Response Generation            | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Context         | Response         |
-| Goal-to-Dialog                 | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Goal            | Dialog           |
+| Goal-to-Dialogue                 | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Goal            | Dialog           |
 | Natural Language Understanding | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [BERTNLU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/jointBERT), [MILU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/milu) | Context         | DA-U             |
 | Dialog State Tracking          | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), SUMBT, SetSUMBT, TripPy | Context         | State            |
 | RL Policy                      | DDPT, PPO, PG                                                | State, DA-U, DB | DA-S             |
