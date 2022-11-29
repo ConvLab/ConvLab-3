@@ -65,15 +65,10 @@ docker exec -it CONTAINER_ID bash
 
 ## Tutorials
 
-| Section                                                      | Description |
-| ------------------------------------------------------------ | ----------- |
-| [Getting Started](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Getting_Started.ipynb) (Have a try on [Colab](https://colab.research.google.com/github/thu-coai/ConvLab-2/blob/master/tutorials/Getting_Started.ipynb)!) |             |
-| [Unified Data Format](https://github.com/ConvLab/ConvLab-3/tree/master/data/unified_datasets) |             |
-| [Utility functions for unified datasets](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/util/unified_datasets_util.py) |             |
-| [RL Toolkit](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy) |             |
-| [How to add a new dataset](https://github.com/thu-coai/ConvLab-2/blob/master/tutorials/Add_New_Model.md) |             |
-| How to add a new model                                       |             |
-| [Interactive Tool](https://github.com/ConvLab/ConvLab-3/blob/master/deploy) [[demo video]](https://youtu.be/00VWzbcx26E) |             |
+- [Introduction to Unified Data Format](https://github.com/ConvLab/ConvLab-3/tree/master/data/unified_datasets)
+- [Utility functions for unified datasets](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/util/unified_datasets_util.py)
+- [RL Toolkit](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy)
+- [Interactive Tool](https://github.com/ConvLab/ConvLab-3/blob/master/deploy) [[demo video]](https://youtu.be/00VWzbcx26E)
 
 ## Unified Datasets
 
@@ -112,10 +107,6 @@ We list newly integrated models in ConvLab-3 that support unified data format an
 
 Trained models are available on [Hugging Face Hub](https://huggingface.co/ConvLab).
 
-## Code structure
-
-
-
 ## Contributing
 
 We welcome contributions from community. Please see issues to find what we need.
@@ -130,15 +121,6 @@ We welcome contributions from community. Please see issues to find what we need.
 We would like to thank all contributors of ConvLab:
 
 Yan Fang, Zhuoer Feng, Jianfeng Gao, Qihan Guo, Kaili Huang, Minlie Huang, Sungjin Lee, Bing Li, Jinchao Li, Xiang Li, Xiujun Li, Jiexi Liu, Lingxiao Luo, Wenchang Ma, Mehrad Moradshahi, Baolin Peng, Runze Liang, Ryuichi Takanobu, Dazhen Wan, Hongru Wang, Jiaxin Wen, Yaoqin Zhang, Zheng Zhang, Qi Zhu, Xiaoyan Zhu, Carel van Niekerk, Christian Geishauser, Hsien-chin Lin, Nurul Lubis, Xiaochen Zhu, Michael Heck, Shutong Feng, Milica Gašić.
-
-
-## Citing
-
-If you use ConvLab-3 in your research, please cite:
-
-```
-
-```
 
 ## License
 
