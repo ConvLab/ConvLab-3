@@ -1,6 +1,6 @@
 {
 	"model": {
-		"load_path": "/gpfs/project/niekerk/src/ConvLab3/convlab/policy/mle/experiments/experiment_2022-11-13-12-56-34/save/supervised",
+		"load_path": "",
 		"pretrained_load_path": "",
 		"use_pretrained_initialisation": false,
 		"batchsz": 1000,
