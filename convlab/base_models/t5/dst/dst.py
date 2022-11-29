@@ -8,16 +8,12 @@ from convlab.util.custom_util import model_downloader
 
 
 class T5DST(DST):
-    def __init__(self, speaker, context_window_size, model_name_or_path, model_file=None, device='cuda'):
+    def __init__(self, speaker, context_window_size, model_name_or_path, device='cuda'):
         assert speaker in ['user', 'system']
         assert context_window_size > 0
         self.speaker = speaker
         self.opponent = 'system' if speaker == 'user' else 'user'
         self.context_window_size = context_window_size
-
-        model_dir = os.path.dirname(os.path.abspath(__file__))
-        if not os.path.exists(model_name_or_path):
-            model_downloader(model_dir, model_file)
         
         self.config = AutoConfig.from_pretrained(model_name_or_path)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
