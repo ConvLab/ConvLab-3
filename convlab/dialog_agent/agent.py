@@ -7,6 +7,7 @@ from convlab.policy import Policy
 from convlab.nlg import NLG
 from copy import deepcopy
 import time
+import pdb
 from pprint import pprint
 
 
@@ -63,7 +64,7 @@ class PipelineAgent(Agent):
            =====   =====    ======  ===     ==      ===
     """
 
-    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str, return_semantic_acts=False):
+    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str):
         """The constructor of PipelineAgent class.
 
         Here are some special combination cases:
@@ -94,7 +95,7 @@ class PipelineAgent(Agent):
         self.dst = dst
         self.policy = policy
         self.nlg = nlg
-        self.return_semantic_acts = return_semantic_acts
+
         self.init_session()
         self.agent_saves = []
         self.history = []
@@ -151,6 +152,7 @@ class PipelineAgent(Agent):
 
                 self.input_action = self.nlu.predict(
                     observation, context=[x[1] for x in self.history[:-1]])
+                # print("system semantic action: ", self.input_action)
             else:
                 self.input_action = observation
                 self.input_action_eval = observation
@@ -186,7 +188,7 @@ class PipelineAgent(Agent):
 
                 if type(self.output_action) == list:
                     for intent, domain, slot, value in self.output_action:
-                        if intent == "book":
+                        if intent.lower() == "book":
                             self.dst.state['booked'][domain] = [{slot: value}]
             else:
                 self.dst.state['user_action'] = self.output_action
@@ -196,8 +198,6 @@ class PipelineAgent(Agent):
         self.history.append([self.name, model_response])
 
         self.turn += 1
-        if self.return_semantic_acts:
-            return self.output_action
         self.agent_saves.append(self.save_info())
         return model_response
 
