@@ -56,13 +56,50 @@ class PolicyDataVectorizer:
 
                     state['belief_state'] = data_point['context'][-1]['state']
                     state['user_action'] = flatten_acts(data_point['context'][-1]['dialogue_acts'])
-                else:
+                elif "setsumbt" in str(self.dst):
                     last_system_utt = data_point['context'][-2]['utterance'] if len(data_point['context']) > 1 else ''
                     self.dst.state['history'].append(['sys', last_system_utt])
 
                     usr_utt = data_point['context'][-1]['utterance']
                     state = deepcopy(self.dst.update(usr_utt))
                     self.dst.state['history'].append(['usr', usr_utt])
+                elif "trippy" in str(self.dst):
+                    # Get last system acts and text.
+                    # System acts are used to fill the inform memory.
+                    last_system_acts = []
+                    last_system_utt = ''
+                    if len(data_point['context']) > 1:
+                        last_system_acts = []
+                        for act_type in data_point['context'][-2]['dialogue_acts']:
+                            for act in data_point['context'][-2]['dialogue_acts'][act_type]:
+                                value = ''
+                                if 'value' not in act:
+                                    if act['intent'] == 'request':
+                                        value = '?'
+                                    elif act['intent'] == 'inform':
+                                        value = 'yes'
+                                else:
+                                    value = act['value']
+                                last_system_acts.append([act['intent'], act['domain'], act['slot'], value])
+                        last_system_utt = data_point['context'][-2]['utterance']
+
+                    # Get current user acts and text.
+                    # User acts are used for internal evaluation.
+                    usr_acts = []
+                    for act_type in data_point['context'][-1]['dialogue_acts']:
+                        for act in data_point['context'][-1]['dialogue_acts'][act_type]:
+                            usr_acts.append([act['intent'], act['domain'], act['slot'], act['value'] if 'value' in act else ''])
+                    usr_utt = data_point['context'][-1]['utterance']
+
+                    # Update the state for DST, then update the state via DST.
+                    self.dst.state['system_action'] = last_system_acts
+                    self.dst.state['user_action'] = usr_acts
+                    self.dst.state['history'].append(['sys', last_system_utt])
+                    self.dst.state['history'].append(['usr', usr_utt])
+                    state = deepcopy(self.dst.update(usr_utt))
+                else:
+                    raise NameError(f"Tracker: {self.dst} not implemented.")
+
                 last_system_act = data_point['context'][-2]['dialogue_acts'] if len(data_point['context']) > 1 else {}
                 state['system_action'] = flatten_acts(last_system_act)
                 state['terminated'] = data_point['terminated']

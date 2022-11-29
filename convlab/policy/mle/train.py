@@ -12,6 +12,7 @@ from convlab.util.custom_util import set_seed, init_logging, save_config
 from convlab.util.train_util import to_device
 from convlab.policy.rlmodule import MultiDiscretePolicy
 from convlab.policy.vector.vector_binary import VectorBinary
+from convlab.policy.vector.vector_binary_fuzzy import VectorBinaryFuzzy
 
 root_dir = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -195,8 +196,15 @@ if __name__ == '__main__':
                                        use_state_knowledge_uncertainty=dst.return_belief_state_mutual_info)
         else:
             vector = VectorBinary(dataset_name=args.dataset_name, use_masking=args.use_masking)
+    elif args.dst == "trippy":
+        dst_args = [arg.split('=', 1) for arg in args.dst_args.split(', ')
+                    if '=' in arg] if args.dst_args is not None else []
+        dst_args = {key: eval(value) for key, value in dst_args}
+        from convlab.dst.trippy import TRIPPY
+        dst = TRIPPY(**dst_args)
+        vector = VectorBinaryFuzzy(dataset_name=args.dataset_name, use_masking=args.use_masking)
     else:
-        raise NameError(f"Tracker: {args.tracker} not implemented.")
+        raise NameError(f"Tracker: {args.dst} not implemented.")
     manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector, dst=dst)
     agent = MLE_Trainer(manager, vector, cfg)
 
