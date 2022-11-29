@@ -20,7 +20,7 @@
 
 ## Installation
 
-You can install ConvLab-3 in one of the following ways according to your need. Higher versions of `torch` and `transformers` may also work.
+You can install ConvLab-3 in one of the following ways according to your need. We use `torch>=1.10.1,<=1.13` and `transformers>=4.17.0,<=4.24.0`. Higher versions of `torch` and `transformers` may also work.
 
 ### Git clone and pip install in development mode (Recommend)
 
@@ -65,6 +65,7 @@ docker exec -it CONTAINER_ID bash
 
 ## Tutorials
 
+- [Getting Started](https://github.com/ConvLab/ConvLab-3/blob/master/tutorials/Getting_Started.ipynb) (Have a try on [Colab](https://colab.research.google.com/github/ConvLab/ConvLab-3/blob/master/tutorials/Getting_Started.ipynb)!)
 - [Introduction to Unified Data Format](https://github.com/ConvLab/ConvLab-3/tree/master/data/unified_datasets)
 - [Utility functions for unified datasets](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/util/unified_datasets_util.py)
 - [RL Toolkit](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy)
