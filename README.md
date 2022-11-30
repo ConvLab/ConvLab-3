@@ -65,6 +65,7 @@ docker exec -it CONTAINER_ID bash
 
 ## Tutorials
 
+- [Getting Started](https://github.com/ConvLab/ConvLab-3/blob/master/tutorials/Getting_Started.ipynb) (Have a try on [Colab](https://colab.research.google.com/github/ConvLab/ConvLab-3/blob/master/tutorials/Getting_Started.ipynb)!)
 - [Introduction to Unified Data Format](https://github.com/ConvLab/ConvLab-3/tree/master/data/unified_datasets)
 - [Utility functions for unified datasets](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/util/unified_datasets_util.py)
 - [RL Toolkit](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy)

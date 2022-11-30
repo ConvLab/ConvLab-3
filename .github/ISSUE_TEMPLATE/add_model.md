@@ -1,3 +1,12 @@
+---
+name: Add model
+about: Add a new model in unified format
+title: "[Model] "
+labels: model, new
+assignees: ''
+
+---
+
 - **Name:** *name of the model*
 - **Description:** *short description of the model (or link to social media or blog post)*
 - **Paper:** *link to the model paper if available*
