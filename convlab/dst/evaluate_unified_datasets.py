@@ -7,7 +7,6 @@ def evaluate(predict_result):
 
     metrics = {'TP':0, 'FP':0, 'FN':0}
     acc = []
-
     for sample in predict_result:
         pred_state = sample['predictions']['state']
         gold_state = sample['state']
@@ -37,7 +36,7 @@ def evaluate(predict_result):
                         flag = False
 
         acc.append(flag)
-    
+
     TP = metrics.pop('TP')
     FP = metrics.pop('FP')
     FN = metrics.pop('FN')

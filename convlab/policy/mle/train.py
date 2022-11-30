@@ -12,6 +12,7 @@ from convlab.util.custom_util import set_seed, init_logging, save_config
 from convlab.util.train_util import to_device
 from convlab.policy.rlmodule import MultiDiscretePolicy
 from convlab.policy.vector.vector_binary import VectorBinary
+from convlab.policy.vector.vector_binary_fuzzy import VectorBinaryFuzzy
 
 root_dir = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -137,15 +138,6 @@ class MLE_Trainer(MLE_Trainer_Abstract):
     def __init__(self, manager, vector, cfg):
         self._init_data(manager, cfg)
 
-        try:
-            self.use_entropy = manager.use_entropy
-            self.use_mutual_info = manager.use_mutual_info
-            self.use_confidence_scores = manager.use_confidence_scores
-        except:
-            self.use_entropy = False
-            self.use_mutual_info = False
-            self.use_confidence_scores = False
-
         # override the loss defined in the MLE_Trainer_Abstract to support pos_weight
         pos_weight = cfg['pos_weight'] * torch.ones(vector.da_dim).to(device=DEVICE)
         self.multi_entropy_loss = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
@@ -161,6 +153,10 @@ def arg_parser():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--eval_freq", type=int, default=1)
     parser.add_argument("--dataset_name", type=str, default="multiwoz21")
+    parser.add_argument("--use_masking", action='store_true')
+
+    parser.add_argument("--dst", type=str, default=None)
+    parser.add_argument("--dst_args", type=str, default=None)
 
     args = parser.parse_args()
     return args
@@ -181,8 +177,35 @@ if __name__ == '__main__':
     set_seed(args.seed)
     logging.info(f"Seed used: {args.seed}")
 
-    vector = VectorBinary(dataset_name=args.dataset_name, use_masking=False)
-    manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector)
+    if args.dst is None:
+        vector = VectorBinary(dataset_name=args.dataset_name, use_masking=args.use_masking)
+        dst = None
+    elif args.dst == "setsumbt":
+        dst_args = [arg.split('=', 1) for arg in args.dst_args.split(', ')
+                    if '=' in arg] if args.dst_args is not None else []
+        dst_args = {key: eval(value) for key, value in dst_args}
+        from convlab.dst.setsumbt import SetSUMBTTracker
+        dst = SetSUMBTTracker(**dst_args)
+        if dst.return_confidence_scores:
+            from convlab.policy.vector.vector_uncertainty import VectorUncertainty
+            vector = VectorUncertainty(dataset_name=args.dataset_name, use_masking=args.use_masking,
+                                       manually_add_entity_names=False,
+                                       use_confidence_scores=dst.return_confidence_scores,
+                                       confidence_thresholds=dst.confidence_thresholds,
+                                       use_state_total_uncertainty=dst.return_belief_state_entropy,
+                                       use_state_knowledge_uncertainty=dst.return_belief_state_mutual_info)
+        else:
+            vector = VectorBinary(dataset_name=args.dataset_name, use_masking=args.use_masking)
+    elif args.dst == "trippy":
+        dst_args = [arg.split('=', 1) for arg in args.dst_args.split(', ')
+                    if '=' in arg] if args.dst_args is not None else []
+        dst_args = {key: eval(value) for key, value in dst_args}
+        from convlab.dst.trippy import TRIPPY
+        dst = TRIPPY(**dst_args)
+        vector = VectorBinaryFuzzy(dataset_name=args.dataset_name, use_masking=args.use_masking)
+    else:
+        raise NameError(f"Tracker: {args.dst} not implemented.")
+    manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector, dst=dst)
     agent = MLE_Trainer(manager, vector, cfg)
 
     logging.info('Start training')
