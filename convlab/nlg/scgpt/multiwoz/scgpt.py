@@ -19,7 +19,7 @@ class SCGPT(NLG):
         # If no filename is mentioned then set to default
         if not model_file:
             if is_user:
-                model_file = 'https://convlab.blob.core.windows.net/convlab-2/nlg-gpt-multiwoz.zip'
+                model_file = 'https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/nlg-gpt-multiwoz.zip'
             else:
                 model_file = 'https://zenodo.org/record/5767426/files/neo_scgpt_system.zip'
 
