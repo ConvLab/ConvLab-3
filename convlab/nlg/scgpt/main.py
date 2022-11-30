@@ -45,6 +45,7 @@ parser.add_argument('--scgpt_model_ckpt_path', default=None, type=str, help="The
 parser.add_argument('--save_path', default="saved_models", type=str, help="Model save path.")
 parser.add_argument('--exp_name', default="default_name", type=str, help="Current experiment name.")
 parser.add_argument("--max_seq_len", default=128, type=int)
+parser.add_argument("--save_epoch_interval", default=1, type=int)
 FLAGS = parser.parse_args()
 local_rank = FLAGS.local_rank
 
@@ -80,8 +81,8 @@ def cal_loss(input, target, seq_lens, seq_lens_input):
     input_mask = build_mask(torch.max(seq_lens).item()-1, seq_lens_input-1).to(local_rank)
     output_mask = torch.logical_xor(mask, input_mask)
     pad_mask = torch.logical_not(mask)
-    # masked_loss = loss * output_mask
-    masked_loss = loss * (output_mask + pad_mask)
+    masked_loss = loss * output_mask
+    # masked_loss = loss * (output_mask + pad_mask)
     mean_loss = torch.sum(masked_loss) / torch.sum(output_mask + pad_mask)
     return mean_loss
 
@@ -111,11 +112,11 @@ def pad_collate(ori_batch):
 
 ## Training Hyper-params
 def train(model, nlg_data, global_step=0):
-    train_dataset = SCGPTDataset(nlg_data['train'], tokenizer)
+    train_dataset = SCGPTDataset(filter_empty_nlg_data(nlg_data['train']), tokenizer)
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     train_dataloader = DataLoader(train_dataset, batch_size=FLAGS.batch_size, num_workers=2, sampler=train_sampler, collate_fn=pad_collate)
 
-    val_dataset = SCGPTDataset(nlg_data['validation'], tokenizer)
+    val_dataset = SCGPTDataset(filter_empty_nlg_data(nlg_data['validation']), tokenizer)
     val_sampler = torch.utils.data.distributed.DistributedSampler(val_dataset)
     val_dataloader = DataLoader(val_dataset, batch_size=FLAGS.batch_size, num_workers=2, sampler=val_sampler, collate_fn=pad_collate)
 
@@ -138,6 +139,7 @@ def train(model, nlg_data, global_step=0):
             preds = outputs[0]
             loss = cal_loss(preds[:, :-1, :], inputs[:, 1:], seq_lens, seq_lens_input)
             loss /= FLAGS.accumulation_step
+            loss /= dist.get_world_size() 
             loss.backward()
             # update params
             
@@ -147,35 +149,37 @@ def train(model, nlg_data, global_step=0):
                 scheduler.step()
                 model.zero_grad()
                 # tensorboard
-                tb_writer.add_scalar(f'Train/loss', loss.item(), global_step)
-                tb_writer.add_scalar(f'Train/PPL', torch.exp(loss).item(), global_step)
-                tb_writer.add_scalar(f'Train/Learning Rate', scheduler.get_last_lr()[0], global_step)
+                if dist.get_rank() == 0:
+                    tb_writer.add_scalar(f'Train/loss', loss.item(), global_step)
+                    tb_writer.add_scalar(f'Train/PPL', torch.exp(loss).item(), global_step)
+                    tb_writer.add_scalar(f'Train/Learning Rate', scheduler.get_last_lr()[0], global_step)
                 if global_step % FLAGS.val_step == 0:
                     model.eval()
                     val_loss = eval(model, val_dataloader)
                     ppl = np.exp(val_loss)
-                    tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
-                    tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
+                    if dist.get_rank() == 0:
+                        tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
+                        tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
                     model.train()
             
         # save the model when each epoch ends
         if dist.get_rank() == 0:
-            # vaidation
-            model.eval()
-            val_loss = eval(model, val_dataloader)
-            ppl = np.exp(val_loss)
-            tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
-            tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
-            model.train()
-
-            # save model
-            save_dir = os.path.join(FLAGS.save_path, FLAGS.exp_name, f'epoch_{epoch}')
-            os.makedirs(save_dir, exist_ok=True)
-            torch.save(model.module.state_dict(), os.path.join(save_dir, f'epoch_{epoch}_step{global_step}.pt'))
-            tokenizer.save_pretrained(save_dir)
-            torch.save(optimizer.state_dict(), os.path.join(save_dir, 'optimizer.pt'))
-            torch.save(scheduler.state_dict(), os.path.join(save_dir, 'scheduler.pt'))
-            print(f'Save model checkpoint to [{save_dir}]')
+            if (epoch+1) % FLAGS.save_epoch_interval == 0:
+                # vaidation
+                model.eval()
+                val_loss = eval(model, val_dataloader)
+                ppl = np.exp(val_loss)
+                tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
+                tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
+                model.train()
+                # save model
+                save_dir = os.path.join(FLAGS.save_path, FLAGS.exp_name, f'epoch_{epoch}')
+                os.makedirs(save_dir, exist_ok=True)
+                torch.save(model.module.state_dict(), os.path.join(save_dir, f'epoch_{epoch}_step{global_step}.pt'))
+                tokenizer.save_pretrained(save_dir)
+                torch.save(optimizer.state_dict(), os.path.join(save_dir, 'optimizer.pt'))
+                torch.save(scheduler.state_dict(), os.path.join(save_dir, 'scheduler.pt'))
+                print(f'Save model checkpoint to [{save_dir}]')
     tb_writer.flush()
 
 
@@ -202,7 +206,7 @@ def inference_batch(model, sents):
         sent_ids = [tokenizer.encode(sent) for sent in sents]
         max_len = max([len(sent) for sent in sent_ids])
         # ma_len = min(max_len, FLAGS.max_seq_len)
-        sent_ids = [sent + [0]*(max_len-len(sent)) for sent in sent_ids]
+        sent_ids = [[0]*(max_len-len(sent)) + sent for sent in sent_ids]
         inputs = torch.LongTensor(sent_ids).to(local_rank)
         model_to_run = model.module if type(model) is DDP else model
         outputs = model_to_run.generate(inputs, attention_mask=(inputs != 0).float(), max_length=FLAGS.max_seq_len, eos_token_id=tokenizer.eos_token_id)  # greedy
@@ -250,7 +254,7 @@ def test(model, nlg_data, ontology, model_path):
     model.eval()
     print(f'model loaded from [{model_path}]')
     # Load test nlg data
-    test_data = nlg_data['test']
+    test_data = filter_empty_nlg_data(nlg_data['test'])
     dialog_acts = [act2str(item['dialogue_acts']).strip() for item in test_data]
     golden_responses = [item['utterance'].strip() for item in test_data]
     # dialog_acts = dialog_acts[:10]
@@ -326,6 +330,20 @@ def test(model, nlg_data, ontology, model_path):
     # with open(output_file, 'a') as f:
     #     f.write(f'BLEU: {BLEU_Score}\nERR_Score: {ERR_Score}')
     #     f.close()
+
+def filter_empty_nlg_data(data):
+    ret = []
+    empty_number = 0
+    for item in data:
+        acts = item['dialogue_acts']
+        acts_size = len(acts['binary']) + len(acts['categorical']) + len(acts['non-categorical'])
+        if acts_size == 0:
+            empty_number += 1
+            continue
+        else:
+            ret.append(item)
+    print('empty count: ', empty_number)
+    return ret
 
 
 if __name__ == '__main__':
