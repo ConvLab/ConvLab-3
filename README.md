@@ -8,10 +8,8 @@
 - [Tutorials](#tutorials)
 - [Unified Datasets](#Unified-Datasets)
 - [Models](#models)
-- [Code Structure]($Code-Structure)
 - [Contributing](#contributing)
 - [Team](#Team)
-- [Citing](#citing)
 - [License](#license)
 
 ## Updates
@@ -102,6 +100,7 @@ We list newly integrated models in ConvLab-3 that support unified data format an
 | Natural Language Understanding | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [BERTNLU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/jointBERT), [MILU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/milu) | Context         | DA-U             |
 | Dialog State Tracking          | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/sumbt), [SetSUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/setsumbt), [TripPy](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/trippy) | Context         | State            |
 | RL Policy                      | [DDPT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/vtrace_DPT), [PPO](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/ppo), [PG](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/pg) | State, DA-U, DB | DA-S             |
+| Word-Policy | [LAVA](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/lava) | Context, State, DB | Response |
 | Natural Language Generation    | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SC-GPT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlg/scgpt) | DA-S            | Response         |
 | End-to-End                     | [SOLOIST](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/e2e/soloist/README.md)                                                      | Context, DB     | State, Response  |
 | User simulator                 | [TUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/tus), [GenTUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/genTUS) | Goal, DA-S      | DA-U, (Response) |
