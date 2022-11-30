@@ -1,3 +1,12 @@
+---
+name: Add dataset
+about: Add a new dataset in unified format
+title: "[Dataset] "
+labels: dataset, new
+assignees: ''
+
+---
+
 - **Name:** *name of the dataset*
 - **Description:** *short description of the dataset (or link to social media or blog post)*
 - **Paper:** *link to the dataset paper if available*
