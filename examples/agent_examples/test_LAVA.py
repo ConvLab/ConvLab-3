@@ -72,7 +72,7 @@ def test_end2end(args, model_dir):
     elif args.dst_type=="trippy":
         sys_dst = TRIPPY(model_type='roberta',
                     model_path='/gpfs/project/lubis/convlab-2/pre-trained-models/trippy-checkpoint-10647',
-                    nlu_path='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_all_context.zip')
+                    nlu_path='https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/bert_multiwoz_all_context.zip')
     elif args.dst_type=="setsumbt":
         sys_dst = SetSUMBTTracker(model_type='roberta',
                         model_path='/gpfs/project/lubis/convlab-2/pre-trained-models/end2')
