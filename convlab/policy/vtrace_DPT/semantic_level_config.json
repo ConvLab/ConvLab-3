@@ -1,0 +1,48 @@
+{"goals": {"single_domains": false, "allowed_domains": null},
+
+	"model": {
+		"load_path": "",
+		"use_pretrained_initialisation": false,
+		"pretrained_load_path": "",
+		"seed": 0,
+        "process_num": 4,
+		"eval_frequency": 1000,
+        "num_eval_dialogues": 500,
+        "process_num_train": 1,
+        "total_dialogues": 10000,
+        "update_rounds": 1,
+		"new_dialogues": 2,
+		"sys_semantic_to_usr": false
+	},
+	"vectorizer_sys": {
+		"uncertainty_vector_mul": {
+			"class_path": "convlab.policy.vector.vector_nodes.VectorNodes",
+			"ini_params": {
+				"use_masking": true,
+				"manually_add_entity_names": true,
+				"seed": 0,
+				"dataset_name": "multiwoz21",
+				"filter_state": true
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"RuleDST": {
+			"class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
+			"ini_params": {}
+		}
+	},
+	"sys_nlg": {},
+	"nlu_usr": {},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {}
+}

@@ -1,10 +1,18 @@
 [
   {
-    "dir": "ppo",
-    "legend": "PPO"
+    "dir": "scratch",
+    "legend": "scratch"
+  },
+    {
+    "dir": "sgd",
+    "legend": "SGD"
   },
   {
-    "dir": "pg",
-    "legend": "PG"
+    "dir": "mwoz",
+    "legend": "1%MWOZ"
+  },
+    {
+    "dir": "sgd_mw",
+    "legend": "SGD->1%MWOZ"
   }
 ]

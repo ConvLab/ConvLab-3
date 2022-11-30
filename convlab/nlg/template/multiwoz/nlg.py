@@ -31,33 +31,33 @@ def read_json(filename):
 
 # supported slot
 Slot2word = {
-    'Fee': 'fee',
+    'Fee': 'entrance fee',
     'Addr': 'address',
     'Area': 'area',
-    'Stars': 'stars',
-    'Internet': 'Internet',
+    'Stars': 'number of stars',
+    'Internet': 'internet',
     'Department': 'department',
     'Choice': 'choice',
     'Ref': 'reference number',
     'Food': 'food',
     'Type': 'type',
     'Price': 'price range',
-    'Stay': 'stay',
+    'Stay': 'length of the stay',
     'Phone': 'phone number',
     'Post': 'postcode',
     'Day': 'day',
     'Name': 'name',
     'Car': 'car type',
-    'Leave': 'leave',
+    'Leave': 'departure time',
     'Time': 'time',
-    'Arrive': 'arrive',
-    'Ticket': 'ticket',
+    'Arrive': 'arrival time',
+    'Ticket': 'ticket price',
     'Depart': 'departure',
-    'People': 'people',
+    'People': 'number of people',
     'Dest': 'destination',
     'Parking': 'parking',
-    'Open': 'open',
-    'Id': 'Id',
+    'Open': 'opening hours',
+    'Id': 'id',
     # 'TrainID': 'TrainID'
 }
 
@@ -271,6 +271,10 @@ class TemplateNLG(NLG):
             elif 'request' == intent[1]:
                 for slot, value in slot_value_pairs:
                     if dialog_act not in template or slot not in template[dialog_act]:
+                        if dialog_act not in template:
+                            print("WARNING (nlg.py): (User?: %s) dialog_act '%s' not in template!" % (self.is_user, dialog_act))
+                        else:
+                            print("WARNING (nlg.py): (User?: %s) slot '%s' of dialog_act '%s' not in template!" % (self.is_user, slot, dialog_act))
                         sentence = 'What is the {} of {} ? '.format(
                             slot.lower(), dialog_act.split('-')[0].lower())
                         sentences += self._add_random_noise(sentence)
@@ -288,7 +292,7 @@ class TemplateNLG(NLG):
                         value_lower = value.lower()
                     if value in ["do nt care", "do n't care", "dontcare"]:
                         sentence = 'I don\'t care about the {} of the {}'.format(
-                            slot, dialog_act.split('-')[0])
+                            slot2word.get(slot, slot), dialog_act.split('-')[0])
                     elif self.is_user and dialog_act.split('-')[1] == 'inform' and slot == 'choice' and value_lower == 'any':
                         # user have no preference, any choice is ok
                         sentence = random.choice([

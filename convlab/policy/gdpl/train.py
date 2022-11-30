@@ -186,7 +186,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("--path", type=str, default='convlab/policy/gdpl/semantic_level_config.json',
                         help="Load path for config file")
-    parser.add_argument("--seed", type=int, default=0,
+    parser.add_argument("--seed", type=int, default=None,
                         help="Seed for the policy parameter initialization")
     parser.add_argument("--pretrain", action='store_true', help="whether to pretrain the reward estimator")
     parser.add_argument("--mode", type=str, default='info',
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
-    args = [('model', 'seed', seed)]
+    args = [('model', 'seed', seed)] if seed is not None else list()
 
     environment_config = load_config_file(path)
     save_config(vars(parser.parse_args()), environment_config, config_save_path)
@@ -265,7 +265,7 @@ if __name__ == '__main__':
 
         if idx % conf['model']['eval_frequency'] == 0 and idx != 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-            logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
+            logging.info(f"Evaluating after Dialogues: {idx * conf['model']['batchsz']} - {time_now}" + '-' * 60)
 
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 

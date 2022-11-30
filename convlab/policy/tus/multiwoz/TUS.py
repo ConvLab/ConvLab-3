@@ -18,7 +18,8 @@ from convlab.util.custom_util import model_downloader
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util import relative_import_module_from_unified_datasets
 
-reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
+reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
