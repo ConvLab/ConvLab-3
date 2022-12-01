@@ -2,7 +2,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/convlab) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/convlab) ![GitHub](https://img.shields.io/github/license/ConvLab/ConvLab-3)
 
-**ConvLab-3** is a flexible dialog system platform based on a **unified data format** for task-oriented dialog (TOD) datasets. The unified format serves as the adapter between TOD datasets and models: datasets are first transformed to the unified format and then loaded by models. In this way, the cost of adapting $M$ models to $N$ datasets is reduced from $M\times N$ to $M+N$. While retaining all features of [ConvLab-2](https://github.com/thu-coai/ConvLab-2),  ConvLab-3 greatly enlarges supported datasets and models thanks to the unified format, and enhances the utility of reinforcement learning (RL) toolkit for dialog policy module. For typical usage, see our [paper](). Datasets and Trained models are also available on [Hugging Face Hub](https://huggingface.co/ConvLab).
+**ConvLab-3** is a flexible dialog system platform based on a **unified data format** for task-oriented dialog (TOD) datasets. The unified format serves as the adapter between TOD datasets and models: datasets are first transformed to the unified format and then loaded by models. In this way, the cost of adapting $M$ models to $N$ datasets is reduced from $M\times N$ to $M+N$. While retaining all features of [ConvLab-2](https://github.com/thu-coai/ConvLab-2),  ConvLab-3 greatly enlarges supported datasets and models thanks to the unified format, and enhances the utility of reinforcement learning (RL) toolkit for dialog policy module. For typical usage, see our [paper](http://arxiv.org/abs/2211.17148). Datasets and Trained models are also available on [Hugging Face Hub](https://huggingface.co/ConvLab).
 
 - [Installation](#installation)
 - [Tutorials](#tutorials)
@@ -10,6 +10,7 @@
 - [Models](#models)
 - [Contributing](#contributing)
 - [Team](#Team)
+- [Citing](#citing)
 - [License](#license)
 
 ## Updates
@@ -111,7 +112,7 @@ Trained models are available on [Hugging Face Hub](https://huggingface.co/ConvLa
 
 We welcome contributions from community. Please see issues to find what we need.
 
-- If you want to add a new dataset, model, or other feature, please describe the dataset/model/feature in an issue before creating pull-request.
+- If you want to add a new dataset, model, or other feature, please describe the dataset/model/feature in an issue with corresponding issue template before creating pull-request.
 - Small change like fixing a bug can be directly made by a pull-request.
 
 ## Team
@@ -121,6 +122,20 @@ We welcome contributions from community. Please see issues to find what we need.
 We would like to thank all contributors of ConvLab:
 
 Yan Fang, Zhuoer Feng, Jianfeng Gao, Qihan Guo, Kaili Huang, Minlie Huang, Sungjin Lee, Bing Li, Jinchao Li, Xiang Li, Xiujun Li, Jiexi Liu, Lingxiao Luo, Wenchang Ma, Mehrad Moradshahi, Baolin Peng, Runze Liang, Ryuichi Takanobu, Dazhen Wan, Hongru Wang, Jiaxin Wen, Yaoqin Zhang, Zheng Zhang, Qi Zhu, Xiaoyan Zhu, Carel van Niekerk, Christian Geishauser, Hsien-chin Lin, Nurul Lubis, Xiaochen Zhu, Michael Heck, Shutong Feng, Milica Gašić.
+
+## Citing
+
+If you use ConvLab-3 in your research, please cite:
+
+```
+@article{zhu2022convlab3,
+    title={ConvLab-3: A Flexible Dialogue System Toolkit Based on a Unified Data Format},
+    author={Qi Zhu and Christian Geishauser and Hsien-chin Lin and Carel van Niekerk and Baolin Peng and Zheng Zhang and Michael Heck and Nurul Lubis and Dazhen Wan and Xiaochen Zhu and Jianfeng Gao and Milica Gašić and Minlie Huang},
+    journal={arXiv preprint arXiv:2211.17148},
+    year={2022},
+    url={http://arxiv.org/abs/2211.17148}
+}
+```
 
 ## License
 
