@@ -27,10 +27,10 @@ model_path # Path to a model checkpoint
 dataset_name # Default: "multiwoz21", Name of the dataset the model was trained on and/or is being applied to
 local_files_only # Default: False, Set to True to load local files only. Useful for offline systems 
 nlu_usr_config # Path to a NLU config file. Only needed for internal evaluation
-nlu_sys_config # Path to a NLU config file. Only needed for internal evaluation
+nlu_sys_config # Path to a NLU config file. Only needed when using word-level policies
 nlu_usr_path # Path to a NLU model file. Only needed for internal evaluation
-nlu_sys_path # Path to a NLU model file. Only needed for internal evaluation
-no_eval # Default: True, Set to True if internal evaluation should be conducted
+nlu_sys_path # Path to a NLU model file. Only needed when using word-level policies
+no_eval # Default: True, Set to False if internal evaluation should be conducted
 no_history # Default: False, Set to True if dialogue history should be omitted during inference
 ```
 
@@ -45,7 +45,7 @@ Switch to the directory:
 cd ../../policy/ppo
 ```
 
-Edit trippy_config.json and trippy_config_eval.json accordingly, e.g., edit paths to model checkpoints.
+Edit trippy_config.json accordingly, e.g., edit paths to model checkpoints.
 
 For training, run
 ```
