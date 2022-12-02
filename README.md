@@ -6,10 +6,11 @@
 
 - [Installation](#installation)
 - [Tutorials](#tutorials)
-- [Unified Datasets](#Unified-Datasets)
+- [Unified Datasets](#unified-datasets)
 - [Models](#models)
 - [Contributing](#contributing)
-- [Team](#Team)
+- [Code Structure](#code-structure)
+- [Team](#team)
 - [Citing](#citing)
 - [License](#license)
 
@@ -114,6 +115,82 @@ We welcome contributions from community. Please see issues to find what we need.
 
 - If you want to add a new dataset, model, or other feature, please describe the dataset/model/feature in an issue with corresponding issue template before creating pull-request.
 - Small change like fixing a bug can be directly made by a pull-request.
+
+## Code Structure
+
+```bash
+.
+├── convlab                             # Source code, installed in pypi package
+│   ├── dialog_agent                    # Interface for dialog agent and session
+│   ├── base_models
+│   │   └── t5                          # T5 models with a unified training script
+│   │       ├── goal2dialogue           # T5-Goal2Dialogue
+│   │       ├── dst                     # T5-DST
+│   │       ├── nlu                     # T5-NLU
+│   │       ├── nlg                     # T5-NLG
+│   │       └── rg                      # T5-RG
+│   │
+│   ├── nlu                             # NLU models, interface, and evaluation script
+│   │   ├── jointBERT                   # BERTNLU
+│   │   ├── milu                        # MILU
+│   │   └── svm                         # SVMNLU*
+│   │
+│   ├── laug                            # Language understanding AUGmentation (LAUG) toolkit
+│   │
+│   ├── dst                             # DST models, interface, and evaluation script
+│   │   ├── rule                        # RuleDST
+│   │   ├── setsumbt                    # SetSUMBT, has uncertainty estimates
+│   │   ├── sumbt                       # SUMBT
+│   │   ├── trippy                      # TripPy
+│   │   ├── trade                       # TRADE*
+│   │   ├── comer                       # COMER*
+│   │   ├── mdbt                        # MDBT*
+│   │   └── dstc9                       # scripts for DSTC9 cross-lingual DST evaluation
+│   │
+│   ├── policy                          # Policy models, interface, and RL toolkit
+│   │   ├── vector                      # vectorizer class
+│   │   ├── plot_results                # RL plotting tool
+│   │   ├── mle                         # MLE (imitation learning) policy
+│   │   ├── pg                          # Policy Gradient
+│   │   ├── ppo                         # Proximal Policy Optimization
+│   │   ├── vtrace_DPT                  # DDPT
+│   │   ├── lava                        # LAVA
+│   │   ├── rule                        # Rule policies and rule-based user simulators 
+│   │   ├── tus                         # TUS
+│   │   ├── genTUS                      # GenTUS
+│   │   ├── dqn                         # DQN*
+│   │   ├── gdpl                        # GDPL*
+│   │   ├── vhus                        # VHUS*
+│   │   ├── hdsa                        # HDSA*
+│   │   ├── larl                        # LARL*
+│   │   └── mdrg                        # MDRG*
+│   │
+│   ├── nlg                             # NLG models, interface, and evaluation script
+│   │   ├── scgpt                       # SC-GPT
+│   │   ├── sclstm                      # SC-LSTM
+│   │   └── template                    # TemplateNLG*
+│   │
+│   ├── e2e                             # End2End models
+│   │   ├── soloist                     # SOLOIST
+│   │   ├── damd                        # DAMD*
+│   │   └── sequicity                   # Sequicity*
+│   │
+│   ├── evaluator                       # Evaluator for interactive evaluation
+│   ├── human_eval                      # Human evaluation with AMT
+│   ├── task                            # Goal generators for MultiWOZ, CrossWOZ, and Camrest
+│   ├── util
+│   │   └── unified_datasets_util.py    # Utility function for unified data format
+│   └── deploy                          # Deploy system for human conversion
+│
+├── data                                # Data dir, not included in pypi package
+│   ├── ...                             # ConvLab-2 data, not available for pypi installation
+│   └── unified_datasets                # Unified datasets, available for pypi installation
+├── examples
+│   └── agent_examples                  # Examples of building user and system agents
+└── tutorials                           # Tutorials
+```
+
+*: models do not support unified datasets, only support MultiWOZ.
 
 ## Team
 
