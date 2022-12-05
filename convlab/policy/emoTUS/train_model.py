@@ -132,7 +132,7 @@ class TrainerHelper:
         self.tokenizer = tokenizer
         self.max_input_length = max_input_length
         self.max_target_length = max_target_length
-        self.base_name = "convlab/policy/genTUS"
+        self.base_name = "convlab/policy/emoTUS"
         self.dir_name = ""
 
     def _get_data_folder(self, model_type, data_name, dial_ids_order=0, split2ratio=1):
