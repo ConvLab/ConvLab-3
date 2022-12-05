@@ -276,12 +276,13 @@ def main():
         if args.do_semantic:
             eval.evaluation(args.input_file)
         if args.do_nlg:
-            nlg_result = eval.nlg_evaluation(input_file=args.input_file,
-                                             generated_file=args.generated_file,
-                                             golden=args.do_golden_nlg)
             if args.generated_file:
                 generated_file = args.generated_file
             else:
+                nlg_result = eval.nlg_evaluation(input_file=args.input_file,
+                                                 generated_file=args.generated_file,
+                                                 golden=args.do_golden_nlg)
+
                 generated_file = nlg_result
             eval.evaluation(args.input_file,
                             generated_file)
