@@ -219,9 +219,9 @@ class Evaluator:
             result[metric] = sum(scores[metric])/len(scores[metric])
             print(f"{metric}: {result[metric]}")
         emo_score = emotion_score(golden_emotions, gen_emotions)
-        for metric in emo_score:
-            result[metric] = emo_score[metric]
-            print(f"{metric}: {result[metric]}")
+        # for metric in emo_score:
+        #     result[metric] = emo_score[metric]
+        #     print(f"{metric}: {result[metric]}")
 
         result["dialog"] = dialog_result
 
