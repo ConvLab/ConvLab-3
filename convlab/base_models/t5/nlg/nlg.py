@@ -1,10 +1,8 @@
 import logging
-import os
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoConfig
 from convlab.nlg.nlg import NLG
 from convlab.base_models.t5.nlu.serialization import serialize_dialogue_acts
-from convlab.util.custom_util import model_downloader
 
 
 class T5NLG(NLG):
@@ -33,7 +31,18 @@ class T5NLG(NLG):
         else:
             utts = ['']
         input_seq = '\n'.join([f"{self.opponent if (i % 2) == (len(utts) % 2) else self.speaker}: {utt}" for i, utt in enumerate(utts)])
-        dialogue_acts_seq = serialize_dialogue_acts(dialogue_acts)
+        if isinstance(dialogue_acts, dict):
+            # da in unified format
+            dialogue_acts_seq = serialize_dialogue_acts(dialogue_acts)
+        elif isinstance(dialogue_acts[0], dict):
+            # da without da type
+            dialogue_acts_seq = serialize_dialogue_acts({'categorical': dialogue_acts})
+        elif isinstance(dialogue_acts[0], list):
+            # da is a list of list (convlab-2 format)
+            dialogue_acts_seq = serialize_dialogue_acts(
+                    {'categorical': [{'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]} for da in dialogue_acts]})
+        else:
+            raise ValueError(f"invalid dialog acts format {dialogue_acts}")
         input_seq = dialogue_acts_seq + '\n' + input_seq
         # print(input_seq)
         input_seq = self.tokenizer(input_seq, return_tensors="pt").to(self.device)
@@ -47,7 +56,7 @@ class T5NLG(NLG):
 
 if __name__ == '__main__':
     das = [
-        {
+        { # da in unified format
         "categorical": [],
         "non-categorical": [],
         "binary": [
@@ -63,9 +72,7 @@ if __name__ == '__main__':
             }
         ]
         },
-        {
-        "categorical": [],
-        "non-categorical": [
+        [ # da without da type
             {
             "intent": "inform",
             "domain": "taxi",
@@ -83,25 +90,9 @@ if __name__ == '__main__':
             "end": 78
             }
         ],
-        "binary": [
-            {
-            "intent": "book",
-            "domain": "taxi",
-            "slot": ""
-            }
-        ]
-        },
-        {
-        "categorical": [],
-        "non-categorical": [],
-        "binary": [
-            {
-            "intent": "reqmore",
-            "domain": "general",
-            "slot": ""
-            }
-        ]
-        },
+        [ # da is a list of list (convlab-2 format)
+            ["reqmore", "general", "", ""]
+        ],
         {
         "categorical": [],
         "non-categorical": [],
@@ -132,7 +123,7 @@ if __name__ == '__main__':
         "You are welcome.  Is there anything else I can help you with today?"
         "No, I am all set.  Have a nice day.  Bye."],
     ]
-    nlg = T5NLG(speaker='system', context_window_size=0, model_name_or_path='output/nlg/multiwoz21/system/context_3')
+    nlg = T5NLG(speaker='system', context_window_size=0, model_name_or_path='ConvLab/t5-small-nlg-multiwoz21')
     for da, context in zip(das, contexts):
         print(da)
         print(nlg.generate(da, context))
