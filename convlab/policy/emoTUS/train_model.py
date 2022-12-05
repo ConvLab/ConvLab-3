@@ -132,11 +132,10 @@ class TrainerHelper:
         self.tokenizer = tokenizer
         self.max_input_length = max_input_length
         self.max_target_length = max_target_length
-        self.base_name = "convlab/policy/genTUS"
+        self.base_name = "convlab/policy/emoTUS"
         self.dir_name = ""
 
     def _get_data_folder(self, model_type, data_name, dial_ids_order=0, split2ratio=1):
-        # base_name = "convlab/policy/genTUS/unify/data"
         if model_type not in ["unify", "multiwoz"]:
             print("Unknown model type. Currently only support unify and multiwoz")
         self.dir_name = f"{data_name}_{dial_ids_order}_{split2ratio}"
