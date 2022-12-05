@@ -277,6 +277,7 @@ class UserActionPolicy(Policy):
         return action
 
     def predict(self, sys_act, mode="max", allow_general_intent=True):
+        # TODO emotion
         # raw_sys_act = sys_act
         # sys_act = sys_act[:5]
         # update goal
