@@ -235,7 +235,7 @@ def emotion_score(golden_emotions, gen_emotions):
     macro_f1 = metrics.f1_score(golden_emotions, gen_emotions, average="macro")
     sep_f1 = metrics.f1_score(
         golden_emotions, gen_emotions, average=None, labels=labels)
-    cm = metrics.confusion_matrix(golden_emotions, gen_emotions, labels)
+    cm = metrics.confusion_matrix(golden_emotions, gen_emotions, labels=labels)
     disp = metrics.ConfusionMatrixDisplay(
         confusion_matrix=cm, display_labels=labels)
     disp.plot()
