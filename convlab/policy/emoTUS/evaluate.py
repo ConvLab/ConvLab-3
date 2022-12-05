@@ -241,7 +241,8 @@ def emotion_score(golden_emotions, gen_emotions):
         confusion_matrix=cm, display_labels=labels)
     disp.plot()
     plt.savefig("emotion.png")
-    r = {"macro_f1": macro_f1, "sep_f1": list(sep_f1), "cm": list(cm)}
+    r = {"macro_f1": macro_f1, "sep_f1": list(
+        sep_f1), "cm": [list(c) for c in list(cm)]}
     print(r)
     return r
 
