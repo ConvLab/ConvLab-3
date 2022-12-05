@@ -1,6 +1,6 @@
 {
   "model_type": "SetSUMBT",
-  "dataset": "tm1+tm2+tm3",
+  "dataset": "multiwoz21+sgd+tm1+tm2+tm3",
   "no_action_prediction": true,
   "model_name_or_path": "roberta-base",
   "transformers_local_files_only": false,
