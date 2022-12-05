@@ -1,10 +1,8 @@
 import logging
-import os
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoConfig
 from convlab.nlu.nlu import NLU
 from convlab.base_models.t5.nlu.serialization import deserialize_dialogue_acts
-from convlab.util.custom_util import model_downloader
 
 
 class T5NLU(NLU):

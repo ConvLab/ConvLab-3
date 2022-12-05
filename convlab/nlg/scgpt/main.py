@@ -4,11 +4,13 @@ sys.path.append('../../..')
 import argparse
 import json
 from tqdm import tqdm
+import time
 import torch
+from functools import reduce
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import GPT2Tokenizer, GPT2LMHeadModel
+from transformers import GPT2Tokenizer, GPT2LMHeadModel, GPT2Config
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 import os
@@ -29,11 +31,21 @@ code_test = False
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--local_rank", default=-1, type=int)
+parser.add_argument("--lr", default=1e-5, type=float, help="learning rate")
+parser.add_argument("--batch_size", default=32, type=int)
+parser.add_argument("--train_ratio", default=1.0, type=float)
+parser.add_argument("--accumulation_step", default=4, type=int)
+parser.add_argument("--epoch_num", default=20, type=int)
+parser.add_argument("--val_step", default=100, type=int)
 parser.add_argument('--do_train', action="store_true", help="Whether to run training.")
 parser.add_argument('--dataset', default="multiwoz21", type=str, help="The name of the dataset to be used.")
 parser.add_argument('--model_path', default="", type=str, help="The path of model for testing.")
-parser.add_argument('--scgpt_model_ckpt_path', default="", type=str, help="The path of model for testing.")
+parser.add_argument('--base_model_name_path', default="gpt2", type=str, help="The path of base model.")
+parser.add_argument('--scgpt_model_ckpt_path', default=None, type=str, help="The path of model for testing.")
+parser.add_argument('--save_path', default="saved_models", type=str, help="Model save path.")
+parser.add_argument('--exp_name', default="default_name", type=str, help="Current experiment name.")
 parser.add_argument("--max_seq_len", default=128, type=int)
+parser.add_argument("--save_epoch_interval", default=1, type=int)
 FLAGS = parser.parse_args()
 local_rank = FLAGS.local_rank
 
@@ -41,25 +53,20 @@ torch.cuda.set_device(local_rank)
 dist.init_process_group(backend='nccl')
 
 # TensorBoard
-tb_dir = './runs'
+tb_dir = 'runs/' + FLAGS.exp_name
 if not os.path.exists(tb_dir):
     os.mkdir(tb_dir)
-tb_writer = SummaryWriter(tb_dir)
+tb_writer = SummaryWriter(tb_dir, flush_secs=5)
 
-special_tokens = [START_OF_PRED, END_OF_PRED, SYS_SPEAK, USR_SPEAK]
 ## load model
-if FLAGS.scgpt_model_ckpt_path == '':
-    tokenizer = GPT2Tokenizer.from_pretrained('./gpt2')
-    tokenizer.add_special_tokens({'pad_token': PAD_TOKEN, 'eos_token': END_OF_PRED, 'additional_special_tokens': special_tokens})
-    model = GPT2LMHeadModel.from_pretrained('./gpt2').to(local_rank)
-    model.resize_token_embeddings(len(tokenizer))
+if FLAGS.scgpt_model_ckpt_path is None:
+    tokenizer = GPT2Tokenizer.from_pretrained(FLAGS.base_model_name_path)
+    model = GPT2LMHeadModel.from_pretrained(FLAGS.base_model_name_path).to(local_rank)
 else:
-    tokenizer = GPT2Tokenizer.from_pretrained(FLAGS.scgpt_model_ckpt_path)
-    tokenizer.add_special_tokens(
-        {'pad_token': PAD_TOKEN, 'eos_token': END_OF_PRED, 'additional_special_tokens': special_tokens})
-    model = GPT2LMHeadModel.from_pretrained(FLAGS.scgpt_model_ckpt_path).to(local_rank)
+    tokenizer = GPT2Tokenizer.from_pretrained(FLAGS.base_model_name_path)
+    model = GPT2LMHeadModel(config=GPT2Config.from_pretrained(FLAGS.base_model_name_path)).to(local_rank)
+    model.load_state_dict(torch.load(FLAGS.scgpt_model_ckpt_path))
     print('model load from ' + FLAGS.scgpt_model_ckpt_path)
-    model.resize_token_embeddings(len(tokenizer))
 
 nll_loss = nn.NLLLoss(reduce=False).to(local_rank)
 ce_loss = nn.CrossEntropyLoss(reduce=False).to(local_rank)
@@ -74,108 +81,105 @@ def cal_loss(input, target, seq_lens, seq_lens_input):
     input_mask = build_mask(torch.max(seq_lens).item()-1, seq_lens_input-1).to(local_rank)
     output_mask = torch.logical_xor(mask, input_mask)
     pad_mask = torch.logical_not(mask)
-    # masked_loss = loss * output_mask
-    masked_loss = loss * (output_mask + pad_mask)
+    masked_loss = loss * output_mask
+    # masked_loss = loss * (output_mask + pad_mask)
     mean_loss = torch.sum(masked_loss) / torch.sum(output_mask + pad_mask)
     return mean_loss
 
 
-def pad_collate(batch):
+def pad_collate(ori_batch):
     """
     Returns:
     batch: batch * max_len
     seq_lens: the length of len(da)+1+len(response)
     seq_lens_input: the length of len(da)
     """
-    START_OF_PRED_ID = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
-    pad_token_id = tokenizer.pad_token_id
-    batch = [item[0] + [START_OF_PRED_ID] + item[1] for item in batch]
+    START_OF_PRED_ID = tokenizer._convert_token_to_id_with_added_voc('&')
+    batch = [item[0] + [START_OF_PRED_ID] + item[1] + [tokenizer.eos_token_id] for item in ori_batch]
+    output_lens = [len(item[1])+1 for item in ori_batch]
     batch = [item[-FLAGS.max_seq_len:] for item in batch]
     max_len = max([len(item) for item in batch])
     # print('max_len', max_len)
     seq_lens = [len(item) for item in batch]
-    split_id = tokenizer._convert_token_to_id_with_added_voc(START_OF_PRED)
-    def get_x_len(tokens):
-        """Get the length of dialogue act tokens"""
-        split_idx = len(tokens)
-        try:
-            split_idx = tokens.index(split_id)+1
-        except:
-            pass
-        return split_idx
-    seq_lens_input = [get_x_len(item) for item in batch]
-    batch = [item + [pad_token_id]*(max_len-len(item)) for item in batch]
-    # print(batch)
-    # print(seq_lens)
-    # print(seq_lens_input)
+    seq_lens_input = []
+    for idx in range(len(batch)):
+        curr_ipt_len = seq_lens[idx] - output_lens[idx]
+        if curr_ipt_len < 0:
+            curr_ipt_len = 0
+        seq_lens_input.append(curr_ipt_len)
+    batch = [item + [0]*(max_len-len(item)) for item in batch]
     return torch.LongTensor(batch), torch.LongTensor(seq_lens), torch.LongTensor(seq_lens_input)
 
 ## Training Hyper-params
-EPOCH_NUM = 20
-BATCH_SIZE = 32   # real_batch_size = BATCH_SIZE * num_gpu
-VAL_STEP = 500
-WARM_STEPS = 250
-if code_test:
-    EPOCH_NUM = 2
-    BATCH_SIZE = 4
-    VAL_STEP = 2
-    WARM_STEPS = 3
-LR = 5e-5
-SAVE_PATH = f'./saved_model'
 def train(model, nlg_data, global_step=0):
-    train_dataset = SCGPTDataset(nlg_data['train'], tokenizer)
+    train_dataset = SCGPTDataset(filter_empty_nlg_data(nlg_data['train']), tokenizer)
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-    train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, num_workers=2, sampler=train_sampler, collate_fn=pad_collate)
+    train_dataloader = DataLoader(train_dataset, batch_size=FLAGS.batch_size, num_workers=2, sampler=train_sampler, collate_fn=pad_collate)
 
-    val_dataset = SCGPTDataset(nlg_data['validation'], tokenizer)
+    val_dataset = SCGPTDataset(filter_empty_nlg_data(nlg_data['validation']), tokenizer)
     val_sampler = torch.utils.data.distributed.DistributedSampler(val_dataset)
-    val_dataloader = DataLoader(val_dataset, batch_size=BATCH_SIZE, num_workers=2, sampler=val_sampler, collate_fn=pad_collate)
+    val_dataloader = DataLoader(val_dataset, batch_size=FLAGS.batch_size, num_workers=2, sampler=val_sampler, collate_fn=pad_collate)
 
     model = DDP(model, device_ids=[local_rank], output_device=local_rank)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=LR)
-    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=WARM_STEPS,
-                                                num_training_steps=len(train_dataloader) * EPOCH_NUM)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=FLAGS.lr)
+    t_total = len(train_dataloader) * FLAGS.epoch_num // FLAGS.accumulation_step
+    warm_steps = int(0.1 * t_total)
+    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=warm_steps,
+                                                num_training_steps=t_total)
     model.train()
-    for epoch in range(EPOCH_NUM):
+    for epoch in range(FLAGS.epoch_num):
         train_dataloader.sampler.set_epoch(epoch)
-        for batch_id, (inputs, seq_lens, seq_lens_input) in enumerate(tqdm(train_dataloader, desc=f'EPOCH:[{epoch+1}/{EPOCH_NUM}]')):
+        for batch_id, (inputs, seq_lens, seq_lens_input) in enumerate(tqdm(train_dataloader, desc=f'EPOCH:[{epoch+1}/{FLAGS.epoch_num}]')):
+            if (batch_id+1) % FLAGS.accumulation_step == 0:
+                global_step += 1
             inputs = inputs.to(local_rank)
             seq_lens = seq_lens.to(local_rank)
             seq_lens_input = seq_lens_input.to(local_rank)
-
-            outputs = model(inputs)
+            outputs = model(inputs, attention_mask=(inputs!=0).float())
             preds = outputs[0]
             loss = cal_loss(preds[:, :-1, :], inputs[:, 1:], seq_lens, seq_lens_input)
-
-            optimizer.zero_grad()
+            loss /= FLAGS.accumulation_step
+            loss /= dist.get_world_size() 
             loss.backward()
-            optimizer.step()
-            scheduler.step()
-            tb_writer.add_scalar(f'Train/loss', loss.item(), global_step)
-            tb_writer.add_scalar(f'Train/PPL', torch.exp(loss).item(), global_step)
-            tb_writer.add_scalar(f'Train/Learning Rate', scheduler.get_last_lr()[0], global_step)
+            # update params
+            
 
-            global_step += 1
+            if (batch_id+1) % FLAGS.accumulation_step == 0:
+                optimizer.step()
+                scheduler.step()
+                model.zero_grad()
+                # tensorboard
+                if dist.get_rank() == 0:
+                    tb_writer.add_scalar(f'Train/loss', loss.item(), global_step)
+                    tb_writer.add_scalar(f'Train/PPL', torch.exp(loss).item(), global_step)
+                    tb_writer.add_scalar(f'Train/Learning Rate', scheduler.get_last_lr()[0], global_step)
+                if global_step % FLAGS.val_step == 0:
+                    model.eval()
+                    val_loss = eval(model, val_dataloader)
+                    ppl = np.exp(val_loss)
+                    if dist.get_rank() == 0:
+                        tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
+                        tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
+                    model.train()
+            
         # save the model when each epoch ends
         if dist.get_rank() == 0:
-
-            # vaidation
-            model.eval()
-            val_loss = eval(model, val_dataloader)
-            ppl = np.exp(val_loss)
-            tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
-            tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
-            model.train()
-
-            # save model
-            save_dir = os.path.join(SAVE_PATH, f'epoch_{epoch}')
-            os.makedirs(save_dir, exist_ok=True)
-            torch.save(model.module.state_dict(), os.path.join(save_dir, f'epoch_{epoch}_step{global_step}.pt'))
-            tokenizer.save_pretrained(save_dir)
-            torch.save(optimizer.state_dict(), os.path.join(save_dir, 'optimizer.pt'))
-            torch.save(scheduler.state_dict(), os.path.join(save_dir, 'scheduler.pt'))
-            print(f'Save model checkpoint to [{save_dir}]')
-
+            if (epoch+1) % FLAGS.save_epoch_interval == 0:
+                # vaidation
+                model.eval()
+                val_loss = eval(model, val_dataloader)
+                ppl = np.exp(val_loss)
+                tb_writer.add_scalar(f'Val/Loss', val_loss, global_step)
+                tb_writer.add_scalar(f'Val/PPL', ppl, global_step)
+                model.train()
+                # save model
+                save_dir = os.path.join(FLAGS.save_path, FLAGS.exp_name, f'epoch_{epoch}')
+                os.makedirs(save_dir, exist_ok=True)
+                torch.save(model.module.state_dict(), os.path.join(save_dir, f'epoch_{epoch}_step{global_step}.pt'))
+                tokenizer.save_pretrained(save_dir)
+                torch.save(optimizer.state_dict(), os.path.join(save_dir, 'optimizer.pt'))
+                torch.save(scheduler.state_dict(), os.path.join(save_dir, 'scheduler.pt'))
+                print(f'Save model checkpoint to [{save_dir}]')
     tb_writer.flush()
 
 
@@ -198,17 +202,19 @@ def eval(model, loader, use_tqdm=False):
 def inference_batch(model, sents):
     """Inference model given a batch of sents."""
     with torch.no_grad():
-        sents = [sent + ' ' + START_OF_PRED for sent in sents]
+        sents = [sent + ' &' for sent in sents]
         sent_ids = [tokenizer.encode(sent) for sent in sents]
         max_len = max([len(sent) for sent in sent_ids])
-        sent_ids = [sent + [tokenizer.pad_token_id]*(max_len-len(sent)) for sent in sent_ids]
+        # ma_len = min(max_len, FLAGS.max_seq_len)
+        sent_ids = [[0]*(max_len-len(sent)) + sent for sent in sent_ids]
         inputs = torch.LongTensor(sent_ids).to(local_rank)
         model_to_run = model.module if type(model) is DDP else model
-        outputs = model_to_run.generate(inputs, max_length=FLAGS.max_seq_len, eos_token_id=tokenizer.pad_token_id,
-                                        pad_token_id=tokenizer.pad_token_id)  # greedy
+        outputs = model_to_run.generate(inputs, attention_mask=(inputs != 0).float(), max_length=FLAGS.max_seq_len, eos_token_id=tokenizer.eos_token_id)  # greedy
         # outputs = model_to_run.generate(inputs, num_beams=4, max_length=513, eos_token_id=gpt2_tokenizer.eos_token_id,
         #                                 pad_token_id=gpt2_tokenizer.pad_token_id)  # beam search
-        output_strs = [tokenizer.decode(item) for item in outputs]
+        # output_strs = [tokenizer.decode(item) for item in outputs]
+        outputs = outputs[:, len(inputs[0]):]
+        output_strs = tokenizer.batch_decode(outputs)
         return output_strs
 
 
@@ -226,26 +232,42 @@ def inference_sents(model, sents):
     return outputs
 
 
+def inference_sents_by_batch(model, sents):
+    """Get the outputs of multiple sentences."""
+    start_idx = 0
+    ret = []
+    start = time.time()
+    while start_idx < len(sents):
+        end_idx = start_idx + FLAGS.batch_size
+        curr_sents = sents[start_idx:end_idx]
+        outputs = inference_batch(model, curr_sents)
+        ret += outputs
+        start_idx += FLAGS.batch_size
+        time_remain = (time.time()-start) / start_idx * (len(sents) - start_idx)
+        print('{}/{}, time remaining: {:.2f}'.format(start_idx, len(sents), time_remain))
+    return ret
+
+
 def test(model, nlg_data, ontology, model_path):
     """将sheel中的GPU个数设为1运行"""
     model.load_state_dict(torch.load(model_path))
     model.eval()
     print(f'model loaded from [{model_path}]')
     # Load test nlg data
-    test_data = nlg_data['test']
+    test_data = filter_empty_nlg_data(nlg_data['test'])
     dialog_acts = [act2str(item['dialogue_acts']).strip() for item in test_data]
     golden_responses = [item['utterance'].strip() for item in test_data]
     # dialog_acts = dialog_acts[:10]
     # golden_responses = golden_responses[:10]
-    outputs = inference_sents(model, dialog_acts)
+    outputs = inference_sents_by_batch(model, dialog_acts)
     def get_real_output(ipt):
-        if '[start_of_pred]' in ipt:
-            ipt = ipt[ipt.index('[start_of_pred]')+15:].strip()
-        if '[_pad_token_]' in ipt:
-            ipt = ipt[:ipt.index('[_pad_token_]')].strip()
+        if tokenizer.eos_token in ipt:
+            ipt = ipt[:ipt.index(tokenizer.eos_token)].strip()
         return ipt
     outputs = [get_real_output(item) for item in outputs]
-    output_file = './test_output.json'
+    if not os.path.exists('./test_outputs'):
+        os.makedirs('./test_outputs', exist_ok=True)
+    output_file = f'./test_outputs/{FLAGS.exp_name}.json'
     if dist.get_rank() == 0:
         with open(output_file, 'w+') as f:
             result = []
@@ -253,7 +275,9 @@ def test(model, nlg_data, ontology, model_path):
                 result.append({
                     'dialogue_acts': test_data[i]['dialogue_acts'],
                     'utterance': test_data[i]['utterance'],
-                    'prediction': outputs[i]
+                    'predictions': {
+                        'utterance': outputs[i]
+                    }
                 })
             json.dump(result, f, indent=2, ensure_ascii=False)
     evaluator = GentScorer()
@@ -307,12 +331,45 @@ def test(model, nlg_data, ontology, model_path):
     #     f.write(f'BLEU: {BLEU_Score}\nERR_Score: {ERR_Score}')
     #     f.close()
 
+def filter_empty_nlg_data(data):
+    ret = []
+    empty_number = 0
+    for item in data:
+        acts = item['dialogue_acts']
+        acts_size = len(acts['binary']) + len(acts['categorical']) + len(acts['non-categorical'])
+        if acts_size == 0:
+            empty_number += 1
+            continue
+        else:
+            ret.append(item)
+    print('empty count: ', empty_number)
+    return ret
+
 
 if __name__ == '__main__':
-    dataset = load_dataset(FLAGS.dataset)
-    ontology = load_ontology(FLAGS.dataset)
-    nlg_data = load_nlg_data(dataset)
-    if FLAGS.do_train:
-        train(model, nlg_data)
+    if '_' in FLAGS.dataset:
+        spans = FLAGS.dataset.split('_')
+        data_list = spans
+        datasets = [load_dataset(item) for item in data_list] 
+        nlg_datas = [load_nlg_data(item) for item in datasets]
+        ret = {}
+        def aggregrate(nlg_datas, split):
+            ret = []
+            for item in nlg_datas:
+                ret += item[split]
+            return ret
+        ret['train'] = aggregrate(nlg_datas, 'train')
+        ret['validation'] = aggregrate(nlg_datas, 'validation')
+        ret['test'] = aggregrate(nlg_datas, 'test')
+        if FLAGS.do_train:
+            train(model, ret)
+        else:
+            print('not supported')
     else:
-        test(model, nlg_data, ontology, FLAGS.model_path)
+        dataset = load_dataset(FLAGS.dataset, dial_ids_order=0, split2ratio={'train': FLAGS.train_ratio})
+        ontology = load_ontology(FLAGS.dataset)
+        nlg_data = load_nlg_data(dataset)
+        if FLAGS.do_train:
+            train(model, nlg_data)
+        else:
+            test(model, nlg_data, ontology, FLAGS.model_path)

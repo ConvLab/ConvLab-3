@@ -46,6 +46,10 @@ Trained models and their performance are available in [Hugging Face Hub](https:/
 | [t5-small-nlu-sgd](https://huggingface.co/ConvLab/t5-small-nlu-sgd) | NLU           | SGD                          |
 | [t5-small-nlu-tm1_tm2_tm3](https://huggingface.co/ConvLab/t5-small-nlu-tm1_tm2_tm3) | NLU           | TM1+TM2+TM3                  |
 | [t5-small-nlu-multiwoz21_sgd_tm1_tm2_tm3](https://huggingface.co/ConvLab/t5-small-nlu-multiwoz21_sgd_tm1_tm2_tm3) | NLU           | MultiWOZ 2.1+SGD+TM1+TM2+TM3 |
+| [t5-small-nlu-multiwoz21-context3](https://huggingface.co/ConvLab/t5-small-nlu-multiwoz21-context3) | NLU (context=3)          | MultiWOZ 2.1 |
+| [t5-small-nlu-tm1-context3](https://huggingface.co/ConvLab/t5-small-nlu-tm1-context3) | NLU (context=3)          | TM1 |
+| [t5-small-nlu-tm2-context3](https://huggingface.co/ConvLab/t5-small-nlu-tm2-context3) | NLU (context=3)          | TM2 |
+| [t5-small-nlu-tm3-context3](https://huggingface.co/ConvLab/t5-small-nlu-tm3-context3) | NLU (context=3)          | TM3 |
 | [t5-small-dst-multiwoz21](https://huggingface.co/ConvLab/t5-small-dst-multiwoz21) | DST           | MultiWOZ 2.1                 |
 | [t5-small-dst-sgd](https://huggingface.co/ConvLab/t5-small-dst-sgd) | DST           | SGD                          |
 | [t5-small-dst-tm1_tm2_tm3](https://huggingface.co/ConvLab/t5-small-dst-tm1_tm2_tm3) | DST           | TM1+TM2+TM3                  |
