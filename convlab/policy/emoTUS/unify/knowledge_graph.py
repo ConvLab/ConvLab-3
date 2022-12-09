@@ -15,23 +15,28 @@ DATASET = "unify"
 class KnowledgeGraph(GenTUSKnowledgeGraph):
     def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="emowoz"):
         super().__init__(tokenizer, ontology_file, dataset="multiwoz")
-
-        self.emotion = ["Neutral",
-                        "Disappointed",
-                        "Dissatisfied",
-                        "Apologetic",
-                        "Abusive",
-                        "Excited",
-                        "Satisfied"]
+        data_emotion = json.load(open("convlab/policy/emoTUS/emotion.json"))
+        self.emotion = [""]*len(data_emotion)
+        for emotion, index in data_emotion.items():
+            self.emotion[index] = emotion
 
         self.kg_map = {"emotion": tokenMap(tokenizer=self.tokenizer)}
+        self.prior = {"Neutral": 0.719,
+                      "Disappointed": 0.005,
+                      "Dissatisfied": 0.013,
+                      "Apologetic": 0.012,
+                      "Abusive": 0.001,
+                      "Excited": 0.012,
+                      "Satisfied": 0.238}
 
         for emotion in self.emotion:
             self.kg_map["emotion"].add_token(emotion, emotion)
 
     def get_emotion(self, outputs, mode="max", allow_general_intent=True):
         canidate_list = self.emotion
-        score = self._get_max_score(outputs, canidate_list, "intent")
+        score = self._get_max_score(
+            outputs, canidate_list, "emotion", weight=self.prior)
+        print(score)
         s = self._select(score, mode)
 
         return score[s]

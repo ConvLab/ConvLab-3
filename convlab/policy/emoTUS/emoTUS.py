@@ -20,10 +20,14 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.kg = KnowledgeGraph(
             tokenizer=self.tokenizer,
             dataset="emowoz")
+        data_emotion = json.load(open("convlab/policy/emoTUS/emotion.json"))
+        self.emotion_list = [""]*len(data_emotion)
+        for emotion, index in data_emotion.items():
+            self.emotion_list[index] = emotion
 
         self.init_session()
 
-    def predict(self, sys_act, mode="max", allow_general_intent=True):
+    def predict(self, sys_act, mode="max", allow_general_intent=True, emotion=None):
         # TODO emotion
         allow_general_intent = False
         self.model.eval()
@@ -46,8 +50,27 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                              "history": history,
                              "turn": str(int(self.time_step/2))})
         with torch.no_grad():
-            raw_output = self._generate_action(
-                raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
+            if emotion == "all":
+                raw_output = self.generate_from_emotion(
+                    raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
+                for emo in raw_output:
+                    output = self._parse_output(raw_output[emo])
+                    print("emo:", emo)
+                    print("act:", output["action"])
+                    print("utt:", output["text"])
+                raw_output = raw_output["Neutral"]
+            elif emotion is not None:
+                raw_output = self.generate_from_emotion(
+                    raw_inputs=inputs, emotion=emotion, mode=mode, allow_general_intent=allow_general_intent)
+                for emo in raw_output:
+                    output = self._parse_output(raw_output[emo])
+                    print("emo:", emo)
+                    print("act:", output["action"])
+                    print("utt:", output["text"])
+                raw_output = raw_output[emotion]
+            else:
+                raw_output = self._generate_action(
+                    raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
         output = self._parse_output(raw_output)
         self.emotion = output["emotion"]
         print(self.emotion)
@@ -115,6 +138,49 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         text = self._get_text(model_input, pos)
 
         return text
+
+    def generate_from_emotion(self, raw_inputs,  emotion=None, mode="max", allow_general_intent=True):
+        self.kg.parse_input(raw_inputs)
+        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        responses = {}
+        if emotion:
+            print("if emotion")
+            emotion_list = [emotion]
+        else:
+            emotion_list = self.emotion_list
+            print(emotion_list)
+        for emotion in emotion_list:
+            # start token
+            print("emotion", emotion)
+            self.seq = torch.zeros(1, self.max_out_len,
+                                   device=self.device).long()
+            pos = self._update_seq([0], 0)
+            pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+
+            pos = self._update_seq(self.kg._get_token_id(emotion), pos)
+            pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+            pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+
+            # get semantic actions
+            for act_len in range(self.max_action_len):
+                pos = self._get_semantic_action(
+                    model_input, pos, mode, allow_general_intent)
+
+                terminate, token_name = self._stop_semantic(
+                    model_input, pos, act_len)
+                pos = self._update_seq(self.token_map.get_id(token_name), pos)
+
+                if terminate:
+                    break
+
+            if self.only_action:
+                return self.vector.decode(self.seq[0, :pos])
+
+            pos = self._update_seq(self.token_map.get_id("start_text"), pos)
+            text = self._get_text(model_input, pos)
+            responses[emotion] = text
+
+        return responses
 
     def generate_text_from_give_semantic(self, raw_inputs, semantic_action, emotion="Neutral"):
         self.kg.parse_input(raw_inputs)
@@ -244,18 +310,20 @@ if __name__ == "__main__":
 
     set_seed(20220220)
     # Test semantic level behaviour
-    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21-exp'
+    model_checkpoint = 'convlab/policy/emoTUS/unify/experiments/emowoz_0_1/22-12-05-11-23'
     usr_policy = UserPolicy(
         model_checkpoint,
-        mode="semantic")
+        mode="language",
+        only_action=False)
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
     print(usr.policy.get_goal())
 
     print(usr.response([]))
-    print(usr.policy.policy.goal.status)
-    print(usr.response([["request", "attraction", "area", "?"]]))
-    print(usr.policy.policy.goal.status)
-    print(usr.response([["request", "attraction", "area", "?"]]))
-    print(usr.policy.policy.goal.status)
+    # print(usr.policy.policy.goal.status)
+    print(usr.response([["inform", "restaurant", "area", "centre"],
+                        ["request", "restaurant", "food", "?"]]))
+    # print(usr.policy.policy.goal.status)
+    print(usr.response([["request", "restaurant", "price range", "?"]]))
+    # print(usr.policy.policy.goal.status)

@@ -3,6 +3,8 @@ import os
 
 import torch
 from transformers import BartTokenizer
+from random import choices
+
 
 from convlab.policy.genTUS.ppo.vector import stepGenTUSVector
 from convlab.policy.genTUS.stepGenTUSmodel import stepGenTUSmodel
@@ -109,7 +111,7 @@ class UserActionPolicy(Policy):
         # get text output
         pos = self._update_seq(self.token_map.get_id("start_text"), pos)
 
-        text = self._get_text(model_input, pos)
+        text = self._get_text(model_input, pos, mode)
 
         return text
 
@@ -143,13 +145,18 @@ class UserActionPolicy(Policy):
         raw_output = self._get_text(model_input, pos)
         return self._parse_output(raw_output)["text"]
 
-    def _get_text(self, model_input, pos):
+    def _get_text(self, model_input, pos, mode="max"):
         s_pos = pos
+        mode = "sample"
         for i in range(s_pos, self.max_out_len):
             next_token_logits = self.model.get_next_token_logits(
                 model_input, self.seq[:1, :pos])
-            next_token = torch.argmax(next_token_logits, dim=-1)
-
+            if mode == "sample":
+                s = torch.multinomial(torch.softmax(
+                    next_token_logits, dim=-1), 1)
+                next_token = s
+            else:
+                next_token = torch.argmax(next_token_logits, dim=-1)
             if self._stop_text(next_token):
                 # text = self.vector.decode(self.seq[0, s_pos:pos])
                 # text = self._norm_str(text)

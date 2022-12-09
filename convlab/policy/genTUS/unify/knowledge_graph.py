@@ -97,7 +97,7 @@ class KnowledgeGraph:
         if not self.kg_map[map_type].token_name_is_in(token_name):
             self.kg_map[map_type].add_token(token_name, token_name)
 
-    def _get_max_score(self, outputs, candidate_list, map_type):
+    def _get_max_score(self, outputs, candidate_list, map_type, weight=None):
         score = {}
         if not candidate_list:
             print(f"ERROR: empty candidate list for {map_type}")
@@ -107,6 +107,8 @@ class KnowledgeGraph:
         for x in candidate_list:
             hash_id = self._get_token_id(x)[0]
             s = outputs[:, hash_id].item()
+            if weight:
+                s /= weight[x]
             score[s] = {"token_id": self._get_token_id(x),
                         "token_name": x}
         return score

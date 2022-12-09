@@ -32,13 +32,9 @@ def arg_parser():
 class DataBuilder(GenTUSDataBuilder):
     def __init__(self, dataset='emowoz'):
         super().__init__(dataset)
-        self.emotion = {0: "Neutral",
-                        1: "Disappointed",
-                        2: "Dissatisfied",
-                        3: "Apologetic",
-                        4: "Abusive",
-                        5: "Excited",
-                        6: "Satisfied"}
+        self.emotion = {}
+        for emotion, index in json.load(open("convlab/policy/emoTUS/emotion.json")).items():
+            self.emotion[int(index)] = emotion
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
         example = []
