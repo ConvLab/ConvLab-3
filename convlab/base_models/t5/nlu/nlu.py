@@ -1,4 +1,4 @@
-import logging
+gimport logging
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoConfig
 from convlab.nlu.nlu import NLU
@@ -38,8 +38,11 @@ class T5NLU(NLU):
         # print(output_seq)
         output_seq = self.tokenizer.decode(output_seq[0], skip_special_tokens=True)
         # print(output_seq)
-        dialogue_acts = deserialize_dialogue_acts(output_seq.strip())
-        return dialogue_acts
+        das = deserialize_dialogue_acts(output_seq.strip())
+        dialog_act = []
+        for da in das:
+            dialog_act.append([da['intent'], da['domain'], da['slot'], da.get('value','')])
+        return dialog_act
 
 
 if __name__ == '__main__':
@@ -67,7 +70,7 @@ if __name__ == '__main__':
         "I am not sure of the type of food but could you please check again and see if you can find it? Thank you.",
         "Could you double check that you've spelled the name correctly? The closest I can find is Nandos."]
     ]
-    nlu = T5NLU(speaker='user', context_window_size=3, model_name_or_path='output/nlu/multiwoz21/user/context_3')
+    nlu = T5NLU(speaker='user', context_window_size=0, model_name_or_path='ConvLab/t5-small-nlu-multiwoz21')
     for text, context in zip(texts, contexts):
         print(text)
         print(nlu.predict(text, context))
