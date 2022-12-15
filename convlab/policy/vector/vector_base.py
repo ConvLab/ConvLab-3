@@ -316,7 +316,7 @@ class VectorBase(Vector):
             entities list:
                 list of entities of the specified domain
         """
-        constraints = self.state[domain]
+        constraints = self.state.get(domain, {})
 
         # Leave slots out of constraints to find which slot constraint results in no entities being found
         for constraint_slot in constraints:
