@@ -259,11 +259,12 @@ class VectorBase(Vector):
             if intent in ['nobook', 'nooffer'] and slot != 'none':
                 mask_list[i] = 1.0
 
-            if "book" in slot and intent == 'inform' and not self.state[domain][slot]:
-                mask_list[i] = 1.0
+            if "book" in slot and intent == 'inform':
+                if not self.state.get(domain, {}).get(slot, {}):
+                    mask_list[i] = 1.0
 
             if domain == 'taxi':
-                if slot in self.state['taxi']:
+                if slot in self.state.get('taxi', {}):
                     if not self.state['taxi'][slot] and intent == 'inform':
                         mask_list[i] = 1.0
 
@@ -315,7 +316,7 @@ class VectorBase(Vector):
             entities list:
                 list of entities of the specified domain
         """
-        constraints = self.state[domain]
+        constraints = self.state.get(domain, {})
 
         # Leave slots out of constraints to find which slot constraint results in no entities being found
         for constraint_slot in constraints:

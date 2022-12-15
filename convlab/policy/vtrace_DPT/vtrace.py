@@ -59,6 +59,7 @@ class VTRACE(nn.Module, Policy):
         self.last_action = None
 
         self.vector = vectorizer
+        self.cfg['dataset_name'] = self.vector.dataset_name
         self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
         self.value_helper = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
 
@@ -338,6 +339,7 @@ class VTRACE(nn.Module, Policy):
             if os.path.exists(policy_mdl):
                 self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
                 self.value_helper.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
+                print(f"Loaded policy checkpoint from file: {policy_mdl}")
                 logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
                 break
 
