@@ -389,6 +389,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                 complete = sess.evaluator.complete
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
+                break
         else:
             complete = 0
             task_succ = 0
