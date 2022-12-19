@@ -1,6 +1,6 @@
 {
     "Neutral": 0,
-    "Disappointed": 1,
+    "Fearful": 1,
     "Dissatisfied": 2,
     "Apologetic": 3,
     "Abusive": 4,

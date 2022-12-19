@@ -87,7 +87,6 @@ if __name__ == "__main__":
 
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
-
     dataset = load_experiment_dataset(
         data_name=args.dataset,
         dial_ids_order=args.dial_ids_order,

@@ -24,6 +24,8 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
                 dial_ids_order=dial_ids_order,
                 split2ratio=ratio)
         raw_data = merge_dataset(datasets, all_dataset[0])
+    elif data_name == "dialmage":
+        raw_data = load_dataset(data_name, dial_ids_order=None)
 
     else:
         print(f"load single dataset {data_name}/{split2ratio}")
