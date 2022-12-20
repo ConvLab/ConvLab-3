@@ -16,7 +16,7 @@ from transformers import (BartForConditionalGeneration, BartTokenizer,
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
 
-os.environ["WANDB_DISABLED"] = "true"
+# os.environ["WANDB_DISABLED"] = "true"
 
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
@@ -199,7 +199,9 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max
     model.resize_token_embeddings(len(tokenizer))
     fp16 = False
     if torch.cuda.is_available():
+        print("use cuda")
         fp16 = True
+        model.to("cuda")
 
     model_dir = os.path.join(
         train_helper.get_model_folder(model_type),
