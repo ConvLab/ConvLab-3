@@ -8,7 +8,7 @@ NOT_MENTIONED = "not mentioned"
 
 def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2ratio=1):
     ratio = {'train': split2ratio, 'validation': split2ratio}
-    if data_name == "all" or data_name == "sgd+tm" or data_name == "tm" or data_name == "emowoz+dialmage":
+    if data_name == "all" or data_name == "sgd+tm" or data_name == "tm":
         print("merge all datasets...")
         if data_name == "all":
             all_dataset = ["multiwoz21", "sgd", "tm1", "tm2", "tm3"]
@@ -16,8 +16,6 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
             all_dataset = ["sgd", "tm1", "tm2", "tm3"]
         if data_name == "tm":
             all_dataset = ["tm1", "tm2", "tm3"]
-        if data_name == "emowoz+dialmage":
-            all_dataset = ["emowoz", "dialmage"]
 
         datasets = {}
         for name in all_dataset:
@@ -25,6 +23,13 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
                 name,
                 dial_ids_order=dial_ids_order,
                 split2ratio=ratio)
+        raw_data = merge_dataset(datasets, all_dataset[0])
+    elif data_name == "emowoz+dialmage":
+        all_dataset = ["emowoz", "dialmage"]
+        datasets = {}
+        for name in all_dataset:
+            datasets[name] = load_dataset(
+                name, dial_ids_order=None)
         raw_data = merge_dataset(datasets, all_dataset[0])
     elif data_name == "dialmage":
         raw_data = load_dataset(data_name, dial_ids_order=None)
