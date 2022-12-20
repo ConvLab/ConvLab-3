@@ -231,7 +231,7 @@ class Evaluator:
 
 
 def emotion_score(golden_emotions, gen_emotions):
-    labels = ["Neutral", "Disappointed", "Dissatisfied",
+    labels = ["Neutral", "Fearful", "Dissatisfied",
               "Apologetic", "Abusive", "Excited", "Satisfied"]
     print(labels)
     macro_f1 = metrics.f1_score(golden_emotions, gen_emotions, average="macro")

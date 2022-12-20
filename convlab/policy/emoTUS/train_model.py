@@ -31,7 +31,7 @@ def arg_parser():
     parser.add_argument("--model-type", type=str, default="unify",
                         help="unify or multiwoz")
     parser.add_argument("--data-name", type=str, default="emowoz",
-                        help="multiwoz21, sgd, tm1, tm2, tm3, sgd+tm, or all")
+                        help="emowoz or dialmage")
     parser.add_argument("--dial-ids-order", type=int, default=0)
     parser.add_argument("--split2ratio", type=float, default=1)
     parser.add_argument("--batch-size", type=int, default=16)
