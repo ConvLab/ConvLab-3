@@ -16,7 +16,7 @@ from transformers import (BartForConditionalGeneration, BartTokenizer,
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
 
-os.environ["WANDB_DISABLED"] = "true"
+# os.environ["WANDB_DISABLED"] = "true"
 
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
@@ -30,7 +30,7 @@ def arg_parser():
     # data_name, dial_ids_order, split2ratio
     parser.add_argument("--model-type", type=str, default="unify",
                         help="unify or multiwoz")
-    parser.add_argument("--data-name", type=str, default="multiwoz21",
+    parser.add_argument("--data-name", type=str, default="emowoz",
                         help="multiwoz21, sgd, tm1, tm2, tm3, sgd+tm, or all")
     parser.add_argument("--dial-ids-order", type=int, default=0)
     parser.add_argument("--split2ratio", type=float, default=1)
@@ -199,7 +199,9 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max
     model.resize_token_embeddings(len(tokenizer))
     fp16 = False
     if torch.cuda.is_available():
+        print("use cuda")
         fp16 = True
+        model.to("cuda")
 
     model_dir = os.path.join(
         train_helper.get_model_folder(model_type),
