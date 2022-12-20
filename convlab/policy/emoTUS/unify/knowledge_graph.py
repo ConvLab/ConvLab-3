@@ -21,13 +21,13 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
             self.emotion[index] = emotion
 
         self.kg_map = {"emotion": tokenMap(tokenizer=self.tokenizer)}
-        self.prior = {"Neutral": 0.719,
-                      "Disappointed": 0.005,
-                      "Dissatisfied": 0.013,
-                      "Apologetic": 0.012,
-                      "Abusive": 0.001,
-                      "Excited": 0.012,
-                      "Satisfied": 0.238}
+        self.prior = {"Neutral": 1,
+                      "Fearful": 1,
+                      "Dissatisfied": 1,
+                      "Apologetic": 1,
+                      "Abusive": 1,
+                      "Excited": 1,
+                      "Satisfied": 1}
 
         for emotion in self.emotion:
             self.kg_map["emotion"].add_token(emotion, emotion)
