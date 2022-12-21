@@ -93,7 +93,8 @@ class VTRACE(nn.Module, Policy):
         try:
             self.load_optimizer_dicts(load_path)
         except Exception as e:
-            print(f"Could not load optimiser dicts, Exception: {e}")
+            pass
+            #print(f"Could not load optimiser dicts, Exception: {e}")
 
     def predict(self, state):
         """
