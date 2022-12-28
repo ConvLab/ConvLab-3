@@ -36,7 +36,6 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
         canidate_list = self.emotion
         score = self._get_max_score(
             outputs, canidate_list, "emotion", weight=self.prior)
-        print(score)
         s = self._select(score, mode)
 
         return score[s]
