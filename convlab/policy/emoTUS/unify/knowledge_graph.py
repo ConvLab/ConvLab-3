@@ -38,4 +38,4 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
             outputs, canidate_list, "emotion", weight=self.prior)
         s = self._select(score, mode)
 
-        return score[s]
+        return score[s] 
