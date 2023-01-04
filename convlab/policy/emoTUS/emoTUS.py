@@ -106,7 +106,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             print("-"*20)
         return action
 
-    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True):
+    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="max"):
         self.kg.parse_input(raw_inputs)
         model_input = self.vector.encode(raw_inputs, self.max_in_len)
         # start token
@@ -114,7 +114,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         pos = self._update_seq([0], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
         emotion = self._get_emotion(
-            model_input, self.seq[:1, :pos], mode, allow_general_intent)
+            model_input, self.seq[:1, :pos], mode, emotion_mode)
         pos = self._update_seq(emotion["token_id"], pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
@@ -214,10 +214,10 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         raw_output = self._get_text(model_input, pos)
         return self._parse_output(raw_output)["text"]
 
-    def _get_emotion(self, model_input, generated_so_far, mode="max", allow_general_intent=True):
+    def _get_emotion(self, model_input, generated_so_far, mode="max", emotion_mode="normal"):
         next_token_logits = self.model.get_next_token_logits(
             model_input, generated_so_far)
-        return self.kg.get_emotion(next_token_logits, mode, allow_general_intent)
+        return self.kg.get_emotion(next_token_logits, mode, emotion_mode)
 
     def _get_intent(self, model_input, generated_so_far, mode="max", allow_general_intent=True):
         next_token_logits = self.model.get_next_token_logits(

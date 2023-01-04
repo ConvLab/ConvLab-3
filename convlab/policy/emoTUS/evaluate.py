@@ -35,6 +35,8 @@ def arg_parser():
                         help="do nlg generation")
     parser.add_argument("--do-golden-nlg", action="store_true",
                         help="do golden nlg generation")
+    parser.add_argument("--no-neutral", action="store_true",
+                        help="skip neutral emotion")
     return parser.parse_args()
 
 
@@ -53,7 +55,10 @@ class Evaluator:
             model_checkpoint, only_action=only_action, dataset=self.dataset)
         self.usr.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
 
-    def generate_results(self, f_eval, golden=False):
+    def generate_results(self, f_eval, golden=False, no_neutral=False):
+        emotion_mode = "max"
+        if no_neutral:
+            emotion_mode = "no_neutral"
         in_file = json.load(open(f_eval))
         r = {
             "input": [],
@@ -67,14 +72,20 @@ class Evaluator:
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
+            if no_neutral:
+                if labels["emotion"].lower() == "neutral":
+                    print("skip")
+                    continue
+            print("do", labels["emotion"])
             if golden:
                 usr_act = labels["action"]
                 usr_utt = self.usr.generate_text_from_give_semantic(
                     inputs, labels["action"], labels["emotion"])
 
             else:
+                
                 output = self.usr._parse_output(
-                    self.usr._generate_action(inputs))
+                    self.usr._generate_action(inputs, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
                 usr_act = self.usr._remove_illegal_action(output["action"])
                 usr_utt = output["text"]
@@ -106,10 +117,10 @@ class Evaluator:
 
         return r
 
-    def nlg_evaluation(self, input_file=None, generated_file=None, golden=False):
+    def nlg_evaluation(self, input_file=None, generated_file=None, golden=False, no_neutral=False):
         if input_file:
             print("Force generation")
-            gen_r = self.generate_results(input_file, golden)
+            gen_r = self.generate_results(input_file, golden, no_neutral)
 
         elif generated_file:
             gen_r = self.read_generated_result(generated_file)
@@ -284,7 +295,8 @@ def main():
             else:
                 nlg_result = eval.nlg_evaluation(input_file=args.input_file,
                                                  generated_file=args.generated_file,
-                                                 golden=args.do_golden_nlg)
+                                                 golden=args.do_golden_nlg,
+                                                 no_neutral=args.no_neutral)
 
                 generated_file = nlg_result
             eval.evaluation(args.input_file,
