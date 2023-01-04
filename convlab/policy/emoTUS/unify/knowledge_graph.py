@@ -32,10 +32,16 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
         for emotion in self.emotion:
             self.kg_map["emotion"].add_token(emotion, emotion)
 
-    def get_emotion(self, outputs, mode="max", allow_general_intent=True):
-        canidate_list = self.emotion
-        score = self._get_max_score(
-            outputs, canidate_list, "emotion", weight=self.prior)
+    def get_emotion(self, outputs, mode="max", emotion_mode="normal"):
+
+        if emotion_mode == "normal":
+            score = self._get_max_score(
+            outputs, self.emotion, "emotion", weight=self.prior)
+        elif emotion_mode == "no_neutral":
+            score = self._get_max_score(
+            outputs, self.emotion[1:], "emotion", weight=self.prior)
+        else:
+            print(f"unknown emotion mode: {emotion_mode}")
         s = self._select(score, mode)
 
         return score[s] 
