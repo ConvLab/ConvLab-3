@@ -346,17 +346,26 @@ class SetSUMBTTracker(DST):
             state_entropy = None
 
         # Construct request action prediction
-        request_acts = [slot for slot, p in request_probs.items() if p[0, 0].item() > 0.5]
-        request_acts = [slot.split('-', 1) for slot in request_acts]
-        request_acts = [['request', domain, slot, '?'] for domain, slot in request_acts]
+        if request_probs is not None:
+            request_acts = [slot for slot, p in request_probs.items() if p[0, 0].item() > 0.5]
+            request_acts = [slot.split('-', 1) for slot in request_acts]
+            request_acts = [['request', domain, slot, '?'] for domain, slot in request_acts]
+        else:
+            request_acts = list()
 
         # Construct active domain set
-        active_domains = {domain: p[0, 0].item() > 0.5 for domain, p in active_domain_probs.items()}
+        if active_domain_probs is not None:
+            active_domains = {domain: p[0, 0].item() > 0.5 for domain, p in active_domain_probs.items()}
+        else:
+            active_domains = dict()
 
         # Construct general domain action
-        general_acts = general_act_probs[0, 0, :].argmax(-1).item()
-        general_acts = [[], ['bye'], ['thank']][general_acts]
-        general_acts = [[act, 'general', 'none', 'none'] for act in general_acts]
+        if general_act_probs is not None:
+            general_acts = general_act_probs[0, 0, :].argmax(-1).item()
+            general_acts = [[], ['bye'], ['thank']][general_acts]
+            general_acts = [[act, 'general', 'none', 'none'] for act in general_acts]
+        else:
+            general_acts = list()
 
         user_acts = request_acts + general_acts
 

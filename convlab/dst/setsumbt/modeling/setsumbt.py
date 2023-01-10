@@ -57,7 +57,7 @@ class SlotUtteranceMatching(Module):
         turn_embeddings = turn_embeddings.transpose(0, 1)
 
         key_padding_mask = (attention_mask[:, :, 0] == 0.0)
-        key_padding_mask[key_padding_mask[:, 0], :] = False
+        key_padding_mask[torch.clone(key_padding_mask)[:, 0], :] = False
 
         hidden, _ = self.attention(query=slot_embeddings, key=turn_embeddings, value=turn_embeddings,
                                    key_padding_mask=key_padding_mask)
