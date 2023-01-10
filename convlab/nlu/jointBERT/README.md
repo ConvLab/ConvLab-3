@@ -40,6 +40,7 @@ To illustrate that it is easy to use the model for any dataset that in our unifi
   <tr>
     <th></th>
     <th colspan=2>MultiWOZ 2.1</th>
+    <th colspan=2>MultiWOZ 2.1 all utterances</th>
     <th colspan=2>Taskmaster-1</th>
     <th colspan=2>Taskmaster-2</th>
     <th colspan=2>Taskmaster-3</th>
@@ -52,12 +53,14 @@ To illustrate that it is easy to use the model for any dataset that in our unifi
     <th>Acc</th><th>F1</th>
     <th>Acc</th><th>F1</th>
     <th>Acc</th><th>F1</th>
+    <th>Acc</th><th>F1</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td>BERTNLU</td>
     <td>74.5</td><td>85.9</td>
+    <td>59.5</td><td>80.0</td>
     <td>72.8</td><td>50.6</td>
     <td>79.2</td><td>70.6</td>
     <td>86.1</td><td>81.9</td>
@@ -65,6 +68,7 @@ To illustrate that it is easy to use the model for any dataset that in our unifi
   <tr>
     <td>BERTNLU (context=3)</td>
     <td>80.6</td><td>90.3</td>
+    <td>58.1</td><td>79.6</td>
     <td>74.2</td><td>52.7</td>
     <td>80.9</td><td>73.3</td>
     <td>87.8</td><td>83.8</td>

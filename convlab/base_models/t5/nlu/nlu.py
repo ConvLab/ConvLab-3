@@ -1,4 +1,4 @@
-gimport logging
+import logging
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoConfig
 from convlab.nlu.nlu import NLU
