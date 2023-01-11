@@ -231,7 +231,9 @@ class Evaluator:
         for metric in scores:
             result[metric] = sum(scores[metric])/len(scores[metric])
             print(f"{metric}: {result[metric]}")
-        emo_score = emotion_score(golden_emotions, gen_emotions, self.model_checkpoint, time=self.time)
+        # TODO no neutral
+        emo_score = emotion_score(golden_emotions, gen_emotions, self.model_checkpoint, 
+        time=self.time, no_neutral=True)
         # for metric in emo_score:
         #     result[metric] = emo_score[metric]
         #     print(f"{metric}: {result[metric]}")
@@ -243,14 +245,16 @@ class Evaluator:
             self.model_checkpoint, f"{self.time}-{self.dataset}-{basename}.json"), 'w'))
 
 
-def emotion_score(golden_emotions, gen_emotions, dirname=".", time=""):
+def emotion_score(golden_emotions, gen_emotions, dirname=".", time="", no_neutral=False):
     labels = ["Neutral", "Fearful", "Dissatisfied",
               "Apologetic", "Abusive", "Excited", "Satisfied"]
+    if no_neutral:
+        labels = labels[1:]
     print(labels)
     macro_f1 = metrics.f1_score(golden_emotions, gen_emotions, average="macro")
     sep_f1 = metrics.f1_score(
         golden_emotions, gen_emotions, average=None, labels=labels)
-    cm = metrics.confusion_matrix(golden_emotions, gen_emotions, labels=labels)
+    cm = metrics.confusion_matrix(golden_emotions, gen_emotions, normalize="true", labels=labels)
     disp = metrics.ConfusionMatrixDisplay(
         confusion_matrix=cm, display_labels=labels)
     disp.plot()

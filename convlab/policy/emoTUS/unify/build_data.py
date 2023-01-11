@@ -5,20 +5,20 @@ from argparse import ArgumentParser
 
 from tqdm import tqdm
 
-from convlab.policy.genTUS.unify.Goal import Goal, transform_data_act
+from convlab.policy.emoTUS.unify.Goal import Goal, emotion_info
+from convlab.policy.genTUS.unify.build_data import \
+    DataBuilder as GenTUSDataBuilder
+from convlab.policy.genTUS.unify.Goal import transform_data_act
 from convlab.policy.tus.unify.util import create_goal, load_experiment_dataset
-from convlab.policy.genTUS.unify.build_data import DataBuilder as GenTUSDataBuilder
-
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
-
-# TODO add emotion
 
 
 def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--dataset", type=str, default="emowoz")
+    parser.add_argument("--use-sentiment", action="store_true")
     parser.add_argument("--dial-ids-order", type=int, default=0)
     parser.add_argument("--split2ratio", type=float, default=1)
     parser.add_argument("--random-order", action="store_true")
@@ -30,11 +30,20 @@ def arg_parser():
 
 
 class DataBuilder(GenTUSDataBuilder):
-    def __init__(self, dataset='emowoz'):
+    def __init__(self, dataset='emowoz', use_sentiment=False):
         super().__init__(dataset)
+        self.use_sentiment = use_sentiment
+
         self.emotion = {}
         for emotion, index in json.load(open("convlab/policy/emoTUS/emotion.json")).items():
             self.emotion[int(index)] = emotion
+
+        if use_sentiment:
+            self.sentiment = {}
+            for sentiment, index in json.load(open("convlab/policy/emoTUS/sentiment.json")).items():
+                self.sentiment[int(index)] = sentiment
+            self.sent2emo = json.load(
+                open("convlab/policy/emoTUS/sent2emo.json"))
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
         example = []
@@ -44,6 +53,13 @@ class DataBuilder(GenTUSDataBuilder):
         if not data_goal:
             return example
         user_goal = Goal(goal=data_goal)
+        user_info = None
+        if self.use_sentiment:
+            user_info = emotion_info(dialog)
+            # if user_info["user"] == "Impolite":
+            #     print(user_info)
+            # if "event" in user_info:
+            #     print(user_info)
 
         for turn_id in range(0, len(dialog["turns"]), 2):
             sys_act = self._get_sys_act(dialog, turn_id)
@@ -62,9 +78,17 @@ class DataBuilder(GenTUSDataBuilder):
                 dialog["turns"][turn_id]["emotion"][-1]["emotion"]]
 
             in_str = self._dump_in_str(
-                sys_act, usr_goal_str, history, turn_id, add_history)
-            out_str = self._dump_out_str(
-                usr_act, dialog["turns"][turn_id]["utterance"], usr_emotion)
+                sys_act, usr_goal_str, history, turn_id, add_history, user_info)
+
+            if self.use_sentiment:
+                usr_sentiment = self.sentiment[
+                    dialog["turns"][turn_id]["emotion"][-1]["sentiment"]]
+                out_str = self._dump_out_str(
+                    usr_act, dialog["turns"][turn_id]["utterance"], usr_emotion, usr_sentiment)
+
+            else:
+                out_str = self._dump_out_str(
+                    usr_act, dialog["turns"][turn_id]["utterance"], usr_emotion)
 
             history.append(usr_act)
             if usr_act:
@@ -72,9 +96,44 @@ class DataBuilder(GenTUSDataBuilder):
 
         return example
 
-    def _dump_out_str(self, usr_act, text, usr_emotion):
-        out_str = {"emotion": usr_emotion, "action": usr_act, "text": text}
+    def _dump_in_str(self, sys_act, usr_goal_str, history, turn_id, add_history, user_info=None):
+        in_str = {}
+        in_str["system"] = self._modify_act(sys_act)
+        in_str["goal"] = usr_goal_str
+        if add_history:
+            h = []
+            if history:
+                h = history[-3:]
+            in_str["history"] = h
+            in_str["turn"] = str(int(turn_id/2))
+
+        if self.use_sentiment:
+            for info in ["event", "user"]:
+                if info not in user_info:
+                    continue
+                in_str[info] = user_info[info]
+
+        return json.dumps(in_str)
+
+    def _dump_out_str(self, usr_act, text, usr_emotion, usr_sentiment=None):
+        if self.use_sentiment:
+            out_str = {"sentiment": usr_sentiment,
+                       "action": usr_act,
+                       "emotion": usr_emotion,
+                       "text": text}
+        else:
+            out_str = {"emotion": usr_emotion,
+                       "action": usr_act,
+                       "text": text}
         return json.dumps(out_str)
+
+
+"""
+TODO
+1. add sentiment in the output str
+2. check exciting/fearful in user goal (domain)
+3. add impolite (user info?)
+"""
 
 
 if __name__ == "__main__":
@@ -91,7 +150,9 @@ if __name__ == "__main__":
         data_name=args.dataset,
         dial_ids_order=args.dial_ids_order,
         split2ratio=args.split2ratio)
-    data_builder = DataBuilder(dataset=args.dataset)
+    data_builder = DataBuilder(
+        dataset=args.dataset,
+        use_sentiment=args.use_sentiment)
     data = data_builder.setup_data(
         raw_data=dataset,
         random_order=args.random_order,

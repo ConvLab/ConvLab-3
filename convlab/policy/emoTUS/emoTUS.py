@@ -45,6 +45,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 history = self.usr_acts[-1]
             else:
                 history = self.usr_acts[-1*self.max_history:]
+
+        # TODO add user info? impolite?
         inputs = json.dumps({"system": sys_act,
                              "goal": self.goal.get_goal_list(),
                              "history": history,
