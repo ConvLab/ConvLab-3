@@ -7,6 +7,7 @@ class tokenMap:
         self.token_name = {}
         self.hash_map = {}
         self.debug = False
+        self.use_sentiment = use_sentiment
         self.default()
 
     def default(self, only_action=False):
