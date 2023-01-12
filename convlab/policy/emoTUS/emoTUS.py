@@ -25,6 +25,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         for emotion, index in data_emotion.items():
             self.emotion_list[index] = emotion
 
+        self.use_sentiment = kwargs.get("use_sentiment", False)
+
         self.init_session()
 
     def predict(self, sys_act, mode="max", allow_general_intent=True, emotion=None):
@@ -46,11 +48,18 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             else:
                 history = self.usr_acts[-1*self.max_history:]
 
-        # TODO add user info? impolite?
-        inputs = json.dumps({"system": sys_act,
-                             "goal": self.goal.get_goal_list(),
-                             "history": history,
-                             "turn": str(int(self.time_step/2))})
+        # TODO add user info? impolite? -> check self.use_sentiment
+        if self.use_sentiment:
+            # TODO how to get event and user politeness?
+            inputs = json.dumps({"system": sys_act,
+                                 "goal": self.goal.get_goal_list(),
+                                 "history": history,
+                                 "turn": str(int(self.time_step/2))})
+        else:
+            inputs = json.dumps({"system": sys_act,
+                                 "goal": self.goal.get_goal_list(),
+                                 "history": history,
+                                 "turn": str(int(self.time_step/2))})
         with torch.no_grad():
             if emotion == "all":
                 raw_output = self.generate_from_emotion(
@@ -101,6 +110,9 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         in_str = in_str.replace('<s>', '').replace(
             '<\\s>', '').replace('o"clock', "o'clock")
         action = {"emotion": "Neutral", "action": [], "text": ""}
+        if self.use_sentiment:
+            action["sentiment"] = "Neutral"
+
         try:
             action = json.loads(in_str)
         except:
@@ -115,9 +127,14 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
-        emotion = self._get_emotion(
-            model_input, self.seq[:1, :pos], mode, emotion_mode)
-        pos = self._update_seq(emotion["token_id"], pos)
+        if self.use_sentiment:
+            sentiment = self._get_sentiment(
+                model_input, self.seq[:1, :pos], mode)
+            pos = self._update_seq(sentiment["token_id"], pos)
+        else:
+            emotion = self._get_emotion(
+                model_input, self.seq[:1, :pos], mode, emotion_mode)
+            pos = self._update_seq(emotion["token_id"], pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
 
@@ -135,6 +152,13 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         if self.only_action:
             return self.vector.decode(self.seq[0, :pos])
+
+        if self.use_sentiment:
+            pos = self._update_seq(self.token_map.get_id('start_emotion'), pos)
+            emotion = self._get_emotion(
+                model_input, self.seq[:1, :pos], mode, emotion_mode)
+            pos = self._update_seq(emotion["token_id"], pos)
+            pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
         pos = self._update_seq(self.token_map.get_id("start_text"), pos)
         text = self._get_text(model_input, pos)
@@ -215,6 +239,11 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         raw_output = self._get_text(model_input, pos)
         return self._parse_output(raw_output)["text"]
+
+    def _get_sentiment(self, model_input, generated_so_far, mode="max"):
+        next_token_logits = self.model.get_next_token_logits(
+            model_input, generated_so_far)
+        return self.kg.get_sentiment(next_token_logits, mode)
 
     def _get_emotion(self, model_input, generated_so_far, mode="max", emotion_mode="normal"):
         next_token_logits = self.model.get_next_token_logits(
