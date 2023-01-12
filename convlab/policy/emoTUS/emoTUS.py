@@ -157,7 +157,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         if self.use_sentiment:
             pos = self._update_seq(self.token_map.get_id('start_emotion'), pos)
             emotion = self._get_emotion(
-                model_input, self.seq[:1, :pos], mode, emotion_mode)
+                model_input, self.seq[:1, :pos], mode, emotion_mode, sentiment)
             pos = self._update_seq(emotion["token_id"], pos)
             pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
@@ -246,10 +246,10 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             model_input, generated_so_far)
         return self.kg.get_sentiment(next_token_logits, mode)
 
-    def _get_emotion(self, model_input, generated_so_far, mode="max", emotion_mode="normal"):
+    def _get_emotion(self, model_input, generated_so_far, mode="max", emotion_mode="normal", sentiment=None):
         next_token_logits = self.model.get_next_token_logits(
             model_input, generated_so_far)
-        return self.kg.get_emotion(next_token_logits, mode, emotion_mode)
+        return self.kg.get_emotion(next_token_logits, mode, emotion_mode, sentiment)
 
     def _get_intent(self, model_input, generated_so_far, mode="max", allow_general_intent=True):
         next_token_logits = self.model.get_next_token_logits(
