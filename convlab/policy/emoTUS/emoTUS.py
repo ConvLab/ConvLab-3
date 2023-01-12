@@ -16,16 +16,16 @@ DEBUG = False
 class UserActionPolicy(GenTUSUserActionPolicy):
     def __init__(self, model_checkpoint, mode="semantic", only_action=True, max_turn=40, **kwargs):
         super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
+        self.use_sentiment = kwargs.get("use_sentiment", False)
 
         self.kg = KnowledgeGraph(
             tokenizer=self.tokenizer,
-            dataset="emowoz")
+            dataset="emowoz",
+            use_sentiment=self.use_sentiment)
         data_emotion = json.load(open("convlab/policy/emoTUS/emotion.json"))
         self.emotion_list = [""]*len(data_emotion)
         for emotion, index in data_emotion.items():
             self.emotion_list[index] = emotion
-
-        self.use_sentiment = kwargs.get("use_sentiment", False)
 
         self.init_session()
 
