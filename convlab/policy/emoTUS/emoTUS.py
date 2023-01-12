@@ -15,8 +15,9 @@ DEBUG = False
 
 class UserActionPolicy(GenTUSUserActionPolicy):
     def __init__(self, model_checkpoint, mode="semantic", only_action=True, max_turn=40, **kwargs):
-        super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
         self.use_sentiment = kwargs.get("use_sentiment", False)
+        super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
+        print("sentiment", self.use_sentiment)
 
         self.kg = KnowledgeGraph(
             tokenizer=self.tokenizer,
