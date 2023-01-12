@@ -236,8 +236,8 @@ class Evaluator:
             no_neutral=False)
         if self.use_sentiment:
             sent_score = sentiment_score(
-                gen_file['dialog']["golden_sentiment"],
-                gen_file['dialog']["gen_sentiment"],
+                self.r["golden_sentiment"],
+                self.r["gen_sentiment"],
                 self.model_checkpoint,
                 time=self.time)
 
