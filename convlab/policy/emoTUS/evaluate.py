@@ -38,6 +38,7 @@ def arg_parser():
                         help="do golden nlg generation")
     parser.add_argument("--no-neutral", action="store_true",
                         help="skip neutral emotion")
+    parser.add_argument("--use-sentiment", action="store_true")
     return parser.parse_args()
 
 
@@ -315,7 +316,8 @@ def main():
     eval = Evaluator(args.model_checkpoint,
                      args.dataset,
                      args.model_weight,
-                     args.only_action)
+                     args.only_action,
+                     args.use_sentiment)
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
     print("input_file", args.input_file)
