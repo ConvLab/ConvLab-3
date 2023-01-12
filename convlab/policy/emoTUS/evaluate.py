@@ -70,7 +70,7 @@ class Evaluator:
             self.r[x].append(temp[x])
 
     def generate_results(self, f_eval, golden=False, no_neutral=False):
-        emotion_mode = "max"
+        emotion_mode = "normal"
         if no_neutral:
             emotion_mode = "no_neutral"
         in_file = json.load(open(f_eval))
