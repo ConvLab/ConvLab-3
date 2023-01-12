@@ -157,7 +157,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         if self.use_sentiment:
             pos = self._update_seq(self.token_map.get_id('start_emotion'), pos)
             emotion = self._get_emotion(
-                model_input, self.seq[:1, :pos], mode, emotion_mode, sentiment)
+                model_input, self.seq[:1, :pos], mode, emotion_mode, sentiment["token_name"])
             pos = self._update_seq(emotion["token_id"], pos)
             pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
