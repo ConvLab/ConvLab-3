@@ -180,6 +180,7 @@ class Evaluator:
             force_prediction = False
             if gen_file["golden"]:
                 force_prediction = True
+            self.read_generated_result(generated_file)
 
         if force_prediction:
             in_file = json.load(open(input_file))
