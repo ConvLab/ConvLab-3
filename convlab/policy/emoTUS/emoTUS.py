@@ -121,7 +121,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             print("-"*20)
         return action
 
-    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="max"):
+    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal"):
         self.kg.parse_input(raw_inputs)
         model_input = self.vector.encode(raw_inputs, self.max_in_len)
         # start token
