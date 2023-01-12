@@ -257,7 +257,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         return self.kg.get_intent(next_token_logits, mode, allow_general_intent)
 
     def init_session(self, goal=None):
-        self.token_map = tokenMap(tokenizer=self.tokenizer)
+        self.token_map = tokenMap(
+            tokenizer=self.tokenizer, use_sentiment=self.use_sentiment)
         self.token_map.default(only_action=self.only_action)
         self.time_step = 0
         remove_domain = "police"  # remove police domain in inference
