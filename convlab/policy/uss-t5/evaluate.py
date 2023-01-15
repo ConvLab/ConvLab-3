@@ -60,9 +60,12 @@ def main():
     label = {'bi': [], "five": []}
     bi_f1_score = []
     results = []
-
+    i = 0
     for input_text, target_text in tqdm(zip(data["input_text"], data["target_text"]), ascii=True):
+        if i > 100:
+            break
         if "satisfaction score" in input_text:
+            i = i + 1
             inputs = tokenizer([input_text], return_tensors="pt", padding=True)
             output = model.generate(input_ids=inputs["input_ids"],
                                     attention_mask=inputs["attention_mask"],
@@ -80,7 +83,7 @@ def main():
             results.append({"input_text": input_text,
                             "preds": output,
                             "label": target_text})
-    json.dump(results, open(os.path.join(model_checkpoint, "result.json")))
+    json.dump(results, open(os.path.join(model_checkpoint, "result.json"), 'w'))
     macro_f1 = metrics.f1_score(label["five"], preds["five"], average="macro")
     f1 = metrics.f1_score(label["bi"], preds["bi"])
     sep_f1 = metrics.f1_score(
