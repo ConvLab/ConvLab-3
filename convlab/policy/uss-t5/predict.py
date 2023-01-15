@@ -25,3 +25,6 @@ def main():
                             attention_mask=inputs["attention_mask"],
                             do_sample=False)
     print(tokenizer.batch_decode(output, skip_special_tokens=True))
+
+if __name__ == "__main__":
+    main()
