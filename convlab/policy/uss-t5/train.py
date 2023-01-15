@@ -1,18 +1,26 @@
-import numpy as np
 import os
+import random
 import sys
 from argparse import ArgumentParser
 from datetime import datetime
-import torch
+
+import numpy as np
 import pandas as pd
+import torch
 from datasets import load_metric
+from sklearn.model_selection import train_test_split
 from transformers import (DataCollatorForSeq2Seq, Seq2SeqTrainer,
                           Seq2SeqTrainingArguments, T5ForConditionalGeneration,
                           T5Tokenizer)
-from sklearn.model_selection import train_test_split
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
+
+
+def set_seed(r_seed):
+    random.seed(r_seed)
+    np.random.seed(r_seed)
+    torch.manual_seed(r_seed)
 
 
 class ForT5Dataset(torch.utils.data.Dataset):
@@ -50,6 +58,8 @@ def arg_parser():
 
 
 def main():
+    set_seed(0)
+
     def compute_metrics(eval_preds):
         preds, labels = eval_preds
         if isinstance(preds, tuple):
