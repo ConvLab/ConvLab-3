@@ -52,7 +52,7 @@ def main():
             preds["bi"].append(bi_f1(output))
 
     macro_f1 = metrics.f1_score(label["five"], preds["five"], average="macro")
-    bi_f1 = metrics.f1_score(label["bi"], preds["bi"])
+    f1 = metrics.f1_score(label["bi"], preds["bi"])
     sep_f1 = metrics.f1_score(
         label["five"], preds["five"], average=None,
         labels=['1', '2', '3', '4', '5'])
@@ -67,7 +67,7 @@ def main():
     time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
     plt.savefig(os.path.join(dirname, model_checkpoint, f"{time}-emotion.png"))
     r = {"macro_f1": float(macro_f1),
-         "bi_f1": float(bi_f1),
+         "bi_f1": float(f1),
          "sep_f1": list(sep_f1),
          "cm": [list(c) for c in list(cm)]}
     print(r)
