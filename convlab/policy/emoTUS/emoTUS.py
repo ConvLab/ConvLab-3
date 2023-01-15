@@ -278,6 +278,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.semantic_action = []
         self.utterance = ""
         self.emotion = "Neutral"
+        # TODO sentiment? event? user?
 
     def _good_bye(self):
         # add emotion
