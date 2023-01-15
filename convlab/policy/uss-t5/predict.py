@@ -18,7 +18,7 @@ def main():
     model_checkpoint = args.model
     tokenizer = T5Tokenizer.from_pretrained(model_checkpoint)
     model = T5ForConditionalGeneration.from_pretrained(model_checkpoint)
-    prefix = 'satisfaction score'
+    prefix = 'satisfaction score: '
     text = "hi, i'm looking for an attraction in the center of town to visit. we have quite a few interesting attractions in the center of town. is there anything in particular you would like to see?"
     inputs = tokenizer([prefix+text], return_tensors="pt", padding=True)
     output = model.generate(input_ids=inputs["input_ids"],
