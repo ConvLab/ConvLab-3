@@ -1,8 +1,6 @@
-from transformers import (DataCollatorForSeq2Seq, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments, T5ForConditionalGeneration,
-                          T5Tokenizer)
-
 from argparse import ArgumentParser
+
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 
 def arg_parser():
