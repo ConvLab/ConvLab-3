@@ -41,8 +41,8 @@ def main():
             inputs = tokenizer([input_text], return_tensors="pt", padding=True)
             output = model.generate(input_ids=inputs["input_ids"],
                                     attention_mask=inputs["attention_mask"],
-                                    do_sample=False)[0]
-            output = tokenizer.batch_decode(output, skip_special_tokens=True)
+                                    do_sample=False)
+            output = tokenizer.batch_decode(output, skip_special_tokens=True)[0]
             if len(output) > 1:
                 print(output)
                 output = "illegal"
