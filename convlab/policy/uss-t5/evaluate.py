@@ -15,7 +15,7 @@ def arg_parser():
     parser.add_argument("--model", type=str, default="",
                         help="model name")
     parser.add_argument("--data", type=str)
-
+    parser.add_argument("--gen-file", type=str)
     return parser.parse_args()
 
 
@@ -49,16 +49,26 @@ def bi_check(p, l):
     return 0
 
 
-def main():
-    args = arg_parser()
-    model_checkpoint = args.model
+def read_result(result):
+    preds = {'bi': [], "five": [], 'tri': []}
+    label = {'bi': [], "five": [], 'tri': []}
+    for r in result:
+        p = r["preds"]
+        l = r["label"]
+        preds["five"].append(p)
+        preds["bi"].append(bi_f1(p))
+        preds["tri"].append(tri_convert(p))
+
+        label["five"].append(l)
+        label["bi"].append(bi_f1(l))
+        label["tri"].append(tri_convert(l))
+    return preds, label
+
+
+def generate_result(model_checkpoint, data):
     tokenizer = T5Tokenizer.from_pretrained(model_checkpoint)
     model = T5ForConditionalGeneration.from_pretrained(model_checkpoint)
-    data = pd.read_csv(args.data, index_col=False).astype(str)
-
-    preds = {'bi': [], "five": []}
-    label = {'bi': [], "five": []}
-    bi_f1_score = []
+    data = pd.read_csv(data, index_col=False).astype(str)
     results = []
     i = 0
     for input_text, target_text in tqdm(zip(data["input_text"], data["target_text"]), ascii=True):
@@ -74,17 +84,23 @@ def main():
             if len(output) > 1:
                 print(output)
                 output = "illegal"
-            label["five"].append(target_text)
-            preds["five"].append(output)
 
-            label["bi"].append(bi_f1(target_text))
-            preds["bi"].append(bi_f1(output))
-            bi_f1_score.append(bi_check(output, target_text))
             results.append({"input_text": input_text,
                             "preds": output,
                             "label": target_text})
-    json.dump(results, open(os.path.join(model_checkpoint, "result.json"), 'w'))
+    return results
+
+
+def main():
+    args = arg_parser()
+    if args.gen_file:
+        preds, label = read_result(json.load(open(args.gen_file)))
+    else:
+        results = generate_result(args.model, args.data)
+        preds, label = read_result(results)
+
     macro_f1 = metrics.f1_score(label["five"], preds["five"], average="macro")
+    tri_f1 = metrics.f1_score(label["tri"], preds["tri"], average="macro")
     f1 = metrics.f1_score(label["bi"], preds["bi"])
     sep_f1 = metrics.f1_score(
         label["five"], preds["five"], average=None,
@@ -97,13 +113,14 @@ def main():
         display_labels=['1', '2', '3', '4', '5'])
     disp.plot()
     r = {"macro_f1": float(macro_f1),
+         "tri_f1": float(tri_f1),
          "bi_f1": float(f1),
          "sep_f1": list(sep_f1),
          "cm": [list(c) for c in list(cm)]}
     print(r)
     dirname = "convlab/policy/uss-t5/"
     time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
-    plt.savefig(os.path.join(model_checkpoint, f"{time}-satisfied.png"))
+    plt.savefig(os.path.join(args.model, f"{time}-satisfied.png"))
 
 
 if __name__ == "__main__":
