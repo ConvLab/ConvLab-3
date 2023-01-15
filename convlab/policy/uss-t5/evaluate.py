@@ -5,6 +5,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn import metrics
+from tqdm import tqdm
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 
@@ -36,7 +37,7 @@ def main():
     preds = {'bi': [], "five": []}
     label = {'bi': [], "five": []}
 
-    for input_text, target_text in zip(data["input_text"], data["target_text"]):
+    for input_text, target_text in tqdm(zip(data["input_text"], data["target_text"]), ascii=True):
         if "satisfaction score" in input_text:
             inputs = tokenizer([input_text], return_tensors="pt", padding=True)
             output = model.generate(input_ids=inputs["input_ids"],
