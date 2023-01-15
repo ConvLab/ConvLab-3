@@ -71,3 +71,7 @@ def main():
          "sep_f1": list(sep_f1),
          "cm": [list(c) for c in list(cm)]}
     print(r)
+
+
+if __name__ == "__main__":
+    main()
