@@ -98,7 +98,7 @@ def main():
     if args.gen_file:
         preds, label = read_result(json.load(open(args.gen_file)))
     else:
-        data = build_data(args.data)
+        data = build_data(load_experiment_dataset(args.data))
         results = generate_result(args.model, data["test"], args.stop)
         preds, label = read_result(results)
     all_sentiment = ["Neutral", "Negative", "Positive"]
