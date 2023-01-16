@@ -14,7 +14,7 @@ def arg_parser():
 def main():
     args = arg_parser()
     model_checkpoint = args.model
-    tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+    tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
     model = AutoModelForSequenceClassification.from_pretrained(
         model_checkpoint)
     input_text = "Yeah, I think we are. This isn't even my dress."
