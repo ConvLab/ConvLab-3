@@ -1,5 +1,7 @@
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from argparse import ArgumentParser
+
+import numpy as np
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 def arg_parser():
@@ -21,7 +23,7 @@ def main():
     inputs = tokenizer([input_text], return_tensors="pt", padding=True)
     output = model(input_ids=inputs["input_ids"],
                    attention_mask=inputs["attention_mask"])
-    print(output)
+    print(np.argmax(output, axis=-1))
 
 
 if __name__ == "__main__":
