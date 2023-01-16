@@ -19,7 +19,7 @@ def arg_parser():
                         help="model name")
     parser.add_argument("--data", default="emowoz+dialmage", type=str)
     parser.add_argument("--gen-file", type=str)
-    parser.add_argument("--stop", default=-1)
+    parser.add_argument("--stop", default=-1, type=int)
     return parser.parse_args()
 
 
@@ -34,8 +34,8 @@ def build_data(raw_data):
         turn_len = len(d["turns"])
         for index, turn in enumerate(d["turns"]):
             if turn["speaker"] == "user":
-                if index == turn_len - 1:
-                    continue
+                if index == turn_len - 2:
+                    break
                 if index == 0:
                     utt = prefix + turn["utterance"]
                 else:
@@ -59,9 +59,9 @@ def build_data(raw_data):
 def generate_result(model_checkpoint, data, stop=-1):
     tokenizer = T5Tokenizer.from_pretrained(model_checkpoint)
     model = T5ForConditionalGeneration.from_pretrained(model_checkpoint)
-    data = pd.read_csv(data, index_col=False).astype(str)
     results = []
     i = 0
+    print("stop", stop)
     for input_text, target_text in tqdm(zip(data["input_text"], data["target_text"]), ascii=True):
         if stop > 0 and i > stop:
             break
@@ -70,8 +70,9 @@ def generate_result(model_checkpoint, data, stop=-1):
             inputs = tokenizer([input_text], return_tensors="pt", padding=True)
             output = model.generate(input_ids=inputs["input_ids"],
                                     attention_mask=inputs["attention_mask"],
-                                    do_sample=False)[0]
-            output = tokenizer.batch_decode(output, skip_special_tokens=True)
+                                    do_sample=False)
+            output = tokenizer.batch_decode(
+                output, skip_special_tokens=True)[0]
             if len(output) > 1:
                 print(output)
                 output = "illegal"
@@ -88,8 +89,8 @@ def read_result(result):
     preds = []
     label = []
     for r in result:
-        preds.append(r[preds])
-        label.append(r[label])
+        preds.append(r["preds"])
+        label.append(r["label"])
     return preds, label
 
 
@@ -98,8 +99,8 @@ def main():
     if args.gen_file:
         preds, label = read_result(json.load(open(args.gen_file)))
     else:
-        data = build_data(load_experiment_dataset(args.data))
-        results = generate_result(args.model, data["test"], args.stop)
+        data = build_data(load_experiment_dataset(args.data)["test"])
+        results = generate_result(args.model, data, args.stop)
         preds, label = read_result(results)
     all_sentiment = ["Neutral", "Negative", "Positive"]
     print(all_sentiment)
