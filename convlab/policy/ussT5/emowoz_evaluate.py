@@ -23,13 +23,13 @@ def arg_parser():
     return parser.parse_args()
 
 
-def build_data(data):
+def build_data(raw_data):
     sentiments = []
     for sentiment, index in json.load(open("convlab/policy/emoTUS/sentiment.json")).items():
         sentiments[int(index)] = sentiment
     data = {"input_text": [], "target_text": []}
     prefix = "satisfaction score: "
-    for d in data:
+    for d in raw_data:
         utt = ""
         turn_len = len(d["turns"])
         for index, turn in enumerate(d["turns"]):
@@ -98,7 +98,8 @@ def main():
     if args.gen_file:
         preds, label = read_result(json.load(open(args.gen_file)))
     else:
-        results = generate_result(args.model, args.data, args.stop)
+        data = build_data(args.data)
+        results = generate_result(args.model, data["test"], args.stop)
         preds, label = read_result(results)
     all_sentiment = ["Neutral", "Negative", "Positive"]
     print(all_sentiment)
@@ -116,3 +117,7 @@ def main():
     print(r)
     time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
     plt.savefig(os.path.join(args.model, f"{time}-emowoz.png"))
+
+
+if __name__ == "__main__":
+    main()
