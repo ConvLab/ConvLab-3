@@ -24,7 +24,7 @@ def arg_parser():
 
 
 def build_data(raw_data):
-    sentiments = []
+    sentiments = {}
     for sentiment, index in json.load(open("convlab/policy/emoTUS/sentiment.json")).items():
         sentiments[int(index)] = sentiment
     data = {"input_text": [], "target_text": []}
