@@ -108,7 +108,7 @@ def main():
         label, preds, normalize="true", labels=all_sentiment)
     disp = metrics.ConfusionMatrixDisplay(
         confusion_matrix=cm,
-        display_labels=['1', '2', '3', '4', '5'])
+        display_labels=all_sentiment)
     disp.plot()
     r = {"tri_f1": float(tri_f1),
          "sep_f1": list(sep_f1),
