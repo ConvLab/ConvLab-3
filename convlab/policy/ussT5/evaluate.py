@@ -84,6 +84,8 @@ def generate_result(model_checkpoint, data):
             results.append({"input_text": input_text,
                             "preds": output,
                             "label": target_text})
+    json.dump(results, open(os.path.join(
+        model_checkpoint, "uss_result.json"), 'w'))
     return results
 
 

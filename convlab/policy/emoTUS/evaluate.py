@@ -175,7 +175,7 @@ class Evaluator:
         # TODO add emotion
         force_prediction = True
         if generated_file:
-            print("use generated file")
+            print("---> use generated file")
             gen_file = json.load(open(generated_file))
             force_prediction = False
             if gen_file["golden"]:
