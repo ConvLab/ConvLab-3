@@ -97,8 +97,8 @@ def main():
     data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model)
     metric = load_metric("sacrebleu")
 
-    output_dir = os.path.join(base_name, "experiments",
-                              f"{datetime.now().strftime('%y-%m-%d-%H-%M')}")
+    output_dir = os.path.join(base_name, "experiments", args.task)
+    # f"{datetime.now().strftime('%y-%m-%d-%H-%M')}")
 
     raw_data = pd.read_csv(args.data, index_col=False).astype(str)
     data = {"train": None, "validation": None, "test": None}
