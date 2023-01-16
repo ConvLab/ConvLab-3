@@ -15,7 +15,7 @@ def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--data", type=str, default="",
                         help="input data")
-    parser.add_argument("--batch", type=int, default=8,
+    parser.add_argument("--batch", type=int, default=2,
                         help="batch size")
 
     return parser.parse_args()
@@ -69,7 +69,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
     model = AutoModelForSequenceClassification.from_pretrained(
         model_checkpoint, num_labels=3)
-    metric = load_metric("sacrebleu")
+    metric = load_metric("accuracy")
 
     fp16 = False
     if torch.cuda.is_available():
