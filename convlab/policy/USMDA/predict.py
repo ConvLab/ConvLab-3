@@ -20,8 +20,7 @@ def main():
     input_text = "Yeah, I think we are. This isn't even my dress."
     inputs = tokenizer([input_text], return_tensors="pt", padding=True)
     output = model(input_ids=inputs["input_ids"],
-                   attention_mask=inputs["attention_mask"],
-                   do_sample=False)
+                   attention_mask=inputs["attention_mask"])
     print(output)
 
 
