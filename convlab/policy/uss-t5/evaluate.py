@@ -70,12 +70,8 @@ def generate_result(model_checkpoint, data):
     model = T5ForConditionalGeneration.from_pretrained(model_checkpoint)
     data = pd.read_csv(data, index_col=False).astype(str)
     results = []
-    i = 0
     for input_text, target_text in tqdm(zip(data["input_text"], data["target_text"]), ascii=True):
-        if i > 100:
-            break
         if "satisfaction score" in input_text:
-            i = i + 1
             inputs = tokenizer([input_text], return_tensors="pt", padding=True)
             output = model.generate(input_ids=inputs["input_ids"],
                                     attention_mask=inputs["attention_mask"],
