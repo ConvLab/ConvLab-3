@@ -31,7 +31,7 @@ def generate_result(model_checkpoint, data):
     for input_text, target_text in tqdm(zip(data["input_text"], data["target_text"]), ascii=True):
         if prefix in input_text:
             text = input_text.replace(prefix, '')
-            target = t2i(target_text)
+            target = t2i[target_text]
             model_input = tokenizer(
                 [text], return_tensors="pt", padding=True)
             output = model(input_ids=model_input["input_ids"],
