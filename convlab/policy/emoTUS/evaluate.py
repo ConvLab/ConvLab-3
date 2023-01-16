@@ -65,6 +65,13 @@ class Evaluator:
             self.r["golden_sentiment"] = []
             self.r["gen_sentiment"] = []
 
+        sent2emo = json.load(
+            open("convlab/policy/emoTUS/sent2emo.json"))
+        self.emo2sent = {}
+        for sent, emotions in sent2emo.items():
+            for emo in emotions:
+                self.emo2sent[emo] = sent
+
     def _append_result(self, temp):
         for x in self.r:
             self.r[x].append(temp[x])
@@ -239,6 +246,15 @@ class Evaluator:
             sent_score = sentiment_score(
                 self.r["golden_sentiment"],
                 self.r["gen_sentiment"],
+                self.model_checkpoint,
+                time=self.time)
+        else:
+            # transfer emotions to sentiment if the model do not generate sentiment
+            golden_sentiment = [self.emo2sent[emo] for emo in golden_emotions]
+            gen_sentiment = [self.emo2sent[emo] for emo in gen_emotions]
+            sent_score = sentiment_score(
+                golden_sentiment,
+                gen_sentiment,
                 self.model_checkpoint,
                 time=self.time)
 
