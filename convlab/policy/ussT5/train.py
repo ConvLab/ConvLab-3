@@ -91,7 +91,7 @@ def main():
         return model_inputs
 
     args = arg_parser()
-    base_name = "convlab/policy/uss-t5"
+    base_name = "convlab/policy/ussT5"
     tokenizer = T5Tokenizer.from_pretrained("t5-base")
     model = T5ForConditionalGeneration.from_pretrained("t5-base")
     data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model)
@@ -105,8 +105,12 @@ def main():
     train_set, data["test"] = train_test_split(raw_data, test_size=0.1)
     data["train"], data["validation"] = train_test_split(
         train_set, test_size=0.1)
+    folder_name = os.path.join(base_name, "data", args.task)
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+    print("Building data...")
     for data_type in data:
-        data[data_type].to_csv(os.path.join(base_name, f"{data_type}.csv"))
+        data[data_type].to_csv(os.path.join(folder_name, f"{data_type}.csv"))
         data[data_type] = preprocess_function(data[data_type])
         data[data_type] = ForT5Dataset(inputs=data[data_type]["input_ids"],
                                        targets=data[data_type]["labels"])
