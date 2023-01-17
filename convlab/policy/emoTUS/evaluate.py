@@ -39,11 +39,12 @@ def arg_parser():
     parser.add_argument("--no-neutral", action="store_true",
                         help="skip neutral emotion")
     parser.add_argument("--use-sentiment", action="store_true")
+    parser.add_argument("--weight", type=float, default=None)
     return parser.parse_args()
 
 
 class Evaluator:
-    def __init__(self, model_checkpoint, dataset, model_weight=None, only_action=False, use_sentiment=False):
+    def __init__(self, model_checkpoint, dataset, model_weight=None, only_action=False, use_sentiment=False, weight=None):
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
         self.model_weight = model_weight
@@ -51,7 +52,11 @@ class Evaluator:
         self.use_sentiment = use_sentiment
 
         self.usr = UserActionPolicy(
-            model_checkpoint, only_action=only_action, dataset=self.dataset, use_sentiment=use_sentiment)
+            model_checkpoint,
+            only_action=only_action,
+            dataset=self.dataset,
+            use_sentiment=use_sentiment,
+            weight=weight)
         self.usr.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
 
         self.r = {"input": [],
@@ -334,7 +339,8 @@ def main():
                      args.dataset,
                      args.model_weight,
                      args.only_action,
-                     args.use_sentiment)
+                     args.use_sentiment,
+                     weight=args.weight)
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
     print("input_file", args.input_file)

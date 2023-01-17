@@ -18,11 +18,12 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.use_sentiment = kwargs.get("use_sentiment", False)
         super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
         print("sentiment", self.use_sentiment)
-
+        weight = kwargs.get("weight", None)
         self.kg = KnowledgeGraph(
             tokenizer=self.tokenizer,
             dataset="emowoz",
-            use_sentiment=self.use_sentiment)
+            use_sentiment=self.use_sentiment,
+            weight=weight)
         data_emotion = json.load(open("convlab/policy/emoTUS/emotion.json"))
         self.emotion_list = [""]*len(data_emotion)
         for emotion, index in data_emotion.items():
