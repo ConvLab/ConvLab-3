@@ -105,5 +105,9 @@ test.py
 *convlab/policy/vector/action_dicts
 
 *.egg-info
+.eggs/*
 pre-trained-models/
 venv
+*.zip
+*/dummy_data.json
+*.csv
