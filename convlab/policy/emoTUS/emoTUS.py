@@ -59,7 +59,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                           "goal": self.goal.get_goal_list(),
                           "history": history,
                           "turn": str(int(self.time_step/2))}
-            for user,  info in self.user_info.items():
+            print(self.user_info)
+            for user, info in self.user_info.items():
                 input_dict[user] = info
             inputs = json.dumps(input_dict)
 
@@ -98,9 +99,9 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.emotion = output["emotion"]
         if self.use_sentiment:
             self.sentiment = output["sentiment"]
-            print("---> sentiment", self.sentiment)
-            print("---> emotion", self.emotion)
-            print("---> self.utterance", self.utterance)
+            # print("---> sentiment", self.sentiment)
+            # print("---> emotion", self.emotion)
+            # print("---> self.utterance", self.utterance)
 
         if self.is_finish():
             self.emotion, self.semantic_action, self.utterance = self._good_bye()
