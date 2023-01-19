@@ -620,7 +620,6 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         response = self.policy.predict(sys_act, mode)
-        print(response)
         self.semantic_action = self.policy.semantic_action
         return response
 

@@ -48,8 +48,6 @@ class Environment():
 
         dialog_act = self.sys_nlu.predict(
             observation) if self.sys_nlu else observation
-        print(observation)
-        print(dialog_act)
         self.sys_dst.state['user_action'] = dialog_act
         self.sys_dst.state['history'].append(["sys", model_response])
         self.sys_dst.state['history'].append(["user", observation])
