@@ -239,17 +239,17 @@ if __name__ == '__main__':
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
     policy_sys.save_dir = save_path
 
-    # logging.info(f"Evaluating at start - {time_now}" + '-'*60)
-    # time_now = time.time()
-    # eval_dict = eval_policy(conf, policy_sys, env, sess,
-    #                         save_eval, log_save_path)
-    # logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
+    logging.info(f"Evaluating at start - {time_now}" + '-'*60)
+    time_now = time.time()
+    eval_dict = eval_policy(conf, policy_sys, env, sess,
+                            save_eval, log_save_path)
+    logging.info(f"Finished evaluating, time spent: {time.time() - time_now}")
 
-    # for key in eval_dict:
-    #     tb_writer.add_scalar(key, eval_dict[key], 0)
-    # best_complete_rate = eval_dict['complete_rate']
-    # best_success_rate = eval_dict['success_rate_strict']
-    # best_return = eval_dict['avg_return']
+    for key in eval_dict:
+        tb_writer.add_scalar(key, eval_dict[key], 0)
+    best_complete_rate = eval_dict['complete_rate']
+    best_success_rate = eval_dict['success_rate_strict']
+    best_return = eval_dict['avg_return']
 
     logging.info("Start of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
