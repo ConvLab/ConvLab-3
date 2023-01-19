@@ -8,7 +8,7 @@
         "epoch": 100,
         "eval_frequency": 5,
         "process_num": 1,
-        "num_eval_dialogues": 200,
+        "num_eval_dialogues": 20,
         "sys_semantic_to_usr": false
     },
     "vectorizer_sys": {
