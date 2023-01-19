@@ -294,7 +294,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.emotion = "Neutral"
         # TODO sentiment? event? user?
         self.user_info = self.goal.emotion_info()
-        print("user_info", self.user_info)
 
     def _read_goal(self, data_goal):
         self.goal = Goal(goal=data_goal)
