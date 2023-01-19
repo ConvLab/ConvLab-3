@@ -41,12 +41,13 @@ class BERTNLU(NLU):
         dataloader = Dataloader(intent_vocab=intent_vocab, tag_vocab=tag_vocab,
                                 pretrained_weights=config['model']['pretrained_weights'])
 
-        logging.info('intent num:' +  str(len(intent_vocab)))
+        logging.info('intent num:' + str(len(intent_vocab)))
         logging.info('tag num:' + str(len(tag_vocab)))
 
         if not os.path.exists(output_dir):
             model_downloader(root_dir, model_file)
-        model = JointBERT(config['model'], DEVICE, dataloader.tag_dim, dataloader.intent_dim)
+        model = JointBERT(config['model'], DEVICE,
+                          dataloader.tag_dim, dataloader.intent_dim)
 
         state_dict = torch.load(os.path.join(
             output_dir, 'pytorch_model.bin'), DEVICE)
@@ -74,7 +75,7 @@ class BERTNLU(NLU):
         for token in token_list:
             token = token.strip()
             self.nlp.tokenizer.add_special_case(
-                #token, [{ORTH: token, LEMMA: token, POS: u'NOUN'}])
+                # token, [{ORTH: token, LEMMA: token, POS: u'NOUN'}])
                 token, [{ORTH: token}])
         logging.info("BERTNLU loaded")
 
@@ -97,7 +98,8 @@ class BERTNLU(NLU):
         intents = []
         da = {}
 
-        word_seq, tag_seq, new2ori = self.dataloader.bert_tokenize(ori_word_seq, ori_tag_seq)
+        word_seq, tag_seq, new2ori = self.dataloader.bert_tokenize(
+            ori_word_seq, ori_tag_seq)
         word_seq = word_seq[:510]
         tag_seq = tag_seq[:510]
         batch_data = [[ori_word_seq, ori_tag_seq, intents, da, context_seq,

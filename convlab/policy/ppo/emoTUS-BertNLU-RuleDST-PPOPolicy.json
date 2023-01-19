@@ -23,9 +23,10 @@
     },
     "nlu_sys": {
         "BertNLU": {
-            "class_path": "convlab.nlu.jointBERT.multiwoz.BERTNLU",
+            "class_path": "convlab.nlu.jointBERT.unified_datasets.BERTNLU",
             "ini_params": {
-                "config_file": "multiwoz_all.json",
+                "mode": "all",
+                "config_file": "multiwoz21_sys_context3.json",
                 "model_file": "https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/bert_multiwoz_all.zip"
             }
         }
