@@ -1,0 +1,19 @@
+{
+  "model_type": "SetSUMBT",
+  "dataset": "multiwoz21",
+  "dataset_train_ratio": 0.01,
+  "no_action_prediction": true,
+  "model_type": "bert",
+  "model_name_or_path": "bert-base-uncased",
+  "candidate_embedding_model_name": "bert-base-uncased",
+  "transformers_local_files_only": false,
+  "no_set_similarity": false,
+  "candidate_pooling": "cls",
+  "num_train_epochs": 1000,
+  "patience": 100,
+  "warmup_proportion": 0.01,
+  "train_batch_size": 3,
+  "dev_batch_size": 16,
+  "test_batch_size": 16,
+  "run_nbt": true
+}

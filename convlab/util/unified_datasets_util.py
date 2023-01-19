@@ -159,20 +159,21 @@ def load_database(dataset_name: str):
 
 
 def load_unified_data(
-    dataset,
-    data_split='all',
-    speaker='all',
-    utterance=False,
-    dialogue_acts=False,
-    state=False,
-    db_results=False,
-    use_context=False,
-    context_window_size=0,
-    terminated=False,
-    goal=False,
-    active_domains=False,
-    split_to_turn=True
-):
+        dataset, 
+        data_split='all', 
+        speaker='all', 
+        utterance=False, 
+        dialogue_acts=False, 
+        state=False, 
+        db_results=False,
+        delex_utterance=False,
+        use_context=False, 
+        context_window_size=0, 
+        terminated=False, 
+        goal=False, 
+        active_domains=False,
+        split_to_turn=True
+    ):
     """
     > This function takes in a dataset, and returns a dictionary of data splits, where each data split
     is a list of samples
@@ -200,8 +201,7 @@ def load_unified_data(
     data_splits = dataset.keys() if data_split == 'all' else [data_split]
     assert speaker in ['user', 'system', 'all']
     assert not use_context or context_window_size > 0
-    info_list = list(
-        filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results']))
+    info_list = list(filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results', 'delex_utterance']))
     info_list += ['utt_idx']
     data_by_split = {}
     for data_split in data_splits:
@@ -452,10 +452,13 @@ def create_delex_data(dataset, delex_func=lambda d, s, v: f'[({d})-({s})]', igno
                             # has value
                             for value in values.split('|'):
                                 if value.lower() not in ignore_values:
-                                    placeholder = delex_func(
-                                        domain, slot, value)
-                                    pattern = re.compile(
-                                        r'\b({})\b'.format(value), flags=re.I)
+                                    placeholder = delex_func(domain, slot, value)
+                                    #TODO: value = ?
+                                    value = '\?' if value == '?' else value
+                                    try:
+                                        pattern = re.compile(r'\b({})\b'.format(value), flags=re.I)
+                                    except Exception:
+                                        print(value)
                                     if delex_inplace(delex_utt, pattern):
                                         delex_vocab.add(placeholder)
 

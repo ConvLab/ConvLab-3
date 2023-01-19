@@ -28,7 +28,7 @@ class MultiWozMDBT(MDBT):
         if data is None:
             loader = AgentDSTDataloader(MultiWOZDataloader())
             data = loader.load_data()
-        self.file_url = 'https://convlab.blob.core.windows.net/convlab-2/mdbt_multiwoz_sys.zip'
+        self.file_url = 'https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/mdbt_multiwoz_sys.zip'
         local_path = os.path.dirname(os.path.abspath(__file__))
         self.data_dir = os.path.join(local_path, data_dir)  # abstract data path
 

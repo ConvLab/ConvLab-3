@@ -6,7 +6,7 @@
 		"batchsz": 1000,
 		"seed": 0,
 		"epoch": 10,
-		"eval_frequency": 1,
+		"eval_frequency": 5,
 		"process_num": 4,
 		"sys_semantic_to_usr": false,
 		"num_eval_dialogues": 500

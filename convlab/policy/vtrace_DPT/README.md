@@ -47,10 +47,36 @@ Moreover, you can specify the full dialogue pipeline here, such as the user poli
 
 Parameters that are tied to the RL algorithm and the model architecture can be changed in config.json.
 
+NOTE: you can specify which underlying dataset should be used for creating the action and state space through changing in your **environment-config**
+
+```
+environment_config["vectorizer_sys"]["dataset_name"] = dataset_name
+```
+For instance, dataset_name = "multiwoz21" or dataset_name = "sgd".
 
 ## Evaluation
 
 For creating evaluation plots and running evaluation dialogues, please have a look in the README of the policy folder.
+
+## Interface
+
+To use trained models in a dialog system, import them through:
+
+```python
+from convlab.policy.vector.vector_nodes import VectorNodes
+from convlab.policy.vtrace_DPT import VTRACE
+
+vectorizer = VectorNodes(dataset_name='multiwoz21',
+                         use_masking=False,
+                         manually_add_entity_names=True,
+                         seed=0,
+                         filter_state=True)
+ddpt = VTRACE(is_train=True,
+              seed=0,
+              vectorizer=vectorizer,
+              load_path="ddpt")
+```
+Specify the appropriate load_path in VTRACE.
 
 ## References
 

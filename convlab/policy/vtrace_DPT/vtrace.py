@@ -5,6 +5,7 @@ import os
 import sys
 import torch
 import torch.nn as nn
+import urllib.request
 
 from torch import optim
 from convlab.policy.vtrace_DPT.transformer_model.EncoderDecoder import EncoderDecoder
@@ -59,10 +60,16 @@ class VTRACE(nn.Module, Policy):
         self.last_action = None
 
         self.vector = vectorizer
+        self.cfg['dataset_name'] = self.vector.dataset_name
         self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
         self.value_helper = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
 
         try:
+            if load_path == "from_pretrained":
+                urllib.request.urlretrieve(
+                    "https://huggingface.co/ConvLab/ddpt-policy-multiwoz21/resolve/main/supervised.pol.mdl",
+                    f"{dir_name}/ddpt.pol.mdl")
+                load_path = f"{dir_name}/ddpt"
             self.load_policy(load_path)
         except Exception as e:
             print(f"Could not load the policy, Exception: {e}")
@@ -86,7 +93,8 @@ class VTRACE(nn.Module, Policy):
         try:
             self.load_optimizer_dicts(load_path)
         except Exception as e:
-            print(f"Could not load optimiser dicts, Exception: {e}")
+            pass
+            #print(f"Could not load optimiser dicts, Exception: {e}")
 
     def predict(self, state):
         """
@@ -338,6 +346,7 @@ class VTRACE(nn.Module, Policy):
             if os.path.exists(policy_mdl):
                 self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
                 self.value_helper.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
+                print(f"Loaded policy checkpoint from file: {policy_mdl}")
                 logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
                 break
 

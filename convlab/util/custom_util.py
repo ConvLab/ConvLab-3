@@ -25,8 +25,7 @@ import signal
 
 
 slot_mapping = {"pricerange": "price range", "post": "postcode", "arriveBy": "arrive by", "leaveAt": "leave at",
-                "Id": "trainid", "ref": "reference"}
-
+                "Id": "train id", "ref": "reference", "trainID": "train id"}
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -434,9 +433,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         save_file.close()
     # save dialogue_info and clear mem
 
-    return np.average(task_success['All_user_sim']), np.average(task_success['All_evaluator']), \
-        np.average(task_success['All_evaluator_strict']), np.average(task_success['total_return']), \
-        np.average(task_success['turns']), np.average(task_success['avg_actions']), task_success, \
+    return task_success['All_user_sim'], task_success['All_evaluator'], task_success['All_evaluator_strict'], \
+        task_success['total_return'], task_success['turns'], task_success['avg_actions'], task_success, \
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
         np.average(task_success['total_offer_acts']), np.average(

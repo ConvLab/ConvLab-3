@@ -986,7 +986,7 @@ if __name__ == '__main__':
     # sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
 
     # user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json',
-    #                    model_file='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip')
+    #                    model_file='https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/bert_multiwoz_sys_context.zip')
     # user_dst = None
     # user_policy = RulePolicy(character='usr')
     # user_nlg = TemplateNLG(is_user=True)
@@ -1005,7 +1005,7 @@ if __name__ == '__main__':
     dst = RuleDST()
     #
     # user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json',
-    #                    model_file='https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_sys_context.zip')
+    #                    model_file='https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/bert_multiwoz_sys_context.zip')
     #
     goal_generator = GoalGenerator()
     # while True:

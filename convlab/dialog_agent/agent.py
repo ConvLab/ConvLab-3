@@ -64,7 +64,7 @@ class PipelineAgent(Agent):
            =====   =====    ======  ===     ==      ===
     """
 
-    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str):
+    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str, return_semantic_acts: bool = False):
         """The constructor of PipelineAgent class.
 
         Here are some special combination cases:
@@ -95,6 +95,7 @@ class PipelineAgent(Agent):
         self.dst = dst
         self.policy = policy
         self.nlg = nlg
+        self.return_semantic_acts = return_semantic_acts
 
         self.init_session()
         self.agent_saves = []
@@ -199,6 +200,8 @@ class PipelineAgent(Agent):
 
         self.turn += 1
         self.agent_saves.append(self.save_info())
+        if self.return_semantic_acts:
+            return self.output_action
         return model_response
 
     def save_info(self):

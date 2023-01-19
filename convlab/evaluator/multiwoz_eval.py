@@ -6,10 +6,10 @@ import numpy as np
 import pdb
 
 from copy import deepcopy
-from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
+# from data.unified_datasets.multiwoz21.preprocess import reverse_da, reverse_da_slot_name_map
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_SYS_DA
 from convlab.evaluator.evaluator import Evaluator
-from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
+# from data.unified_datasets.multiwoz21.preprocess import reverse_da_slot_name_map
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import unified_format, act_dict_to_flat_tuple
 from convlab.util.multiwoz.dbquery import Database
 from convlab.util import relative_import_module_from_unified_datasets
@@ -29,6 +29,8 @@ REF_SYS_DA_M['taxi']['car'] = 'car type'
 
 reverse_da = relative_import_module_from_unified_datasets(
     'multiwoz21', 'preprocess.py', 'reverse_da')
+reverse_da_slot_name_map = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', 'reverse_da_slot_name_map')
 
 
 requestable = \

@@ -45,7 +45,7 @@ See `nlu.py` under `multiwoz` and `unified_datasets` directories.
 
 ## Performance on unified format datasets
 
-To illustrate that it is easy to use the model for any dataset that in our unified format, we report the performance on several datasets in our unified format. We follow `README.md` and config files in `unified_datasets/` to generate `predictions.json`, then evaluate it using `../evaluate_unified_datasets.py`. Note that we use almost the same hyper-parameters for different datasets, which may not be optimal.
+To illustrate that it is easy to use the model for any dataset that in our unified format, we report the performance on several datasets in our unified format. We follow `README.md` and config files in `unified_datasets/` to generate `predictions.json`, then evaluate it using `../evaluate_unified_datasets.py`. Note that we use almost the same hyper-parameters for different datasets, which may not be optimal.  Trained models are available at [Hugging Face Hub](https://huggingface.co/ConvLab/milu).
 
 <table>
 <thead>

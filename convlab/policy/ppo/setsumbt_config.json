@@ -26,7 +26,7 @@
 		"setsumbt-mul": {
 			"class_path": "convlab.dst.setsumbt.SetSUMBTTracker",
 			"ini_params": {
-				"model_path": "/gpfs/project/niekerk/models/setsumbt_models/SetSUMBT+ActPrediction-multiwoz21-roberta-gru-cosine-distribution_distillation-Seed0-30-08-22-15-00"
+				"model_path": "https://huggingface.co/ConvLab/setsumbt-dst_nlu-multiwoz21-EnD2/resolve/main/SetSUMBT-nlu-multiwoz21-roberta-gru-cosine-distribution_distillation-Seed0.zip"
 			}
 		}
 	},

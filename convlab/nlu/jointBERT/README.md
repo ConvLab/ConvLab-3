@@ -5,7 +5,7 @@ On top of the pre-trained BERT, BERTNLU use an MLP for slot tagging and another 
 Dialog acts are split into two groups, depending on whether the values are in the utterances:
 
 - For dialogue acts whose values are in the utterances, we use **slot tagging** to extract the values. For example, `"Find me a cheap hotel"`, its dialog act is `{intent=Inform, domain=hotel, slot=price, value=cheap}`, and the corresponding BIO tag sequence is `["O", "O", "O", "B-inform-hotel-price", "O"]`. An MLP classifier takes a token's representation from BERT and outputs its tag.
-- For dialogue acts whose values may not be presented in the utterances, we treat them as **intents** of the utterances. Another MLP takes embeddings of `[CLS]` of a utterance as input and does the binary classification for each intent independently. Since some intents are rare, we set the weight of positive samples as $\lg(\frac{\# \ negative\ samples}{\# \ positive\ samples})$ empirically for each intent.
+- For dialogue acts whose values may not be presented in the utterances, we treat them as **intents** of the utterances. Another MLP takes embeddings of `[CLS]` of a utterance as input and does the binary classification for each intent independently. Since some intents are rare, we set the weight of positive samples as $\lg(\frac{num\_negative\_samples}{num\_positive\_samples})$ empirically for each intent.
 
 The model can also incorporate context information by setting the `context=true` in the config file. The context utterances will be concatenated (separated by `[SEP]`) and fed into BERT. Then the `[CLS]` embedding serves as context representaion and is concatenated to all token representations in the target utterance right before the slot and intent classifiers.
 
@@ -33,13 +33,14 @@ The result (`output.json`) will be saved under the `output_dir` of the config fi
 
 ## Performance on unified format datasets
 
-To illustrate that it is easy to use the model for any dataset that in our unified format, we report the performance on several datasets in our unified format. We follow `README.md` and config files in `unified_datasets/` to generate `predictions.json`, then evaluate it using `../evaluate_unified_datasets.py`. Note that we use almost the same hyper-parameters for different datasets, which may not be optimal.
+To illustrate that it is easy to use the model for any dataset that in our unified format, we report the performance on several datasets in our unified format. We follow `README.md` and config files in `unified_datasets/` to generate `predictions.json`, then evaluate it using `../evaluate_unified_datasets.py`. Note that we use almost the same hyper-parameters for different datasets, which may not be optimal. Trained models are available at [Hugging Face Hub](https://huggingface.co/ConvLab/bert-base-nlu).
 
 <table>
 <thead>
   <tr>
     <th></th>
     <th colspan=2>MultiWOZ 2.1</th>
+    <th colspan=2>MultiWOZ 2.1 all utterances</th>
     <th colspan=2>Taskmaster-1</th>
     <th colspan=2>Taskmaster-2</th>
     <th colspan=2>Taskmaster-3</th>
@@ -52,12 +53,14 @@ To illustrate that it is easy to use the model for any dataset that in our unifi
     <th>Acc</th><th>F1</th>
     <th>Acc</th><th>F1</th>
     <th>Acc</th><th>F1</th>
+    <th>Acc</th><th>F1</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td>BERTNLU</td>
     <td>74.5</td><td>85.9</td>
+    <td>59.5</td><td>80.0</td>
     <td>72.8</td><td>50.6</td>
     <td>79.2</td><td>70.6</td>
     <td>86.1</td><td>81.9</td>
@@ -65,6 +68,7 @@ To illustrate that it is easy to use the model for any dataset that in our unifi
   <tr>
     <td>BERTNLU (context=3)</td>
     <td>80.6</td><td>90.3</td>
+    <td>58.1</td><td>79.6</td>
     <td>74.2</td><td>52.7</td>
     <td>80.9</td><td>73.3</td>
     <td>87.8</td><td>83.8</td>
