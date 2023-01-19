@@ -1,0 +1,56 @@
+{
+    "model": {
+        "load_path": "convlab/policy/ppo/pretrained_models/mle",
+        "pretrained_load_path": "",
+        "use_pretrained_initialisation": false,
+        "batchsz": 2,
+        "seed": 0,
+        "epoch": 100,
+        "eval_frequency": 5,
+        "process_num": 1,
+        "num_eval_dialogues": 2,
+        "sys_semantic_to_usr": false
+    },
+    "vectorizer_sys": {
+        "uncertainty_vector_mul": {
+            "class_path": "convlab.policy.vector.vector_binary.VectorBinary",
+            "ini_params": {
+                "use_masking": true,
+                "manually_add_entity_names": true,
+                "seed": 0
+            }
+        }
+    },
+    "nlu_sys": {
+        "BertNLU": {
+            "class_path": "convlab.nlu.jointBERT.multiwoz.BERTNLU",
+            "ini_params": {
+                "config_file": "multiwoz_all.json",
+                "model_file": "https://huggingface.co/ConvLab/ConvLab-2_models/resolve/main/bert_multiwoz_all.zip"
+            }
+        }
+    },
+    "dst_sys": {
+        "RuleDST": {
+            "class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
+            "ini_params": {}
+        }
+    },
+    "sys_nlg": {},
+    "nlu_usr": {},
+    "dst_usr": {},
+    "policy_usr": {
+        "RulePolicy": {
+            "class_path": "convlab.policy.emoTUS.emoTUS.UserPolicy",
+            "ini_params": {
+                "model_checkpoint": "convlab/policy/emoTUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17",
+                "character": "usr",
+                "mode": "language",
+                "only_action": false,
+                "use_sentiment": true,
+                "sample": true
+            }
+        }
+    },
+    "usr_nlg": {}
+}

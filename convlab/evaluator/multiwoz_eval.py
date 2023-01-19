@@ -27,7 +27,8 @@ for dom, ref_slots in REF_SYS_DA.items():
 REF_SYS_DA_M['taxi']['phone'] = 'phone'
 REF_SYS_DA_M['taxi']['car'] = 'car type'
 
-reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
+reverse_da = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', 'reverse_da')
 
 
 requestable = \
@@ -162,7 +163,8 @@ class MultiWozEvaluator(Evaluator):
         new_acts = list()
         for intent, domain, slot, value in da_turn:
             if intent.lower() == 'book':
-                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain == domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
+                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain ==
+                       domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
                 ref = ref[0] if ref else ''
                 value = ref
             new_acts.append([intent, domain, slot, value])

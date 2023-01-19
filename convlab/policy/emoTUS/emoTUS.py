@@ -340,10 +340,12 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         response = self.policy.predict(sys_act, mode)
+        self.semantic_action = self.policy.semantic_action
         return response
 
     def init_session(self, goal=None):
         self.policy.init_session(goal)
+        self.semantic_action = []
 
     def is_terminated(self):
         return self.policy.is_terminated()

@@ -101,7 +101,7 @@ class PipelineAgent(Agent):
         self.history = []
         self.turn = 0
 
-        #logging.info("Pipeline Agent info_dict check")
+        # logging.info("Pipeline Agent info_dict check")
         if hasattr(self.nlu, 'info_dict') == False:
             logging.warning('nlu info_dict is not initialized')
         if hasattr(self.dst, 'info_dict') == False:
@@ -110,7 +110,7 @@ class PipelineAgent(Agent):
             logging.warning('policy info_dict is not initialized')
         if hasattr(self.nlg, 'info_dict') == False:
             logging.warning('nlg info_dict is not initialized')
-        #logging.info("Done")
+        # logging.info("Done")
 
     def state_replace(self, agent_state):
         """
@@ -256,6 +256,8 @@ class PipelineAgent(Agent):
         return self.input_action
 
     def get_out_da(self):
+        if self.name == "user" and hasattr(self.policy, "semantic_action"):
+            return self.policy.semantic_action
         return self.output_action
 
 

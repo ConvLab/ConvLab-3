@@ -18,7 +18,9 @@ from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.util.multiwoz.multiwoz_slot_trans import REF_USR_DA, REF_SYS_DA
 from convlab.util import relative_import_module_from_unified_datasets
 
-reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
+reverse_da, normalize_domain_slot_value = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', ['reverse_da', 'normalize_domain_slot_value'])
+
 
 def unified_format(acts):
     new_acts = {'categorical': []}
@@ -136,8 +138,9 @@ class UserPolicyAgendaMultiWoz(Policy):
         action = {}
         while len(action) == 0:
             # A -> A' + user_action
-            action = self.agenda.get_action(random.randint(1, self.max_initiative))
-            #action = self.agenda.get_action(self.max_initiative)
+            action = self.agenda.get_action(
+                random.randint(1, self.max_initiative))
+            # action = self.agenda.get_action(self.max_initiative)
 
             # transform to DA
             action = self._transform_usract_out(action)
