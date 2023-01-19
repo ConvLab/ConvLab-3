@@ -27,7 +27,7 @@ class Environment():
         s, r, t = self.step([])
         return self.sys_dst.state
 
-    def step(self, action):
+    def step(self, action, user_reward=False):
         # save last system action
         self.sys_dst.state['system_action'] = action
         if not self.use_semantic_acts:
@@ -59,9 +59,11 @@ class Environment():
         state = deepcopy(state)
 
         terminated = self.usr.is_terminated()
-
-        if self.evaluator:
-            reward = self.evaluator.get_reward(terminated)
+        if not user_reward:
+            if self.evaluator:
+                reward = self.evaluator.get_reward(terminated)
+            else:
+                reward = self.usr.get_reward()
         else:
             reward = self.usr.get_reward()
 

@@ -309,6 +309,26 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         else:
             return "Dissatisfied", [["bye", "general", "None", "None"]], "bye"
 
+    def get_reward(self):
+        if self.is_finish():
+            if self.is_success():
+                reward = self.reward["success"]
+                self.success = True
+            else:
+                reward = self.reward["fail"]
+                self.success = False
+
+        else:
+            reward = -1
+            if self.use_sentiment:
+                if self.sentiment == "Positive":
+                    reward += 1
+                elif self.sentiment == "Negative":
+                    reward -= 1
+
+            self.success = None
+        return reward
+
 
 class UserPolicy(Policy):
     def __init__(self,
@@ -350,8 +370,8 @@ class UserPolicy(Policy):
     def is_terminated(self):
         return self.policy.is_terminated()
 
-    def get_reward(self, sys_response=None):
-        return self.policy.get_reward(sys_response)
+    def get_reward(self):
+        return self.policy.get_reward()
 
     def get_goal(self):
         if hasattr(self.policy, 'get_goal'):
