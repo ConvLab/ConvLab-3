@@ -41,9 +41,11 @@ class Environment():
                 if intent == "book":
                     self.sys_dst.state['booked'][domain] = [{slot: value}]
         observation = self.usr.response(model_response)
-
+        print("sys", action)
+        print("usr", observation)
         if self.evaluator:
-            self.evaluator.add_sys_da(self.usr.get_in_da(), self.sys_dst.state['belief_state'])
+            self.evaluator.add_sys_da(
+                self.usr.get_in_da(), self.sys_dst.state['belief_state'])
             self.evaluator.add_usr_da(self.usr.get_out_da())
 
         dialog_act = self.sys_nlu.predict(
@@ -57,6 +59,7 @@ class Environment():
         self.sys_dst.state['history'].append(["usr", observation])
 
         state = deepcopy(state)
+        print("state", state)
 
         terminated = self.usr.is_terminated()
 

@@ -59,7 +59,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                           "goal": self.goal.get_goal_list(),
                           "history": history,
                           "turn": str(int(self.time_step/2))}
-            print(self.user_info)
             for user, info in self.user_info.items():
                 input_dict[user] = info
             inputs = json.dumps(input_dict)

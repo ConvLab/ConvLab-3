@@ -46,7 +46,7 @@ class Goal(GenTUSGoal):
         event = {}
         z = random()
         if z > 0.95:
-            self.user_persona = "Impolite"
+            self.user_persona["user"] = "Impolite"
         # TODO: should check domains only in the user goal
 
         for d in self.domains:
