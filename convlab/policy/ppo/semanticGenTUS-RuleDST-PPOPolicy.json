@@ -32,7 +32,7 @@
 	"nlu_usr": {},
 	"dst_usr": {},
 	"policy_usr": {
-		"RulePolicy": {
+		"GenTUS": {
 			"class_path": "convlab.policy.genTUS.stepGenTUS.UserPolicy",
 			"ini_params": {
 				"model_checkpoint": "convlab/policy/genTUS/unify/experiments/multiwoz21_0_1.0",
