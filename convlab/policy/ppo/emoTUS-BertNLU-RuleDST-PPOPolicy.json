@@ -41,7 +41,7 @@
     "nlu_usr": {},
     "dst_usr": {},
     "policy_usr": {
-        "RulePolicy": {
+        "emoTUS": {
             "class_path": "convlab.policy.emoTUS.emoTUS.UserPolicy",
             "ini_params": {
                 "model_checkpoint": "convlab/policy/emoTUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17",
