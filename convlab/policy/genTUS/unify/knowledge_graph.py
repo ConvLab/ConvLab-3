@@ -108,7 +108,7 @@ class KnowledgeGraph:
             hash_id = self._get_token_id(x)[0]
             s = outputs[:, hash_id].item()
             if weight:
-                s /= weight[x]
+                s *= weight[x]
             score[s] = {"token_id": self._get_token_id(x),
                         "token_name": x}
         return score

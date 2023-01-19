@@ -9,6 +9,7 @@ from convlab.policy.genTUS.stepGenTUS import \
     UserActionPolicy as GenTUSUserActionPolicy
 from convlab.policy.policy import Policy
 from convlab.util.custom_util import model_downloader
+from convlab.policy.emoTUS.unify.Goal import Goal
 
 DEBUG = False
 
@@ -16,6 +17,7 @@ DEBUG = False
 class UserActionPolicy(GenTUSUserActionPolicy):
     def __init__(self, model_checkpoint, mode="semantic", only_action=True, max_turn=40, **kwargs):
         self.use_sentiment = kwargs.get("use_sentiment", False)
+        print("use_sentiment", self.use_sentiment)
         super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
         print("sentiment", self.use_sentiment)
         weight = kwargs.get("weight", None)
@@ -53,10 +55,14 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         # TODO add user info? impolite? -> check self.use_sentiment
         if self.use_sentiment:
             # TODO how to get event and user politeness?
-            inputs = json.dumps({"system": sys_act,
-                                 "goal": self.goal.get_goal_list(),
-                                 "history": history,
-                                 "turn": str(int(self.time_step/2))})
+            input_dict = {"system": sys_act,
+                          "goal": self.goal.get_goal_list(),
+                          "history": history,
+                          "turn": str(int(self.time_step/2))}
+            for user,  info in self.user_info.items():
+                input_dict[user] = info
+            inputs = json.dumps(input_dict)
+
         else:
             inputs = json.dumps({"system": sys_act,
                                  "goal": self.goal.get_goal_list(),
@@ -85,14 +91,21 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 raw_output = self._generate_action(
                     raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
         output = self._parse_output(raw_output)
-        self.emotion = output["emotion"]
-        print(self.emotion)
         self.semantic_action = self._remove_illegal_action(output["action"])
         if not self.only_action:
             self.utterance = output["text"]
 
+        self.emotion = output["emotion"]
+        if self.use_sentiment:
+            self.sentiment = output["sentiment"]
+            print("---> sentiment", self.sentiment)
+            print("---> emotion", self.emotion)
+            print("---> self.utterance", self.utterance)
+
         if self.is_finish():
             self.emotion, self.semantic_action, self.utterance = self._good_bye()
+            if self.use_sentiment:
+                self.sentiment = "Neutral"
 
         self.goal.update_user_goal(action=self.semantic_action, char="usr")
         self.vector.update_mentioned_domain(self.semantic_action)
@@ -280,6 +293,14 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.utterance = ""
         self.emotion = "Neutral"
         # TODO sentiment? event? user?
+        self.user_info = self.goal.emotion_info()
+        print("user_info", self.user_info)
+
+    def _read_goal(self, data_goal):
+        self.goal = Goal(goal=data_goal)
+
+    def _new_goal(self, remove_domain="police", domain_len=None):
+        self.goal = Goal(goal_generator=self.goal_gen)
 
     def _good_bye(self):
         # add emotion
@@ -345,14 +366,17 @@ if __name__ == "__main__":
 
     set_seed(20220220)
     # Test semantic level behaviour
-    model_checkpoint = 'convlab/policy/emoTUS/unify/experiments/emowoz_0_1/22-12-05-11-23'
+    model_checkpoint = 'convlab/policy/emoTUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17'
     usr_policy = UserPolicy(
         model_checkpoint,
         mode="language",
-        only_action=False)
+        only_action=False,
+        use_sentiment=True,
+        sample=True)
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
+    usr.init_session()
     print(usr.policy.get_goal())
 
     print(usr.response([]))

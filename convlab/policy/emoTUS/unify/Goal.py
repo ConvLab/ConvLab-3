@@ -3,6 +3,8 @@ The user goal for unify data format
 """
 from convlab.policy.genTUS.unify.Goal import Goal as GenTUSGoal
 from convlab.policy.genTUS.unify.Goal import DEF_VAL_UNK
+from random import random
+from convlab.util.custom_util import set_seed
 
 
 class Goal(GenTUSGoal):
@@ -39,25 +41,68 @@ class Goal(GenTUSGoal):
             else:
                 self.domain_goals[domain][intent][slot] = value
 
+    def emotion_info(self):
+        self.user_persona = {"user": "Polite"}
+        event = {}
+        z = random()
+        if z > 0.95:
+            self.user_persona = "Impolite"
+        # TODO: should check domains only in the user goal
 
-def emotion_info(dialog):
+        for d in self.domains:
+            # Excited
+            z = random()
+            if z > 0.8 and d in ["restaurant", "attraction", "train"]:
+                event[d] = "Excited"
+            z = random()
+            if z > 0.95 and d in ["restaurant", "police", "hospital"] and d not in event:
+                event[d] = "Fearful"
+
+        if event:
+            self.user_persona["event"] = event
+
+        return self.user_persona
+
+
+def emotion_info(dialog=None, goal=None):
     user_persona = {"user": "Polite"}
     event_emotion = {1: "Fearful", 5: "Excited"}
     event = {}
-    for turn in dialog['turns']:
-        if turn['speaker'] == 'user':
-            emotion = turn["emotion"][-1]["emotion"]
-            # Fearful and Excited
-            if int(emotion) in event_emotion:
-                domain = check_domain(turn["dialogue_acts"])
-                for d in domain:
-                    if d not in event:
-                        event[d] = event_emotion[emotion]
-            # Abusive
-            if int(emotion) == 4:
-                user_persona["user"] = "Impolite"
-    if event:
-        user_persona["event"] = event
+    if dialog is None:
+        # politeness
+        z = random()
+        if z > 0.95:
+            user_persona = "Impolite"
+        # TODO: should check domains only in the user goal
+
+        for d in ["restaurant", "attraction", "train"]:
+            z = random()
+            if z > 0.8:
+                event[d] = "Excited"
+        for d in ["restaurant", "police", "hospital"]:
+            if d in event:
+                continue
+            z = random()
+            if z > 0.95:
+                event[d] = "Fearful"
+        if event:
+            user_persona["event"] = event
+
+    else:
+        for turn in dialog['turns']:
+            if turn['speaker'] == 'user':
+                emotion = turn["emotion"][-1]["emotion"]
+                # Fearful and Excited
+                if int(emotion) in event_emotion:
+                    domain = check_domain(turn["dialogue_acts"])
+                    for d in domain:
+                        if d not in event:
+                            event[d] = event_emotion[emotion]
+                # Abusive
+                if int(emotion) == 4:
+                    user_persona["user"] = "Impolite"
+        if event:
+            user_persona["event"] = event
 
     return user_persona
 

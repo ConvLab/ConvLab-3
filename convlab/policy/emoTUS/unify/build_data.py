@@ -44,6 +44,7 @@ class DataBuilder(GenTUSDataBuilder):
                 self.sentiment[int(index)] = sentiment
             self.sent2emo = json.load(
                 open("convlab/policy/emoTUS/sent2emo.json"))
+            # TODO check excited distribution
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
         example = []
