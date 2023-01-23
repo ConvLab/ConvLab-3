@@ -85,7 +85,7 @@ class Evaluator:
         emotion_mode = "normal"
         in_file = json.load(open(f_eval))
 
-        for dialog in tqdm(in_file['dialog'][:2]):
+        for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
 
