@@ -17,7 +17,7 @@ def delexicalize_da(da, requestable):
             if slot == 'none':
                 v = 'none'
             else:
-                k = '-'.join([intent, domain, slot])
+                k = '_'.join([intent, domain, slot])
                 counter.setdefault(k, 0)
                 counter[k] += 1
                 v = str(counter[k])
@@ -26,7 +26,7 @@ def delexicalize_da(da, requestable):
 
 
 def flat_da(delexicalized_da):
-    flaten = ['-'.join(x) for x in delexicalized_da]
+    flaten = ['_'.join(x) for x in delexicalized_da]
     return flaten
 
 
@@ -34,8 +34,8 @@ def deflat_da(meta):
     meta = deepcopy(meta)
     dialog_act = {}
     for da in meta:
-        d, i, s, v = da.split('-')
-        k = '-'.join((d, i))
+        d, i, s, v = da.split('_')
+        k = '_'.join((d, i))
         if k not in dialog_act:
             dialog_act[k] = []
         dialog_act[k].append([s, v])
@@ -45,7 +45,7 @@ def deflat_da(meta):
 def lexicalize_da(meta, entities, state, requestable):
     meta = deepcopy(meta)
     for k, v in meta.items():
-        domain, intent = k.split('-')
+        domain, intent = k.split('_')
         if domain in ['general']:
             continue
         elif intent in requestable:
@@ -96,6 +96,6 @@ def lexicalize_da(meta, entities, state, requestable):
     tuples = []
     for domain_intent, svs in meta.items():
         for slot, value in svs:
-            domain, intent = domain_intent.split('-')
+            domain, intent = domain_intent.split('_')
             tuples.append([intent, domain, slot, value])
     return tuples
