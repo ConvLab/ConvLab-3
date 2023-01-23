@@ -88,7 +88,7 @@ class ActionEmbedder(nn.Module):
         elif not intent:
             # Domain was selected, check intents that are allowed
             for intent in self.intent_dict:
-                domain_intent = f"{domain}-{intent}"
+                domain_intent = f"{domain}_{intent}"
                 for idx, not_allow in enumerate(legal_mask):
                     semantic_act = self.action_dict_reversed[idx]
                     if domain_intent in semantic_act and not_allow == 0:
@@ -97,7 +97,7 @@ class ActionEmbedder(nn.Module):
         else:
             # Selected domain and intent, need slot-value
             for slot_value in self.slot_value_dict:
-                domain_intent_slot = f"{domain}-{intent}-{slot_value}"
+                domain_intent_slot = f"{domain}_{intent}_{slot_value}"
                 for idx, not_allow in enumerate(legal_mask):
                     semantic_act = self.action_dict_reversed[idx]
                     if domain_intent_slot in semantic_act and not_allow == 0:
@@ -128,14 +128,14 @@ class ActionEmbedder(nn.Module):
         elif not intent:
             # Domain was selected, need intent now
             for intent in self.intent_dict:
-                domain_intent = f"{domain}-{intent}"
-                valid = self.is_valid(domain_intent + "-")
+                domain_intent = f"{domain}_{intent}"
+                valid = self.is_valid(domain_intent + "_")
                 if valid:
                     action_mask[self.small_action_dict[intent]] = 0
         else:
             # Selected domain and intent, need slot-value
             for slot_value in self.slot_value_dict:
-                domain_intent_slot = f"{domain}-{intent}-{slot_value}"
+                domain_intent_slot = f"{domain}_{intent}_{slot_value}"
                 valid = self.is_valid(domain_intent_slot)
                 if valid:
                     action_mask[self.small_action_dict[slot_value]] = 0
@@ -178,7 +178,7 @@ class ActionEmbedder(nn.Module):
             action_embeddings[len(small_action_dict)] = self.embed_intent[idx]
             small_action_dict[intent] = len(small_action_dict)
         for slot_value in self.slot_value_dict:
-            slot, value = slot_value.split("-")
+            slot, value = slot_value.split("_")
             slot_idx = self.slot_dict[slot]
             value_idx = self.value_dict[value]
             action_embeddings[len(small_action_dict)] = torch.cat(
@@ -201,7 +201,7 @@ class ActionEmbedder(nn.Module):
             action_embeddings.append(intent)
             small_action_dict[intent] = len(small_action_dict)
         for slot_value in self.slot_value_dict:
-            slot, value = slot_value.split("-")
+            slot, value = slot_value.split("_")
             action_embeddings.append(f"{slot} {value}")
             small_action_dict[slot_value] = len(small_action_dict)
 
@@ -235,7 +235,7 @@ class ActionEmbedder(nn.Module):
         value_dict = {}
         slot_value_dict = {}
         for action in action_dict:
-            domain, intent, slot, value = [act.lower() for act in action.split('-')]
+            domain, intent, slot, value = [act.lower() for act in action.split('_')]
             if domain not in domain_dict:
                 domain_dict[domain] = len(domain_dict)
             if intent not in intent_dict:
@@ -244,8 +244,8 @@ class ActionEmbedder(nn.Module):
                 slot_dict[slot] = len(slot_dict)
             if value not in value_dict:
                 value_dict[value] = len(value_dict)
-            if slot + "-" + value not in slot_value_dict:
-                slot_value_dict[slot + "-" + value] = len(slot_value_dict)
+            if slot + "_" + value not in slot_value_dict:
+                slot_value_dict[slot + "_" + value] = len(slot_value_dict)
 
         domain_dict['eos'] = len(domain_dict)
 
@@ -261,7 +261,7 @@ class ActionEmbedder(nn.Module):
                 break
 
             if idx % 3 != 2:
-                act_string += f"{act}-"
+                act_string += f"{act}_"
             else:
                 act_string += act
                 action_vector[self.action_dict[act_string]] = 1
@@ -278,7 +278,7 @@ class ActionEmbedder(nn.Module):
         action_list = []
         for idx, i in enumerate(action):
             if i == 1:
-                action_list += self.action_dict_reversed[idx].split("-", 2)
+                action_list += self.action_dict_reversed[idx].split("_", 2)
 
         if permute and len(action_list) > 3:
             action_list_new = deepcopy(action_list[-3:]) + deepcopy(action_list[:-3])

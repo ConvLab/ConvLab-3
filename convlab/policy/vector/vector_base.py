@@ -19,7 +19,7 @@ sys.path.append(root_dir)
 class VectorBase(Vector):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=False,
-                 always_inform_booking_reference=True, seed=0):
+                 always_inform_booking_reference=True, seed=0, use_none=True):
 
         super().__init__()
 
@@ -28,7 +28,7 @@ class VectorBase(Vector):
         self.ontology = load_ontology(dataset_name)
         try:
             # execute to make sure that the database exists or is downloaded otherwise
-            if dataset_name == "multiwoz21":
+            if dataset_name == "multiwoz21" or dataset_name == "crosswoz":
                 load_database(dataset_name)
             # the following two lines are needed for pickling correctly during multi-processing
             exec(f'from data.unified_datasets.{dataset_name}.database import Database')
@@ -46,6 +46,7 @@ class VectorBase(Vector):
         self.always_inform_booking_reference = always_inform_booking_reference
         self.reqinfo_filler_action = None
         self.character = character
+        self.use_none = use_none
         self.requestable = ['request']
         self.informable = ['inform', 'recommend']
 
@@ -103,14 +104,14 @@ class VectorBase(Vector):
 
                     if turn['speaker'] == 'system':
                         for act in delex_acts:
-                            act = "-".join(act)
+                            act = "_".join(act)
                             if act not in system_dict:
                                 system_dict[act] = 1
                             else:
                                 system_dict[act] += 1
                     else:
                         for act in delex_acts:
-                            act = "-".join(act)
+                            act = "_".join(act)
                             if act not in user_dict:
                                 user_dict[act] = 1
                             else:
@@ -206,18 +207,18 @@ class VectorBase(Vector):
         '''
 
         if intent == 'request':
-            return [f"{domain}-{intent}-{slot}-?"]
+            return [f"{domain}_{intent}_{slot}_?"]
 
         if slot == '':
-            return [f"{domain}-{intent}-none-none"]
+            return [f"{domain}_{intent}_none_none"]
 
         if system:
             if intent in ['recommend', 'select', 'inform']:
-                return [f"{domain}-{intent}-{slot}-{i}" for i in range(1, 4)]
+                return [f"{domain}_{intent}_{slot}_{i}" for i in range(1, 4)]
             else:
-                return [f"{domain}-{intent}-{slot}-1"]
+                return [f"{domain}_{intent}_{slot}_1"]
         else:
-            return [f"{domain}-{intent}-{slot}-1"]
+            return [f"{domain}_{intent}_{slot}_1"]
 
     def init_domain_active_dict(self):
         domain_active_dict = {}
@@ -239,7 +240,7 @@ class VectorBase(Vector):
 
         for i in range(self.da_dim):
             action = self.vec2act[i]
-            action_domain = action.split('-')[0]
+            action_domain = action.split('_')[0]
             if action_domain in domain_active_dict.keys():
                 if not domain_active_dict[action_domain]:
                     mask_list[i] = 1.0
@@ -252,7 +253,7 @@ class VectorBase(Vector):
 
         for i in range(self.da_dim):
             action = self.vec2act[i]
-            domain, intent, slot, value = action.split('-')
+            domain, intent, slot, value = action.split('_')
 
             # NoBook/NoOffer-SLOT does not make sense because policy can not know which constraint made offer impossible
             # If one wants to do it, lexicaliser needs to do it
@@ -280,7 +281,7 @@ class VectorBase(Vector):
             return mask_list
         for i in range(self.da_dim):
             action = self.vec2act[i]
-            domain, intent, slot, value = action.split('-')
+            domain, intent, slot, value = action.split('_')
             domain_entities = number_entities_dict.get(domain, 1)
 
             if intent in ['inform', 'select', 'recommend'] and value != None and value != 'none':
@@ -301,9 +302,12 @@ class VectorBase(Vector):
             entities list:
                 list of entities of the specified domain
         """
-        constraints = [[slot, value] for slot, value in self.state[domain].items() if value] \
-            if domain in self.state else []
-        return self.db.query(domain, constraints, topk=10)
+        #constraints = [[slot, value] for slot, value in self.state[domain].items() if value] \
+        #    if domain in self.state else []
+        state = self.state if domain in self.state else {domain: {}}
+        if domain.lower() == "general":
+            return []
+        return self.db.query(domain, state, topk=10)
 
     def find_nooffer_slot(self, domain):
         """
@@ -372,21 +376,21 @@ class VectorBase(Vector):
 
         if len(act_array) == 0:
             if self.reqinfo_filler_action:
-                act_array.append('general-reqinfo-none-none')
+                act_array.append('general_reqinfo_none_none')
             else:
-                act_array.append('general-reqmore-none-none')
+                act_array.append('general_reqmore_none_none')
 
         action = deflat_da(act_array)
         entities = {}
         for domint in action:
-            domain, intent = domint.split('-')
+            domain, intent = domint.split('_')
             if domain not in entities and domain not in ['general']:
                 entities[domain] = self.dbquery_domain(domain)
 
         # From db query find which slot causes no_offer
         nooffer = [domint for domint in action if 'nooffer' in domint]
         for domint in nooffer:
-            domain, intent = domint.split('-')
+            domain, intent = domint.split('_')
             slot = self.find_nooffer_slot(domain)
             action[domint] = [[slot, '1']
                               ] if slot != 'none' else [[slot, 'none']]
@@ -394,7 +398,7 @@ class VectorBase(Vector):
         # Randomly select booking constraint "causing" no_book
         nobook = [domint for domint in action if 'nobook' in domint]
         for domint in nobook:
-            domain, intent = domint.split('-')
+            domain, intent = domint.split('_')
             if domain in self.state:
                 slots = self.state[domain]
                 slots = [slot for slot, i in slots.items()
@@ -424,15 +428,19 @@ class VectorBase(Vector):
                 index = idx
         action = lexicalize_da(action, entities, self.state, self.requestable)
 
+        if not self.use_none:
+            # replace all occurences of "none" with an empty string ""
+            action = [[a_string.replace('none', '') for a_string in a_list] for a_list in action]
+
         return action
 
     def add_booking_reference(self, action):
         new_acts = {}
         for domint in action:
-            domain, intent = domint.split('-', 1)
+            domain, intent = domint.split('_', 1)
 
             if intent == 'book' and action[domint]:
-                ref_domint = f'{domain}-inform'
+                ref_domint = f'{domain}_inform'
                 if ref_domint not in new_acts:
                     new_acts[ref_domint] = []
                 new_acts[ref_domint].append(['ref', '1'])
@@ -450,14 +458,14 @@ class VectorBase(Vector):
 
         name_inform = {domain: [] for domain in self.domains}
         # General Inform Condition for Naming
-        domains = [domint.split('-', 1)[0] for domint in action]
+        domains = [domint.split('_', 1)[0] for domint in action]
         domains = list(set([d for d in domains if d not in ['general']]))
         for domain in domains:
             contains_name = False
             if domain == 'none':
                 raise NameError('Domain not defined')
-            cur_inform = domain + '-inform'
-            cur_request = domain + '-request'
+            cur_inform = domain + '_inform'
+            cur_request = domain + '_request'
             index = -1
             if cur_inform in action:
                 # Check if current inform within a domain is accompanied by a name inform

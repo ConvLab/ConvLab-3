@@ -119,7 +119,7 @@ class VectorNodes(VectorBase):
         action = flat_da(action)
         for da in action:
             if da in self.act2vec:
-                domain = da.split('-')[0]
+                domain = da.split('_')[0]
                 description = "system-" + da
                 value = 1.0
                 self.add_graph_node(domain, feature_type, description.lower(), value)
@@ -133,7 +133,7 @@ class VectorNodes(VectorBase):
 
         for da in opp_action:
             if da in self.opp2vec:
-                domain = da.split('-')[0]
+                domain = da.split('_')[0]
                 description = "user-" + da
                 value = 1.0
                 self.add_graph_node(domain, feature_type, description.lower(), value)

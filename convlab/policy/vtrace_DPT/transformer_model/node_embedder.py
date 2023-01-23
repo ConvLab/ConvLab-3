@@ -2,7 +2,7 @@ import os, json, logging
 import torch
 import torch.nn as nn
 
-from transformers import RobertaTokenizer, RobertaModel
+from transformers import RobertaTokenizer, RobertaModel, BertTokenizer, BertModel
 from convlab.policy.vtrace_DPT.transformer_model.noisy_linear import NoisyLinear
 from convlab.policy.vtrace_DPT.create_descriptions import create_description_dicts
 
@@ -52,8 +52,13 @@ class NodeEmbedderRoberta(nn.Module):
             if os.path.exists(embedded_descriptions_path):
                 self.embedded_descriptions = torch.load(embedded_descriptions_path).to(DEVICE)
             else:
-                self.tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
-                self.roberta_model = RobertaModel.from_pretrained("roberta-base").to(DEVICE)
+                if dataset_name == "crosswoz":
+                    self.max_length = 40
+                    self.tokenizer = BertTokenizer.from_pretrained("hfl/chinese-roberta-wwm-ext")
+                    self.roberta_model = BertModel.from_pretrained("hfl/chinese-roberta-wwm-ext").to(DEVICE)
+                else:
+                    self.tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
+                    self.roberta_model = RobertaModel.from_pretrained("roberta-base").to(DEVICE)
 
         if self.embedded_descriptions is None:
             if freeze_roberta:

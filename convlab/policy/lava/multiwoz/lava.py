@@ -11,7 +11,9 @@ from convlab.policy import Policy
 from convlab.util.file_util import cached_path
 from convlab.util.multiwoz.state import default_state
 # from convlab.util.multiwoz.dbquery import Database
-from data.unified_datasets.multiwoz21.database import Database
+# from data.unified_datasets.multiwoz21.database import Database
+from convlab.util import load_database
+Database = load_database('multiwoz21')
 from copy import deepcopy
 import json
 import os
