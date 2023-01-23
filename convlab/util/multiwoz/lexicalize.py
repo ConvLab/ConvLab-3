@@ -72,7 +72,10 @@ def lexicalize_da(meta, entities, state, requestable):
                         slot_reverse = reverse_da_slot_name_map.get(pair[0], pair[0])
                     else:
                         slot_reverse = reverse_da_slot_name_map['taxi'].get(pair[0], pair[0])
-                    slot_old = REF_SYS_DA[domain.capitalize()].get(slot_reverse, pair[0].lower())
+                    try:
+                        slot_old = REF_SYS_DA[domain.capitalize()].get(slot_reverse, pair[0].lower())
+                    except:
+                        slot_old = ""
                     slot = pair[0]
                     n = int(pair[1]) - 1
                     if len(entities[domain]) > n:

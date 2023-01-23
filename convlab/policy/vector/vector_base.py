@@ -302,9 +302,12 @@ class VectorBase(Vector):
             entities list:
                 list of entities of the specified domain
         """
-        constraints = [[slot, value] for slot, value in self.state[domain].items() if value] \
-            if domain in self.state else []
-        return self.db.query(domain, constraints, topk=10)
+        #constraints = [[slot, value] for slot, value in self.state[domain].items() if value] \
+        #    if domain in self.state else []
+        state = self.state if domain in self.state else {domain: {}}
+        if domain.lower() == "general":
+            return []
+        return self.db.query(domain, state, topk=10)
 
     def find_nooffer_slot(self, domain):
         """
