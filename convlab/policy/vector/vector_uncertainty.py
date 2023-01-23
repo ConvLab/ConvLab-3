@@ -100,7 +100,7 @@ class VectorUncertainty(VectorBinary):
         for da in opp_action:
             if da in self.opp2vec:
                 if 'belief_state_probs' in state and self.use_confidence_scores:
-                    domain, intent, slot, value = da.split('-')
+                    domain, intent, slot, value = da.split('_')
                     if domain in state['belief_state_probs']:
                         slot = slot if slot else 'none'
                         if slot in state['belief_state_probs'][domain]:

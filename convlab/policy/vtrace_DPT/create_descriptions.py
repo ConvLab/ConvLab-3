@@ -47,12 +47,12 @@ def create_description_dicts(name='multiwoz21'):
         description_dict_semantic[f"general-{domain}"] = f"domain {domain}"
 
     for act in da_voc:
-        domain, intent, slot, value = act.split("-")
+        domain, intent, slot, value = act.split("_")
         domain = domain.lower()
         description_dict_semantic["system-"+act.lower()] = f"last system act {domain} {intent} {slot} {value}"
 
     for act in da_voc_opp:
-        domain, intent, slot, value = [item.lower() for item in act.split("-")]
+        domain, intent, slot, value = [item.lower() for item in act.split("_")]
         domain = domain.lower()
         description_dict_semantic["user-"+act.lower()] = f"user act {domain} {intent} {slot} {value}"
 
