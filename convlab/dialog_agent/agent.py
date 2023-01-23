@@ -358,9 +358,8 @@ class DialogueAgent(Agent):
         else:
             state = self.input_action
 
-        fundamental_info['state'] = state
-
         state = deepcopy(state)  # get rid of reference problem
+        fundamental_info['state'] = state
         self.sys_state_history.append(state)
 
         # get action
