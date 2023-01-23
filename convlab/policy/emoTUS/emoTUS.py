@@ -15,11 +15,12 @@ DEBUG = False
 
 
 class UserActionPolicy(GenTUSUserActionPolicy):
-    def __init__(self, model_checkpoint, mode="semantic", only_action=True, max_turn=40, **kwargs):
+    def __init__(self, model_checkpoint, mode="language", only_action=False, max_turn=40, **kwargs):
         self.use_sentiment = kwargs.get("use_sentiment", False)
-        print("use_sentiment", self.use_sentiment)
+        self.add_persona = kwargs.get("add_persona", False)
+        self.emotion_mid = kwargs.get("emotion_mid", False)
+
         super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
-        print("sentiment", self.use_sentiment)
         weight = kwargs.get("weight", None)
         self.kg = KnowledgeGraph(
             tokenizer=self.tokenizer,
@@ -52,22 +53,17 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             else:
                 history = self.usr_acts[-1*self.max_history:]
 
-        # TODO add user info? impolite? -> check self.use_sentiment
-        if self.use_sentiment:
-            # TODO how to get event and user politeness?
-            input_dict = {"system": sys_act,
-                          "goal": self.goal.get_goal_list(),
-                          "history": history,
-                          "turn": str(int(self.time_step/2))}
+        input_dict = {"system": sys_act,
+                      "goal": self.goal.get_goal_list(),
+                      "history": history,
+                      "turn": str(int(self.time_step/2))}
+
+        if self.add_persona:
             for user, info in self.user_info.items():
                 input_dict[user] = info
-            inputs = json.dumps(input_dict)
 
-        else:
-            inputs = json.dumps({"system": sys_act,
-                                 "goal": self.goal.get_goal_list(),
-                                 "history": history,
-                                 "turn": str(int(self.time_step/2))})
+        inputs = json.dumps(input_dict)
+
         with torch.no_grad():
             if emotion == "all":
                 raw_output = self.generate_from_emotion(
@@ -91,16 +87,12 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 raw_output = self._generate_action(
                     raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
         output = self._parse_output(raw_output)
+        print(output)
         self.semantic_action = self._remove_illegal_action(output["action"])
-        if not self.only_action:
-            self.utterance = output["text"]
-
+        self.utterance = output["text"]
         self.emotion = output["emotion"]
         if self.use_sentiment:
             self.sentiment = output["sentiment"]
-            # print("---> sentiment", self.sentiment)
-            # print("---> emotion", self.emotion)
-            # print("---> self.utterance", self.utterance)
 
         if self.is_finish():
             self.emotion, self.semantic_action, self.utterance = self._good_bye()
@@ -113,12 +105,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         del inputs
 
-        if self.mode == "language":
-            # print("in", sys_act)
-            # print("out", self.utterance)
-            return self.utterance
-        else:
-            return self.semantic_action
+        return self.utterance
 
     def _parse_output(self, in_str):
         in_str = str(in_str)
@@ -135,25 +122,24 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             print("-"*20)
         return action
 
-    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal"):
-        self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
-        # start token
-        self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
-        pos = self._update_seq([0], 0)
-        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
-        if self.use_sentiment:
-            sentiment = self._get_sentiment(
-                model_input, self.seq[:1, :pos], mode)
-            pos = self._update_seq(sentiment["token_id"], pos)
-        else:
-            emotion = self._get_emotion(
-                model_input, self.seq[:1, :pos], mode, emotion_mode)
-            pos = self._update_seq(emotion["token_id"], pos)
-        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
-        pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+    def _update_sentiment(self, pos, model_input, mode):
+        pos = self._update_seq(
+            self.token_map.get_id('start_sentiment'), pos)
+        sentiment = self._get_sentiment(
+            model_input, self.seq[:1, :pos], mode)
+        pos = self._update_seq(sentiment["token_id"], pos)
+        return sentiment, pos
 
-        # get semantic actions
+    def _update_emotion(self, pos, model_input, mode, emotion_mode, sentiment=None):
+        pos = self._update_seq(
+            self.token_map.get_id('start_emotion'), pos)
+        emotion = self._get_emotion(
+            model_input, self.seq[:1, :pos], mode, emotion_mode, sentiment)
+        pos = self._update_seq(emotion["token_id"], pos)
+        return pos
+
+    def _update_semantic_act(self, pos, model_input, mode, allow_general_intent):
+        mode = "max"
         for act_len in range(self.max_action_len):
             pos = self._get_semantic_action(
                 model_input, pos, mode, allow_general_intent)
@@ -164,16 +150,82 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
             if terminate:
                 break
+        return pos
 
-        if self.only_action:
-            return self.vector.decode(self.seq[0, :pos])
+    def _sent_act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+        # sent
+        sentiment, pos = self._update_sentiment(pos, model_input, mode)
+        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+        # act
+        pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+        pos = self._update_semantic_act(
+            pos, model_input, mode, allow_general_intent)
+        # emo
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode, sentiment["token_name"])
+        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
-        if self.use_sentiment:
-            pos = self._update_seq(self.token_map.get_id('start_emotion'), pos)
-            emotion = self._get_emotion(
-                model_input, self.seq[:1, :pos], mode, emotion_mode, sentiment["token_name"])
-            pos = self._update_seq(emotion["token_id"], pos)
-            pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+        return pos
+
+    def _sent_emo_act(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+        # sent
+        sentiment, pos = self._update_sentiment(pos, model_input, mode)
+        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+        # emo
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode, sentiment["token_name"])
+        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+        # act
+        pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+        pos = self._update_semantic_act(
+            pos, model_input, mode, allow_general_intent)
+
+        return pos
+
+    def _emo_act(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+        # emo
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode)
+        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+        # act
+        pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+        pos = self._update_semantic_act(
+            pos, model_input, mode, allow_general_intent)
+
+        return pos
+
+    def _act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+        # act
+        pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+        pos = self._update_semantic_act(
+            pos, model_input, mode, allow_general_intent)
+        # emo
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode)
+        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
+
+        return pos
+
+    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal"):
+        self.kg.parse_input(raw_inputs)
+        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        # start token
+        self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = self._update_seq([0], 0)
+        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+
+        if self.use_sentiment and self.emotion_mid:
+            pos = self._sent_act_emo(
+                pos, model_input, mode, emotion_mode, allow_general_intent)
+        elif self.use_sentiment and not self.emotion_mid:
+            pos = self._sent_emo_act(
+                pos, model_input, mode, emotion_mode, allow_general_intent)
+        elif not self.use_sentiment and self.emotion_mid:
+            pos = self._act_emo(
+                pos, model_input, mode, emotion_mode, allow_general_intent)
+        else:
+            pos = self._emo_act(
+                pos, model_input, mode, emotion_mode, allow_general_intent)
 
         pos = self._update_seq(self.token_map.get_id("start_text"), pos)
         text = self._get_text(model_input, pos)
@@ -332,8 +384,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 class UserPolicy(Policy):
     def __init__(self,
                  model_checkpoint,
-                 mode="semantic",
-                 only_action=True,
                  sample=False,
                  action_penalty=False,
                  **kwargs):
@@ -342,7 +392,8 @@ class UserPolicy(Policy):
             os.mkdir(os.path.dirname(model_checkpoint))
             model_downloader(os.path.dirname(model_checkpoint),
                              "https://zenodo.org/record/7372442/files/multiwoz21-exp.zip")
-
+        only_action = False
+        mode = "language"
         self.policy = UserActionPolicy(
             model_checkpoint,
             mode=mode,
@@ -385,15 +436,15 @@ if __name__ == "__main__":
     # from convlab.nlu.jointBERT.multiwoz import BERTNLU
     from convlab.util.custom_util import set_seed
 
-    set_seed(20220220)
+    use_sentiment, emotion_mid = True, True
+    set_seed(0)
     # Test semantic level behaviour
     model_checkpoint = 'convlab/policy/emoTUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17'
     usr_policy = UserPolicy(
         model_checkpoint,
-        mode="language",
-        only_action=False,
-        use_sentiment=True,
-        sample=True)
+        sample=True,
+        use_sentiment=use_sentiment,
+        emotion_mid=emotion_mid)
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')

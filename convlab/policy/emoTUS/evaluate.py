@@ -28,35 +28,34 @@ def arg_parser():
                         default="")
     parser.add_argument("--generated-file", type=str, help="the generated results",
                         default="")
-    parser.add_argument("--only-action", action="store_true")
     parser.add_argument("--dataset", default="multiwoz")
-    parser.add_argument("--do-semantic", action="store_true",
-                        help="do semantic evaluation")
-    parser.add_argument("--do-nlg", action="store_true",
-                        help="do nlg generation")
     parser.add_argument("--do-golden-nlg", action="store_true",
                         help="do golden nlg generation")
-    parser.add_argument("--no-neutral", action="store_true",
-                        help="skip neutral emotion")
     parser.add_argument("--use-sentiment", action="store_true")
+    parser.add_argument("--emotion-mid", action="store_true")
     parser.add_argument("--weight", type=float, default=None)
     return parser.parse_args()
 
 
 class Evaluator:
-    def __init__(self, model_checkpoint, dataset, model_weight=None, only_action=False, use_sentiment=False, weight=None):
+    def __init__(self, model_checkpoint, dataset, model_weight=None, **kwargs):
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
         self.model_weight = model_weight
         self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
-        self.use_sentiment = use_sentiment
+        self.use_sentiment = kwargs.get("use_sentiment", False)
+        self.add_persona = kwargs.get("add_persona", False)
+        self.emotion_mid = kwargs.get("emotion_mid", False)
+        weight = kwargs.get("weight", None)
 
         self.usr = UserActionPolicy(
             model_checkpoint,
-            only_action=only_action,
             dataset=self.dataset,
-            use_sentiment=use_sentiment,
+            use_sentiment=self.use_sentiment,
+            add_persona=self.add_persona,
+            emotion_mid=self.emotion_mid,
             weight=weight)
+
         self.usr.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
 
         self.r = {"input": [],
@@ -66,7 +65,8 @@ class Evaluator:
                   "gen_acts": [],
                   "gen_utts": [],
                   "gen_emotion": []}
-        if use_sentiment:
+
+        if self.use_sentiment:
             self.r["golden_sentiment"] = []
             self.r["gen_sentiment"] = []
 
@@ -81,17 +81,13 @@ class Evaluator:
         for x in self.r:
             self.r[x].append(temp[x])
 
-    def generate_results(self, f_eval, golden=False, no_neutral=False):
+    def generate_results(self, f_eval, golden=False):
         emotion_mode = "normal"
-        if no_neutral:
-            emotion_mode = "no_neutral"
         in_file = json.load(open(f_eval))
 
-        for dialog in tqdm(in_file['dialog']):
+        for dialog in tqdm(in_file['dialog'][:2]):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
-            if no_neutral and labels["emotion"].lower() == "neutral":
-                continue
 
             if golden:
                 usr_act = labels["action"]
@@ -138,10 +134,10 @@ class Evaluator:
             result.append(temp)
         return result
 
-    def nlg_evaluation(self, input_file=None, generated_file=None, golden=False, no_neutral=False):
+    def nlg_evaluation(self, input_file=None, generated_file=None, golden=False):
         if input_file:
             print("Force generation")
-            self.generate_results(input_file, golden, no_neutral)
+            self.generate_results(input_file, golden)
 
         elif generated_file:
             self.read_generated_result(generated_file)
@@ -240,7 +236,7 @@ class Evaluator:
         for metric in scores:
             result[metric] = sum(scores[metric])/len(scores[metric])
             print(f"{metric}: {result[metric]}")
-        # TODO no neutral
+
         emo_score = emotion_score(
             golden_emotions,
             gen_emotions,
@@ -338,27 +334,23 @@ def main():
     eval = Evaluator(args.model_checkpoint,
                      args.dataset,
                      args.model_weight,
-                     args.only_action,
-                     args.use_sentiment,
+                     use_sentiment=args.use_sentiment,
+                     emotion_mid=args.emotion_mid,
                      weight=args.weight)
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
     print("input_file", args.input_file)
     with torch.no_grad():
-        if args.do_semantic:
-            eval.evaluation(args.input_file)
-        if args.do_nlg:
-            if args.generated_file:
-                generated_file = args.generated_file
-            else:
-                nlg_result = eval.nlg_evaluation(input_file=args.input_file,
-                                                 generated_file=args.generated_file,
-                                                 golden=args.do_golden_nlg,
-                                                 no_neutral=args.no_neutral)
+        if args.generated_file:
+            generated_file = args.generated_file
+        else:
+            nlg_result = eval.nlg_evaluation(input_file=args.input_file,
+                                             generated_file=args.generated_file,
+                                             golden=args.do_golden_nlg)
 
-                generated_file = nlg_result
-            eval.evaluation(args.input_file,
-                            generated_file)
+            generated_file = nlg_result
+        eval.evaluation(args.input_file,
+                        generated_file)
 
 
 if __name__ == '__main__':

@@ -2,28 +2,26 @@ import json
 
 
 class tokenMap:
-    def __init__(self, tokenizer, use_sentiment=False):
+    def __init__(self, tokenizer, **kwargs):
         self.tokenizer = tokenizer
         self.token_name = {}
         self.hash_map = {}
         self.debug = False
-        self.use_sentiment = use_sentiment
         self.default()
 
     def default(self, only_action=False):
         self.format_tokens = {
-            'start_json': '{"emotion": "',   # 49643, 10845, 7862, 646
-            'start_act': 'action": [["',              # 49329
-            'sep_token': '", "',            # 1297('",'), 22
-            'sep_act': '"], ["',               # 49177
-            'end_act': '"]], "',            # 42248, 7479, 22
-            'start_text': 'text": "',       # 29015, 7862, 22
-            'end_json': '}',                 # 24303
-            'end_json_2': '"}'                 # 48805
+            'start_json': '{"',
+            'start_sentiment': 'sentiment": "',
+            'start_emotion': 'emotion": "',
+            'start_act': 'action": [["',
+            'sep_token': '", "',
+            'sep_act': '"], ["',
+            'end_act': '"]], "',
+            'start_text': 'text": "',
+            'end_json': '}',
+            'end_json_2': '"}'
         }
-        if self.use_sentiment:
-            self.format_tokens['start_json'] = '{"sentiment": "'
-            self.format_tokens['start_emotion'] = 'emotion": "'
 
         if only_action:
             self.format_tokens['end_act'] = '"]]}'
