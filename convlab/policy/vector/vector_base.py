@@ -28,7 +28,7 @@ class VectorBase(Vector):
         self.ontology = load_ontology(dataset_name)
         try:
             # execute to make sure that the database exists or is downloaded otherwise
-            if dataset_name == "multiwoz21":
+            if dataset_name == "multiwoz21" or dataset_name == "crosswoz":
                 load_database(dataset_name)
             # the following two lines are needed for pickling correctly during multi-processing
             exec(f'from data.unified_datasets.{dataset_name}.database import Database')
