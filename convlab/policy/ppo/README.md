@@ -21,7 +21,7 @@ One example for the environment-config is **semantic_level_config.json**, where 
 - num_eval_dialogues: how many evaluation dialogues should be used
 - epoch: how many training epochs to run. One epoch consists of collecting dialogues + performing an update
 - eval_frequency: after how many epochs perform an evaluation
-- batchsz: the number of training dialogues collected before doing an update
+- num_train_dialogues: the number of training dialogues collected before doing an update
 
 Moreover, you can specify the full dialogue pipeline here, such as the user policy, NLU for system and user, etc.
 
