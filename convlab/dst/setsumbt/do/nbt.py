@@ -58,26 +58,25 @@ def main(args=None, config=None):
     # Set up output directory
     OUTPUT_DIR = args.output_dir
 
-    # Download model if needed
     if not os.path.exists(OUTPUT_DIR):
-        # Get path /.../convlab/dst/setsumbt/multiwoz/models
-        download_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        download_path = os.path.join(download_path, 'models')
-        if not os.path.exists(download_path):
-            os.mkdir(download_path)
-        model_downloader(download_path, OUTPUT_DIR)
-        # Downloadable model path format http://.../model_name.zip
-        OUTPUT_DIR = OUTPUT_DIR.split('/')[-1].replace('.zip', '')
-        OUTPUT_DIR = os.path.join(download_path, OUTPUT_DIR)
+        if "http" not in OUTPUT_DIR:
+            os.makedirs(OUTPUT_DIR)
+            os.mkdir(os.path.join(OUTPUT_DIR, 'database'))
+            os.mkdir(os.path.join(OUTPUT_DIR, 'dataloaders'))
+        else:
+            # Get path /.../convlab/dst/setsumbt/multiwoz/models
+            download_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            download_path = os.path.join(download_path, 'models')
+            if not os.path.exists(download_path):
+                os.mkdir(download_path)
+            model_downloader(download_path, OUTPUT_DIR)
+            # Downloadable model path format http://.../model_name.zip
+            OUTPUT_DIR = OUTPUT_DIR.split('/')[-1].replace('.zip', '')
+            OUTPUT_DIR = os.path.join(download_path, OUTPUT_DIR)
 
-        args.tensorboard_path = os.path.join(OUTPUT_DIR, args.tensorboard_path.split('/')[-1])
-        args.logging_path = os.path.join(OUTPUT_DIR, args.logging_path.split('/')[-1])
-        os.mkdir(os.path.join(OUTPUT_DIR, 'dataloaders'))
-
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-        os.mkdir(os.path.join(OUTPUT_DIR, 'database'))
-        os.mkdir(os.path.join(OUTPUT_DIR, 'dataloaders'))
+            args.tensorboard_path = os.path.join(OUTPUT_DIR, args.tensorboard_path.split('/')[-1])
+            args.logging_path = os.path.join(OUTPUT_DIR, args.logging_path.split('/')[-1])
+            os.mkdir(os.path.join(OUTPUT_DIR, 'dataloaders'))
     args.output_dir = OUTPUT_DIR
 
     # Set pretrained model path to the trained checkpoint
