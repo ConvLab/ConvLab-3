@@ -3,7 +3,7 @@
 		"load_path": "",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
-		"batchsz": 1000,
+		"num_train_dialogues": 100,
 		"seed": 0,
 		"epoch": 10,
 		"eval_frequency": 5,

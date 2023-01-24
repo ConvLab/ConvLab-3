@@ -3,7 +3,7 @@
 		"load_path": "convlab/policy/ppo/pretrained_models/mle",
 		"pretrained_load_path": "",
 		"use_pretrained_initialisation": false,
-		"batchsz": 500,
+		"num_train_dialogues": 100,
 		"seed": 0,
 		"epoch": 50,
 		"eval_frequency": 5,
