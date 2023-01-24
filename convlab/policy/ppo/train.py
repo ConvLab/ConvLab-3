@@ -182,8 +182,8 @@ if __name__ == '__main__':
 
     begin_time = datetime.now()
     parser = ArgumentParser()
-    parser.add_argument("--path", type=str, default='convlab/policy/ppo/semantic_level_config.json',
-                        help="Load path for config file")
+    parser.add_argument("--config_name", type=str, default='RuleUser-Semantic-RuleDST',
+                        help="Name of the configuration")
     parser.add_argument("--seed", type=int, default=None,
                         help="Seed for the policy parameter initialization")
     parser.add_argument("--mode", type=str, default='info',
@@ -191,7 +191,8 @@ if __name__ == '__main__':
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
 
-    path = parser.parse_args().path
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'configs',
+                        f'{parser.parse_args().config_name}.json')
     seed = parser.parse_args().seed
     mode = parser.parse_args().mode
     save_eval = parser.parse_args().save_eval_dials
