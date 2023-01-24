@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Convlab3 Unified Format Dialogue Datasets"""
-
+import pdb
 from copy import deepcopy
 
 import torch
@@ -294,8 +294,20 @@ class UnifiedFormatDataset(Dataset):
         Returns:
             features (dict): All inputs and labels required to train the model
         """
-        return {label: self.features[label][index] for label in self.features
-                if self.features[label] is not None}
+        feats = dict()
+        for label in self.features:
+            if self.features[label] is not None:
+                if label == 'dialogue_ids':
+                    if type(index) == int:
+                        feat = self.features[label][index]
+                    else:
+                        feat = [self.features[label][idx] for idx in index]
+                else:
+                    feat = self.features[label][index]
+
+                feats[label] = feat
+
+        return feats
 
     def __len__(self):
         """
