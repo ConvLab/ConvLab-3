@@ -1,3 +1,4 @@
+import pdb
 import sys
 sys.path.append('../../..')
 
@@ -6,8 +7,8 @@ from transformers import GPT2Tokenizer, GPT2LMHeadModel, GPT2Config
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from convlab.nlg.nlg import NLG
-from util import act2str
-from scgpt_special_tokens import *
+from convlab.nlg.scgpt.util import act2str
+from convlab.nlg.scgpt.scgpt_special_tokens import *
 
 
 class SCGPT(NLG):
@@ -16,7 +17,7 @@ class SCGPT(NLG):
         self.device = device
         self.model = GPT2LMHeadModel(config=GPT2Config.from_pretrained('gpt2-medium')).to(self.device)
         self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2-medium')
-        self.model.load_state_dict(torch.load(model_path))
+        self.model.load_state_dict(torch.load(model_path, map_location=torch.device(self.device)))
 
     def generate(self, action):
         if isinstance(action, dict):
@@ -50,5 +51,5 @@ class SCGPT(NLG):
                 if self.tokenizer.eos_token in sent:
                     sent = sent[:sent.index(self.tokenizer.eos_token)]
                 return sent
-            output_strs = [clean_sentence(item) for item in outputs]
+            output_strs = [clean_sentence(self.tokenizer.decode(item, skip_special_tokens=True)) for item in outputs]
             return output_strs
