@@ -27,7 +27,7 @@ class SetSUMBTTracker(DST):
                  confidence_threshold='auto',
                  return_belief_state_entropy: bool = False,
                  return_belief_state_mutual_info: bool = False,
-                 store_full_belief_state: bool = False):
+                 store_full_belief_state: bool = True):
         """
         Args:
             model_path: Model path or download URL
@@ -326,7 +326,9 @@ class SetSUMBTTracker(DST):
                 dialogue_state[dom][slot] = val
 
         if self.store_full_belief_state:
-            self.full_belief_state = belief_state
+            self.info_dict['belief_state_distributions'] = belief_state
+            if state_mutual_info is not None:
+                self.info_dict['belief_state_knowledge_uncertainty'] = state_mutual_info
 
         # Obtain model output probabilities
         if self.return_confidence_scores:
