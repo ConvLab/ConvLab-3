@@ -22,13 +22,14 @@ def get_sent(candidates):
     else:
         return [x["gen_utts"] for x in candidates["dialog"]]
 
+
 def SelfBLEU(sentences):
     metric = load_metric("sacrebleu")
     result = []
-    for i, sent in tqdm(enumerate(sentences),ascii=True):
-        r = metric.compute(predictions=[sent], references=[sentences[i:]+sentences[i+1:]])
+    for i, sent in tqdm(enumerate(sentences), ascii=True):
+        r = metric.compute(predictions=[sent], references=[
+                           sentences[i:]+sentences[i+1:]])
         result.append(r["score"])
-
 
     return sum(result)/len(result)
 
@@ -36,8 +37,8 @@ def SelfBLEU(sentences):
 def calculate(candidates):
     sentences = get_sent(candidates)
     bleu = SelfBLEU(sentences)
-    x = bleu.get_score()
-    print(x)
+    # x = bleu.get_score()
+    print(bleu)
 
 
 if __name__ == "__main__":
