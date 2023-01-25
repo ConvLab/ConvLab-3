@@ -43,8 +43,7 @@ def calculate(candidates, bleu_mode="torch"):
         bleu = fast_bleu.SelfBLEU(sentences)
         x = bleu.get_score()
     # x = bleu.get_score()
-    print(x)
-
+    print(sum(x[4])/len(x[4]))
 
 if __name__ == "__main__":
     args = arg_parser()
