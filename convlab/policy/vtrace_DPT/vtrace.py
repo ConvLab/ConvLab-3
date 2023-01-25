@@ -26,7 +26,7 @@ class VTRACE(nn.Module, Policy):
         super(VTRACE, self).__init__()
 
         dir_name = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = os.path.join(dir_name, 'config.json')
+        self.config_path = os.path.join(dir_name, 'configs', 'multiwoz21_dpt.json')
 
         with open(self.config_path, 'r') as f:
             cfg = json.load(f)

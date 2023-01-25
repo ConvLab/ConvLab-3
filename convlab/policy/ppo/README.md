@@ -11,10 +11,10 @@ If you want to obtain a supervised model for pre-training, please have a look in
 Starting a RL training is as easy as executing
 
 ```sh
-$ python train.py --path=your_environment_config --seed=SEED
+$ python train.py --config_name=your_config_name --seed=SEED
 ```
 
-One example for the environment-config is **semantic_level_config.json**, where parameters for the training are specified, for instance
+One example for the environment-config is **RuleUser-Semantic-RuleDST**, where parameters for the training are specified, for instance
 
 - load_path: provide a path to initialise the model with a pre-trained model, skip the ending .pol.mdl
 - process_num: the number of processes to use during evaluation to speed it up

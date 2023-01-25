@@ -17,7 +17,9 @@ class Memory:
 
     def __init__(self, seed=0):
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
+        dir_name = os.path.dirname(os.path.abspath(__file__))
+        self.config_path = os.path.join(dir_name, 'configs', 'multiwoz21_dpt.json')
+        with open(self.config_path, 'r') as f:
             cfg = json.load(f)
 
         self.batch_size = cfg.get('batchsz', 32)
