@@ -8,6 +8,7 @@ from tqdm import tqdm
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", type=str)
+    parser.add_argument("--fast-bleu", action="store_true")
     return parser.parse_args()
 
 
@@ -34,13 +35,21 @@ def SelfBLEU(sentences):
     return sum(result)/len(result)
 
 
-def calculate(candidates):
+def calculate(candidates, bleu_mode="torch"):
     sentences = get_sent(candidates)
-    bleu = SelfBLEU(sentences)
+    if bleu_mode == "torch":
+        x = SelfBLEU(sentences)
+    else:
+        bleu = fast_bleu.SelfBLEU(sentences)
+        x = bleu.get_score()
     # x = bleu.get_score()
-    print(bleu)
+    print(x)
 
 
 if __name__ == "__main__":
     args = arg_parser()
-    calculate(read_file(args.file))
+    if args.fast_bleu:
+        import fast_bleu
+        calculate(read_file(args.file), "fast-bleu")
+    else:
+        calculate(read_file(args.file))
