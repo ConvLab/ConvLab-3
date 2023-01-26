@@ -30,10 +30,15 @@ from convlab.dst.trippy.modeling_dst import (TransformerForDST)
 from convlab.dst.trippy.dataset_interfacer import (create_dataset_interfacer)
 from convlab.util import relative_import_module_from_unified_datasets
 
+
+class BertForDST(TransformerForDST('bert')): pass
+class RobertaForDST(TransformerForDST('roberta')): pass
+class ElectraForDST(TransformerForDST('electra')): pass
+
 MODEL_CLASSES = {
-    'bert': (BertConfig, TransformerForDST('bert'), BertTokenizer),
-    'roberta': (RobertaConfig, TransformerForDST('roberta'), RobertaTokenizer),
-    'electra': (ElectraConfig, TransformerForDST('electra'), ElectraTokenizer),
+    'bert': (BertConfig, BertForDST, BertTokenizer),
+    'roberta': (RobertaConfig, RobertaForDST, RobertaTokenizer),
+    'electra': (ElectraConfig, ElectraForDST, ElectraTokenizer),
 }
 
 
