@@ -245,14 +245,15 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             emotion_list = [emotion]
         else:
             emotion_list = self.emotion_list
-            print(emotion_list)
+
         for emotion in emotion_list:
             # start token
-            print("emotion", emotion)
             self.seq = torch.zeros(1, self.max_out_len,
                                    device=self.device).long()
             pos = self._update_seq([0], 0)
             pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+            pos = self._update_seq(
+                self.token_map.get_id('start_emotion'), pos)
 
             pos = self._update_seq(self.kg._get_token_id(emotion), pos)
             pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
