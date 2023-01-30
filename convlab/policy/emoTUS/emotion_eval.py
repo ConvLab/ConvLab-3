@@ -92,7 +92,7 @@ class Evaluator:
         emotion_mode = "normal"
         in_file = json.load(open(f_eval))
 
-        for dialog in tqdm(in_file['dialog'][:2]):
+        for dialog in tqdm(in_file['dialog']):
             temp = {}
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
@@ -230,7 +230,9 @@ def bleu(golden_utts, gen_utts):
 def SER(gen_utts, gen_acts):
     missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
         gen_acts, gen_utts)
-
+    if total <= 0:
+        print("ERROR, total = 0")
+        return 1
     return missing/total
 
 
