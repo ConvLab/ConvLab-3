@@ -184,17 +184,21 @@ class Evaluator:
 
         scores = {}
         for emotion in self.emotion_list:
+            if emotion == "Neutral":
+                continue
             scores[emotion] = {"precision": [],
                                "recall": [], "f1": [], "turn_acc": []}
-            for gen_act, golden_act in zip(r[f"{emotion}_acts"], r["golden_acts"]):
+            for gen_act, golden_act in zip(r[f"{emotion}_acts"], r["Neutral_acts"]):
                 s = f1_measure(preds=gen_act, labels=golden_act)
                 for metric in scores[emotion]:
                     scores[emotion][metric].append(s[metric])
 
         result = {}
         for emotion in self.emotion_list:
+            if emotion == "Neutral":
+                continue
             result[emotion] = {}
-            result[emotion]["bleu"] = bleu(golden_utts=r["golden_utts"],
+            result[emotion]["bleu"] = bleu(golden_utts=r["Neutral_utts"],
                                            gen_utts=r[f"{emotion}_utts"])
             result[emotion]["SER"] = SER(gen_utts=r[f"{emotion}_utts"],
                                          gen_acts=r[f"{emotion}_acts"])
