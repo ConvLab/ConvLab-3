@@ -184,8 +184,8 @@ class Evaluator:
 
         scores = {}
         for emotion in self.emotion_list:
-            if emotion == "Neutral":
-                continue
+            # if emotion == "Neutral":
+            #     continue
             scores[emotion] = {"precision": [],
                                "recall": [], "f1": [], "turn_acc": []}
             for gen_act, golden_act in zip(r[f"{emotion}_acts"], r["Neutral_acts"]):
@@ -195,16 +195,23 @@ class Evaluator:
 
         result = {}
         for emotion in self.emotion_list:
-            if emotion == "Neutral":
-                continue
+            # if emotion == "Neutral":
+            #     continue
             result[emotion] = {}
+            for metric in scores[emotion]:
+                result[emotion][metric] = sum(
+                    scores[emotion][metric])/len(scores[emotion][metric])
             result[emotion]["bleu"] = bleu(golden_utts=r["Neutral_utts"],
                                            gen_utts=r[f"{emotion}_utts"])
             result[emotion]["SER"] = SER(gen_utts=r[f"{emotion}_utts"],
                                          gen_acts=r[f"{emotion}_acts"])
-            for metric in scores[emotion]:
-                result[emotion][metric] = sum(
-                    scores[emotion][metric])/len(scores[emotion][metric])
+
+            result[emotion]["len"] = avg_len(gen_utts=r[f"{emotion}_utts"])
+
+            rouge_score = rouge(golden_utts=r["Neutral_utts"],
+                                gen_utts=r[f"{emotion}_utts"])
+            for metric, score in rouge_score.items():
+                result[emotion][metric] = score.mid.fmeasure
 
             print("emotion:", emotion)
             for metric in result[emotion]:
@@ -221,6 +228,11 @@ class Evaluator:
             self.model_checkpoint, f"{self.time}-{self.dataset}-{basename}.json"), 'w'), indent=2)
 
 
+def avg_len(gen_utts):
+    n = [len(s.split()) for s in gen_utts]
+    return sum(n)/len(n)
+
+
 def bleu(golden_utts, gen_utts):
     bleu_metric = load_metric("sacrebleu")
     labels = [[utt] for utt in golden_utts]
@@ -229,6 +241,13 @@ def bleu(golden_utts, gen_utts):
                                      references=labels,
                                      force=True)
     return bleu_score["score"]
+
+
+def rouge(golden_utts, gen_utts):
+    rouge_metric = load_metric("rouge")
+    rouge_score = rouge_metric.compute(predictions=gen_utts,
+                                       references=golden_utts)
+    return rouge_score
 
 
 def SER(gen_utts, gen_acts):
