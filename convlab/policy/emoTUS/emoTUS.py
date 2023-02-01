@@ -91,7 +91,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 raw_output = self._generate_action(
                     raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
         output = self._parse_output(raw_output)
-        print(output)
         self.semantic_action = self._remove_illegal_action(output["action"])
         self.utterance = output["text"]
         self.emotion = output["emotion"]
