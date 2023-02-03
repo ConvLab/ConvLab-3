@@ -47,7 +47,8 @@
                 "model_checkpoint": "convlab/policy/emoTUS/unify/experiments/EmoUS_emowoz+dialmage_0_1",
                 "use_sentiment": false,
                 "add_persona": true,
-                "sample": false
+                "sample": false,
+                "weight": 1
             }
         }
     },

@@ -14,7 +14,7 @@ def arg_parser():
     parser.add_argument("-N", "--num", type=int,
                         default=500, help="# of evaluation dialogue")
     parser.add_argument("--model", type=str,
-                        default="rule", help="# of evaluation dialogue")
+                        default="ppo", help="# of evaluation dialogue")
     return parser.parse_args()
 
 
@@ -25,7 +25,7 @@ def interact(model_name, config, seed=0, num_goals=500):
 
     if model_name == "rule":
         policy_sys = RulePolicy()
-    elif model_name == "PPO":
+    elif model_name == "ppo":
         from convlab.policy.ppo import PPO
         policy_sys = PPO(vectorizer=conf['vectorizer_sys_activated'])
 
@@ -91,8 +91,13 @@ if __name__ == "__main__":
     time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
     args = arg_parser()
     conversation = interact(model_name=args.model,
-                            config=args.config, num_goals=args.num)
-    json.dump(conversation,
-              open(os.path.join("convlab/policy/emoTUS",
-                   f"conversation-{time}.json"), 'w'),
+                            config=args.config,
+                            num_goals=args.num)
+    data = {"config": json.load(open(args.config)),
+            "conversation": conversation}
+    folder_name = os.path.join("convlab/policy/emoTUS", "conversation")
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+    json.dump(data,
+              open(os.path.join(folder_name, f"{time}.json"), 'w'),
               indent=2)
