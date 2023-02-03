@@ -1,6 +1,6 @@
 {
     "model": {
-        "load_path": "convlab/policy/ppo/pretrained_models/mle",
+        "load_path": "convlab/policy/ppo/finished_experiments/history/NLGEmoTUS/experiment_2023-01-19-17-56-38/save/best_ppo",
         "pretrained_load_path": "",
         "use_pretrained_initialisation": false,
         "batchsz": 200,
@@ -44,7 +44,7 @@
         "emoTUS": {
             "class_path": "convlab.policy.emoTUS.emoTUS.UserPolicy",
             "ini_params": {
-                "model_checkpoint": "convlab/policy/emoTUS/unify/experiments/EmoUS_emowoz+dialmage_0_1",
+                "model_checkpoint": "convlab/policy/emoTUS/unify/experiments/EmoUS_emowoz+dialmage_0_1/23-01-23-15-03/",
                 "use_sentiment": false,
                 "add_persona": true,
                 "sample": false
