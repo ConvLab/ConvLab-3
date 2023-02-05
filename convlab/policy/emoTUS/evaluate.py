@@ -29,8 +29,10 @@ def arg_parser():
     parser.add_argument("--generated-file", type=str, help="the generated results",
                         default="")
     parser.add_argument("--dataset", default="multiwoz")
-    parser.add_argument("--do-golden-nlg", action="store_true",
-                        help="do golden nlg generation")
+    parser.add_argument("--golden-emotion", action="store_true",
+                        help="golden emotion -> action + utt")
+    parser.add_argument("--golden-action", action="store_true",
+                        help="golden emotion + action -> utt")
     parser.add_argument("--use-sentiment", action="store_true")
     parser.add_argument("--emotion-mid", action="store_true")
     parser.add_argument("--weight", type=float, default=None)
@@ -83,23 +85,29 @@ class Evaluator:
         for x in self.r:
             self.r[x].append(temp[x])
 
-    def generate_results(self, f_eval, golden=False):
+    def generate_results(self, f_eval, golden_emotion=False, golden_action=False):
         emotion_mode = "normal"
         in_file = json.load(open(f_eval))
-
+        mode = "max"
+        if self.sample:
+            mode = "sample"
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
 
-            if golden:
+            if golden_action:
                 usr_act = labels["action"]
+                usr_emo = labels["emotion"]
                 usr_utt = self.usr.generate_text_from_give_semantic(
                     inputs, labels["action"], labels["emotion"])
-
+            elif golden_emotion:
+                usr_emo = labels["emotion"]
+                output = self.usr.generate_from_emotion(
+                    inputs,  emotion=usr_emo, mode=mode)
+                output = self.usr._parse_output(output[usr_emo])
+                usr_act = self.usr._remove_illegal_action(output["action"])
+                usr_utt = output["text"]
             else:
-                mode = "max"
-                if self.sample:
-                    mode = "sample"
                 output = self.usr._parse_output(
                     self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
@@ -139,10 +147,10 @@ class Evaluator:
             result.append(temp)
         return result
 
-    def nlg_evaluation(self, input_file=None, generated_file=None, golden=False):
+    def nlg_evaluation(self, input_file=None, generated_file=None, golden_emotion=False, golden_action=False):
         if input_file:
             print("Force generation")
-            self.generate_results(input_file, golden)
+            self.generate_results(input_file, golden_emotion, golden_action)
 
         elif generated_file:
             self.read_generated_result(generated_file)
@@ -152,34 +160,40 @@ class Evaluator:
         if self.sample:
             mode = "sample"
 
-        nlg_eval = {
-            "golden": golden,
-            "mode": mode,
-            "metrics": {},
-            "dialog": self._transform_result()
-        }
-
-        if golden:
-            print("Calculate BLEU")
-            bleu_metric = load_metric("sacrebleu")
-            labels = [[utt] for utt in self.r["golden_utts"]]
-
-            bleu_score = bleu_metric.compute(predictions=self.r["gen_utts"],
-                                             references=labels,
-                                             force=True)
-            print("bleu_metric", bleu_score)
-            nlg_eval["metrics"]["bleu"] = bleu_score
-
+        nlg_eval = {}
+        if golden_action:
+            nlg_eval["golden"] = "golden_action"
+        elif golden_emotion:
+            nlg_eval["golden"] = "golden_emotion"
         else:
-            print("Calculate SER")
-            missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-                self.r["gen_acts"], self.r["gen_utts"])
+            nlg_eval["golden"] = False
 
-            print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-                "genTUSNLG", missing, total, hallucinate, missing/total))
-            nlg_eval["metrics"]["SER"] = missing/total
+        nlg_eval["mode"] = mode
+        nlg_eval["metrics"] = {}
+        nlg_eval["dialog"] = self._transform_result()
 
-            # TODO emotion metric
+        # if golden_action:
+        print("Calculate BLEU")
+        bleu_metric = load_metric("sacrebleu")
+        labels = [[utt] for utt in self.r["golden_utts"]]
+
+        bleu_score = bleu_metric.compute(predictions=self.r["gen_utts"],
+                                         references=labels,
+                                         force=True)
+        print("bleu_metric", bleu_score)
+        nlg_eval["metrics"]["bleu"] = bleu_score
+
+        # else:
+        print("Calculate SER")
+        missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+            self.r["gen_acts"], self.r["gen_utts"])
+
+        print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+            "EmoUSNLG", missing, total, hallucinate, missing/total))
+        print(nlg_eval["metrics"])
+        nlg_eval["metrics"]["SER"] = missing/total
+
+        # TODO emotion metric
 
         dir_name = self.model_checkpoint
         json.dump(nlg_eval,
@@ -188,42 +202,23 @@ class Evaluator:
                   indent=2)
         return os.path.join(dir_name, f"{self.time}-nlg_eval.json")
 
-    def evaluation(self, input_file=None, generated_file=None):
+    def evaluation(self, generated_file, golden_emotion=False, golden_action=False):
         # TODO add emotion
-        force_prediction = True
-        if generated_file:
-            print("---> use generated file")
-            gen_file = json.load(open(generated_file))
-            force_prediction = False
-            if gen_file["golden"]:
-                force_prediction = True
-            self.read_generated_result(generated_file)
+        gen_file = json.load(open(generated_file))
+        self.read_generated_result(generated_file)
 
-        if force_prediction:
-            in_file = json.load(open(input_file))
-            dialog_result = []
+        if golden_action:
+            print("golden_action, skip semantic evaluation")
+            return
+
+        elif golden_emotion:
+            print("golden_emotion, skip emotion evaluation")
             gen_acts, golden_acts = [], []
-            # scores = {"precision": [], "recall": [], "f1": [], "turn_acc": []}
-            for dialog in tqdm(in_file['dialog']):
-                inputs = dialog["in"]
-                labels = self.usr._parse_output(dialog["out"])
-                ans_action = self.usr._remove_illegal_action(labels["action"])
-                preds = self.usr._generate_action(inputs)
-                preds = self.usr._parse_output(preds)
-                usr_action = self.usr._remove_illegal_action(preds["action"])
+            for dialog in gen_file['dialog']:
+                gen_acts.append(dialog["gen_acts"])
+                golden_acts.append(dialog["golden_acts"])
+            dialog_result = gen_file['dialog']
 
-                gen_acts.append(usr_action)
-                golden_acts.append(ans_action)
-
-                d = {"input": inputs,
-                     "golden_acts": ans_action,
-                     "gen_acts": usr_action}
-                if "text" in preds:
-                    d["golden_utts"] = labels["text"]
-                    d["gen_utts"] = preds["text"]
-                    # print("pred text", preds["text"])
-
-                dialog_result.append(d)
         else:
             gen_acts, golden_acts = [], []
             gen_emotions, golden_emotions = [], []
@@ -246,27 +241,33 @@ class Evaluator:
             result[metric] = sum(scores[metric])/len(scores[metric])
             print(f"{metric}: {result[metric]}")
 
-        emo_score = emotion_score(
-            golden_emotions,
-            gen_emotions,
-            self.model_checkpoint,
-            time=self.time,
-            no_neutral=False)
-        if self.use_sentiment:
-            sent_score = sentiment_score(
-                self.r["golden_sentiment"],
-                self.r["gen_sentiment"],
+        if not golden_emotion:
+            emo_score = emotion_score(
+                golden_emotions,
+                gen_emotions,
                 self.model_checkpoint,
-                time=self.time)
-        else:
-            # transfer emotions to sentiment if the model do not generate sentiment
-            golden_sentiment = [self.emo2sent[emo] for emo in golden_emotions]
-            gen_sentiment = [self.emo2sent[emo] for emo in gen_emotions]
-            sent_score = sentiment_score(
-                golden_sentiment,
-                gen_sentiment,
-                self.model_checkpoint,
-                time=self.time)
+                time=self.time,
+                no_neutral=False)
+            result["emotion"] = {"macro_f1": emo_score["macro_f1"],
+                                 "sep_f1": emo_score["sep_f1"]}
+            if self.use_sentiment:
+                sent_score = sentiment_score(
+                    self.r["golden_sentiment"],
+                    self.r["gen_sentiment"],
+                    self.model_checkpoint,
+                    time=self.time)
+            else:
+                # transfer emotions to sentiment if the model do not generate sentiment
+                golden_sentiment = [self.emo2sent[emo]
+                                    for emo in golden_emotions]
+                gen_sentiment = [self.emo2sent[emo] for emo in gen_emotions]
+                sent_score = sentiment_score(
+                    golden_sentiment,
+                    gen_sentiment,
+                    self.model_checkpoint,
+                    time=self.time)
+            result["sentiment"] = {"macro_f1": sent_score["macro_f1"],
+                                   "sep_f1": sent_score["sep_f1"]}
 
         # for metric in emo_score:
         #     result[metric] = emo_score[metric]
@@ -356,11 +357,13 @@ def main():
         else:
             nlg_result = eval.nlg_evaluation(input_file=args.input_file,
                                              generated_file=args.generated_file,
-                                             golden=args.do_golden_nlg)
+                                             golden_emotion=args.golden_emotion,
+                                             golden_action=args.golden_action)
 
             generated_file = nlg_result
-        eval.evaluation(args.input_file,
-                        generated_file)
+        eval.evaluation(generated_file,
+                        golden_emotion=args.golden_emotion,
+                        golden_action=args.golden_action)
 
 
 if __name__ == '__main__':

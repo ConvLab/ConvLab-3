@@ -235,12 +235,11 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         return text
 
-    def generate_from_emotion(self, raw_inputs,  emotion=None, mode="max", allow_general_intent=True):
+    def generate_from_emotion(self, raw_inputs, emotion=None, mode="max", allow_general_intent=True):
         self.kg.parse_input(raw_inputs)
         model_input = self.vector.encode(raw_inputs, self.max_in_len)
         responses = {}
         if emotion:
-            print("if emotion")
             emotion_list = [emotion]
         else:
             emotion_list = self.emotion_list
@@ -285,6 +284,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+        pos = self._update_seq(
+            self.token_map.get_id('start_emotion'), pos)
         pos = self._update_seq(self.kg._get_token_id(emotion), pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)

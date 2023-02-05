@@ -41,7 +41,7 @@ class Evaluator:
 
         self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
         self.use_sentiment = kwargs.get("use_sentiment", False)
-        self.add_persona = kwargs.get("add_persona", False)
+        self.add_persona = kwargs.get("add_persona", True)
         self.emotion_mid = kwargs.get("emotion_mid", False)
         weight = kwargs.get("weight", None)
         self.sample = kwargs.get("sample", False)
