@@ -45,12 +45,13 @@ class Evaluator:
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
         self.model_weight = model_weight
-        self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
+        self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M-%S')}"
         self.use_sentiment = kwargs.get("use_sentiment", False)
         self.add_persona = kwargs.get("add_persona", False)
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.emotion_weight = kwargs.get("weight", None)
         self.sample = kwargs.get("sample", False)
+        print("self.emotion_weight", self.emotion_weight)
 
         self.usr = UserActionPolicy(
             model_checkpoint,
