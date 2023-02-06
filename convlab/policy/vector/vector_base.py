@@ -111,14 +111,14 @@ class VectorBase(Vector):
 
                     if turn['speaker'] == 'system':
                         for act in delex_acts:
-                            act = tuple(act)
+                            act = tuple([a.lower() for a in act])
                             if act not in system_dict:
                                 system_dict[act] = 1
                             else:
                                 system_dict[act] += 1
                     else:
                         for act in delex_acts:
-                            act = tuple(act)
+                            act = tuple([a.lower() for a in act])
                             if act not in user_dict:
                                 user_dict[act] = 1
                             else:
