@@ -9,6 +9,7 @@ def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", type=str)
     parser.add_argument("--fast-bleu", action="store_true")
+    parser.add_argument("--uss", action="store_true")
     return parser.parse_args()
 
 
@@ -17,13 +18,17 @@ def read_file(file_name):
     return nlg_candidates
 
 
-def get_sent(candidates, bleu_mode="torch"):
+def get_sent(candidates, bleu_mode="torch", uss=False):
     if bleu_mode == "torch":
+        if uss:
+            return [x["preds"] for x in candidates]
         if "log" in candidates:
             return [x["gen_utts"] for x in candidates["log"]]
         else:
             return [x["gen_utts"] for x in candidates["dialog"]]
     else:
+        if uss:
+            return [x["preds"].split() for x in candidates]
         if "log" in candidates:
             return [x["gen_utts"].split() for x in candidates["log"]]
         else:
@@ -41,20 +46,22 @@ def SelfBLEU(sentences):
     return sum(result)/len(result)
 
 
-def calculate(candidates, bleu_mode="torch"):
-    sentences = get_sent(candidates, bleu_mode)
+def calculate(candidates, bleu_mode="torch", uss=False):
+    sentences = get_sent(candidates, bleu_mode, uss)
     if bleu_mode == "torch":
         x = SelfBLEU(sentences)
     else:
         bleu = fast_bleu.SelfBLEU(sentences)
         x = bleu.get_score()
     # x = bleu.get_score()
+    # print(x)
     print(sum(x[4])/len(x[4]))
+
 
 if __name__ == "__main__":
     args = arg_parser()
     if args.fast_bleu:
         import fast_bleu
-        calculate(read_file(args.file), "fast-bleu")
+        calculate(read_file(args.file), "fast-bleu", uss=args.uss)
     else:
-        calculate(read_file(args.file))
+        calculate(read_file(args.file), uss=args.uss)
