@@ -3,6 +3,7 @@ import os
 import sys
 import numpy as np
 import logging
+import json
 
 from copy import deepcopy
 from convlab.policy.vec import Vector
@@ -79,8 +80,14 @@ class VectorBase(Vector):
             print("Load actions from file..")
             with open(os.path.join(dir_path, "sys_da_voc.txt")) as f:
                 self.da_voc = f.read().splitlines()
+                if self.da_voc[0][0] != "[":
+                    # if act is not a list, we still have the old action dict
+                    self.load_actions_from_data()
+                else:
+                    self.da_voc = [tuple(json.loads(act)) for act in self.da_voc]
             with open(os.path.join(dir_path, "user_da_voc.txt")) as f:
                 self.da_voc_opp = f.read().splitlines()
+                self.da_voc_opp = [tuple(json.loads(act)) for act in self.da_voc_opp]
 
         self.generate_dict()
 
@@ -104,14 +111,14 @@ class VectorBase(Vector):
 
                     if turn['speaker'] == 'system':
                         for act in delex_acts:
-                            act = "_".join(act)
+                            act = tuple([a.lower() for a in act])
                             if act not in system_dict:
                                 system_dict[act] = 1
                             else:
                                 system_dict[act] += 1
                     else:
                         for act in delex_acts:
-                            act = "_".join(act)
+                            act = tuple([a.lower() for a in act])
                             if act not in user_dict:
                                 user_dict[act] = 1
                             else:
@@ -138,10 +145,10 @@ class VectorBase(Vector):
         os.makedirs(dir_path, exist_ok=True)
         with open(os.path.join(dir_path, "sys_da_voc.txt"), "w") as f:
             for act in self.da_voc:
-                f.write(act + "\n")
+                f.write(json.dumps(act) + "\n")
         with open(os.path.join(dir_path, "user_da_voc.txt"), "w") as f:
             for act in self.da_voc_opp:
-                f.write(act + "\n")
+                f.write(json.dumps(act) + "\n")
 
     def load_actions_from_ontology(self):
         """
@@ -240,7 +247,7 @@ class VectorBase(Vector):
 
         for i in range(self.da_dim):
             action = self.vec2act[i]
-            action_domain = action.split('_')[0]
+            action_domain = action[0]
             if action_domain in domain_active_dict.keys():
                 if not domain_active_dict[action_domain]:
                     mask_list[i] = 1.0
@@ -253,7 +260,7 @@ class VectorBase(Vector):
 
         for i in range(self.da_dim):
             action = self.vec2act[i]
-            domain, intent, slot, value = action.split('_')
+            domain, intent, slot, value = action
 
             # NoBook/NoOffer-SLOT does not make sense because policy can not know which constraint made offer impossible
             # If one wants to do it, lexicaliser needs to do it
@@ -281,7 +288,7 @@ class VectorBase(Vector):
             return mask_list
         for i in range(self.da_dim):
             action = self.vec2act[i]
-            domain, intent, slot, value = action.split('_')
+            domain, intent, slot, value = action
             domain_entities = number_entities_dict.get(domain, 1)
 
             if intent in ['inform', 'select', 'recommend'] and value != None and value != 'none':
@@ -349,10 +356,11 @@ class VectorBase(Vector):
 
     def action_vectorize(self, action):
         action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
+        #action = flat_da(action)
         act_vec = np.zeros(self.da_dim)
 
         for da in action:
+            da = tuple(da)
             if da in self.act2vec:
                 act_vec[self.act2vec[da]] = 1.
         return act_vec
@@ -376,29 +384,29 @@ class VectorBase(Vector):
 
         if len(act_array) == 0:
             if self.reqinfo_filler_action:
-                act_array.append('general_reqinfo_none_none')
+                act_array.append(("general", "reqinfo", "none", "none"))
             else:
-                act_array.append('general_reqmore_none_none')
+                act_array.append(("general", "reqmore", "none", "none"))
 
         action = deflat_da(act_array)
         entities = {}
         for domint in action:
-            domain, intent = domint.split('_')
+            domain, intent = domint
             if domain not in entities and domain not in ['general']:
                 entities[domain] = self.dbquery_domain(domain)
 
         # From db query find which slot causes no_offer
-        nooffer = [domint for domint in action if 'nooffer' in domint]
+        nooffer = [domint for domint in action if 'nooffer' in domint[1]]
         for domint in nooffer:
-            domain, intent = domint.split('_')
+            domain, intent = domint
             slot = self.find_nooffer_slot(domain)
             action[domint] = [[slot, '1']
                               ] if slot != 'none' else [[slot, 'none']]
 
         # Randomly select booking constraint "causing" no_book
-        nobook = [domint for domint in action if 'nobook' in domint]
+        nobook = [domint for domint in action if 'nobook' in domint[1]]
         for domint in nobook:
-            domain, intent = domint.split('_')
+            domain, intent = domint
             if domain in self.state:
                 slots = self.state[domain]
                 slots = [slot for slot, i in slots.items()
@@ -430,17 +438,19 @@ class VectorBase(Vector):
 
         if not self.use_none:
             # replace all occurences of "none" with an empty string ""
-            action = [[a_string.replace('none', '') for a_string in a_list] for a_list in action]
+            f = lambda x: x if x != "none" else ""
+            action = [[f(x) for x in a_list] for a_list in action]
+            #action = [[ for a_tuple in a_list] for a_list in action]
 
         return action
 
     def add_booking_reference(self, action):
         new_acts = {}
         for domint in action:
-            domain, intent = domint.split('_', 1)
+            domain, intent = domint
 
             if intent == 'book' and action[domint]:
-                ref_domint = f'{domain}_inform'
+                ref_domint = (domain, "inform")
                 if ref_domint not in new_acts:
                     new_acts[ref_domint] = []
                 new_acts[ref_domint].append(['ref', '1'])
@@ -458,14 +468,14 @@ class VectorBase(Vector):
 
         name_inform = {domain: [] for domain in self.domains}
         # General Inform Condition for Naming
-        domains = [domint.split('_', 1)[0] for domint in action]
+        domains = [domint[0] for domint in action]
         domains = list(set([d for d in domains if d not in ['general']]))
         for domain in domains:
             contains_name = False
             if domain == 'none':
                 raise NameError('Domain not defined')
-            cur_inform = domain + '_inform'
-            cur_request = domain + '_request'
+            cur_inform = (domain, "inform")
+            cur_request = (domain, "request")
             index = -1
             if cur_inform in action:
                 # Check if current inform within a domain is accompanied by a name inform

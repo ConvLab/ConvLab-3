@@ -116,11 +116,12 @@ class VectorNodes(VectorBase):
         feature_type = 'last system act'
         action = state['system_action'] if self.character == 'sys' else state['user_action']
         action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
+        #action = flat_da(action)
         for da in action:
+            da = tuple(da)
             if da in self.act2vec:
-                domain = da.split('_')[0]
-                description = "system-" + da
+                domain = da[0]
+                description = "system-" + "_".join(da)
                 value = 1.0
                 self.add_graph_node(domain, feature_type, description.lower(), value)
 
@@ -129,12 +130,13 @@ class VectorNodes(VectorBase):
         feature_type = 'user act'
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
-        opp_action = flat_da(opp_action)
+        #opp_action = flat_da(opp_action)
 
         for da in opp_action:
+            da = tuple(da)
             if da in self.opp2vec:
-                domain = da.split('_')[0]
-                description = "user-" + da
+                domain = da[0]
+                description = "user-" + "_".join(da)
                 value = 1.0
                 self.add_graph_node(domain, feature_type, description.lower(), value)
 
