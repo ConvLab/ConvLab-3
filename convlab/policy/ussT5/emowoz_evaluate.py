@@ -92,9 +92,7 @@ def generate_result(model_checkpoint, data, stop=-1):
                                 do_sample=False)
         output = tokenizer.batch_decode(
             output, skip_special_tokens=True)[0]
-        if len(output) > 1:
-            print(output)
-            output = "illegal"
+
         if "satisfaction score" in input_text:
             output = tri_convert(output)
         results.append({"input_text": input_text,
