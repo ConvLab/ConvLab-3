@@ -83,7 +83,8 @@ class VectorBase(Vector):
                 if self.da_voc[0][0] != "[":
                     # if act is not a list, we still have the old action dict
                     self.load_actions_from_data()
-                self.da_voc = [tuple(json.loads(act)) for act in self.da_voc]
+                else:
+                    self.da_voc = [tuple(json.loads(act)) for act in self.da_voc]
             with open(os.path.join(dir_path, "user_da_voc.txt")) as f:
                 self.da_voc_opp = f.read().splitlines()
                 self.da_voc_opp = [tuple(json.loads(act)) for act in self.da_voc_opp]
@@ -355,10 +356,11 @@ class VectorBase(Vector):
 
     def action_vectorize(self, action):
         action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
+        #action = flat_da(action)
         act_vec = np.zeros(self.da_dim)
 
         for da in action:
+            da = tuple(da)
             if da in self.act2vec:
                 act_vec[self.act2vec[da]] = 1.
         return act_vec
