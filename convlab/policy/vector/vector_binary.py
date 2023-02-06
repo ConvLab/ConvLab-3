@@ -94,9 +94,10 @@ class VectorBinary(VectorBase):
     def vectorize_system_act(self, state):
         action = state['system_action'] if self.character == 'sys' else state['user_action']
         action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
+        #action = flat_da(action)
         last_act_vec = np.zeros(self.da_dim)
         for da in action:
+            da = tuple(da)
             if da in self.act2vec:
                 last_act_vec[self.act2vec[da]] = 1.
         return last_act_vec
@@ -104,9 +105,10 @@ class VectorBinary(VectorBase):
     def vectorize_user_act(self, state):
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
-        opp_action = flat_da(opp_action)
+        #opp_action = flat_da(opp_action)
         opp_act_vec = np.zeros(self.da_opp_dim)
         for da in opp_action:
+            da = tuple(da)
             if da in self.opp2vec:
                 prob = 1.0
                 opp_act_vec[self.opp2vec[da]] = prob
