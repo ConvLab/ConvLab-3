@@ -23,6 +23,7 @@ def arg_parser():
     parser.add_argument("--use-sentiment", action="store_true")
     parser.add_argument("--add-persona", action="store_true")
     parser.add_argument("--emotion-mid", action="store_true")
+    parser.add_argument("--emotion-only", action="store_true")
 
     return parser.parse_args()
 
@@ -33,6 +34,7 @@ class DataBuilder(GenTUSDataBuilder):
         self.use_sentiment = kwargs.get("use_sentiment", False)
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.add_persona = kwargs.get("add_persona", False)
+        self.emotion_only = kwargs.get("emotion_only", False)
 
         self.emotion = {}
         for emotion, index in json.load(open("convlab/policy/emoTUS/emotion.json")).items():
@@ -128,9 +130,12 @@ class DataBuilder(GenTUSDataBuilder):
                        "action": usr_act,
                        "text": text}
         elif not self.use_sentiment and not self.emotion_mid:
-            out_str = {"emotion": usr_emotion,
-                       "action": usr_act,
-                       "text": text}
+            if self.emotion_only:
+                out_str = {"emotion": usr_emotion}
+            else:
+                out_str = {"emotion": usr_emotion,
+                           "action": usr_act,
+                           "text": text}
         else:
             out_str = {"action": usr_act,
                        "emotion": usr_emotion,
@@ -183,6 +188,9 @@ if __name__ == "__main__":
         dir_name = f"SentEmoUS_noPersona_{dir_name}"
     else:
         print("NOT DEFINED", use_sentiment, add_persona, emotion_mid)
+
+    if args.emotion_only:
+        dir_name = dir_name + '_emotion_only'
     print("dir_name", dir_name)
 
     folder_name = os.path.join(base_name, dir_name)
@@ -197,7 +205,8 @@ if __name__ == "__main__":
         dataset=args.dataset,
         use_sentiment=use_sentiment,
         add_persona=add_persona,
-        emotion_mid=emotion_mid)
+        emotion_mid=emotion_mid,
+        emotion_only=args.emotion_only)
     data = data_builder.setup_data(
         raw_data=dataset,
         random_order=False,

@@ -37,6 +37,7 @@ def arg_parser():
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--model-checkpoint", type=str,
                         default="facebook/bart-base")
+    parser.add_argument("--fine-tune", action="store_true")
     return parser.parse_args()
 
 
@@ -63,6 +64,25 @@ def gentus_compute_metrics(eval_preds):
         result[s] = f1_scores[s]
 
     result = {k: round(v, 4) for k, v in result.items()}
+    return result
+
+
+def basic_metric(eval_preds):
+    preds, labels = eval_preds
+    if isinstance(preds, tuple):
+        preds = preds[0]
+    decoded_preds = TOKENIZER.batch_decode(
+        preds, skip_special_tokens=True, max_length=MAX_OUT_LEN)
+
+    # Replace -100 in the labels as we can't decode them.
+    labels = np.where(labels != -100, labels, TOKENIZER.pad_token_id)
+    decoded_labels = TOKENIZER.batch_decode(
+        labels, skip_special_tokens=True, max_length=MAX_OUT_LEN)
+    labels = [[x] for x in decoded_labels]
+
+    result = METRIC.compute(
+        predictions=decoded_preds, references=labels)
+    result = {"bleu": result["score"]}
     return result
 
 
@@ -164,6 +184,27 @@ class TrainerHelper:
 
         return tokenized_datasets
 
+    def remove_dialmage_action(self):
+        self.dir_name = "fine_tune"
+        folder = "convlab/policy/emoTUS/unify/data"
+        data_name = {
+            "emowoz": "EmoUS_emowoz_0_1",
+            "dialmage": "EmoUS_dialmage_0_1_emotion_only"}
+        data = {}
+        for d, d_n in data_name.items():
+            data[d] = {}
+            for d_type in ["train", "validation", "test"]:
+                f_name = os.path.join(folder, d_n, f"{d_type}.json")
+                data[d][d_type] = json.load(open(f_name))
+
+        tokenized_datasets = {}
+        for d_n, d in data.items():
+            tokenized_datasets[d_n] = {}
+            for s_d_n, s_d in d.items():
+                tokenized_datasets[d_n][s_d_n] = Dataset.from_dict(
+                    self._preprocess(s_d["dialog"]))
+        return tokenized_datasets
+
     def _preprocess(self, examples):
         model_inputs = {"input_ids": [], "attention_mask": [], "labels": []}
         if isinstance(examples, dict):
@@ -240,17 +281,117 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max
     trainer.save_model()
 
 
+def fine_tune_on_dialmage(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max_input_length=500, max_target_length=500, model_checkpoint="facebook/bart-base"):
+    tokenizer = TOKENIZER
+
+    train_helper = TrainerHelper(
+        tokenizer=tokenizer, max_input_length=max_input_length, max_target_length=max_target_length)
+    data = train_helper.remove_dialmage_action()
+
+    model = BartForConditionalGeneration.from_pretrained(model_checkpoint)
+    model.resize_token_embeddings(len(tokenizer))
+    fp16 = False
+    if torch.cuda.is_available():
+        print("use cuda")
+        fp16 = True
+        model.to("cuda")
+
+    model_dir = os.path.join(
+        train_helper.get_model_folder(model_type),
+        f"{datetime.now().strftime('%y-%m-%d-%H-%M')}")
+
+    # Emowoz
+
+    args = Seq2SeqTrainingArguments(
+        model_dir,
+        evaluation_strategy="epoch",
+        learning_rate=2e-5,
+        per_device_train_batch_size=batch_size,
+        per_device_eval_batch_size=batch_size,
+        weight_decay=0.01,
+        save_total_limit=2,
+        num_train_epochs=4,
+        predict_with_generate=True,
+        fp16=fp16,
+        push_to_hub=False,
+        generation_max_length=max_target_length,
+        logging_dir=os.path.join(model_dir, 'log')
+    )
+    data_collator = DataCollatorForSeq2Seq(
+        tokenizer, model=model, padding=True)
+
+    trainer = Seq2SeqTrainer(
+        model=model,
+        args=args,
+        train_dataset=data["emowoz"]["train"],
+        eval_dataset=data["emowoz"]["test"],
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        compute_metrics=gentus_compute_metrics)
+    print("start training...")
+    trainer.train()
+    print("saving model...")
+    trainer.save_model()
+
+    # dialmage
+    args = Seq2SeqTrainingArguments(
+        model_dir+"_dialmage_fine_tune",
+        evaluation_strategy="epoch",
+        learning_rate=2e-5,
+        per_device_train_batch_size=batch_size,
+        per_device_eval_batch_size=batch_size,
+        weight_decay=0.01,
+        save_total_limit=2,
+        num_train_epochs=1,
+        predict_with_generate=True,
+        fp16=fp16,
+        push_to_hub=False,
+        generation_max_length=max_target_length,
+        logging_dir=os.path.join(model_dir, 'log')
+    )
+    data_collator = DataCollatorForSeq2Seq(
+        tokenizer, model=model, padding=True)
+
+    trainer = Seq2SeqTrainer(
+        model=model,
+        args=args,
+        train_dataset=data["dialmage"]["train"],
+        eval_dataset=data["dialmage"]["test"],
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        compute_metrics=basic_metric)
+    print("start training...")
+    trainer.train()
+    print("saving model...")
+    trainer.save_model()
+
+
 def main():
     args = arg_parser()
     print("---> data_name", args.data_name)
-    train(model_type=args.model_type,
-          data_name=args.data_name,
-          dial_ids_order=args.dial_ids_order,
-          split2ratio=args.split2ratio,
-          batch_size=args.batch_size,
-          max_input_length=MAX_IN_LEN,
-          max_target_length=MAX_OUT_LEN,
-          model_checkpoint=args.model_checkpoint)
+    if args.fine_tune:
+        fine_tune_on_dialmage(
+            model_type=args.model_type,
+            data_name=args.data_name,
+            dial_ids_order=args.dial_ids_order,
+            split2ratio=args.split2ratio,
+            batch_size=args.batch_size,
+            max_input_length=MAX_IN_LEN,
+            max_target_length=MAX_OUT_LEN,
+            model_checkpoint=args.model_checkpoint
+        )
+    else:
+
+        train(
+            model_type=args.model_type,
+            data_name=args.data_name,
+            dial_ids_order=args.dial_ids_order,
+            split2ratio=args.split2ratio,
+            batch_size=args.batch_size,
+            max_input_length=MAX_IN_LEN,
+            max_target_length=MAX_OUT_LEN,
+            model_checkpoint=args.model_checkpoint
+        )
 
 
 if __name__ == "__main__":
