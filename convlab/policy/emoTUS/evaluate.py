@@ -136,6 +136,8 @@ class Evaluator:
 
         for dialog in tqdm(in_file['dialog']):
             for x in dialog:
+                if x not in self.r:
+                    self.r[x] = []
                 self.r[x].append(dialog[x])
 
     def _transform_result(self):
