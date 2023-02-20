@@ -259,7 +259,7 @@ class Evaluator:
         for metric_type, score in scores.items():
             result[metric_type] = {}
             for m, s in score.items():
-                result[metric_type][m] = sum(s[m])/len(s[m])
+                result[metric_type][m] = sum(s)/len(s)
                 print(f"{metric_type}-{m}: {result[metric_type][m]}")
 
         if not golden_emotion:
