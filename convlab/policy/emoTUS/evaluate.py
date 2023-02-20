@@ -204,6 +204,14 @@ class Evaluator:
                   indent=2)
         return os.path.join(dir_name, f"{self.time}-nlg_eval.json")
 
+    @staticmethod
+    def _intent_domain(action):
+        acts = []
+        for intent, domain, slot, value in action:
+            if [intent, domain] not in acts:
+                acts.append([intent, domain])
+        return acts
+
     def evaluation(self, generated_file, golden_emotion=False, golden_action=False):
         # TODO add emotion
         gen_file = json.load(open(generated_file))
@@ -231,18 +239,26 @@ class Evaluator:
                 golden_emotions.append(dialog["golden_emotion"])
             dialog_result = gen_file['dialog']
 
-        scores = {"precision": [], "recall": [], "f1": [], "turn_acc": []}
+        scores = {"complete": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
+                  "intent_domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
 
+        # full action
         for gen_act, golden_act in zip(gen_acts, golden_acts):
             s = f1_measure(preds=gen_act, labels=golden_act)
             for metric in scores:
-                scores[metric].append(s[metric])
+                scores["complete"][metric].append(s[metric])
+            s = f1_measure(preds=self._intent_domain(gen_act),
+                           labels=self._intent_domain(golden_act))
+            for metric in scores:
+                scores["intent_domain"][metric].append(s[metric])
 
         result = {}
         result["emotion_weight"] = self.emotion_weight
-        for metric in scores:
-            result[metric] = sum(scores[metric])/len(scores[metric])
-            print(f"{metric}: {result[metric]}")
+        for metric_type, score in scores.items():
+            result[metric_type] = {}
+            for m, s in score.items():
+                result[metric_type][m] = sum(s[m])/len(s[m])
+                print(f"{metric_type}-{m}: {result[metric_type][m]}")
 
         if not golden_emotion:
             emo_score = emotion_score(

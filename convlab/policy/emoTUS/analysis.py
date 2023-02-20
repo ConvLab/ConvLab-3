@@ -97,7 +97,7 @@ def get_turn_emotion(conversation):
     for x in data:
         data[x] = np.array(data[x])
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6.0, 2.5))
     p = {"Complete": {"color": "C0", "label": "Success"},
          "Not Complete": {"color": "C1", "label": "Fail"},
          "all": {"color": "C2", "label": "all"}}
@@ -120,6 +120,7 @@ def get_turn_emotion(conversation):
     plt.grid(axis='x', color='0.95')
     plt.grid(axis='y', color='0.95')
     # plt.show()
+    plt.tight_layout()
     plt.savefig(os.path.join(result_dir, "turn2emotion.png"))
 
 
@@ -284,15 +285,15 @@ def main():
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     conversation = json.load(open(args.file))["conversation"]
-    basic_info = basic_analysis(conversation)
-    result["basic_info"] = basic_info
-    print(basic_info)
-    advance_info = advance(conversation)
-    print(advance_info)
-    result["advance_info"] = advance_info
-    json.dump(result, open(
-        os.path.join("conversation_result.json"), 'w'), indent=2)
-    dict2csv(advance_info)
+    # basic_info = basic_analysis(conversation)
+    # result["basic_info"] = basic_info
+    # print(basic_info)
+    # advance_info = advance(conversation)
+    # print(advance_info)
+    # result["advance_info"] = advance_info
+    # json.dump(result, open(
+    #     os.path.join("conversation_result.json"), 'w'), indent=2)
+    # dict2csv(advance_info)
     get_turn_emotion(conversation)
 
 
