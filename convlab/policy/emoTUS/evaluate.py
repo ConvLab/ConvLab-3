@@ -247,11 +247,11 @@ class Evaluator:
         # full action
         for gen_act, golden_act in zip(gen_acts, golden_acts):
             s = f1_measure(preds=gen_act, labels=golden_act)
-            for metric in scores:
+            for metric in scores["complete"]:
                 scores["complete"][metric].append(s[metric])
             s = f1_measure(preds=self._intent_domain(gen_act),
                            labels=self._intent_domain(golden_act))
-            for metric in scores:
+            for metric in scores["intent_domain"]:
                 scores["intent_domain"][metric].append(s[metric])
 
         result = {}
