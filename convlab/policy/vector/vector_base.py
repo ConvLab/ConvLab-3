@@ -360,7 +360,7 @@ class VectorBase(Vector):
         act_vec = np.zeros(self.da_dim)
 
         for da in action:
-            da = tuple(da)
+            da = tuple([a.lower() for a in da])
             if da in self.act2vec:
                 act_vec[self.act2vec[da]] = 1.
         return act_vec
