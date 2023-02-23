@@ -34,8 +34,8 @@ def deflat_da(meta):
     meta = deepcopy(meta)
     dialog_act = {}
     for da in meta:
-        d, i, s, v = da.split('_')
-        k = '_'.join((d, i))
+        d, i, s, v = da
+        k = (d, i)
         if k not in dialog_act:
             dialog_act[k] = []
         dialog_act[k].append([s, v])
@@ -45,7 +45,7 @@ def deflat_da(meta):
 def lexicalize_da(meta, entities, state, requestable):
     meta = deepcopy(meta)
     for k, v in meta.items():
-        domain, intent = k.split('_')
+        domain, intent = k
         if domain in ['general']:
             continue
         elif intent in requestable:
@@ -99,6 +99,6 @@ def lexicalize_da(meta, entities, state, requestable):
     tuples = []
     for domain_intent, svs in meta.items():
         for slot, value in svs:
-            domain, intent = domain_intent.split('_')
+            domain, intent = domain_intent
             tuples.append([intent, domain, slot, value])
     return tuples

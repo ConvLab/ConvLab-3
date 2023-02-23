@@ -24,7 +24,7 @@ class ActionEmbedder(nn.Module):
             = self.create_dicts(action_dict)
 
         #EOS token is considered a "domain"
-        self.action_dict = dict((key.lower(), value) for key, value in action_dict.items())
+        self.action_dict = dict((key, value) for key, value in action_dict.items())
         self.action_dict_reversed = dict((value, key) for key, value in self.action_dict.items())
         self.embed_domain = torch.randn(len(self.domain_dict), embedding_dim)
         self.embed_intent = torch.randn(len(self.intent_dict), embedding_dim)
@@ -88,19 +88,19 @@ class ActionEmbedder(nn.Module):
         elif not intent:
             # Domain was selected, check intents that are allowed
             for intent in self.intent_dict:
-                domain_intent = f"{domain}_{intent}"
                 for idx, not_allow in enumerate(legal_mask):
                     semantic_act = self.action_dict_reversed[idx]
-                    if domain_intent in semantic_act and not_allow == 0:
+                    if domain == semantic_act[0] and intent == semantic_act[1] and not_allow == 0:
                         action_mask[self.small_action_dict[intent]] = 0
                         break
         else:
             # Selected domain and intent, need slot-value
             for slot_value in self.slot_value_dict:
-                domain_intent_slot = f"{domain}_{intent}_{slot_value}"
+                slot, value = slot_value
                 for idx, not_allow in enumerate(legal_mask):
                     semantic_act = self.action_dict_reversed[idx]
-                    if domain_intent_slot in semantic_act and not_allow == 0:
+                    if domain == semantic_act[0] and intent == semantic_act[1] \
+                            and slot == semantic_act[2] and value == semantic_act[3] and not_allow == 0:
                         action_mask[self.small_action_dict[slot_value]] = 0
                         break
 
@@ -128,14 +128,15 @@ class ActionEmbedder(nn.Module):
         elif not intent:
             # Domain was selected, need intent now
             for intent in self.intent_dict:
-                domain_intent = f"{domain}_{intent}"
-                valid = self.is_valid(domain_intent + "_")
+                domain_intent = (domain, intent)
+                valid = self.is_valid(domain_intent)
                 if valid:
                     action_mask[self.small_action_dict[intent]] = 0
         else:
             # Selected domain and intent, need slot-value
             for slot_value in self.slot_value_dict:
-                domain_intent_slot = f"{domain}_{intent}_{slot_value}"
+                slot, value = slot_value
+                domain_intent_slot = (domain, intent, slot, value)
                 valid = self.is_valid(domain_intent_slot)
                 if valid:
                     action_mask[self.small_action_dict[slot_value]] = 0
@@ -160,9 +161,8 @@ class ActionEmbedder(nn.Module):
     def is_valid(self, part_action):
 
         for act in self.action_dict:
-            if act.startswith(part_action):
+            if part_action == act[:len(part_action)]:
                 return True
-
         return False
 
     def create_action_embeddings(self, embedding_dim):
@@ -178,7 +178,7 @@ class ActionEmbedder(nn.Module):
             action_embeddings[len(small_action_dict)] = self.embed_intent[idx]
             small_action_dict[intent] = len(small_action_dict)
         for slot_value in self.slot_value_dict:
-            slot, value = slot_value.split("_")
+            slot, value = slot_value
             slot_idx = self.slot_dict[slot]
             value_idx = self.value_dict[value]
             action_embeddings[len(small_action_dict)] = torch.cat(
@@ -201,7 +201,7 @@ class ActionEmbedder(nn.Module):
             action_embeddings.append(intent)
             small_action_dict[intent] = len(small_action_dict)
         for slot_value in self.slot_value_dict:
-            slot, value = slot_value.split("_")
+            slot, value = slot_value
             action_embeddings.append(f"{slot} {value}")
             small_action_dict[slot_value] = len(small_action_dict)
 
@@ -211,7 +211,7 @@ class ActionEmbedder(nn.Module):
         action_embeddings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                               f'action_embeddings_{self.dataset_name}.pt')
         small_action_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                              f'small_action_dict_{self.dataset_name}.json')
+                                              f'small_action_dict_{self.dataset_name}.txt')
 
         if os.path.exists(action_embeddings_path):
             self.action_embeddings = torch.load(action_embeddings_path).to(DEVICE)
@@ -220,11 +220,15 @@ class ActionEmbedder(nn.Module):
             torch.save(self.action_embeddings, action_embeddings_path)
 
         if os.path.exists(small_action_dict_path):
-            self.small_action_dict = json.load(open(small_action_dict_path, 'r'))
+            with open(os.path.join(small_action_dict_path)) as f:
+                self.small_action_dict = f.read().splitlines()
+                self.small_action_dict = [tuple(json.loads(act)) for act in self.small_action_dict]
+                self.small_action_dict = dict((name, idx) for idx, name in enumerate(self.small_action_dict))
         else:
             self.small_action_dict = small_action_dict
             with open(small_action_dict_path, 'w') as f:
-                json.dump(self.small_action_dict, f)
+                for act in self.small_action_dict:
+                    f.write(json.dumps(act) + "\n")
 
         self.small_action_dict = small_action_dict
 
@@ -235,7 +239,7 @@ class ActionEmbedder(nn.Module):
         value_dict = {}
         slot_value_dict = {}
         for action in action_dict:
-            domain, intent, slot, value = [act.lower() for act in action.split('_')]
+            domain, intent, slot, value = [act.lower() for act in action]
             if domain not in domain_dict:
                 domain_dict[domain] = len(domain_dict)
             if intent not in intent_dict:
@@ -244,8 +248,8 @@ class ActionEmbedder(nn.Module):
                 slot_dict[slot] = len(slot_dict)
             if value not in value_dict:
                 value_dict[value] = len(value_dict)
-            if slot + "_" + value not in slot_value_dict:
-                slot_value_dict[slot + "_" + value] = len(slot_value_dict)
+            if (slot, value) not in slot_value_dict:
+                slot_value_dict[(slot, value)] = len(slot_value_dict)
 
         domain_dict['eos'] = len(domain_dict)
 
@@ -255,17 +259,17 @@ class ActionEmbedder(nn.Module):
 
         #print("SMALL ACTION LIST:", small_action_list)
         action_vector = torch.zeros(len(self.action_dict))
-        act_string = ""
+        act_list = []
         for idx, act in enumerate(small_action_list):
             if act == 'eos':
                 break
 
             if idx % 3 != 2:
-                act_string += f"{act}_"
+                act_list.append(act)
             else:
-                act_string += act
-                action_vector[self.action_dict[act_string]] = 1
-                act_string = ""
+                act_list += list(act)
+                action_vector[self.action_dict[tuple(act_list)]] = 1
+                act_list = []
 
         return action_vector
 
@@ -278,7 +282,8 @@ class ActionEmbedder(nn.Module):
         action_list = []
         for idx, i in enumerate(action):
             if i == 1:
-                action_list += self.action_dict_reversed[idx].split("_", 2)
+                d, i, s, v = self.action_dict_reversed[idx]
+                action_list += [d, i, (s, v)]
 
         if permute and len(action_list) > 3:
             action_list_new = deepcopy(action_list[-3:]) + deepcopy(action_list[:-3])
