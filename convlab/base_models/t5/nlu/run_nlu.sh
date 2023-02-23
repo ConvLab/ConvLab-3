@@ -1,8 +1,8 @@
 n_gpus=1
 task_name="nlu"
-dataset_name=$1
-speaker="user"
-context_window_size=$2
+dataset_name=crosswoz
+speaker="all"
+context_window_size=0
 data_dir="data/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 output_dir="output/${task_name}/${dataset_name}/${speaker}/context_${context_window_size}"
 cache_dir="../cache"
@@ -17,10 +17,10 @@ target_column="dialogue_acts_seq"
 truncation_side="left"
 max_source_length=512
 max_target_length=512
-model_name_or_path="t5-small"
-per_device_train_batch_size=128
-per_device_eval_batch_size=64
-gradient_accumulation_steps=2
+model_name_or_path="/data/zhuqi/pre-trained-models/mt5-small"
+per_device_train_batch_size=16
+per_device_eval_batch_size=16
+gradient_accumulation_steps=16
 lr=1e-3
 num_train_epochs=10
 
@@ -80,6 +80,6 @@ python ../run_seq2seq.py \
     --optim adafactor \
     --gradient_checkpointing
 
-python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
+python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/test_generated_predictions.json
 
 python ../../../nlu/evaluate_unified_datasets.py -p ${output_dir}/predictions.json
