@@ -24,36 +24,36 @@ gradient_accumulation_steps=8
 lr=1e-3
 num_train_epochs=10
 
-# python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size}
+python ../create_data.py -t ${task_name} -d ${dataset_name} -s ${speaker} -c ${context_window_size}
 
-# python ../run_seq2seq.py \
-#     --task_name ${task_name} \
-#     --train_file ${train_file} \
-#     --validation_file ${validation_file} \
-#     --source_column ${source_column} \
-#     --target_column ${target_column} \
-#     --max_source_length ${max_source_length} \
-#     --max_target_length ${max_target_length} \
-#     --truncation_side ${truncation_side} \
-#     --model_name_or_path ${model_name_or_path} \
-#     --do_train \
-#     --do_eval \
-#     --save_strategy epoch \
-#     --evaluation_strategy epoch \
-#     --save_total_limit 1 \
-#     --prediction_loss_only \
-#     --cache_dir ${cache_dir} \
-#     --output_dir ${output_dir} \
-#     --logging_dir ${logging_dir} \
-#     --overwrite_output_dir \
-#     --preprocessing_num_workers 4 \
-#     --per_device_train_batch_size ${per_device_train_batch_size} \
-#     --per_device_eval_batch_size ${per_device_eval_batch_size} \
-#     --gradient_accumulation_steps ${gradient_accumulation_steps} \
-#     --learning_rate ${lr} \
-#     --num_train_epochs ${num_train_epochs} \
-#     --optim adafactor \
-#     --gradient_checkpointing
+python ../run_seq2seq.py \
+    --task_name ${task_name} \
+    --train_file ${train_file} \
+    --validation_file ${validation_file} \
+    --source_column ${source_column} \
+    --target_column ${target_column} \
+    --max_source_length ${max_source_length} \
+    --max_target_length ${max_target_length} \
+    --truncation_side ${truncation_side} \
+    --model_name_or_path ${model_name_or_path} \
+    --do_train \
+    --do_eval \
+    --save_strategy epoch \
+    --evaluation_strategy epoch \
+    --save_total_limit 1 \
+    --prediction_loss_only \
+    --cache_dir ${cache_dir} \
+    --output_dir ${output_dir} \
+    --logging_dir ${logging_dir} \
+    --overwrite_output_dir \
+    --preprocessing_num_workers 4 \
+    --per_device_train_batch_size ${per_device_train_batch_size} \
+    --per_device_eval_batch_size ${per_device_eval_batch_size} \
+    --gradient_accumulation_steps ${gradient_accumulation_steps} \
+    --learning_rate ${lr} \
+    --num_train_epochs ${num_train_epochs} \
+    --optim adafactor \
+    --gradient_checkpointing
 
 python ../run_seq2seq.py \
     --task_name ${task_name} \

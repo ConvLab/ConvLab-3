@@ -3,7 +3,7 @@ import os
 from convlab.util import load_dataset, load_nlg_data
 
 
-def merge(dataset_names, speaker, save_dir, context_window_size, predict_result):
+def merge(dataset_names, speaker, save_dir, context_window_size, predict_result, dial_ids_order):
     assert os.path.exists(predict_result)
     
     if save_dir is None:
@@ -16,7 +16,8 @@ def merge(dataset_names, speaker, save_dir, context_window_size, predict_result)
     i = 0
     for dataset_name in dataset_names.split('+'):
         print(dataset_name)
-        dataset = load_dataset(dataset_name, args.dial_ids_order)
+        single = []
+        dataset = load_dataset(dataset_name, dial_ids_order)
         data = load_nlg_data(dataset, data_split='test', speaker=speaker, use_context=context_window_size>0, context_window_size=context_window_size)['test']
     
         for sample in data:
@@ -24,23 +25,18 @@ def merge(dataset_names, speaker, save_dir, context_window_size, predict_result)
                 continue
             sample['predictions'] = {'utterance': predict_result[i]}
             i += 1
-            if args.sub_dataset:
-                if dataset_name == args.sub_dataset:
-                    merged.append(sample)
-            else:
-                merged.append(sample)
+            single.append(sample)
+            merged.append(sample)
 
-    if args.sub_dataset:
-        json.dump(merged, open(os.path.join(save_dir, f'{args.sub_dataset}predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
-    else:
-        json.dump(merged, open(os.path.join(save_dir, 'predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+        json.dump(single, open(os.path.join(save_dir, f'{dataset_name}_predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
+    
+    json.dump(merged, open(os.path.join(save_dir, 'predictions.json'), 'w', encoding='utf-8'), indent=2, ensure_ascii=False)
 
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
     parser = ArgumentParser(description="merge predict results with original data for unified NLU evaluation")
     parser.add_argument('--dataset', '-d', metavar='dataset_name', type=str, help='name of the unified dataset')
-    parser.add_argument('--sub_dataset', metavar='sub dataset_name', type=str, help='name of the unified dataset')
     parser.add_argument('--speaker', '-s', type=str, choices=['user', 'system', 'all'], help='speaker(s) of utterances')
     parser.add_argument('--save_dir', type=str, help='merged data will be saved as $save_dir/predictions.json. default: on the same directory as predict_result')
     parser.add_argument('--context_window_size', '-c', type=int, default=0, help='how many contextual utterances are considered')
@@ -48,4 +44,4 @@ if __name__ == '__main__':
     parser.add_argument('--dial_ids_order', '-o', type=int, default=None, help='which data order is used for experiments')
     args = parser.parse_args()
     print(args)
-    merge(args.dataset, args.speaker, args.save_dir, args.context_window_size, args.predict_result)
+    merge(args.dataset, args.speaker, args.save_dir, args.context_window_size, args.predict_result, args.dial_ids_order)
