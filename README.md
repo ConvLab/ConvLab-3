@@ -16,6 +16,7 @@
 
 ## Updates
 
+- **2023.2.6**: ConvLab 3.0.1 has been released on PyPI, addressing the reported bugs on issues.
 - **2022.11.30**: ConvLab-3 release.
 
 ## Installation
