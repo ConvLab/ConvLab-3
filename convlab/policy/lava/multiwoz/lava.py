@@ -10,7 +10,10 @@ from convlab.policy.lava.multiwoz.latent_dialog.models_task import *
 from convlab.policy import Policy
 from convlab.util.file_util import cached_path
 from convlab.util.multiwoz.state import default_state
-from convlab.util.multiwoz.dbquery import Database
+# from convlab.util.multiwoz.dbquery import Database
+# from data.unified_datasets.multiwoz21.database import Database
+from convlab.util import load_database
+Database = load_database('multiwoz21')
 from copy import deepcopy
 import json
 import os
@@ -156,7 +159,7 @@ def get_relevant_domains(state):
 
     for domain in state.keys():
         # print("--", domain, "--")
-        for slot, value in state[domain]['semi'].items():
+        for slot, value in state[domain].items():
             if len(value) > 0:
                 # print(slot, value)
                 domains.append(domain)
@@ -174,7 +177,8 @@ def addDBPointer(state, db):
     num_entities = {}
     for domain in domains:
         # entities = dbPointer.queryResultVenues(domain, {'metadata': state})
-        entities = db.query(domain, state[domain]['semi'].items())
+        constraints = [[slot, value] for slot, value in state[domain].items() if value] if domain in state else []
+        entities = db.query(domain, constraints, topk=10)
         num_entities[domain] = len(entities)
         if len(entities) > 0:
             # fields = dbPointer.table_schema(domain)
@@ -233,36 +237,37 @@ def delexicaliseReferenceNumber(sent, state):
     during data gathering was created randomly."""
     domains = ['restaurant', 'hotel', 'attraction',
                'train', 'taxi', 'hospital']  # , 'police']
-    for domain in domains:
-        if state[domain]['book']['booked']:
-            for slot in state[domain]['book']['booked'][0]:
-                if slot == 'reference':
-                    val = '[' + domain + '_' + slot + ']'
-                else:
-                    val = '[' + domain + '_' + slot + ']'
-                key = normalize(state[domain]['book']['booked'][0][slot])
-                sent = (' ' + sent + ' ').replace(' ' +
-                                                  key + ' ', ' ' + val + ' ')
 
-                # try reference with hashtag
-                key = normalize("#" + state[domain]['book']['booked'][0][slot])
-                sent = (' ' + sent + ' ').replace(' ' +
-                                                  key + ' ', ' ' + val + ' ')
+    if state['history'][-1][0]=="sys":
+        # print(state["booked"])
+        for domain in domains:
+            if state['booked'][domain]:
+                for slot in state['booked'][domain][0]:
+                    val = '[' + domain + '_' + slot + ']'
+                    key = normalize(state['booked'][domain][0][slot])
+                    sent = (' ' + sent + ' ').replace(' ' +
+                                                      key + ' ', ' ' + val + ' ')
 
-                # try reference with ref#
-                key = normalize(
-                    "ref#" + state[domain]['book']['booked'][0][slot])
-                sent = (' ' + sent + ' ').replace(' ' +
-                                                  key + ' ', ' ' + val + ' ')
+                    # try reference with hashtag
+                    key = normalize("#" + state['booked'][domain][0][slot])
+                    sent = (' ' + sent + ' ').replace(' ' +
+                                                      key + ' ', ' ' + val + ' ')
+
+                    # try reference with ref#
+                    key = normalize(
+                        "ref#" + state['booked'][domain][0][slot])
+                    sent = (' ' + sent + ' ').replace(' ' +
+                                                      key + ' ', ' ' + val + ' ')
+
     return sent
 
 def domain_mark_not_mentioned(state, active_domain):
-    if active_domain not in ['police', 'hospital', 'taxi', 'train', 'attraction', 'restaurant', 'hotel'] or active_domain is None:
+    if active_domain not in ['hospital', 'taxi', 'train', 'attraction', 'restaurant', 'hotel'] or active_domain is None:
         return
 
-    for s in state[active_domain]['semi']:
-        if state[active_domain]['semi'][s] == '':
-            state[active_domain]['semi'][s] = 'not mentioned'
+    for s in state[active_domain]:
+        if state[active_domain][s] == '':
+            state[active_domain][s] = 'not mentioned'
 
 def mark_not_mentioned(state):
     for domain in state:
@@ -274,9 +279,9 @@ def mark_not_mentioned(state):
             # for s in state[domain]['semi']:
             #     if s != 'book' and state[domain]['semi'][s] == '':
             #         state[domain]['semi'][s] = 'not mentioned'
-            for s in state[domain]['semi']:
-                if state[domain]['semi'][s] == '':
-                    state[domain]['semi'][s] = 'not mentioned'
+            for s in state[domain]:
+                if state[domain][s] == '':
+                    state[domain][s] = 'not mentioned'
         except Exception as e:
             # print(str(e))
             # pprint(state[domain])
@@ -331,22 +336,96 @@ def get_summary_bstate(bstate):
     assert len(summary_bstate) == 94
     return summary_bstate
 
+def get_summary_bstate_unifiedformat(state):
+    """Based on the mturk annotations we form multi-domain belief state"""
+    domains = [u'taxi', u'restaurant',  u'hospital',
+               u'hotel', u'attraction', u'train']#, u'police']
+    bstate = state['belief_state']
+    # booked = state['booked']
+    # how to make empty book this format instead of an empty dictionary?
+    #TODO fix booked info update in state!
+    booked = {
+            "taxi": [],
+            "hotel": [],
+            "restaurant": [],
+            "train": [],
+            "attraction": [],
+            "hospital": []
+            }
+
+    summary_bstate = []
+
+    for domain in domains:
+        domain_active = False
+
+        booking = []
+        if len(booked[domain]) > 0:
+            booking.append(1)
+        else:
+            booking.append(0)
+        if domain == 'train':
+            if not bstate[domain]['book people']:
+                booking.append(0)
+            else:
+                booking.append(1)
+            if booked[domain] and 'ticket' in booked[domain][0].keys():
+                booking.append(1)
+            else:
+                booking.append(0)
+        summary_bstate += booking
+
+        if domain == "restaurant":
+            book_slots = ['book day', 'book people', 'book time']
+        elif domain == "hotel":
+            book_slots = ['book day', 'book people', 'book stay']
+        else:
+            book_slots = []
+        for slot in book_slots:
+            if bstate[domain][slot] == '':
+                summary_bstate.append(0)
+            else:
+                summary_bstate.append(1)
+
+        for slot in [s for s in bstate[domain] if "book" not in s]:
+            slot_enc = [0, 0, 0]
+            if bstate[domain][slot] == 'not mentioned':
+                slot_enc[0] = 1
+            elif bstate[domain][slot] == 'dont care' or bstate[domain][slot] == 'dontcare' or bstate[domain][slot] == "don't care":
+                slot_enc[1] = 1
+            elif bstate[domain][slot]:
+                slot_enc[2] = 1
+            if slot_enc != [0, 0, 0]:
+                domain_active = True
+            summary_bstate += slot_enc
+
+        # quasi domain-tracker
+        if domain_active: # 7 domains
+            summary_bstate += [1]
+        else:
+            summary_bstate += [0]
+
+
+    # add manually from action as police is not tracked anymore in unified format
+    if "Police" in [act[1] for act in state['user_action']]:
+        summary_bstate += [0, 1]
+    else:
+        summary_bstate += [0, 0]
+
+    assert len(summary_bstate) == 94
+    return summary_bstate
+
 
 DEFAULT_CUDA_DEVICE = -1
 
 
 class LAVA(Policy):
     def __init__(self,
-                 model_file="/gpfs/project/lubis/public_code/LAVA/experiments_woz/sys_config_log_model/2020-05-12-14-51-49-actz_cat/rl-2020-05-18-10-50-48/reward_best.model", is_train=False):
+                 model_file="", is_train=False):
 
         if not model_file:
             raise Exception("No model for LAVA is specified!")
 
         temp_path = os.path.dirname(os.path.abspath(__file__))
-        # print(temp_path)
-        #zip_ref = zipfile.ZipFile(archive_file, 'r')
-        # zip_ref.extractall(temp_path)
-        # zip_ref.close()
 
         self.prev_state = default_state()
         self.prev_active_domain = None
@@ -354,24 +433,7 @@ class LAVA(Policy):
         domain_name = 'object_division'
         domain_info = domain.get_domain(domain_name)
         self.db=Database()
-        # data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data/data_2.1/')
-        # train_data_path = os.path.join(data_path,'train_dials.json')
-        # if not os.path.exists(train_data_path):
-            # zipped_file = os.path.join(data_path, 'norm-multi-woz.zip')
-            # archive = zipfile.ZipFile(zipped_file, 'r')
-            # archive.extractall(data_path)
-
-        # norm_multiwoz_path = data_path
-        # with open(os.path.join(norm_multiwoz_path, 'input_lang.index2word.json')) as f:
-            # self.input_lang_index2word = json.load(f)
-        # with open(os.path.join(norm_multiwoz_path, 'input_lang.word2index.json')) as f:
-            # self.input_lang_word2index = json.load(f)
-        # with open(os.path.join(norm_multiwoz_path, 'output_lang.index2word.json')) as f:
-            # self.output_lang_index2word = json.load(f)
-        # with open(os.path.join(norm_multiwoz_path, 'output_lang.word2index.json')) as f:
-            # self.output_lang_word2index = json.load(f)
-
-
+       
         path, _ = os.path.split(model_file)
         if "rl-" in model_file:
             rl_config_path = os.path.join(path, "rl_config.json")
@@ -386,12 +448,11 @@ class LAVA(Policy):
         try:
             self.corpus = corpora_inference.NormMultiWozCorpus(config)
         except (FileNotFoundError, PermissionError):
-            train_data_path = "/gpfs/project/lubis/LAVA_code/LAVA_dev/data/norm-multi-woz/train_dials.json"
+            train_data_path = "/gpfs/project/lubis/NeuralDialog-LaRL/data/norm-multi-woz/train_dials.json"
             config['train_path'] = train_data_path
             config['valid_path'] = train_data_path.replace("train", "val") 
             config['test_path'] = train_data_path.replace("train", "test") 
             self.corpus = corpora_inference.NormMultiWozCorpus(config)
-
 
         if "rl" in model_file:
             if "gauss" in model_file:
@@ -429,7 +490,6 @@ class LAVA(Policy):
             self.rl_config["US_best_reward_model_path"] = model_file.replace(
                 ".model", "_US.model")
             if "lr_rl" not in config:
-                #config["lr_rl"] = config["init_lr"]
                 self.config["lr_rl"] = 0.01
                 self.config["gamma"] = 0.99
 
@@ -442,7 +502,6 @@ class LAVA(Policy):
                 lr=self.config.lr_rl,
                 momentum=self.config.momentum,
                 nesterov=False)
-            # nesterov=(self.config.nesterov and self.config.momentum > 0))
 
         if config.use_gpu:
             self.model.load_state_dict(torch.load(model_file))
@@ -504,39 +563,6 @@ class LAVA(Policy):
             utts.append(context[b_id, context_lens[b_id]-1])
         return np.array(utts)
 
-    def get_active_domain_test(self, prev_active_domain, prev_action, action):
-        domains = ['hotel', 'restaurant', 'attraction',
-                   'train', 'taxi', 'hospital', 'police']
-        active_domain = None
-        cur_action_keys = action.keys()
-        state = []
-        for act in cur_action_keys:
-            slots = act.split('-')
-            action = slots[0].lower()
-            state.append(action)
-
-        #  print('get_active_domain')
-        # for domain in domains:
-        """for domain in range(len(domains)):
-            domain = domains[i]
-            if domain not in prev_state and domain not in state:
-                continue
-            if domain in prev_state and domain not in state:
-                return domain
-            elif domain not in prev_state and domain in state:
-                return domain
-            elif prev_state[domain] != state[domain]:
-                active_domain = domain
-        if active_domain is None:
-            active_domain = prev_active_domain"""
-        if len(state) != 0:
-            active_domain = state[0]
-        if active_domain is None:
-            active_domain = prev_active_domain
-        elif active_domain == "general":
-            active_domain = prev_active_domain
-        return active_domain
-
     def is_masked_action(self, bs_label, db_label, response):
         """
         check if the generated response should be masked based on belief state and db result
@@ -563,15 +589,20 @@ class LAVA(Policy):
                         # print("MASK: inform no offer mentioning criteria")
                         # return True # always only inform "no match for your criteria" w/o mentioning them explicitly
                 elif any([p in response for p in REQ_TOKENS[domain]]) or "i have [value_count]" in response or "there are [value_count]" in response: # if requestable token is present
-                    # TODO also check for i have [value_count] match, not only the requestable tokens
                     if db_idx >= 0 and int(db_label[db_idx]) == 1: # and domain has a DB to be queried and there are no matches
                         # print("MASK: inform match when there are no DB match on domain {}".format(domain))
                         return True
 
         return False
 
+    def is_active(self, domain, state):
 
-    def get_active_domain(self, prev_active_domain, prev_state, state):
+        if domain in [act[1] for act in state['user_action']]:
+            return True
+        else:
+            return False
+
+    def get_active_domain_unified(self, prev_active_domain, prev_state, state):
         domains = ['hotel', 'restaurant', 'attraction',
                    'train', 'taxi', 'hospital', 'police']
         active_domain = None
@@ -580,30 +611,17 @@ class LAVA(Policy):
         # print("NEW_STATE",state)
         # print()
         for domain in domains:
-            if domain not in prev_state and domain not in state:
-                continue
-            if domain in prev_state and domain not in state:
+            if not self.is_active(domain, prev_state) and self.is_active(domain, state):
                 #print("case 1:",domain)
                 return domain
-            elif domain not in prev_state and domain in state:
-                #print("case 2:",domain)
+            elif self.is_active(domain, prev_state) and self.is_active(domain, state):
                 return domain
-            elif prev_state[domain] != state[domain]:
+            # elif self.is_active(domain, prev_state) and not self.is_active(domain, state):
+                #print("case 2:",domain)
+                # return domain
+            # elif prev_state['belief_state'][domain] != state['belief_state'][domain]:
                 #print("case 3:",domain)
-                active_domain = domain
-        if active_domain is None:
-            active_domain = prev_active_domain
-        return active_domain
-
-    def get_active_domain_new(self, prev_active_domain, prev_state, state):
-        domains = ['hotel', 'restaurant', 'attraction',
-                   'train', 'taxi', 'hospital', 'police']
-        active_domain = None
-        i = 0
-        for domain in domains:
-            if prev_state[domain] != state[domain]:
-                active_domain = domain
-                i += 1
+                # active_domain = domain
         if active_domain is None:
             active_domain = prev_active_domain
         return active_domain
@@ -642,7 +660,7 @@ class LAVA(Policy):
         else:
             return False
 
-    def predict_response(self, state):
+    def predict_response (self, state):
         # input state is in convlab format
         history = []
         for i in range(len(state['history'])):
@@ -675,8 +693,9 @@ class LAVA(Policy):
 
         # mark_not_mentioned(prev_state)
         #active_domain = self.get_active_domain_convlab(self.prev_active_domain, prev_bstate, bstate)
-        active_domain = self.get_active_domain(self.prev_active_domain, prev_bstate, bstate)
-        #print(active_domain)
+        active_domain = self.get_active_domain_unified(self.prev_active_domain, self.prev_state, state)
+        # print("---------")
+        # print("active domain: ", active_domain)
         # if active_domain is not None:
             # print(f"DST on {active_domain}: {bstate[active_domain]}")
 
@@ -685,16 +704,23 @@ class LAVA(Policy):
         top_results, num_results = None, None
         for t_id in range(len(context)):
             usr = context[t_id]
+            # print(usr)
 
             if t_id == 0: #system turns
                 if usr == "null":
                     usr = "<d>"
+                    # booked = {"taxi": [],
+                            # "restaurant": [],
+                            # "hospital": [],
+                            # "hotel": [],
+                            # "attraction": [],
+                            # "train": []}
             words = usr.split()
 
             usr = delexicalize.delexicalise(' '.join(words).lower(), self.dic)
 
             # parsing reference number GIVEN belief state
-            usr = delexicaliseReferenceNumber(usr, bstate)
+            usr = delexicaliseReferenceNumber(usr, state)
 
             # changes to numbers only here
             digitpat = re.compile('(^| )\d+( |$)')
@@ -702,11 +728,13 @@ class LAVA(Policy):
             
             # add database pointer
             pointer_vector, top_results, num_results = addDBPointer(bstate,self.db)
-           #print(top_results)
+            if state['history'][-1][0] == "sys":
+                booked = state['booked']
+            #print(top_results)
 
             # add booking pointer
             pointer_vector = addBookingPointer(bstate, pointer_vector)
-            belief_summary = get_summary_bstate(bstate)
+            belief_summary = get_summary_bstate_unifiedformat(state)
 
             usr_utt = [BOS] + usr.split() + [EOS]
             packed_val = {}
@@ -725,15 +753,13 @@ class LAVA(Policy):
 
         # data_feed is in LaRL format
         data_feed = prepare_batch_gen(results, self.config)
+        # print(belief_summary)
 
-        for i in range(10):
+        for i in range(1):
             outputs = self.model_predict(data_feed)
             self.prev_output = outputs
             mul = False
             
-            if self.is_masked_action(data_feed['bs'][0], data_feed['db'][0], outputs) and i < 9: # if it's the last try, accept masked action
-                continue
-
             # default lexicalization
             if active_domain is not None and active_domain in num_results:
                 num_results = num_results[active_domain]
@@ -748,26 +774,23 @@ class LAVA(Policy):
                     top_results = {active_domain: top_results[active_domain]}
                 else:
                     if active_domain == 'train': #special case, where we want the last match instead of the first
-                        if bstate['train']['semi']['arriveBy'] != "not mentioned" and len(bstate['train']['semi']['arriveBy']) > 0:
+                        if bstate['train']['arrive by'] != "not mentioned" and len(bstate['train']['arrive by']) > 0:
                             top_results = {active_domain: top_results[active_domain][-1]} # closest to arrive by
                         else:
                             top_results = {active_domain: top_results[active_domain][0]}
                     else:
-                        top_results = {active_domain: top_results[active_domain][0]}
+                        top_results = {active_domain: top_results[active_domain][0]} # if active domain is wrong, this becomes the wrong entity
             else:
                 top_results = {}
             state_with_history = deepcopy(bstate)
             state_with_history['history'] = deepcopy(state_history)
 
-            if active_domain in ["hotel", "attraction", "train", "restaurant"] and len(top_results.keys()) == 0: # no db match for active domain
+            if active_domain in ["hotel", "attraction", "train", "restaurant"] and active_domain not in top_results.keys(): # no db match for active domain
                 if any([p in outputs for p in REQ_TOKENS[active_domain]]):
-                    # self.fail_info_penalty += 1
-                    # response = "I am sorry there are no matches."
-                    # print(outputs)
                     response = "I am sorry, can you say that again?"
                     database_results = {}
                 else:
-                    response = self.populate_template(
+                    response = self.populate_template_unified(
                             outputs, top_results, num_results, state_with_history, active_domain)
                     # print(response)
 
@@ -776,60 +799,22 @@ class LAVA(Policy):
                     response = self.populate_template_options(outputs, top_results, num_results, state_with_history)
                 else:
                     try:
-                        response = self.populate_template(
+                        response = self.populate_template_unified(
                         outputs, top_results, num_results, state_with_history, active_domain)
                     except:
-                        print(outputs)
-
+                        print("can not lexicalize: ", outputs)
+                        response = "I am sorry, can you say that again?"
                        
-
-            for domain in DOMAIN_REQ_TOKEN:
-                """
-                mask out of domain action
-                """
-                if domain != active_domain and any([p in outputs for p in REQ_TOKENS[domain]]):
-                    # print(f"MASK: illegal action for {active_domain}: {outputs}")
-                    response = "Can I help you with anything else?"
-                    self.wrong_domain_penalty += 1
-
-                 
-        # if active_domain is not None:
-            # print ("===========================")
-
-            # print(active_domain)
-            # print ("BS: ")
-            # for k, v in bstate[active_domain].items():
-            # print(k, ": ", v)
-            # print ("DB: ")
-            # if len(database_results.keys()) > 0:
-            # for k, v in database_results[active_domain][1][0 % database_results[active_domain][0]].items():
-            # print(k, ": ", v)
-            # print ("===========================")
-            # print ("input: ")
-            # for turn in data_feed['contexts'][0]:
-            # print(" ".join(self.corpus.id2sent(turn)))
-            # print ("system delex: ", outputs)
-            # print ("system: ",response)
-            # print ("===========================\n")
-            self.num_generated_response += 1
-            break
-
         response = response.replace("free pounds", "free")
         response = response.replace("pounds pounds", "pounds")
         if any([p in response for  p in ["not mentioned", "dontcare", "[", "]"]]):
-            # response = "I am sorry there are no matches."
-            # print(usr)
-            # print(outputs)
-            # print(response)
-            # print(active_domain, len(top_results[active_domain]), delex_bstate[active_domain])
-            # pdb.set_trace()
-            # response = "I am sorry can you repeat that?"
             response = "I am sorry, can you say that again?"
 
 
         return response, active_domain
 
-    def populate_template(self, template, top_results, num_results, state, active_domain):
+
+    def populate_template_unified(self, template, top_results, num_results, state, active_domain):
         # print("template:",template)
         # print("top_results:",top_results)
         # active_domain = None if len(
@@ -848,7 +833,7 @@ class LAVA(Policy):
                 if domain == 'train' and slot == 'id':
                     slot = 'trainID'
                 elif active_domain != 'train' and slot == 'price':
-                    slot = 'pricerange'
+                    slot = 'price range'
                 elif slot == 'reference':
                     slot = 'Ref'
                 if domain in top_results and len(top_results[domain]) > 0 and slot in top_results[domain]:
@@ -864,27 +849,24 @@ class LAVA(Policy):
                         elif active_domain == "restaurant":
                             if "people" in tokens[index:index+1] or "table" in tokens[index-2:index]:
                                 response.append(
-                                    state[active_domain]["book"]["people"])
+                                    state[active_domain]["book people"])
                         elif active_domain == "train":
                             if "ticket" in " ".join(tokens[index-2:index+1]) or "people" in tokens[index:]:
                                 response.append(
-                                    state[active_domain]["book"]["people"])
+                                    state[active_domain]["book people"])
                             elif index+1 < len(tokens) and "minute" in tokens[index+1]:
                                 response.append(
                                     top_results['train']['duration'].split()[0])
                         elif active_domain == "hotel":
                             if index+1 < len(tokens):
                                 if "star" in tokens[index+1]:
-                                    try:
-                                        response.append(top_results['hotel']['stars'])
-                                    except:
-                                        response.append(state['hotel']['semi']['stars'])
+                                    response.append(top_results['hotel']['stars'])
                                 elif "nights" in tokens[index+1]:
                                     response.append(
-                                        state[active_domain]["book"]["stay"])
+                                        state[active_domain]["book stay"])
                                 elif "people" in tokens[index+1]:
                                     response.append(
-                                        state[active_domain]["book"]["people"])
+                                        state[active_domain]["book people"])
                         elif active_domain == "attraction":
                             if index + 1 < len(tokens):
                                 if "pounds" in tokens[index+1] and "entrance fee" in " ".join(tokens[index-3:index]):
@@ -912,14 +894,14 @@ class LAVA(Policy):
                                     top_results[active_domain]["destination"])
                             elif active_domain == "taxi":
                                 response.append(
-                                    state[active_domain]['semi']["destination"])
+                                    state[active_domain]["destination"])
                         elif 'leav' in " ".join(tokens[index-2:index]) or "from" in tokens[index-2:index] or "depart" in " ".join(tokens[index-2:index]):
                             if active_domain == "train":
                                 response.append(
                                     top_results[active_domain]["departure"])
                             elif active_domain == "taxi":
                                 response.append(
-                                    state[active_domain]['semi']["departure"])
+                                    state[active_domain]["departure"])
                         elif "hospital" in template:
                             response.append("Cambridge")
                         else:
@@ -928,9 +910,9 @@ class LAVA(Policy):
                                     if d == 'history':
                                         continue
                                     for s in ['destination', 'departure']:
-                                        if s in state[d]['semi']:
+                                        if s in state[d]:
                                             response.append(
-                                                state[d]['semi'][s])
+                                                state[d][s])
                                             raise
                             except:
                                 pass
@@ -938,7 +920,7 @@ class LAVA(Policy):
                                 response.append(token)
                     elif slot == 'time':
                         if 'arrive' in ' '.join(response[-5:]) or 'arrival' in ' '.join(response[-5:]) or 'arriving' in ' '.join(response[-3:]):
-                            if active_domain is "train" and 'arriveBy' in top_results[active_domain]:
+                            if active_domain == "train" and 'arriveBy' in top_results[active_domain]:
                                 # print('{} -> {}'.format(token, top_results[active_domain]['arriveBy']))
                                 response.append(
                                     top_results[active_domain]['arriveBy'])
@@ -946,12 +928,12 @@ class LAVA(Policy):
                             for d in state:
                                 if d == 'history':
                                     continue
-                                if 'arriveBy' in state[d]['semi']:
+                                if 'arrive by' in state[d]:
                                     response.append(
-                                        state[d]['semi']['arriveBy'])
+                                        state[d]['arrive by'])
                                     break
                         elif 'leave' in ' '.join(response[-5:]) or 'leaving' in ' '.join(response[-5:]) or 'departure' in ' '.join(response[-3:]):
-                            if active_domain is "train" and 'leaveAt' in top_results[active_domain]:
+                            if active_domain == "train" and 'leaveAt' in top_results[active_domain]:
                                 # print('{} -> {}'.format(token, top_results[active_domain]['leaveAt']))
                                 response.append(
                                     top_results[active_domain]['leaveAt'])
@@ -959,23 +941,23 @@ class LAVA(Policy):
                             for d in state:
                                 if d == 'history':
                                     continue
-                                if 'leaveAt' in state[d]['semi']:
+                                if 'leave at' in state[d]:
                                     response.append(
-                                        state[d]['semi']['leaveAt'])
+                                        state[d]['leave at'])
                                     break
                         elif 'book' in response or "booked" in response:
-                            if state['restaurant']['book']['time'] != "":
+                            if state['restaurant']['book time'] != "":
                                 response.append(
-                                    state['restaurant']['book']['time'])
+                                    state['restaurant']['book time'])
                         else:
                             try:
                                 for d in state:
                                     if d == 'history':
                                         continue
-                                    for s in ['arriveBy', 'leaveAt']:
-                                        if s in state[d]['semi']:
+                                    for s in ['arrive by', 'leave at']:
+                                        if s in state[d]:
                                             response.append(
-                                                state[d]['semi'][s])
+                                                state[d][s])
                                             raise
                             except:
                                 pass
@@ -999,9 +981,9 @@ class LAVA(Policy):
                             response.append(
                                 top_results[active_domain][slot].split()[0])
                     elif slot == "day" and active_domain in ["restaurant", "hotel"]:
-                        if state[active_domain]['book']['day'] != "":
+                        if state[active_domain]['book day'] != "":
                             response.append(
-                                state[active_domain]['book']['day'])
+                                state[active_domain]['book day'])
 
                     else:
                         # slot-filling based on query results
@@ -1014,8 +996,8 @@ class LAVA(Policy):
                             for d in state:
                                 if d == 'history':
                                     continue
-                                if slot in state[d]['semi']:
-                                    response.append(state[d]['semi'][slot])
+                                if slot in state[d]:
+                                    response.append(state[d][slot])
                                     break
                             else:
                                 response.append(token)
@@ -1028,7 +1010,7 @@ class LAVA(Policy):
                         elif slot == 'address':
                             response.append("56 Lincoln street")
                         elif slot == "postcode":
-                            response.append('533421')
+                            response.append('cb1p3')
                     elif domain == 'police':
                         if slot == 'phone':
                             response.append('01223358966')
@@ -1037,7 +1019,7 @@ class LAVA(Policy):
                         elif slot == 'address':
                             response.append('Parkside, Cambridge')
                         elif slot == 'postcode':
-                            response.append('533420')
+                            response.append('cb3l3')
                     elif domain == 'taxi':
                         if slot == 'phone':
                             response.append('01223358966')
@@ -1068,6 +1050,7 @@ class LAVA(Policy):
 
         # if "not mentioned" in response:
         #    pdb.set_trace()
+        # print("lexicalized: ", response)
 
         return response
 
@@ -1158,9 +1141,9 @@ class LAVA(Policy):
                                     if d == 'history':
                                         continue
                                     for s in ['destination', 'departure']:
-                                        if s in state[d]['semi']:
+                                        if s in state[d]:
                                             response.append(
-                                                state[d]['semi'][s])
+                                                state[d][s])
                                             raise
                             except:
                                 pass
@@ -1176,9 +1159,9 @@ class LAVA(Policy):
                             for d in state:
                                 if d == 'history':
                                     continue
-                                if 'arriveBy' in state[d]['semi']:
+                                if 'arriveBy' in state[d]:
                                     response.append(
-                                        state[d]['semi']['arriveBy'])
+                                        state[d]['arrive by'])
                                     break
                         elif 'leav' in ' '.join(response[-7:]) or 'depart' in ' '.join(response[-7:]):
                             if active_domain is not None and 'leaveAt' in top_results[active_domain][result_idx]:
@@ -1189,23 +1172,23 @@ class LAVA(Policy):
                             for d in state:
                                 if d == 'history':
                                     continue
-                                if 'leaveAt' in state[d]['semi']:
+                                if 'leave at' in state[d]:
                                     response.append(
-                                        state[d]['semi']['leaveAt'])
+                                        state[d]['leave at'])
                                     break
                         elif 'book' in response or "booked" in response:
-                            if state['restaurant']['book']['time'] != "":
+                            if state['restaurant']['book time'] != "":
                                 response.append(
-                                    state['restaurant']['book']['time'])
+                                    state['restaurant']['book time'])
                         else:
                             try:
                                 for d in state:
                                     if d == 'history':
                                         continue
-                                    for s in ['arriveBy', 'leaveAt']:
-                                        if s in state[d]['semi']:
+                                    for s in ['arrive by', 'leave at']:
+                                        if s in state[d]:
                                             response.append(
-                                                state[d]['semi'][s])
+                                                state[d][s])
                                             raise
                             except:
                                 pass
@@ -1227,9 +1210,9 @@ class LAVA(Policy):
                             response.append(
                                 top_results[active_domain][result_idx][slot].split()[0])
                     elif slot == "day" and active_domain in ["restaurant", "hotel"]:
-                        if state[active_domain]['book']['day'] != "":
+                        if state[active_domain]['book day'] != "":
                             response.append(
-                                state[active_domain]['book']['day'])
+                                state[active_domain]['book day'])
 
                     else:
                         # slot-filling based on query results
@@ -1243,8 +1226,8 @@ class LAVA(Policy):
                             for d in state:
                                 if d == 'history':
                                     continue
-                                if slot in state[d]['semi']:
-                                    response.append(state[d]['semi'][slot])
+                                if slot in state[d]:
+                                    response.append(state[d][slot])
                                     break
                             else:
                                 response.append(token)
@@ -1294,26 +1277,16 @@ class LAVA(Policy):
         return response
 
     def model_predict(self, data_feed):
-        # TODO use model's forward function, add null vector for the target response
         self.logprobs = []
         logprobs, pred_labels, joint_logpz, sample_y = self.model.forward_rl(
             data_feed, self.model.config.max_dec_len)
-        # if len(data_feed['bs']) == 1:
-        #    logprobs = [logprobs]
 
-        # for log_prob in logprobs:
-        #    self.logprobs.extend(log_prob)
         self.logprobs.extend(joint_logpz)
 
         pred_labels = np.array(
-            [pred_labels], dtype=int)  # .squeeze(-1).swapaxes(0, 1)
+            [pred_labels], dtype=int)
         de_tknize = get_detokenize()
-        # if pred_labels.shape[1] == self.model.config.max_utt_len:
-            # pdb.set_trace()
         pred_str = get_sent(self.model.vocab, de_tknize, pred_labels, 0)
-        #for b_id in range(pred_labels.shape[0]):
-            # only one val for pred_str now
-            # pred_str = get_sent(self.model.vocab, de_tknize, pred_labels, b_id)
 
         return pred_str
 
@@ -1336,11 +1309,8 @@ class LAVA(Policy):
 
         loss = 0
         # estimate the loss using one MonteCarlo rollout
-        # TODO better loss estimation?
-        # TODO better update, instead of reinforce?
         for lp, re in zip(logprobs, rewards):
             loss -= lp * re
-        #tmp = self.model.state_dict()['c2z.p_h.weight'].clone()
         self.opt.zero_grad()
         if "fp16" in self.config and self.config.fp16:
             with amp.scale_loss(loss, self.opt) as scaled_loss:
@@ -1350,10 +1320,7 @@ class LAVA(Policy):
             loss.backward()
             nn.utils.clip_grad_norm_(self.model.parameters(), self.config.grad_clip)
         
-        #self._print_grad()
         self.opt.step()
-        #tmp2 = self.model.state_dict()['c2z.p_h.weight'].clone()
-        #print(tmp==tmp2)
         
     def _print_grad(self):
         for name, p in self.model.named_parameters():
@@ -1529,7 +1496,8 @@ if __name__ == '__main__':
              'history': [['sys', ''],
                          ['user', 'Could you book a 4 stars hotel east of town for one night, 1 person?']]}
 
-    cur_model = LAVA()
+    model_file="path/to/model" # points to model from lava repo
+    cur_model = LAVA(model_file)
 
     response = cur_model.predict(state)
     # print(response)

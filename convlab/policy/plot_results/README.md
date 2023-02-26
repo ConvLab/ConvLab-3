@@ -38,3 +38,5 @@ The file structure of the exp_dir is like this:
                     └── events.* 
 
 If you want to truncate the figure to a certain number of training dialogues on the x-axis, use the argument `--max-dialogues`.
+
+This script will automatically generate plots in the folder **--out-file** showing several performance metrics such as success rate and return, but also additional information such as the action distributions.

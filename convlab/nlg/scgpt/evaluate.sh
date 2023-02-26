@@ -1,4 +1,8 @@
-CUDA_VISIBLE_DEVICES="5" python -m torch.distributed.launch --nproc_per_node 1 --master_port 3046 main.py \
---dataset multiwoz21 \
---scgpt_model_ckpt_path /data/zhangzheng/scgpt \
---model_path /data/zhangzheng/ConvLab-3/convlab/nlg/scgpt/saved_model/epoch_4/epoch_4_step8875.pt
+CUDA_VISIBLE_DEVICES="0" python -m torch.distributed.launch --nproc_per_node 1 --master_port 2052 main.py \
+--batch_size 1 \
+--base_model_name_path gpt2-medium \
+--dataset tm3 \
+--exp_name tm3_mst_test \
+--model_path saved_models/mwoz_sgd_tm_train/epoch_5/epoch_5_step19206.pt \
+# --model_path saved_models/gpt2_tm_direct/epoch_19/epoch_19_step65540.pt \
+# --model_path saved_models/gpt2_tm_direct/epoch_6/epoch_6_step22939.pt \

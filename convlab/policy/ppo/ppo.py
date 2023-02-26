@@ -22,7 +22,7 @@ class PPO(Policy):
 
     def __init__(self, is_train=False, dataset='Multiwoz', seed=0, vectorizer=None):
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json'), 'r') as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'configs' ,'ppo_config.json'), 'r') as f:
             cfg = json.load(f)
         self.save_dir = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), cfg['save_dir'])

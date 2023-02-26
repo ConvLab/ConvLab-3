@@ -1,0 +1,92 @@
+"attraction"
+"general"
+"hospital"
+"hotel"
+"police"
+"restaurant"
+"taxi"
+"train"
+"eos"
+"inform"
+"nooffer"
+"recommend"
+"request"
+"select"
+"bye"
+"greet"
+"reqmore"
+"welcome"
+"book"
+"offerbook"
+"nobook"
+["address", "1"]
+["address", "2"]
+["address", "3"]
+["area", "1"]
+["area", "2"]
+["area", "3"]
+["choice", "1"]
+["choice", "2"]
+["choice", "3"]
+["entrance fee", "1"]
+["entrance fee", "2"]
+["name", "1"]
+["name", "2"]
+["name", "3"]
+["name", "4"]
+["phone", "1"]
+["postcode", "1"]
+["type", "1"]
+["type", "2"]
+["type", "3"]
+["type", "4"]
+["type", "5"]
+["none", "none"]
+["area", "?"]
+["entrance fee", "?"]
+["name", "?"]
+["type", "?"]
+["department", "1"]
+["department", "?"]
+["book day", "1"]
+["book people", "1"]
+["book stay", "1"]
+["internet", "1"]
+["parking", "1"]
+["price range", "1"]
+["price range", "2"]
+["ref", "1"]
+["stars", "1"]
+["stars", "2"]
+["book day", "?"]
+["book people", "?"]
+["book stay", "?"]
+["internet", "?"]
+["parking", "?"]
+["price range", "?"]
+["stars", "?"]
+["book time", "1"]
+["food", "1"]
+["food", "2"]
+["food", "3"]
+["food", "4"]
+["postcode", "2"]
+["book time", "?"]
+["food", "?"]
+["arrive by", "1"]
+["departure", "1"]
+["destination", "1"]
+["leave at", "1"]
+["arrive by", "?"]
+["departure", "?"]
+["destination", "?"]
+["leave at", "?"]
+["arrive by", "2"]
+["day", "1"]
+["duration", "1"]
+["leave at", "2"]
+["leave at", "3"]
+["price", "1"]
+["train id", "1"]
+["day", "?"]
+"pad"
