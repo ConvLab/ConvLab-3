@@ -33,7 +33,7 @@ except RuntimeError:
     pass
 
 
-def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
+def sampler(pid, queue, evt, env, policy, num_dialogues, train_seed=0):
 
     """
     This is a sampler function, and it will be called by multiprocess.Process to sample data from environment by multiple
@@ -60,7 +60,7 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
 
     set_seed(train_seed)
 
-    while sampled_num < batchsz:
+    while sampled_traj_num < num_dialogues:
         # for each trajectory, we reset the env and get initial state
         s = env.reset()
         for t in range(traj_len):
@@ -108,7 +108,7 @@ def sampler(pid, queue, evt, env, policy, batchsz, train_seed=0):
     evt.wait()
 
 
-def sample(env, policy, batchsz, process_num, seed):
+def sample(env, policy, num_train_dialogues, process_num, seed):
 
     """
     Given batchsz number of task, the batchsz will be splited equally to each processes
@@ -122,7 +122,7 @@ def sample(env, policy, batchsz, process_num, seed):
 
     # batchsz will be splitted into each process,
     # final batchsz maybe larger than batchsz parameters
-    process_batchsz = np.ceil(batchsz / process_num).astype(np.int32)
+    process_num_dialogues = np.ceil(num_train_dialogues / process_num).astype(np.int32)
     train_seeds = random.sample(range(0, 1000), process_num)
     # buffer to save all data
     queue = mp.Queue()
@@ -137,7 +137,7 @@ def sample(env, policy, batchsz, process_num, seed):
     evt = mp.Event()
     processes = []
     for i in range(process_num):
-        process_args = (i, queue, evt, env, policy, process_batchsz, train_seeds[i])
+        process_args = (i, queue, evt, env, policy, process_num_dialogues, train_seeds[i])
         processes.append(mp.Process(target=sampler, args=process_args))
     for p in processes:
         # set the process as daemon, and it will be killed once the main process is stoped.
@@ -157,10 +157,10 @@ def sample(env, policy, batchsz, process_num, seed):
     return buff.get_batch()
 
 
-def update(env, policy, batchsz, epoch, process_num, seed=0):
+def update(env, policy, num_dialogues, epoch, process_num, seed=0):
 
     # sample data asynchronously
-    batch = sample(env, policy, batchsz, process_num, seed)
+    batch = sample(env, policy, num_dialogues, process_num, seed)
 
     # print(batch)
     # data in batch is : batch.state: ([1, s_dim], [1, s_dim]...)
@@ -182,16 +182,17 @@ if __name__ == '__main__':
 
     begin_time = datetime.now()
     parser = ArgumentParser()
-    parser.add_argument("--path", type=str, default='convlab/policy/ppo/semantic_level_config.json',
-                        help="Load path for config file")
-    parser.add_argument("--seed", type=int, default=0,
+    parser.add_argument("--config_name", type=str, default='RuleUser-Semantic-RuleDST',
+                        help="Name of the configuration")
+    parser.add_argument("--seed", type=int, default=None,
                         help="Seed for the policy parameter initialization")
     parser.add_argument("--mode", type=str, default='info',
                         help="Set level for logger")
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
 
-    path = parser.parse_args().path
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'configs',
+                        f'{parser.parse_args().config_name}.json')
     seed = parser.parse_args().seed
     mode = parser.parse_args().mode
     save_eval = parser.parse_args().save_eval_dials
@@ -199,7 +200,7 @@ if __name__ == '__main__':
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
 
-    args = [('model', 'seed', seed)]
+    args = [('model', 'seed', seed)] if seed is not None else list()
 
     environment_config = load_config_file(path)
     save_config(vars(parser.parse_args()), environment_config, config_save_path)
@@ -224,17 +225,10 @@ if __name__ == '__main__':
         logging.info("Policy initialised from scratch")
 
     log_start_args(conf)
-    logging.info(f"New episodes per epoch: {conf['model']['batchsz']}")
+    logging.info(f"New episodes per epoch: {conf['model']['num_train_dialogues']}")
 
     env, sess = env_config(conf, policy_sys)
 
-    # Setup uncertainty thresholding
-    if env.sys_dst:
-        try:
-            if env.sys_dst.use_confidence_scores:
-                policy_sys.vector.setup_uncertain_query(env.sys_dst.thresholds)
-        except:
-            logging.info('Uncertainty threshold not set.')
 
     policy_sys.current_time = current_time
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
@@ -257,11 +251,11 @@ if __name__ == '__main__':
     for i in range(conf['model']['epoch']):
         idx = i + 1
         # print("Epoch :{}".format(str(idx)))
-        update(env, policy_sys, conf['model']['batchsz'], idx, conf['model']['process_num'], seed=seed)
+        update(env, policy_sys, conf['model']['num_train_dialogues'], idx, conf['model']['process_num'], seed=seed)
 
         if idx % conf['model']['eval_frequency'] == 0 and idx != 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-            logging.info(f"Evaluating at Epoch: {idx} - {time_now}" + '-'*60)
+            logging.info(f"Evaluating after Dialogues: {idx * conf['model']['num_train_dialogues']} - {time_now}" + '-' * 60)
 
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path)
 
@@ -271,7 +265,7 @@ if __name__ == '__main__':
                           eval_dict["avg_return"], save_path)
             policy_sys.save(save_path, "last")
             for key in eval_dict:
-                tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['batchsz'])
+                tb_writer.add_scalar(key, eval_dict[key], idx * conf['model']['num_train_dialogues'])
 
     logging.info("End of Training: " +
                  time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))

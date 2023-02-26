@@ -7,6 +7,7 @@ import transformers
 from convlab.nlu.nlu import NLU
 from convlab.nlu.jointBERT.dataloader import Dataloader
 from convlab.nlu.jointBERT.jointBERT import JointBERT
+from convlab.nlu.jointBERT.unified_datasets.preprocess import preprocess
 from convlab.nlu.jointBERT.unified_datasets.postprocess import recover_intent
 from convlab.util.custom_util import model_downloader
 
@@ -25,7 +26,9 @@ class BERTNLU(NLU):
         data_dir = os.path.join(root_dir, config['data_dir'])
         output_dir = os.path.join(root_dir, config['output_dir'])
 
-        assert os.path.exists(os.path.join(data_dir, 'intent_vocab.json')), print('Please run preprocess first')
+        if not os.path.exists(os.path.join(data_dir, 'intent_vocab.json')):
+            print('Run preprocess first')
+            preprocess(config['dataset_name'], data_dir.split('/')[-2], os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'), int(data_dir.split('/')[-1].split('_')[-1]))
 
         intent_vocab = json.load(open(os.path.join(data_dir, 'intent_vocab.json')))
         tag_vocab = json.load(open(os.path.join(data_dir, 'tag_vocab.json')))

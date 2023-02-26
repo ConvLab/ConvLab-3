@@ -10,7 +10,7 @@ from nltk.tokenize import word_tokenize
 
 from convlab.util.file_util import cached_path
 from convlab.e2e.soloist.multiwoz.config import global_config as cfg
-from convlab.e2e.soloist.multiwoz.soloist_net import SOLOIST, cuda_
+from convlab.e2e.soloist.multiwoz.soloist_net import SOLOIST
 from convlab.dialog_agent import Agent
 from utils import MultiWozReader
 

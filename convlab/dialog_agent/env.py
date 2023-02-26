@@ -49,11 +49,14 @@ class Environment():
         dialog_act = self.sys_nlu.predict(
             observation) if self.sys_nlu else observation
         self.sys_dst.state['user_action'] = dialog_act
-        state = self.sys_dst.update(dialog_act)
-        state = deepcopy(state)
+        self.sys_dst.state['history'].append(["sys", model_response])
+        self.sys_dst.state['history'].append(["user", observation])
 
-        state['history'].append(["sys", model_response])
-        state['history'].append(["usr", observation])
+        state = self.sys_dst.update(dialog_act)
+        self.sys_dst.state['history'].append(["sys", model_response])
+        self.sys_dst.state['history'].append(["usr", observation])
+
+        state = deepcopy(state)
 
         terminated = self.usr.is_terminated()
 

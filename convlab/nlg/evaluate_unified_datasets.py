@@ -24,7 +24,7 @@ class Logging:
             f.write('\n')
             f.close()
 
-def evaluate(predict_result, ontology):
+def evaluate(predict_result, ontology, filter_empty_acts=True):
     predict_result = json.load(open(predict_result))
     metrics = {}
 
@@ -33,8 +33,16 @@ def evaluate(predict_result, ontology):
     references = []
     candidates = []
     for i in range(len(predict_result)):
+        if filter_empty_acts:
+            acts = predict_result[i]['dialogue_acts']
+            acts_size = len(acts['binary']) + len(acts['categorical']) + len(acts['non-categorical'])
+            if acts_size == 0:
+                continue
         references.append(predict_result[i]['utterance'])
-        candidates.append(predict_result[i]['predictions']['utterance'])
+        if 'prediction' in predict_result[i]:
+            candidates.append(predict_result[i]['prediction'])
+        else:
+            candidates.append(predict_result[i]['predictions']['utterance'])
     # metrics['bleu'] = corpus_bleu(references, candidates)
     references = [" " if ref=="" else ref for ref in references]
     metrics['bleu'] = sacrebleu.corpus_bleu(candidates, [references], lowercase=True).score
@@ -55,7 +63,7 @@ def evaluate(predict_result, ontology):
     score_list = []
     for item in predict_result:
         da = item['dialogue_acts']
-        utterance = item['predictions']['utterance']
+        utterance = item['predictions']['utterance'] if 'predictions' in item else item['prediction']
         missing_count = 0
         redundant_count = 0
         all_count = 0

@@ -225,7 +225,7 @@
             "Do you know the name of it ?",
             "can you give me the name of it ?"
         ],
-        "Price": [
+        "Fee": [
             "any specific price range to help narrow down available options ?",
             "What price range would you like ?",
             "what is your price range for that ?",
@@ -361,42 +361,6 @@
             "I am sorry , I am unable to make a reservation for #BOOKING-NOBOOK-PEOPLE# people",
             "I ' m unable to book for #BOOKING-NOBOOK-PEOPLE# people .",
             "I ' m sorry but there is no availability for #BOOKING-NOBOOK-PEOPLE# people ."
-        ]
-    },
-    "Booking-Request": {
-        "Day": [
-            "What day would you like your booking for ?",
-            "What day would you like that reservation ?",
-            "what day would you like the booking to be made for ?",
-            "What day would you like to book ?",
-            "Ok , what day would you like to make the reservation on ?"
-        ],
-        "Stay": [
-            "How many nights will you be staying ?",
-            "And how many nights ?",
-            "for how many days ?",
-            "And for how many days ?",
-            "how many days would you like to stay ?",
-            "How many nights would you like to book it for ?",
-            "And what nights would you like me to reserve for you ?",
-            "How many nights are you wanting to stay ?",
-            "How many days will you be staying ?"
-        ],
-        "People": [
-            "For how many people ?",
-            "How many people will be ?",
-            "How many people will be with you ?",
-            "How many people is the reservation for ?"
-        ],
-        "Time": [
-            "Do you have a time preference ?",
-            "what time are you looking for a reservation at ?",
-            "For what time ?",
-            "What time would you like me to make your reservation ?",
-            "What time would you like the reservation for ?",
-            "what time should I make the reservation for ?",
-            "What time would you prefer ?",
-            "What time would you like the reservation for ?"
         ]
     },
     "Hotel-Inform": {
@@ -697,6 +661,30 @@
             "Do you need free parking ?",
             "Will you need parking while you 're there ?",
             "Will you be needing free parking ?"
+        ],
+        "Day": [
+            "What day would you like your booking for ?",
+            "What day would you like that reservation ?",
+            "what day would you like the booking to be made for ?",
+            "What day would you like to book ?",
+            "Ok , what day would you like to make the reservation on ?"
+        ],
+        "Stay": [
+            "How many nights will you be staying ?",
+            "And how many nights ?",
+            "for how many days ?",
+            "And for how many days ?",
+            "how many days would you like to stay ?",
+            "How many nights would you like to book it for ?",
+            "And what nights would you like me to reserve for you ?",
+            "How many nights are you wanting to stay ?",
+            "How many days will you be staying ?"
+        ],
+        "People": [
+            "For how many people ?",
+            "How many people will be ?",
+            "How many people will be with you ?",
+            "How many people is the reservation for ?"
         ]
     },
     "Restaurant-Inform": {
@@ -918,6 +906,29 @@
             "what is the name of the restaurant you are needing information on ?",
             "Do you know the name of the location ?",
             "Is there a certain restaurant you 're looking for ?"
+        ],
+        "Day": [
+            "What day would you like your booking for ?",
+            "What day would you like that reservation ?",
+            "what day would you like the booking to be made for ?",
+            "What day would you like to book ?",
+            "Ok , what day would you like to make the reservation on ?"
+        ],
+        "People": [
+            "For how many people ?",
+            "How many people will be ?",
+            "How many people will be with you ?",
+            "How many people is the reservation for ?"
+        ],
+        "Time": [
+            "Do you have a time preference ?",
+            "what time are you looking for a reservation at ?",
+            "For what time ?",
+            "What time would you like me to make your reservation ?",
+            "What time would you like the reservation for ?",
+            "what time should I make the reservation for ?",
+            "What time would you prefer ?",
+            "What time would you like the reservation for ?"
         ]
     },
     "Taxi-Inform": {
@@ -1330,6 +1341,77 @@
             "Is there a time you would like to get there by ?",
             "Is there a time you need to arrive by ?"
         ]
+    },
+    "Police-Inform": {
+        "Addr": [
+            "it is located in #POLICE-INFORM-ADDR#",
+            "adress is #POLICE-INFORM-ADDR#",
+            "It is on #POLICE-INFORM-ADDR# .",
+            "their address in our system is listed as #POLICE-INFORM-ADDR# .",
+            "The address is #POLICE-INFORM-ADDR# .",
+            "it 's located at #POLICE-INFORM-ADDR# .",
+            "#POLICE-INFORM-ADDR# is the address",
+            "They are located at #POLICE-INFORM-ADDR# ."
+        ],
+        "Post": [
+            "The postcode of the police is #POLICE-INFORM-POST# .",
+            "The post code is #POLICE-INFORM-POST# .",
+            "Its postcode is #POLICE-INFORM-POST# .",
+            "Their postcode is #POLICE-INFORM-POST# ."
+        ],
+        "Name": [
+            "I think a fun place to visit is #POLICE-INFORM-NAME# .",
+            "#POLICE-INFORM-NAME# looks good .",
+            "#POLICE-INFORM-NAME# is available , would that work for you ?",
+            "we have #POLICE-INFORM-NAME# .",
+            "#POLICE-INFORM-NAME# is popular among visitors .",
+            "How about #POLICE-INFORM-NAME# ?",
+            "What about #POLICE-INFORM-NAME# ?",
+            "you might want to try the #POLICE-INFORM-NAME# ."
+        ],
+        "Phone": [
+            "The police phone number is #POLICE-INFORM-PHONE# .",
+            "Here is the police phone number , #POLICE-INFORM-PHONE# ."
+        ]
+    },
+    "Hospital-Inform": {
+        "Addr": [
+            "it is located in #HOSPITAL-INFORM-ADDR#",
+            "adress is #HOSPITAL-INFORM-ADDR#",
+            "It is on #HOSPITAL-INFORM-ADDR# .",
+            "their address in our system is listed as #HOSPITAL-INFORM-ADDR# .",
+            "The address is #HOSPITAL-INFORM-ADDR# .",
+            "it 's located at #HOSPITAL-INFORM-ADDR# .",
+            "#HOSPITAL-INFORM-ADDR# is the address",
+            "They are located at #HOSPITAL-INFORM-ADDR# ."
+        ],
+        "Post": [
+            "The postcode of the hospital is #HOSPITAL-INFORM-POST# .",
+            "The post code is #HOSPITAL-INFORM-POST# .",
+            "Its postcode is #HOSPITAL-INFORM-POST# .",
+            "Their postcode is #HOSPITAL-INFORM-POST# ."
+        ],
+        "Department": [
+            "The department of the hospital is #HOSPITAL-INFORM-POST# .",
+            "The department is #HOSPITAL-INFORM-POST# .",
+            "Its department is #HOSPITAL-INFORM-POST# .",
+            "Their department is #HOSPITAL-INFORM-POST# ."
+	    
+        ],
+        "Phone": [
+            "The hospital phone number is #HOSPITAL-INFORM-PHONE# .",
+            "Here is the hospital phone number , #HOSPITAL-INFORM-PHONE# ."
+        ]
+    },
+    "Hospital-Request": {
+	"Department": [
+            "What is the name of the hospital department ?",
+            "What hospital department are you thinking about ?",
+            "I ' m sorry for the confusion , what hospital department are you interested in ?",
+            "What hospital department were you thinking of ?",
+            "Do you know the department of it ?",
+            "can you give me the department of it ?"
+	]
     },
     "general-bye": {
         "none": [

@@ -1,0 +1,12 @@
+{
+  "model_type": "SetSUMBT",
+  "dataset": "multiwoz21",
+  "no_action_prediction": false,
+  "model_name_or_path": "roberta-base",
+  "candidate_embedding_model_name": "roberta-base",
+  "transformers_local_files_only": false,
+  "train_batch_size": 3,
+  "dev_batch_size": 16,
+  "test_batch_size": 16,
+  "run_nbt": true
+}
