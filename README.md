@@ -20,7 +20,7 @@
 
 ## Installation
 
-You can install ConvLab-3 in one of the following ways according to your need. Higher versions of `torch` and `transformers` may also work.
+You can install ConvLab-3 in one of the following ways according to your need. We use `torch>=1.10.1,<=1.13` and `transformers>=4.17.0,<=4.24.0`. Higher versions of `torch` and `transformers` may also work.
 
 ### Git clone and pip install in development mode (Recommend)
 
