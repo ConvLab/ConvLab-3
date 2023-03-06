@@ -84,6 +84,6 @@ python ../run_seq2seq.py \
     --optim adafactor \
     --gradient_checkpointing
 
-python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json -o ${dial_ids_order}
+python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/test_generated_predictions.json -o ${dial_ids_order}
 
 python ../../../nlu/evaluate_unified_datasets.py -p ${output_dir}/predictions.json
