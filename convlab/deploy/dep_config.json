@@ -5,185 +5,62 @@
     "session_time_out": 300
   },
   "nlu": {
-    "svm-cam": {
-      "class_path": "convlab.nlu.svm.camrest.nlu.SVMNLU",
-      "data_set": "camrest",
+    "t5nlu-mul": {
+      "class_path": "convlab.base_models.t5.nlu.T5NLU",
+      "data_set": "multiwoz",
       "ini_params": {
-        "mode": "usr"
+        "speaker": "user",
+        "context_window_size": 0,
+        "model_name_or_path": "ConvLab/t5-small-nlu-multiwoz21"
       },
-      "model_name": "svm-cam",
+      "model_name": "t5nlu-mul",
       "max_core": 1,
       "preload": true,
-      "enable": true
-    },
-    "svm-mul": {
-      "class_path": "convlab.nlu.svm.multiwoz.nlu.SVMNLU",
-      "data_set": "multiwoz",
-      "ini_params": {
-        "mode": "usr"
-      },
-      "model_name": "svm-mul",
-      "max_core": 1,
-      "preload": false,
-      "enable": true
-    },
-    "bert-cro": {
-      "class_path": "convlab.nlu.jointBERT.crosswoz.nlu.BERTNLU",
-      "data_set": "crosswoz",
-      "ini_params": {
-        "mode": "all",
-        "config_file": "crosswoz_all.json",
-        "model_file": "https://convlab.blob.core.windows.net/convlab-2/bert_crosswoz_all.zip"
-      },
-      "model_name": "bert-cro",
-      "max_core": 1,
-      "preload": false,
-      "enable": true
-    },
-    "bert-mul": {
-      "class_path": "convlab.nlu.jointBERT.multiwoz.nlu.BERTNLU",
-      "data_set": "multiwoz",
-      "ini_params": {
-        "mode": "all",
-        "config_file": "multiwoz_all.json",
-        "model_file": "https://convlab.blob.core.windows.net/convlab-2/bert_multiwoz_all.zip"
-      },
-      "model_name": "bert-mul",
-      "max_core": 1,
-      "preload": false,
       "enable": true
     }
   },
   "dst": {
-    "rule-cam": {
-      "class_path": "convlab.dst.rule.camrest.dst.RuleDST",
-      "data_set": "camrest",
-      "ini_params": {},
-      "model_name": "rule-cam",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-    },
-    "rule-mul": {
-      "class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
+    "t5dst-mul": {
+      "class_path": "convlab.base_models.t5.dst.T5DST",
       "data_set": "multiwoz",
-      "ini_params": {},
-      "model_name": "rule-mul",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-    },
-    "rule-cro": {
-      "class_path": "convlab.dst.rule.crosswoz.dst.RuleDST",
-      "data_set": "crosswoz",
-      "ini_params": {},
-      "model_name": "rule-cro",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-    },
-    "trade-mul": {
-      "class_path": "convlab.dst.trade.multiwoz.trade.MultiWOZTRADE",
-      "data_set": "multiwoz",
-      "ini_params": {},
-      "model_name": "trade-mul",
+      "ini_params": {
+        "dataset_name": "multiwoz21",
+        "speaker": "user",
+        "context_window_size": 100,
+        "model_name_or_path": "ConvLab/t5-small-dst-multiwoz21"
+      },
+      "model_name": "t5dst-mul",
       "max_core": 1,
       "preload": true,
       "enable": true
     }
   },
   "policy": {
-    "mle-cam": {
-      "class_path": "convlab.policy.mle.camrest.mle.MLE",
-      "data_set": "camrest",
-      "ini_params": {},
-      "model_name": "mle-cam",
-      "max_core": 1,
-      "preload": false,
-      "enable": true
-    },
-    "mle-mul": {
-      "class_path": "convlab.policy.mle.multiwoz.mle.MLE",
+    "ddpt-mul": {
+      "class_path": "convlab.policy.vtrace_DPT.VTRACE",
       "data_set": "multiwoz",
-      "ini_params": {},
-      "model_name": "mle-mul",
-      "max_core": 1,
-      "preload": false,
-      "enable": true
-    },
-    "rule-cam": {
-      "class_path": "convlab.policy.rule.camrest.rule_based_camrest_bot.RuleBasedCamrestBot",
-      "data_set": "camrest",
-      "ini_params": {},
-      "model_name": "rule-cam",
+      "ini_params": {
+        "is_train": false,
+        "seed": 0,
+        "load_path": "supervised", 
+        "dataset_name": "multiwoz21"
+      },
+      "model_name": "ddpt-mul",
       "max_core": 1,
       "preload": true,
-      "enable": true
-    },
-    "rule-mul": {
-      "class_path": "convlab.policy.rule.multiwoz.rule_based_multiwoz_bot.RuleBasedMultiwozBot",
-      "data_set": "multiwoz",
-      "ini_params": {},
-      "model_name": "rule-mul",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-    },
-    "mle-cro": {
-      "class_path": "convlab.policy.mle.crosswoz.mle.MLE",
-      "data_set": "crosswoz",
-      "ini_params": {},
-      "model_name": "mle-cro",
-      "max_core": 1,
-      "preload": false,
       "enable": true
     }
   },
   "nlg": {
-    "tmp-manual-cam": {
-      "class_path": "convlab.nlg.template.camrest.nlg.TemplateNLG",
-      "data_set": "camrest",
-      "ini_params": {
-        "is_user": false
-      },
-      "model_name": "tmp-manual-cam",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-    },
-    "tmp-auto_manual-cam": {
-      "class_path": "convlab.nlg.template.camrest.nlg.TemplateNLG",
-      "data_set": "camrest",
-      "ini_params": {
-        "is_user": false,
-        "mode": "auto_manual"
-      },
-      "model_name": "tmp-auto_manual-cam",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-    },
-    "tmp-auto_manual-mul": {
-      "class_path": "convlab.nlg.template.multiwoz.nlg.TemplateNLG",
+    "t5nlg-mul": {
+      "class_path": "convlab.base_models.t5.nlg.T5NLG",
       "data_set": "multiwoz",
       "ini_params": {
-        "is_user": false,
-        "mode": "auto_manual"
+        "speaker": "system",
+        "context_window_size": 0,
+        "model_name_or_path": "ConvLab/t5-small-nlg-multiwoz21"
       },
-      "model_name": "tmp-auto_manual-mul",
-      "max_core": 1,
-      "preload": true,
-      "enable": true
-
-    },
-    "tmp-auto_manual-cro": {
-      "class_path": "convlab.nlg.template.crosswoz.nlg.TemplateNLG",
-      "data_set": "crosswoz",
-      "ini_params": {
-        "is_user": false,
-        "mode": "auto_manual"
-      },
-      "model_name": "tmp-auto_manual-cro",
+      "model_name": "t5nlg-mul",
       "max_core": 1,
       "preload": true,
       "enable": true
