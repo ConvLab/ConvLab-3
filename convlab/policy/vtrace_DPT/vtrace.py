@@ -112,7 +112,6 @@ class VTRACE(nn.Module, Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-        print(state)
         if not self.is_train:
             for param in self.policy.parameters():
                 param.requires_grad = False
@@ -139,7 +138,6 @@ class VTRACE(nn.Module, Policy):
         self.info_dict['critic_value'] = self.value([descr_list], [value_list]).squeeze()
 
         action = self.vector.action_devectorize(a.detach().numpy())
-        print(action)
 
         return action
 
@@ -350,7 +348,6 @@ class VTRACE(nn.Module, Policy):
             os.path.join(os.path.dirname(os.path.abspath(
                 __file__)), filename + '_vtrace.pol.mdl')
         ]
-        print(policy_mdl_candidates)
 
         for policy_mdl in policy_mdl_candidates:
             if os.path.exists(policy_mdl):

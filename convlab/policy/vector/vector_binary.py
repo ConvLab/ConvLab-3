@@ -8,7 +8,7 @@ from .vector_base import VectorBase
 class VectorBinary(VectorBase):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
-                 seed=0):
+                 seed=0, **kwargs):
 
         super().__init__(dataset_name, character, use_masking, manually_add_entity_names, seed)
 
@@ -65,7 +65,7 @@ class VectorBinary(VectorBase):
         return state_vec, mask
 
     def get_mask(self, domain_active_dict, number_entities_dict):
-        domain_mask = self.compute_domain_mask(domain_active_dict)
+        #domain_mask = self.compute_domain_mask(domain_active_dict)
         entity_mask = self.compute_entity_mask(number_entities_dict)
         general_mask = self.compute_general_mask()
         mask = entity_mask + general_mask
@@ -94,9 +94,10 @@ class VectorBinary(VectorBase):
     def vectorize_system_act(self, state):
         action = state['system_action'] if self.character == 'sys' else state['user_action']
         action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
+        #action = flat_da(action)
         last_act_vec = np.zeros(self.da_dim)
         for da in action:
+            da = tuple(da)
             if da in self.act2vec:
                 last_act_vec[self.act2vec[da]] = 1.
         return last_act_vec
@@ -104,9 +105,10 @@ class VectorBinary(VectorBase):
     def vectorize_user_act(self, state):
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
-        opp_action = flat_da(opp_action)
+        #opp_action = flat_da(opp_action)
         opp_act_vec = np.zeros(self.da_opp_dim)
         for da in opp_action:
+            da = tuple(da)
             if da in self.opp2vec:
                 prob = 1.0
                 opp_act_vec[self.opp2vec[da]] = prob

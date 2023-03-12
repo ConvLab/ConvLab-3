@@ -7,6 +7,10 @@ We support training BERTNLU on datasets that are in our unified format.
 
 ## Usage
 
+#### Important note!
+
+The BERTNLU codebase utilizes the speaker parameter to identify the entity that is speaking. If a model is trained with `speaker=user`, it should be utilized by the system agent to anticipate user actions. When setting up a dialogue system, it is crucial to select a checkpoint that has been trained for `speaker=user` for the NLU of the system agent and visa-versa. It is important to differentiate between the `speaker` and the agent's name to avoid confusion. The zipped downloadable model names have the following format `bertnlu_unified_<dataset_name>_<speaker>_context<context_len>.zip`.
+
 #### Preprocess data
 
 ```sh

@@ -66,7 +66,8 @@ convlab/nlu/jointBERT_new/**/output/
 convlab/nlu/milu/09*
 convlab/nlu/jointBERT/multiwoz/configs/multiwoz_new_usr_context.json
 convlab/nlu/milu/multiwoz/configs/system_without_context.jsonnet
-convlab/nlu/milu/multiwoz/configs/user_without_context.jsonnet
+convlab/nlu/milu/multiwoz/configs/user_without_context.jsonnet\
+*.pkl
 
 # test script
 *_test.py
@@ -87,7 +88,6 @@ dist
 convlab.egg-info
 
 # configs
-
 *experiment*
 *pretrained_models*
 .ipynb_checkpoints
@@ -101,9 +101,8 @@ convlab/dst/trade/multiwoz/model/
 convlab/dst/trade/multiwoz_config/
 convlab/deploy/bert_multiwoz_all.zip
 convlab/deploy/templates/dialog_eg.html
-test.py
-
 *convlab/policy/vector/action_dicts
+
 *.egg-info
 pre-trained-models/
 venv

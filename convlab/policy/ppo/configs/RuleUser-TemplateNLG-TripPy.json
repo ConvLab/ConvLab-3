@@ -1,0 +1,73 @@
+{
+	"model": {
+		"load_path": "/path/to/model/checkpoint",
+		"pretrained_load_path": "",
+		"use_pretrained_initialisation": false,
+		"num_train_dialogues": 100,
+		"seed": 0,
+		"epoch": 50,
+		"eval_frequency": 5,
+		"process_num": 2,
+		"num_eval_dialogues": 500,
+		"sys_semantic_to_usr": false
+	},
+        "vectorizer_sys": {
+	        "fuzzy_vector_mul": {
+		        "class_path": "convlab.policy.vector.vector_binary_fuzzy.VectorBinaryFuzzy",
+		        "ini_params": {
+			        "use_masking": true,
+			        "manually_add_entity_names": true,
+			        "seed": 0
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"TripPy": {
+			"class_path": "convlab.dst.trippy.TRIPPY",
+		        "ini_params": {
+			        "model_type": "roberta",
+			        "model_name": "roberta-base",
+			        "model_path": "/path/to/model/checkpoint",
+			        "dataset_name": "multiwoz21"
+			}
+		}
+	},
+	"sys_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": false
+			}
+		}
+	},
+	"nlu_usr": {
+		"BERTNLU": {
+			"class_path": "convlab.nlu.jointBERT.unified_datasets.BERTNLU",
+			"ini_params": {
+				"mode": "sys",
+                                "config_file": "multiwoz21_sys_context3.json",
+				"model_file": "/path/to/model/checkpoint.zip"
+			}
+		}
+	},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": true,
+				"label_noise": 0.0,
+				"text_noise": 0.0
+			}
+		}
+	}
+}

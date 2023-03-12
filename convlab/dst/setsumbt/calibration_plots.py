@@ -35,7 +35,7 @@ def main():
     path = args.data_dir
 
     models = os.listdir(path)
-    models = [os.path.join(path, model, 'test.belief') for model in models]
+    models = [os.path.join(path, model, 'test.predictions') for model in models]
 
     fig = plt.figure(figsize=(14,8))
     font=20
@@ -56,16 +56,16 @@ def main():
 
 
 def get_calibration(path, device, n_bins=10, temperature=1.00):
-    logits = torch.load(path, map_location=device)
-    y_true = logits['labels']
-    logits = logits['belief_states']
+    probs = torch.load(path, map_location=device)
+    y_true = probs['state_labels']
+    probs = probs['belief_states']
 
-    y_pred = {slot: logits[slot].reshape(-1, logits[slot].size(-1)).argmax(-1) for slot in logits}
+    y_pred = {slot: probs[slot].reshape(-1, probs[slot].size(-1)).argmax(-1) for slot in probs}
     goal_acc = {slot: (y_pred[slot] == y_true[slot].reshape(-1)).int() for slot in y_pred}
     goal_acc = sum([goal_acc[slot] for slot in goal_acc])
     goal_acc = (goal_acc == len(y_true)).int()
 
-    scores = [logits[slot].reshape(-1, logits[slot].size(-1)).max(-1)[0].unsqueeze(0) for slot in logits]
+    scores = [probs[slot].reshape(-1, probs[slot].size(-1)).max(-1)[0].unsqueeze(0) for slot in probs]
     scores = torch.cat(scores, 0).min(0)[0]
 
     step = 1.0 / float(n_bins)
