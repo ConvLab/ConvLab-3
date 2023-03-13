@@ -75,9 +75,9 @@ class VTRACE(nn.Module, Policy):
         try:
             if load_path == "from_pretrained":
                 urllib.request.urlretrieve(
-                    "https://huggingface.co/ConvLab/ddpt-policy-multiwoz21/resolve/main/supervised.pol.mdl",
-                    f"{dir_name}/ddpt.pol.mdl")
-                load_path = f"{dir_name}/ddpt"
+                    f"https://huggingface.co/ConvLab/ddpt-policy-{self.vector.dataset_name}/resolve/main/supervised.pol.mdl",
+                    f"{dir_name}/{self.vector.dataset_name}_ddpt.pol.mdl")
+                load_path = f"{dir_name}/{self.vector.dataset_name}_ddpt"
             self.load_policy(load_path)
         except Exception as e:
             print(f"Could not load the policy, Exception: {e}")

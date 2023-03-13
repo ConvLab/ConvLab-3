@@ -6,10 +6,13 @@ import numpy as np
 import logging
 import os
 import json
+from convlab.policy.vector.vector_binary import VectorBinary
 from convlab.policy.policy import Policy
 from convlab.policy.rlmodule import MultiDiscretePolicy, Value
 from convlab.util.custom_util import model_downloader, set_seed
 import sys
+import urllib.request
+
 
 root_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -20,7 +23,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class PPO(Policy):
 
-    def __init__(self, is_train=False, dataset='Multiwoz', seed=0, vectorizer=None):
+    def __init__(self, is_train=False, seed=0, vectorizer=None, load_path="", **kwargs):
 
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'configs' ,'ppo_config.json'), 'r') as f:
             cfg = json.load(f)
@@ -39,18 +42,29 @@ class PPO(Policy):
 
         logging.info('PPO seed ' + str(seed))
         set_seed(seed)
+        dir_name = os.path.dirname(os.path.abspath(__file__))
 
         if self.vector is None:
             logging.info("No vectorizer was set, using default..")
-            from convlab.policy.vector.vector_binary import VectorBinary
-            self.vector = VectorBinary()
+            self.vector = VectorBinary(dataset_name=kwargs['dataset_name'],
+                         use_masking=kwargs.get('use_masking', True),
+                         manually_add_entity_names=kwargs.get('manually_add_entity_names', True),
+                         seed=seed)
 
-        # construct policy and value network
-        if dataset == 'Multiwoz':
-            self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'],
-                                              self.vector.da_dim, seed).to(device=DEVICE)
-            logging.info(f"ACTION DIM OF PPO: {self.vector.da_dim}")
-            logging.info(f"STATE DIM OF PPO: {self.vector.state_dim}")
+        self.policy = MultiDiscretePolicy(self.vector.state_dim, cfg['h_dim'],
+                                          self.vector.da_dim, seed).to(device=DEVICE)
+        logging.info(f"ACTION DIM OF PPO: {self.vector.da_dim}")
+        logging.info(f"STATE DIM OF PPO: {self.vector.state_dim}")
+
+        try:
+            if load_path == "from_pretrained":
+                urllib.request.urlretrieve(
+                    f"https://huggingface.co/ConvLab/mle-policy-{self.vector.dataset_name}/resolve/main/supervised.pol.mdl",
+                    f"{dir_name}/{self.vector.dataset_name}_mle.pol.mdl")
+                load_path = f"{dir_name}/{self.vector.dataset_name}_mle"
+            self.load_policy(load_path)
+        except Exception as e:
+            print(f"Could not load the policy, Exception: {e}")
 
         self.value = Value(self.vector.state_dim,
                            cfg['hv_dim']).to(device=DEVICE)
@@ -259,6 +273,20 @@ class PPO(Policy):
         ]
         for policy_mdl in policy_mdl_candidates:
             if os.path.exists(policy_mdl):
+                self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
+                logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
+                break
+
+    def load_policy(self, filename=""):
+        policy_mdl_candidates = [
+            filename + '.pol.mdl',
+            filename + '_ppo.pol.mdl',
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), filename + '.pol.mdl'),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), filename + '_ppo.pol.mdl')
+        ]
+        for policy_mdl in policy_mdl_candidates:
+            if os.path.exists(policy_mdl):
+                print(f"Loaded policy checkpoint from file: {policy_mdl}")
                 self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
                 logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
                 break
