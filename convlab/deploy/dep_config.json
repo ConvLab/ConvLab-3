@@ -42,7 +42,7 @@
       "ini_params": {
         "is_train": false,
         "seed": 0,
-        "load_path": "supervised", 
+        "load_path": "from_pretrained", 
         "dataset_name": "multiwoz21"
       },
       "model_name": "ddpt-mul",
