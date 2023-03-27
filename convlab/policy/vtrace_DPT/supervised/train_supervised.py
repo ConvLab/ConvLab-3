@@ -182,7 +182,7 @@ if __name__ == '__main__':
     args = arg_parser()
 
     root_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root_directory, 'config.json'), 'r') as f:
+    with open(os.path.join(root_directory, 'configs/multiwoz21_dpt.json'), 'r') as f:
         cfg = json.load(f)
 
     cfg['dataset_name'] = args.dataset_name

@@ -95,12 +95,13 @@ class VectorUncertainty(VectorBinary):
         self.confidence_scores = state['belief_state_probs'] if 'belief_state_probs' in state else None
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
-        opp_action = flat_da(opp_action)
+        #opp_action = flat_da(opp_action)
         opp_act_vec = np.zeros(self.da_opp_dim)
         for da in opp_action:
+            da = tuple(da)
             if da in self.opp2vec:
                 if 'belief_state_probs' in state and self.use_confidence_scores:
-                    domain, intent, slot, value = da.split('_')
+                    domain, intent, slot, value = da
                     if domain in state['belief_state_probs']:
                         slot = slot if slot else 'none'
                         if slot in state['belief_state_probs'][domain]:

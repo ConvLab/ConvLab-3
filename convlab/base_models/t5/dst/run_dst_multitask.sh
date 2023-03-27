@@ -30,7 +30,7 @@ mkdir -p ${data_dir}
 for name in ${names};
 do
     echo "preprocessing ${name}"
-    # python ../create_data.py -t ${task_name} -d ${name} -s ${speaker} -c ${context_window_size}
+    python ../create_data.py -t ${task_name} -d ${name} -s ${speaker} -c ${context_window_size}
 done
 
 python merge_data.py $(echo ${dataset_name} | tr "+" " ")
@@ -89,6 +89,10 @@ python ../run_seq2seq.py \
     --optim adafactor \
     --gradient_checkpointing
 
-python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/generated_predictions.json
+python merge_predict_res.py -d ${dataset_name} -s ${speaker} -c ${context_window_size} -p ${output_dir}/test_generated_predictions.json
 
-python ../../../dst/evaluate_unified_datasets.py -p ${output_dir}/predictions.json
+for name in ${names};
+do
+    echo "evaluating ${name}"
+    python ../../../dst/evaluate_unified_datasets.py -p ${output_dir}/${name}_predictions.json
+done
