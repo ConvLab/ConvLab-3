@@ -59,22 +59,17 @@
    ```json
    "nlu":
    {
-     "svm-cam": {
-      "class_path": "convlab.nlu.svm.camrest.nlu.SVMNLU",
-      "data_set": "camrest",
-      "ini_params": {"mode": "usr"},
-      "model_name": "svm-cam",
+     "t5nlu-mul": {
+      "class_path": "convlab.base_models.t5.nlu.T5NLU",
+      "data_set": "multiwoz",
+      "ini_params": {
+        "speaker": "user",
+        "context_window_size": 0,
+        "model_name_or_path": "ConvLab/t5-small-nlu-multiwoz21"
+      },
+      "model_name": "t5nlu-mul",
       "max_core": 1,
       "preload": true,
-      "enable": true
-    },
-    "svm-mul": {
-      "class_path": "convlab.nlu.svm.multiwoz.nlu.SVMNLU",
-      "data_set": "multiwoz",
-      "ini_params": {"mode": "usr"},
-      "model_name": "svm-mul",
-      "max_core": 1,
-      "preload": false,
       "enable": true
     }
    }

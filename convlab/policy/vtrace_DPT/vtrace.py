@@ -8,6 +8,7 @@ import torch.nn as nn
 import urllib.request
 
 from torch import optim
+from convlab.policy.vector.vector_nodes import VectorNodes
 from convlab.policy.vtrace_DPT.transformer_model.EncoderDecoder import EncoderDecoder
 from convlab.policy.vtrace_DPT.transformer_model.EncoderCritic import EncoderCritic
 from ... import Policy
@@ -21,7 +22,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class VTRACE(nn.Module, Policy):
 
-    def __init__(self, is_train=True, seed=0, vectorizer=None, load_path=""):
+    def __init__(self, is_train=True, seed=0, vectorizer=None, load_path="", **kwargs):
 
         super(VTRACE, self).__init__()
 
@@ -59,6 +60,13 @@ class VTRACE(nn.Module, Policy):
 
         self.last_action = None
 
+        if vectorizer is None:
+            vectorizer = VectorNodes(dataset_name=kwargs['dataset_name'],
+                         use_masking=kwargs.get('use_masking', True),
+                         manually_add_entity_names=kwargs.get('manually_add_entity_names', True),
+                         seed=seed,
+                         filter_state=kwargs.get('filter_state', True))
+
         self.vector = vectorizer
         self.cfg['dataset_name'] = self.vector.dataset_name
         self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
@@ -67,9 +75,9 @@ class VTRACE(nn.Module, Policy):
         try:
             if load_path == "from_pretrained":
                 urllib.request.urlretrieve(
-                    "https://huggingface.co/ConvLab/ddpt-policy-multiwoz21/resolve/main/supervised.pol.mdl",
-                    f"{dir_name}/ddpt.pol.mdl")
-                load_path = f"{dir_name}/ddpt"
+                    f"https://huggingface.co/ConvLab/ddpt-policy-{self.vector.dataset_name}/resolve/main/supervised.pol.mdl",
+                    f"{dir_name}/{self.vector.dataset_name}_ddpt.pol.mdl")
+                load_path = f"{dir_name}/{self.vector.dataset_name}_ddpt"
             self.load_policy(load_path)
         except Exception as e:
             print(f"Could not load the policy, Exception: {e}")
@@ -104,7 +112,6 @@ class VTRACE(nn.Module, Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-
         if not self.is_train:
             for param in self.policy.parameters():
                 param.requires_grad = False
