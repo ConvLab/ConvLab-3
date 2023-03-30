@@ -87,7 +87,7 @@ def lexicalize_da(meta, entities, state, requestable):
                             pair[1] = entities[domain][n][slot.capitalize()]
                         elif slot_old in entities[domain][n]:
                             pair[1] = entities[domain][n][slot_old]
-                        elif slot in state[domain]:
+                        elif state.get(domain) is not None and slot in state.get(domain):
                             pair[1] = state[domain][slot]
                         else:
                             pair[1] = 'not available'
