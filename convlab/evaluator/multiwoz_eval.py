@@ -162,7 +162,7 @@ class MultiWozEvaluator(Evaluator):
 
         new_acts = list()
         for intent, domain, slot, value in da_turn:
-            if intent.lower() == 'book':
+            if intent.lower() == 'book' and not value:
                 ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain == domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
                 ref = ref[0] if ref else ''
                 value = ref
