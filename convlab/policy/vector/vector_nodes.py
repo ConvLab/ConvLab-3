@@ -70,6 +70,10 @@ class VectorNodes(VectorBase):
         if self.filter_state:
             self.kg_info = self.filter_inactive_domains(domain_active_dict)
 
+            # make sure kg is not empty
+            if len(self.kg_info) == 0:
+                self.add_user_greet()
+
         if self.use_mask:
             mask = self.get_mask(domain_active_dict, number_entities_dict)
             for i in range(self.da_dim):
@@ -169,4 +173,15 @@ class VectorNodes(VectorBase):
                 kg_filtered.append(node)
 
         return kg_filtered
+
+    def add_user_greet(self):
+
+        feature_type = 'user act'
+        da = ("general", "greet", "none", "none")
+        if da in self.opp2vec:
+            domain = da[0]
+            description = "user-" + "_".join(da)
+            value = 1.0
+            self.add_graph_node(domain, feature_type, description.lower(), value)
+
 
