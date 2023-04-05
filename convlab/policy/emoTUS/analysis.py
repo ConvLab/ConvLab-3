@@ -41,6 +41,12 @@ def advance(conversation):
 
 
 def get_turn_emotion(conversation):
+    """ Get the emotion of each turn in the conversation 
+    Args:
+        conversation (list): a list of dialog
+    Returns:
+        turn_emotion (list): a list of emotion of each turn
+    """
     turn_info = {"all": {},
                  "Complete": {}, "Not Complete": {},
                  "Success": {}, "Not Success": {},
