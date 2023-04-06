@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2023 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""SetSUMBT utils"""
+"""SetSUMBT configuration utilities."""
 
 import os
 import json
@@ -25,6 +25,12 @@ from git import Repo
 
 
 def get_args(base_models: dict):
+    """
+    Get arguments from command line and config file.
+
+    Args:
+        base_models: Dictionary of base models to use for ensemble training
+    """
     # Get arguments
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 
@@ -46,7 +52,6 @@ def get_args(base_models: dict):
     parser.add_argument('--max_slot_len', help='Maximum number of tokens per slot description', default=12, type=int)
     parser.add_argument('--max_candidate_len', help='Maximum number of tokens per value candidate', default=12,
                         type=int)
-    parser.add_argument('--force_processing', action='store_true', help='Force preprocessing of data.')
     parser.add_argument('--data_sampling_size', help='Resampled dataset size', default=-1, type=int)
     parser.add_argument('--no_descriptions', help='Do not use slot descriptions rather than slot names for embeddings',
                         action='store_true')
@@ -56,6 +61,7 @@ def get_args(base_models: dict):
     parser.add_argument('--output_dir', help='Output storage directory', default=None)
     parser.add_argument('--model_type', help='Encoder Model Type: bert/roberta', default='roberta')
     parser.add_argument('--model_name_or_path', help='Name or path of the pretrained model.', default=None)
+    parser.add_argument('--ensemble_model_path', help='Path to ensemble model', default=None)
     parser.add_argument('--candidate_embedding_model_name', default=None,
                         help='Name of the pretrained candidate embedding model.')
     parser.add_argument('--transformers_local_files_only', help='Use local files only for huggingface transformers',
@@ -140,13 +146,11 @@ def get_args(base_models: dict):
                              "See details at https://nvidia.github.io/apex/amp.html")
 
     # ACTIONS
-    parser.add_argument('--run_nbt', help='Run NBT script', action='store_true')
-    parser.add_argument('--run_evaluation', help='Run evaluation script', action='store_true')
-
-    # RUN_NBT ACTIONS
     parser.add_argument('--do_train', help='Perform training', action='store_true')
     parser.add_argument('--do_eval', help='Perform model evaluation during training', action='store_true')
+    parser.add_argument('--do_eval_trainset', help='Evaluate model on training data', action='store_true')
     parser.add_argument('--do_test', help='Evaluate model on test data', action='store_true')
+    parser.add_argument('--do_ensemble_setup', help='Setup the dataloaders for ensemble training', action='store_true')
     args = parser.parse_args()
 
     if args.starting_config_name:
@@ -162,10 +166,13 @@ def get_args(base_models: dict):
 
     # Setup default directories
     if not args.output_dir:
-        args.output_dir = os.path.dirname(os.path.abspath(__file__))
+        args.output_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         args.output_dir = os.path.join(args.output_dir, 'models')
 
-        name = 'SetSUMBT' if args.set_similarity else 'SUMBT'
+        name = 'Ensemble-' if args.do_ensemble_setup else ''
+        name += 'EnD-' if args.loss_function == 'distillation' else ''
+        name += 'EnD2-' if args.loss_function == 'distribution_distillation' else ''
+        name += 'SetSUMBT' if args.set_similarity else 'SUMBT'
         name += '+ActPrediction' if args.predict_actions else ''
         name += '-' + args.dataset
         name += '-' + str(round(args.dataset_train_ratio*100)) + '%' if args.dataset_train_ratio != 1.0 else ''
@@ -230,13 +237,25 @@ def get_args(base_models: dict):
 
 
 def get_starting_config(args):
-    path = os.path.dirname(os.path.realpath(__file__))
+    """
+    Load a config file and update the args with the values from the config file.
+
+    Args:
+        args: The args object to update.
+    """
+    path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     path = os.path.join(path, 'configs', f"{args.starting_config_name}.json")
     reader = open(path, 'r')
     config = json.load(reader)
     reader.close()
 
     if "model_type" in config:
+        if 'ensemble-' in config["model_type"].lower():
+            args.ensemble = True
+            config["model_type"] = config["model_type"].lower().replace('ensemble-', '')
+        else:
+            args.ensemble = False
+
         if config["model_type"].lower() == 'setsumbt':
             config["model_type"] = 'roberta'
             config["no_set_similarity"] = False
@@ -255,6 +274,7 @@ def get_starting_config(args):
 
 
 def get_git_info():
+    """Get the git info of the current branch and commit hash"""
     repo = Repo(os.path.dirname(os.path.realpath(__file__)), search_parent_directories=True)
     branch_name = repo.active_branch.name
     commit_hex = repo.head.object.hexsha
@@ -264,17 +284,21 @@ def get_git_info():
 
 
 def build_config(config_class, args):
+    """
+    Build a config object from the args.
+
+    Args:
+        config_class: The config class to use.
+        args: The args object to use.
+
+    Returns:
+        The config object.
+    """
     config = config_class.from_pretrained(args.model_name_or_path)
     config.code_version = get_git_info()
-    if not os.path.exists(args.model_name_or_path):
-        config.tokenizer_name = args.model_name_or_path
-    try:
-        config.tokenizer_name = config.tokenizer_name
-    except AttributeError:
-        config.tokenizer_name = args.model_name_or_path
     try:
         config.candidate_embedding_model_name = config.candidate_embedding_model_name
-    except:
+    except AttributeError:
         if args.candidate_embedding_model_name:
             config.candidate_embedding_model_name = args.candidate_embedding_model_name
     config.max_dialogue_len = args.max_dialogue_len
@@ -302,8 +326,6 @@ def build_config(config_class, args):
     if config.loss_function == 'bayesianmatching':
         config.kl_scaling_factor = args.kl_scaling_factor
         config.prior_constant = args.prior_constant
-    if config.loss_function == 'inhibitedce':
-        config.inhibiting_factor = args.inhibiting_factor
     if config.loss_function == 'labelsmoothing':
         config.label_smoothing = args.label_smoothing
     if config.loss_function == 'distillation':
@@ -320,6 +342,16 @@ def build_config(config_class, args):
 
 
 def update_args(args, config):
+    """
+    Update the args with the values from the config file.
+
+    Args:
+        args: The args object to update.
+        config: The config object to use.
+
+    Returns:
+        The updated args object.
+    """
     try:
         args.candidate_embedding_model_name = config.candidate_embedding_model_name
     except AttributeError:
@@ -342,6 +374,13 @@ def update_args(args, config):
 
 
 def clear_checkpoints(path, topn=1):
+    """
+    Clear all checkpoints except the top n.
+
+    Args:
+        path: The path to the checkpoints.
+        topn: The number of checkpoints to keep.
+    """
     checkpoints = os.listdir(path)
     checkpoints = [p for p in checkpoints if 'checkpoint' in p]
     checkpoints = sorted([int(p.split('-')[-1]) for p in checkpoints])
