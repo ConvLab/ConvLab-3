@@ -1,7 +1,8 @@
 {
   "model_type": "SetSUMBT",
   "dataset": "multiwoz21",
-  "no_action_prediction": true,
+  "no_action_prediction": false,
+  "loss_function": "distribution_distillation",
   "model_name_or_path": "roberta-base",
   "candidate_embedding_model_name": "roberta-base",
   "train_batch_size": 3,

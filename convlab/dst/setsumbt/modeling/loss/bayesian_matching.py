@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2023 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,15 +23,15 @@ from torch.nn import Module
 class BayesianMatchingLoss(Module):
     """Bayesian matching loss (https://arxiv.org/pdf/2002.07965.pdf) implementation"""
 
-    def __init__(self, lamb: float = 0.001, ignore_index: int = -1) -> Module:
+    def __init__(self, kl_scaling_factor: float = 0.001, ignore_index: int = -1) -> Module:
         """
         Args:
-            lamb (float): Weighting factor for the KL Divergence component
+            kl_scaling_factor (float): Weighting factor for the KL Divergence component
             ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
         """
         super(BayesianMatchingLoss, self).__init__()
 
-        self.lamb = lamb
+        self.lamb = kl_scaling_factor
         self.ignore_index = ignore_index
     
     def forward(self, inputs: torch.Tensor, labels: torch.Tensor, prior: torch.Tensor = None) -> torch.Tensor:
@@ -46,7 +46,7 @@ class BayesianMatchingLoss(Module):
         """
         # Assert input sizes
         assert inputs.dim() == 2                 # Observations, predictive distribution
-        assert labels.dim() == 1                # Label for each observation
+        assert labels.dim() == 1                 # Label for each observation
         assert labels.size(0) == inputs.size(0)  # Equal number of observation
 
         # Confirm predictive distribution dimension
@@ -88,13 +88,13 @@ class BayesianMatchingLoss(Module):
 class BinaryBayesianMatchingLoss(BayesianMatchingLoss):
     """Bayesian matching loss (https://arxiv.org/pdf/2002.07965.pdf) implementation"""
 
-    def __init__(self, lamb: float = 0.001, ignore_index: int = -1) -> Module:
+    def __init__(self, kl_scaling_factor: float = 0.001, ignore_index: int = -1) -> Module:
         """
         Args:
-            lamb (float): Weighting factor for the KL Divergence component
+            kl_scaling_factor (float): Weighting factor for the KL Divergence component
             ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
         """
-        super(BinaryBayesianMatchingLoss, self).__init__(lamb, ignore_index)
+        super(BinaryBayesianMatchingLoss, self).__init__(kl_scaling_factor, ignore_index)
 
     def forward(self, inputs: torch.Tensor, labels: torch.Tensor, prior: torch.Tensor = None) -> torch.Tensor:
         """

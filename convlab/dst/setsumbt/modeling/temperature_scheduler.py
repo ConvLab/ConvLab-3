@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2023 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 """Linear Temperature Scheduler Class"""
 
 
-# Temp scheduler class for ensemble distillation
 class LinearTemperatureScheduler:
     """
     Temperature scheduler object used for distribution temperature scheduling in distillation

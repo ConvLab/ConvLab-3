@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2023 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,9 @@
 """Convlab3 Unified dataset data processing utilities"""
 
 import numpy
-import pdb
 
 from convlab.util import load_ontology, load_dst_data, load_nlu_data
-from convlab.dst.setsumbt.dataset.value_maps import VALUE_MAP, DOMAINS_MAP, QUANTITIES, TIME
+from convlab.dst.setsumbt.datasets.value_maps import VALUE_MAP, DOMAINS_MAP, QUANTITIES, TIME
 
 
 def get_ontology_slots(dataset_name: str) -> dict:
@@ -424,6 +423,7 @@ class IdTensor:
 def extract_dialogues(data: list, dataset_name: str) -> list:
     """
     Extract all dialogues from dataset
+
     Args:
         data (list): List of all dialogues in a subset of the data
         dataset_name (str): Name of the dataset to which the dialogues belongs
