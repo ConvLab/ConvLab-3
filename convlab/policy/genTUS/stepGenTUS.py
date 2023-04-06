@@ -600,7 +600,7 @@ class UserPolicy(Policy):
                  **kwargs):
         # self.config = config
         if not os.path.exists(os.path.dirname(model_checkpoint)):
-            os.mkdir(os.path.dirname(model_checkpoint))
+            os.makedirs(os.path.dirname(model_checkpoint))
             model_downloader(os.path.dirname(model_checkpoint),
                              "https://zenodo.org/record/7372442/files/multiwoz21-exp.zip")
 
