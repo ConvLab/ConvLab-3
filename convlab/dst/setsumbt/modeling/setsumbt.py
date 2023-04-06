@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2023 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,22 @@
 """SetSUMBT Prediction Head"""
 
 import torch
-from torch.autograd import Variable
 from torch.nn import (Module, MultiheadAttention, GRU, LSTM, Linear, LayerNorm, Dropout,
-                      CosineSimilarity, CrossEntropyLoss, PairwiseDistance,
-                      Sequential, ReLU, Conv1d, GELU, BCEWithLogitsLoss)
+                      CosineSimilarity, PairwiseDistance, Sequential, ReLU, Conv1d, GELU, Parameter)
 from torch.nn.init import (xavier_normal_, constant_)
+from transformers.utils import ModelOutput
 
-from convlab.dst.setsumbt.loss import (BayesianMatchingLoss, BinaryBayesianMatchingLoss,
-                                       KLDistillationLoss, BinaryKLDistillationLoss,
-                                       LabelSmoothingLoss, BinaryLabelSmoothingLoss,
-                                       RKLDirichletMediatorLoss, BinaryRKLDirichletMediatorLoss)
+from convlab.dst.setsumbt.modeling import loss
 
 
 class SlotUtteranceMatching(Module):
-    """Slot Utterance matching attention based information extractor"""
+    """Slot Utterance Matching module for information extraction from utterances"""
 
     def __init__(self, hidden_size: int = 768, attention_heads: int = 12):
         """
         Args:
-            hidden_size (int): Dimension of token embeddings
-            attention_heads (int): Number of attention heads to use in attention module
+            hidden_size: Hidden size of the transformer
+            attention_heads: Number of attention heads
         """
         super(SlotUtteranceMatching, self).__init__()
 
@@ -47,12 +43,12 @@ class SlotUtteranceMatching(Module):
                 slot_embeddings: torch.Tensor) -> torch.Tensor:
         """
         Args:
-            turn_embeddings: Embeddings for each token in each turn [n_turns, turn_length, hidden_size]
-            attention_mask: Padding mask for each turn [n_turns, turn_length, hidden_size]
-            slot_embeddings: Embeddings for each token in the slot descriptions
+            turn_embeddings: Turn level embeddings for the dialogue
+            attention_mask: Mask for the attention related to turn embeddings
+            slot_embeddings: Slot level embeddings for the dialogue
 
         Returns:
-            hidden: Information extracted from turn related to slot descriptions
+            hidden: Turn level embeddings for the dialogue conditioned on the slot embeddings
         """
         turn_embeddings = turn_embeddings.transpose(0, 1)
 
@@ -69,7 +65,7 @@ class SlotUtteranceMatching(Module):
 
 
 class RecurrentNeuralBeliefTracker(Module):
-    """Recurrent latent neural belief tracking module"""
+    """Recurrent Neural Belief Tracker module for tracking the latent dialogue state"""
 
     def __init__(self,
                  nbt_type: str = 'gru',
@@ -80,15 +76,16 @@ class RecurrentNeuralBeliefTracker(Module):
                  dropout_rate: float = 0.3):
         """
         Args:
-            nbt_type: Type of recurrent neural network (gru/lstm)
-            rnn_zero_init: Use zero initialised state for the RNN
-            input_size: Embedding size of the inputs
+            nbt_type: Type of recurrent neural network to use (lstm/gru)
+            rnn_zero_init: Whether to initialise the hidden state of the RNN to zero
+            input_size: Input embedding size
             hidden_size: Hidden size of the RNN
-            hidden_layers: Number of RNN Layers
+            hidden_layers: Number of hidden layers of the RNN
             dropout_rate: Dropout rate
         """
         super(RecurrentNeuralBeliefTracker, self).__init__()
 
+        # Initialise Initial Belief State Layer
         if rnn_zero_init:
             self.belief_init = Sequential(Linear(input_size, hidden_size), ReLU(), Dropout(dropout_rate))
         else:
@@ -126,12 +123,12 @@ class RecurrentNeuralBeliefTracker(Module):
     def forward(self, inputs: torch.Tensor, hidden_state: torch.Tensor = None) -> torch.Tensor:
         """
         Args:
-            inputs: Latent turn level information
-            hidden_state: Latent internal belief state
+            inputs: Input embeddings
+            hidden_state: Hidden state of the RNN
 
         Returns:
-            belief_embedding: Belief state embeddings
-            context: Latent internal belief state
+            belief_embedding: Latent belief state embeddings
+            context: Hidden state of the RNN
         """
         self.nbt.flatten_parameters()
         if hidden_state is None:
@@ -155,13 +152,13 @@ class RecurrentNeuralBeliefTracker(Module):
 
 
 class SetPooler(Module):
-    """Token set pooler"""
+    """Set Pooler module for pooling the set of token embeddings"""
 
     def __init__(self, pooling_strategy: str = 'cnn', hidden_size: int = 768):
         """
         Args:
-            pooling_strategy: Type of set pooler (cnn/dan/mean)
-            hidden_size: Token embedding size
+            pooling_strategy: Pooling strategy to use (mean/cnn/dan)
+            hidden_size: Hidden size of the set of token embeddings
         """
         super(SetPooler, self).__init__()
 
@@ -172,14 +169,14 @@ class SetPooler(Module):
         elif pooling_strategy == 'dan':
             self.pooler = Sequential(Linear(hidden_size, hidden_size), GELU(), Linear(2 * hidden_size, hidden_size))
 
-    def forward(self, inputs, attention_mask):
+    def forward(self, inputs: torch.Tensor, attention_mask: torch.Tensor):
         """
         Args:
-            inputs: Token set embeddings
-            attention_mask: Padding mask for the set of tokens
+            inputs: Set of token embeddings
+            attention_mask: Attention mask for the set of token embeddings
 
         Returns:
-
+            hidden: Pooled embeddings
         """
         if self.pooling_strategy == "mean":
             hidden = inputs.sum(1) / attention_mask.sum(1)
@@ -192,13 +189,25 @@ class SetPooler(Module):
         return hidden
 
 
+class SetSUMBTOutput(ModelOutput):
+    """SetSUMBT Output class"""
+    loss = None
+    belief_state = None
+    request_probabilities = None
+    active_domain_probabilities = None
+    general_act_probabilities = None
+    hidden_state = None
+    belief_state_summary = None
+    belief_state_mutual_information = None
+
+
 class SetSUMBTHead(Module):
     """SetSUMBT Prediction Head for Language Models"""
 
     def __init__(self, config):
         """
         Args:
-            config (configuration): Model configuration class
+            config: Model configuration
         """
         super(SetSUMBTHead, self).__init__()
         self.config = config
@@ -214,11 +223,24 @@ class SetSUMBTHead(Module):
             self.set_pooler = SetPooler(config.set_pooling, config.hidden_size)
 
         # Model ontology placeholders
-        self.slot_embeddings = Variable(torch.zeros(0), requires_grad=False)
-        self.slot_ids = dict()
-        self.requestable_slot_ids = dict()
-        self.informable_slot_ids = dict()
-        self.domain_ids = dict()
+        if not hasattr(self.config, 'num_slots'):
+            self.config.num_slots = 1
+        self.slot_embeddings = Parameter(torch.zeros(self.config.num_slots, self.config.max_candidate_len,
+                                                     self.config.hidden_size), requires_grad=False)
+        if not hasattr(self.config, 'slot_ids'):
+            self.config.slot_ids = dict()
+            self.config.requestable_slot_ids = dict()
+            self.config.informable_slot_ids = dict()
+            self.config.domain_ids = dict()
+        if not hasattr(self.config, 'num_values'):
+            self.config.num_values = dict()
+        for slot in self.config.slot_ids:
+            if slot not in self.config.num_values:
+                self.config.num_values[slot] = 1
+            setattr(self, slot + '_value_embeddings', Parameter(torch.zeros(self.config.num_values[slot],
+                                                                            self.config.max_candidate_len,
+                                                                            self.config.hidden_size),
+                                                                requires_grad=False))
 
         # Matching network similarity measure
         if config.distance_measure == 'cosine':
@@ -229,19 +251,12 @@ class SetSUMBTHead(Module):
             raise NameError('NotImplemented')
 
         # User goal prediction loss function
-        if config.loss_function == 'crossentropy':
-            self.loss = CrossEntropyLoss(ignore_index=-1)
-        elif config.loss_function == 'bayesianmatching':
-            self.loss = BayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
-        elif config.loss_function == 'labelsmoothing':
-            self.loss = LabelSmoothingLoss(ignore_index=-1, label_smoothing=config.label_smoothing)
-        elif config.loss_function == 'distillation':
-            self.loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
-            self.temp = 1.0
-        elif config.loss_function == 'distribution_distillation':
-            self.loss = RKLDirichletMediatorLoss(ignore_index=-1)
-        else:
-            raise NameError('NotImplemented')
+        loss_args = {'ignore_index': -1,
+                     'kl_scaling_factor': config.to_dict().get('kl_scaling_factor', 0.0),
+                     'label_smoothing': config.to_dict().get('label_smoothing', 0.0),
+                     'ensemble_smoothing': config.to_dict().get('ensemble_smoothing', 0.0)}
+        self.loss = loss.load(config.loss_function)(**loss_args)
+        self.temp = 1.0
 
         # Intent and domain prediction heads
         if config.predict_actions:
@@ -253,26 +268,10 @@ class SetSUMBTHead(Module):
             self.request_weight = float(self.config.user_request_loss_weight)
             self.general_act_weight = float(self.config.user_general_act_loss_weight)
             self.active_domain_weight = float(self.config.active_domain_loss_weight)
-            if config.loss_function == 'crossentropy':
-                self.request_loss = BCEWithLogitsLoss()
-                self.general_act_loss = CrossEntropyLoss(ignore_index=-1)
-                self.active_domain_loss = BCEWithLogitsLoss()
-            elif config.loss_function == 'labelsmoothing':
-                self.request_loss = BinaryLabelSmoothingLoss(label_smoothing=config.label_smoothing)
-                self.general_act_loss = LabelSmoothingLoss(ignore_index=-1, label_smoothing=config.label_smoothing)
-                self.active_domain_loss = BinaryLabelSmoothingLoss(label_smoothing=config.label_smoothing)
-            elif config.loss_function == 'bayesianmatching':
-                self.request_loss = BinaryBayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
-                self.general_act_loss = BayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
-                self.active_domain_loss = BinaryBayesianMatchingLoss(ignore_index=-1, lamb=config.kl_scaling_factor)
-            elif config.loss_function == 'distillation':
-                self.request_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
-                self.general_act_loss = KLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
-                self.active_domain_loss = BinaryKLDistillationLoss(ignore_index=-1, lamb=config.ensemble_smoothing)
-            elif config.loss_function == 'distribution_distillation':
-                self.request_loss = BinaryRKLDirichletMediatorLoss(ignore_index=-1)
-                self.general_act_loss = RKLDirichletMediatorLoss(ignore_index=-1)
-                self.active_domain_loss = BinaryRKLDirichletMediatorLoss(ignore_index=-1)
+
+            self.request_loss = loss.load(config.loss_function, binary=True)(**loss_args)
+            self.general_act_loss = loss.load(config.loss_function)(**loss_args)
+            self.active_domain_loss = loss.load(config.loss_function, binary=True)(**loss_args)
 
     def add_slot_candidates(self, slot_candidates: tuple):
         """
@@ -281,7 +280,7 @@ class SetSUMBTHead(Module):
         the request indicator is false the slot is not requestable.
 
         Args:
-            slot_candidates: Tuple containing slot embedding, informable value embeddings and a request indicator
+            slot_candidates: Tuples of slot embedding, informable value embeddings and request indicator
         """
         if self.slot_embeddings.size(0) != 0:
             embeddings = self.slot_embeddings.detach()
@@ -289,28 +288,33 @@ class SetSUMBTHead(Module):
             embeddings = torch.zeros(0)
 
         for slot in slot_candidates:
-            if slot in self.slot_ids:
-                index = self.slot_ids[slot]
+            if slot in self.config.slot_ids:
+                index = self.config.slot_ids[slot]
                 embeddings[index, :] = slot_candidates[slot][0]
             else:
                 index = embeddings.size(0)
                 emb = slot_candidates[slot][0].unsqueeze(0).to(embeddings.device)
                 embeddings = torch.cat((embeddings, emb), 0)
-                self.slot_ids[slot] = index
-                setattr(self, slot + '_value_embeddings', Variable(torch.zeros(0), requires_grad=False))
+                self.config.slot_ids[slot] = index
+                self.config.num_values[slot] = 1
+                setattr(self, slot + '_value_embeddings', Parameter(torch.zeros(self.config.num_values[slot],
+                                                                                self.config.max_candidate_len,
+                                                                                self.config.hidden_size),
+                                                                    requires_grad=False))
             # Add slot to relevant requestable and informable slot lists
             if slot_candidates[slot][2]:
-                self.requestable_slot_ids[slot] = index
+                self.config.requestable_slot_ids[slot] = index
             if slot_candidates[slot][1] is not None:
-                self.informable_slot_ids[slot] = index
+                self.config.informable_slot_ids[slot] = index
 
             domain = slot.split('-', 1)[0]
-            if domain not in self.domain_ids:
-                self.domain_ids[domain] = []
-            self.domain_ids[domain].append(index)
-            self.domain_ids[domain] = list(set(self.domain_ids[domain]))
+            if domain not in self.config.domain_ids:
+                self.config.domain_ids[domain] = []
+            self.config.domain_ids[domain].append(index)
+            self.config.domain_ids[domain] = list(set(self.config.domain_ids[domain]))
 
-        self.slot_embeddings = Variable(embeddings, requires_grad=False)
+        self.config.num_slots = embeddings.size(0)
+        self.slot_embeddings = Parameter(embeddings, requires_grad=False)
 
     def add_value_candidates(self, slot: str, value_candidates: torch.Tensor, replace: bool = False):
         """
@@ -319,7 +323,7 @@ class SetSUMBTHead(Module):
         Args:
             slot: Slot name
             value_candidates: Value candidate embeddings
-            replace: If true existing value candidates are replaced
+            replace: Replace existing value candidates
         """
         embeddings = getattr(self, slot + '_value_embeddings')
 
@@ -328,7 +332,8 @@ class SetSUMBTHead(Module):
         else:
             embeddings = torch.cat((embeddings, value_candidates.to(embeddings.device)), 0)
 
-        setattr(self, slot + '_value_embeddings', embeddings)
+        self.config.num_values[slot] = embeddings.size(0)
+        setattr(self, slot + '_value_embeddings', Parameter(embeddings, requires_grad=False))
 
     def forward(self,
                 turn_embeddings: torch.Tensor,
@@ -344,20 +349,20 @@ class SetSUMBTHead(Module):
                 calculate_state_mutual_info: bool = False):
         """
         Args:
-            turn_embeddings: Token embeddings in the current turn
-            turn_pooled_representation: Pooled representation of the current dialogue turn
-            attention_mask: Padding mask for the current dialogue turn
-            batch_size: Number of dialogues in the batch
-            dialogue_size: Number of turns in each dialogue
-            hidden_state: Latent internal dialogue belief state
-            state_labels: Dialogue state labels
-            request_labels: User request action labels
-            active_domain_labels: Current active domain labels
-            general_act_labels: General user action labels
-            calculate_state_mutual_info: Return mutual information in the dialogue state
+            turn_embeddings: Turn embeddings for dialogue turns
+            turn_pooled_representation: Turn pooled representation for dialogue turns
+            attention_mask: Attention mask for dialogue turns
+            batch_size: Batch size
+            dialogue_size: Number of turns in dialogue
+            hidden_state: RNN Hidden state / Latent Belief State for dialogue turns
+            state_labels: State labels for dialogue turns
+            request_labels: Request labels for dialogue turns
+            active_domain_labels: Active domain labels for dialogue turns
+            general_act_labels: General action labels for dialogue turns
+            calculate_state_mutual_info: Calculate state mutual information
 
         Returns:
-            out: Tuple containing loss, predictive distributions, model statistics and state mutual information
+            output: Model output containing loss, state, request, active domain predictions, etc.
         """
         hidden_size = turn_embeddings.size(-1)
         # Initialise loss
@@ -432,7 +437,7 @@ class SetSUMBTHead(Module):
         if self.config.predict_actions:
             # User request prediction
             request_probs = dict()
-            for slot, slot_id in self.requestable_slot_ids.items():
+            for slot, slot_id in self.config.requestable_slot_ids.items():
                 request_logits = self.request_gate(belief_embedding[:, :, slot_id, :])
 
                 # Store output probabilities
@@ -441,7 +446,7 @@ class SetSUMBTHead(Module):
                 request_logits[batches, dialogues] = 0.0
                 request_probs[slot] = torch.sigmoid(request_logits)
 
-                if request_labels is not None:
+                if request_labels is not None and slot in request_labels:
                     # Compute request gate loss
                     request_logits = request_logits.reshape(-1)
                     if self.config.loss_function == 'distillation':
@@ -457,7 +462,7 @@ class SetSUMBTHead(Module):
 
             # Active domain prediction
             active_domain_probs = dict()
-            for domain, slot_ids in self.domain_ids.items():
+            for domain, slot_ids in self.config.domain_ids.items():
                 belief = belief_embedding[:, :, slot_ids, :]
                 if len(slot_ids) > 1:
                     # SqrtN reduction across all slots within a domain
@@ -490,7 +495,7 @@ class SetSUMBTHead(Module):
         belief_state_probs = dict()
         belief_state_mutual_info = dict()
         belief_state_stats = dict()
-        for slot, slot_id in self.informable_slot_ids.items():
+        for slot, slot_id in self.config.informable_slot_ids.items():
             # Get slot belief embedding and value candidates
             candidate_embeddings = getattr(self, slot + '_value_embeddings').to(turn_embeddings.device)
             belief = belief_embedding[:, :, slot_id, :]
@@ -556,9 +561,17 @@ class SetSUMBTHead(Module):
                     loss += self.loss(logits, state_labels[slot].reshape(-1))
 
         # Return model outputs
-        out = belief_state_probs, request_probs, active_domain_probs, general_act_probs, hidden_state
+        output = SetSUMBTOutput(belief_state=belief_state_probs,
+                                request_probabilities=request_probs,
+                                active_domain_probabilities=active_domain_probs,
+                                general_act_probabilities=general_act_probs,
+                                hidden_state=hidden_state,
+                                loss=None,
+                                belief_state_summary=None,
+                                belief_state_mutual_information=None)
         if state_labels is not None or request_labels is not None:
-            out = (loss,) + out + (belief_state_stats,)
+            output.loss = loss
+            output.belief_state_summary = belief_state_stats
         if calculate_state_mutual_info:
-            out = out + (belief_state_mutual_info,)
-        return out
+            output.belief_state_mutual_information = belief_state_mutual_info
+        return output

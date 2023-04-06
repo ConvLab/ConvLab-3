@@ -17,7 +17,7 @@
 
 
 import torch
-from torch.nn import Softmax, Module, CrossEntropyLoss
+from torch.nn import Module
 from torch.nn.functional import kl_div
 
 
