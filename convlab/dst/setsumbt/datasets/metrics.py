@@ -22,9 +22,8 @@ import torch
 from transformers.utils import ModelOutput
 from matplotlib import pyplot as plt
 
-from convlab.util import load_dataset
-from convlab.util import load_dst_data
-from convlab.dst.setsumbt.datasets.value_maps import VALUE_MAP, QUANTITIES
+from convlab.util import load_dataset, load_dst_data
+from convlab.dst.setsumbt.datasets.utils import clean_states
 
 
 class Metrics(ModelOutput):
@@ -106,76 +105,13 @@ class JointGoalAccuracy:
         Returns:
             dict: The cleaned state.
         """
-        clean_state = dict()
-        for domain, subset in state.items():
-            clean_state[domain] = {}
-            for slot, value in subset.items():
-                value = value.split('|')
 
-                # Map values using value_map
-                for old, new in VALUE_MAP.items():
-                    value = [val.replace(old, new) for val in value]
-                value = '|'.join(value)
-
-                # Map dontcare to "do not care" and empty to 'none'
-                value = value.replace('dontcare', 'do not care')
-                value = value if value else 'none'
-
-                # Map quantity values to the integer quantity value
-                if 'people' in slot or 'duration' in slot or 'stay' in slot:
-                    try:
-                        if value not in ['do not care', 'none']:
-                            value = int(value)
-                            value = str(value) if value < 10 else QUANTITIES[-1]
-                    except:
-                        value = value
-                # Map time values to the most appropriate value in the standard time set
-                elif 'time' in slot or 'leave' in slot or 'arrive' in slot:
-                    try:
-                        if value not in ['do not care', 'none']:
-                            # Strip after/before from time value
-                            value = value.replace('after ', '').replace('before ', '')
-                            # Extract hours and minutes from different possible formats
-                            if ':' not in value and len(value) == 4:
-                                h, m = value[:2], value[2:]
-                            elif len(value) == 1:
-                                h = int(value)
-                                m = 0
-                            elif 'pm' in value:
-                                h = int(value.replace('pm', '')) + 12
-                                m = 0
-                            elif 'am' in value:
-                                h = int(value.replace('pm', ''))
-                                m = 0
-                            elif ':' in value:
-                                h, m = value.split(':')
-                            elif ';' in value:
-                                h, m = value.split(';')
-                            # Map to closest 5 minutes
-                            if int(m) % 5 != 0:
-                                m = round(int(m) / 5) * 5
-                                h = int(h)
-                                if m == 60:
-                                    m = 0
-                                    h += 1
-                                if h >= 24:
-                                    h -= 24
-                            # Set in standard 24 hour format
-                            h, m = int(h), int(m)
-                            value = '%02i:%02i' % (h, m)
-                    except:
-                        value = value
-                # Map boolean slots to yes/no value
-                elif 'parking' in slot or 'internet' in slot:
-                    if value not in ['do not care', 'none']:
-                        if value == 'free':
-                            value = 'yes'
-                        elif True in [v in value.lower() for v in ['yes', 'no']]:
-                            value = [v for v in ['yes', 'no'] if v in value][0]
-
-                value = value if value != 'none' else ''
-
-                clean_state[domain][slot] = value
+        turns = [{'dialogue_acts': list(),
+                  'state': state}]
+        turns = clean_states(turns)
+        clean_state = turns[0]['state']
+        clean_state = {domain: {slot: value if value != 'none' else '' for slot, value in domain_state.items()}
+                       for domain, domain_state in clean_state.items()}
 
         return clean_state
 
