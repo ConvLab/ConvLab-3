@@ -110,6 +110,8 @@ class JointGoalAccuracy:
                   'state': state}]
         turns = clean_states(turns)
         clean_state = turns[0]['state']
+        clean_state = {domain: {slot: value if value != 'none' else '' for slot, value in domain_state.items()}
+                       for domain, domain_state in clean_state.items()}
 
         return clean_state
 
