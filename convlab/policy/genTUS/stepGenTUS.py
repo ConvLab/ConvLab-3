@@ -223,6 +223,11 @@ class UserActionPolicy(Policy):
         # get slot
         slot = self._get_slot(
             model_input, self.seq[:1, :pos], intent["token_name"], domain["token_name"], mode)
+        if "book" in slot["token_name"]:
+            pos = self._update_seq(self.token_map.get_id('book'), pos)
+            slot = self._get_book_slot(
+                model_input, self.seq[:1, :pos], intent["token_name"], domain["token_name"], mode)
+            slot["token_name"] = "book" + slot["token_name"]
         pos = self._update_seq(slot["token_id"], pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
@@ -251,6 +256,12 @@ class UserActionPolicy(Policy):
             model_input, generated_so_far)
         is_mentioned = self.vector.is_mentioned(domain)
         return self.kg.get_slot(next_token_logits, intent, domain, mode, is_mentioned)
+
+    def _get_book_slot(self, model_input, generated_so_far, intent, domain, mode="max"):
+        next_token_logits = self.model.get_next_token_logits(
+            model_input, generated_so_far)
+        is_mentioned = self.vector.is_mentioned(domain)
+        return self.kg.get_book_slot(next_token_logits, intent, domain, mode, is_mentioned)
 
     def _get_value(self, model_input, generated_so_far, intent, domain, slot, mode="max"):
         next_token_logits = self.model.get_next_token_logits(

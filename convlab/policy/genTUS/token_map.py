@@ -14,11 +14,12 @@ class tokenMap:
             'start_json': '{"action": [',   # 49643, 10845, 7862, 646
             'start_act': '["',              # 49329
             'sep_token': '", "',            # 1297('",'), 22
-            'sep_act': '"], ["',               # 49177
+            'sep_act': '"], ["',            # 49177
             'end_act': '"]], "',            # 42248, 7479, 22
             'start_text': 'text": "',       # 29015, 7862, 22
-            'end_json': '}',                 # 24303
-            'end_json_2': '"}'                 # 48805
+            'end_json': '}',                # 24303
+            'end_json_2': '"}',             # 48805
+            'book': 'book'                  # 6298
         }
         if only_action:
             self.format_tokens['end_act'] = '"]]}'

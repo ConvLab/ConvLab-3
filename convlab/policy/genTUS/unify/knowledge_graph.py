@@ -83,7 +83,7 @@ class KnowledgeGraph:
 
         if slot not in self.user_goal[domain]:
             self.user_goal[domain][slot] = []
-            self.add_token(domain, "slot")
+            self.add_token(slot, "slot")
 
         if value not in self.user_goal[domain][slot]:
             value = json.dumps(str(value))[1:-1]
@@ -201,6 +201,17 @@ class KnowledgeGraph:
                 candidate_type="slot", intent=intent, domain=domain, is_mentioned=is_mentioned)
             token_map = self._get_max_domain_token(
                 outputs=outputs, candidates=slot_list, map_type="slot", mode=mode)
+
+        return token_map
+
+    def get_book_slot(self, outputs, intent, domain, mode="max", is_mentioned=False):
+        slot_list = self.candidate(
+            candidate_type="slot", intent=intent, domain=domain, is_mentioned=is_mentioned)
+        book_slot_list = [s.replace("book", "")
+                          for s in slot_list if 'book' in s]
+
+        token_map = self._get_max_domain_token(
+            outputs=outputs, candidates=book_slot_list, map_type="slot", mode=mode)
 
         return token_map
 

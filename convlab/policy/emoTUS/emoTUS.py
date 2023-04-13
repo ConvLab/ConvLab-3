@@ -47,7 +47,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.init_session()
 
     def predict(self, sys_act, mode="max", allow_general_intent=True, emotion=None):
-        # TODO emotion
         allow_general_intent = False
         self.model.eval()
 
@@ -336,6 +335,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         return self.kg.get_sentiment(next_token_logits, mode)
 
     def _get_emotion(self, model_input, generated_so_far, mode="max", emotion_mode="normal", sentiment=None):
+        mode = "max"  # emotion is always max
         next_token_logits = self.model.get_next_token_logits(
             model_input, generated_so_far)
         return self.kg.get_emotion(next_token_logits, mode, emotion_mode, sentiment)
@@ -413,6 +413,8 @@ class UserPolicy(Policy):
                  **kwargs):
         # self.config = config
         print("emoTUS model checkpoint: ", model_checkpoint)
+        if sample:
+            print("EmoUS will sample action, but emotion is always max")
         if not os.path.exists(os.path.dirname(model_checkpoint)):
             os.makedirs(os.path.dirname(model_checkpoint))
             model_downloader(os.path.dirname(model_checkpoint),

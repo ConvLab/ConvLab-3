@@ -20,7 +20,8 @@ class tokenMap:
             'end_act': '"]], "',
             'start_text': 'text": "',
             'end_json': '}',
-            'end_json_2': '"}'
+            'end_json_2': '"}',
+            'book': 'book'
         }
 
         if only_action:
