@@ -156,7 +156,7 @@ class Analyzer:
                     break
 
             task_success = sess.evaluator.task_success()
-            task_complete = sess.user_agent.policy.policy.goal.task_complete()
+            task_complete = sess.evaluator.complete
             book_rate = sess.evaluator.book_rate()
             stats = sess.evaluator.inform_F1()
 
