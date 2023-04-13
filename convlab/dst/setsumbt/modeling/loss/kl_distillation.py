@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2022 DSML Group, Heinrich Heine University, Düsseldorf
+# Copyright 2023 DSML Group, Heinrich Heine University, Düsseldorf
 # Authors: Carel van Niekerk (niekerk@hhu.de)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""KL Divergence Ensemble Distillation loss"""
+"""KL Divergence Ensemble Distillation loss (See https://arxiv.org/pdf/1503.02531.pdf for details)"""
 
 import torch
 from torch.nn import Module
@@ -23,7 +23,7 @@ from torch.nn.functional import kl_div
 class KLDistillationLoss(Module):
     """Ensemble Distillation loss using KL Divergence (https://arxiv.org/pdf/1503.02531.pdf) implementation"""
 
-    def __init__(self, lamb: float = 1e-4, ignore_index: int = -1) -> Module:
+    def __init__(self, ensemble_smoothing: float = 1e-4, ignore_index: int = -1) -> Module:
         """
         Args:
             lamb (float): Target smoothing parameter
@@ -31,7 +31,7 @@ class KLDistillationLoss(Module):
         """
         super(KLDistillationLoss, self).__init__()
 
-        self.lamb = lamb
+        self.lamb = ensemble_smoothing
         self.ignore_index = ignore_index
     
     def forward(self, inputs: torch.Tensor, targets: torch.Tensor, temp: float = 1.0) -> torch.Tensor:
@@ -71,13 +71,13 @@ class KLDistillationLoss(Module):
 class BinaryKLDistillationLoss(KLDistillationLoss):
     """Binary Ensemble Distillation loss using KL Divergence (https://arxiv.org/pdf/1503.02531.pdf) implementation"""
 
-    def __init__(self, lamb: float = 1e-4, ignore_index: int = -1) -> Module:
+    def __init__(self, ensemble_smoothing: float = 1e-4, ignore_index: int = -1) -> Module:
         """
         Args:
             lamb (float): Target smoothing parameter
             ignore_index (int): Specifies a target value that is ignored and does not contribute to the input gradient.
         """
-        super(BinaryKLDistillationLoss, self).__init__(lamb, ignore_index)
+        super(BinaryKLDistillationLoss, self).__init__(ensemble_smoothing, ignore_index)
 
     def forward(self, inputs: torch.Tensor, targets: torch.Tensor, temp: float = 1.0) -> torch.Tensor:
         """
@@ -101,4 +101,4 @@ class BinaryKLDistillationLoss(KLDistillationLoss):
         targets = targets.unsqueeze(-1)
         targets = torch.cat((1 - targets, targets), -1)
 
-        return super().forward(input, targets, temp)
+        return super().forward(inputs, targets, temp)
