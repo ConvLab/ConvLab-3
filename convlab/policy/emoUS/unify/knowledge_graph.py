@@ -19,7 +19,7 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
 
         if use_sentiment:
             data_sentiment = json.load(
-                open("convlab/policy/emoTUS/sentiment.json"))
+                open("convlab/policy/emoUS/sentiment.json"))
             self.kg_map = {"sentiment": tokenMap(tokenizer=self.tokenizer)}
             self.sentiment = [""]*len(data_sentiment)
             for sentiment, index in data_sentiment.items():
@@ -28,14 +28,14 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
                 self.kg_map["sentiment"].add_token(sentiment, sentiment)
                 self.kg_map[sentiment] = tokenMap(tokenizer=self.tokenizer)
             self.sent2emo = json.load(
-                open("convlab/policy/emoTUS/sent2emo.json"))
+                open("convlab/policy/emoUS/sent2emo.json"))
             for sent in self.sent2emo:
                 for emo in self.sent2emo[sent]:
                     self.kg_map[sent].add_token(emo, emo)
 
         else:
             data_emotion = json.load(
-                open("convlab/policy/emoTUS/emotion.json"))
+                open("convlab/policy/emoUS/emotion.json"))
             self.emotion = [""]*len(data_emotion)
             for emotion, index in data_emotion.items():
                 self.emotion[index] = emotion

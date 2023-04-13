@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-result_dir = "convlab/policy/emoTUS/result"
+result_dir = "convlab/policy/emoUS/result"
 
 
 def arg_parser():
@@ -271,7 +271,7 @@ def loop(s0, s1, u1):
 
 def dict2csv(data):
     r = {}
-    emotion = json.load(open("convlab/policy/emoTUS/emotion.json"))
+    emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
     for act, value in data.items():
         temp = [0]*(len(emotion)+1)
         for emo, count in value.items():

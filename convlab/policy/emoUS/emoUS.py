@@ -3,13 +3,13 @@ import json
 
 import torch
 
-from convlab.policy.emoTUS.token_map import tokenMap
-from convlab.policy.emoTUS.unify.knowledge_graph import KnowledgeGraph
+from convlab.policy.emoUS.token_map import tokenMap
+from convlab.policy.emoUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.stepGenTUS import \
     UserActionPolicy as GenTUSUserActionPolicy
 from convlab.policy.policy import Policy
 from convlab.util.custom_util import model_downloader
-from convlab.policy.emoTUS.unify.Goal import Goal
+from convlab.policy.emoUS.unify.Goal import Goal
 
 DEBUG = False
 
@@ -39,7 +39,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             dataset="emowoz",
             use_sentiment=self.use_sentiment,
             weight=weight)
-        data_emotion = json.load(open("convlab/policy/emoTUS/emotion.json"))
+        data_emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
         self.emotion_list = [""]*len(data_emotion)
         for emotion, index in data_emotion.items():
             self.emotion_list[index] = emotion
@@ -406,13 +406,13 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
 class UserPolicy(Policy):
     def __init__(self,
-                 model_checkpoint="convlab/policy/emoTUS/unify/default/EmoUS_default",
+                 model_checkpoint="convlab/policy/emoUS/unify/default/EmoUS_default",
                  mode="language",
                  sample=False,
                  action_penalty=False,
                  **kwargs):
         # self.config = config
-        print("emoTUS model checkpoint: ", model_checkpoint)
+        print("emoUS model checkpoint: ", model_checkpoint)
         if sample:
             print("EmoUS will sample action, but emotion is always max")
         if not os.path.exists(os.path.dirname(model_checkpoint)):
@@ -467,7 +467,7 @@ if __name__ == "__main__":
     set_seed(0)
     # Test semantic level behaviour
     usr_policy = UserPolicy(
-        # model_checkpoint, # default location = convlab/policy/emoTUS/unify/default/EmoUS_default
+        # model_checkpoint, # default location = convlab/policy/emoUS/unify/default/EmoUS_default
         mode="semantic",
         sample=True,
         use_sentiment=use_sentiment,

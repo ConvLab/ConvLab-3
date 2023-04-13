@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 
 from tqdm import tqdm
 
-from convlab.policy.emoTUS.unify.Goal import Goal, emotion_info
+from convlab.policy.emoUS.unify.Goal import Goal, emotion_info
 from convlab.policy.genTUS.unify.build_data import \
     DataBuilder as GenTUSDataBuilder
 from convlab.policy.genTUS.unify.Goal import transform_data_act
@@ -37,15 +37,15 @@ class DataBuilder(GenTUSDataBuilder):
         self.emotion_only = kwargs.get("emotion_only", False)
 
         self.emotion = {}
-        for emotion, index in json.load(open("convlab/policy/emoTUS/emotion.json")).items():
+        for emotion, index in json.load(open("convlab/policy/emoUS/emotion.json")).items():
             self.emotion[int(index)] = emotion
 
         if use_sentiment:
             self.sentiment = {}
-            for sentiment, index in json.load(open("convlab/policy/emoTUS/sentiment.json")).items():
+            for sentiment, index in json.load(open("convlab/policy/emoUS/sentiment.json")).items():
                 self.sentiment[int(index)] = sentiment
             self.sent2emo = json.load(
-                open("convlab/policy/emoTUS/sent2emo.json"))
+                open("convlab/policy/emoUS/sent2emo.json"))
             # TODO check excited distribution
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
@@ -154,7 +154,7 @@ TODO
 if __name__ == "__main__":
     args = arg_parser()
 
-    base_name = "convlab/policy/emoTUS/unify/data"
+    base_name = "convlab/policy/emoUS/unify/data"
     dir_name = f"{args.dataset}_{args.dial_ids_order}_{args.split2ratio}"
 
     use_sentiment = args.use_sentiment

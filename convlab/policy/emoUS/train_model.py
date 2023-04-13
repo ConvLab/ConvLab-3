@@ -152,7 +152,7 @@ class TrainerHelper:
         self.tokenizer = tokenizer
         self.max_input_length = max_input_length
         self.max_target_length = max_target_length
-        self.base_name = "convlab/policy/emoTUS"
+        self.base_name = "convlab/policy/emoUS"
         self.dir_name = ""
 
     def _get_data_folder(self, model_type, data_name, dial_ids_order=0, split2ratio=1):
@@ -186,7 +186,7 @@ class TrainerHelper:
 
     def remove_dialmage_action(self):
         self.dir_name = "fine_tune"
-        folder = "convlab/policy/emoTUS/unify/data"
+        folder = "convlab/policy/emoUS/unify/data"
         data_name = {
             "emowoz": "EmoUS_emowoz_0_1",
             "dialmage": "EmoUS_dialmage_0_1_emotion_only"}

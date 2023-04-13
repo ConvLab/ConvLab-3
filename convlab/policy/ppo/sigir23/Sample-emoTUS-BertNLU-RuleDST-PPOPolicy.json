@@ -42,9 +42,9 @@
     "dst_usr": {},
     "policy_usr": {
         "RulePolicy": {
-            "class_path": "convlab.policy.emoTUS.emoTUS.UserPolicy",
+            "class_path": "convlab.policy.emoUS.emoUS.UserPolicy",
             "ini_params": {
-                "model_checkpoint": "convlab/policy/emoTUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17",
+                "model_checkpoint": "convlab/policy/emoUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17",
                 "character": "usr",
                 "mode": "language",
                 "only_action": false,
