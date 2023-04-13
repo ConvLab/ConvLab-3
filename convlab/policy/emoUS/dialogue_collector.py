@@ -95,7 +95,7 @@ if __name__ == "__main__":
                             num_goals=args.num)
     data = {"config": json.load(open(args.config)),
             "conversation": conversation}
-    folder_name = os.path.join("convlab/policy/emoTUS", "conversation")
+    folder_name = os.path.join("convlab/policy/emoUS", "conversation")
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     json.dump(data,

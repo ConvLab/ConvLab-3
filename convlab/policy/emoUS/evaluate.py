@@ -7,8 +7,6 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import torch
 from datasets import load_metric
-# from convlab.policy.genTUS.pg.stepGenTUSagent import \
-#     stepGenTUSPG as UserPolicy
 from sklearn import metrics
 from tqdm import tqdm
 
