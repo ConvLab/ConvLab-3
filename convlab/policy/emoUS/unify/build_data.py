@@ -143,14 +143,6 @@ class DataBuilder(GenTUSDataBuilder):
         return json.dumps(out_str)
 
 
-"""
-TODO
-1. add sentiment in the output str
-2. check exciting/fearful in user goal (domain)
-3. add impolite (user info?)
-"""
-
-
 if __name__ == "__main__":
     args = arg_parser()
 
