@@ -464,7 +464,7 @@ if __name__ == "__main__":
     import time
 
     use_sentiment, emotion_mid = False, False
-    set_seed(0)
+    set_seed(100)
     # Test semantic level behaviour
     usr_policy = UserPolicy(
         # model_checkpoint, # default location = convlab/policy/emoUS/unify/default/EmoUS_default
@@ -476,15 +476,15 @@ if __name__ == "__main__":
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
     usr.init_session()
+    usr.init_session()
     print(usr.policy.get_goal())
     start = time.time()
-    print(usr.response([]), usr.policy.get_emotion())
+
     # print(usr.policy.policy.goal.status)
-    print(usr.response([["inform", "restaurant", "area", "centre"],
-                        ["request", "restaurant", "food", "?"]]),
+    print(usr.response([['inform', 'train', 'day', 'saturday']]),
           usr.policy.get_emotion())
     # print(usr.policy.policy.goal.status)
-    print(usr.response([["request", "restaurant", "price range", "?"]]),
+    print(usr.response([]),
           usr.policy.get_emotion())
     end = time.time()
     print("-"*50)

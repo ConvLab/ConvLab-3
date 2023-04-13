@@ -11,7 +11,7 @@ from sklearn import metrics
 from tqdm import tqdm
 
 from convlab.nlg.evaluate import fine_SER
-from convlab.policy.emoTUS.emoTUS import UserActionPolicy
+from convlab.policy.emoUS.emoUS import UserActionPolicy
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -72,13 +72,13 @@ class Evaluator:
 
         self.emotion_list = []
 
-        for emotion in json.load(open("convlab/policy/emoTUS/emotion.json")):
+        for emotion in json.load(open("convlab/policy/emoUS/emotion.json")):
             self.emotion_list.append(emotion)
             self.r[f"{emotion}_acts"] = []
             self.r[f"{emotion}_utts"] = []
 
         sent2emo = json.load(
-            open("convlab/policy/emoTUS/sent2emo.json"))
+            open("convlab/policy/emoUS/sent2emo.json"))
         self.emo2sent = {}
         for sent, emotions in sent2emo.items():
             for emo in emotions:
