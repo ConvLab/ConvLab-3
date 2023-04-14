@@ -11,7 +11,7 @@ DATASET = "unify"
 
 class KnowledgeGraph:
     def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="multiwoz21"):
-        print("dataset", dataset)
+        # print("dataset", dataset)
         self.debug = DEBUG
         self.tokenizer = tokenizer
 

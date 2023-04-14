@@ -326,6 +326,7 @@ def main():
                      emotion_mid=args.emotion_mid,
                      weight=args.weight,
                      sample=args.sample)
+    print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
     print("input_file", args.input_file)

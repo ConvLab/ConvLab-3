@@ -98,7 +98,7 @@ class Evaluator:
         if self.sample:
             mode = "sample"
 
-        for dialog in tqdm(in_file['dialog']):
+        for dialog in tqdm(in_file['dialog'][:1]):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
 
@@ -341,6 +341,7 @@ def main():
                      emotion_mid=args.emotion_mid,
                      weight=args.weight,
                      sample=args.sample)
+    print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
     print("input_file", args.input_file)

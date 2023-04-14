@@ -32,7 +32,7 @@ class UserActionPolicy(Policy):
         self.max_in_len = 500
         self.max_out_len = 100 if only_action else 200
         max_act_len = kwargs.get("max_act_len", 2)
-        print("max_act_len", max_act_len)
+        # print("max_act_len", max_act_len)
         self.max_action_len = max_act_len
         if "max_act_len" in kwargs:
             self.max_out_len = 30 * self.max_action_len
