@@ -43,6 +43,8 @@ class Evaluator:
     def __init__(self, model_checkpoint, dataset, model_weight=None, **kwargs):
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
+        self.result_dir = os.path.join(model_checkpoint, "results")
+        os.makedirs(self.result_dir, exist_ok=True)
         self.model_weight = model_weight
         self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M-%S')}"
         self.use_sentiment = kwargs.get("use_sentiment", False)
@@ -151,7 +153,7 @@ class Evaluator:
         if generations["golden"]:
             file_name = generations['golden'] + "_" + file_name
 
-        with open(os.path.join(self.model_checkpoint, file_name), "w") as f:
+        with open(os.path.join(self.result_dir, file_name), "w") as f:
             json.dump(generations, f, indent=2)
 
     def read_generated_result(self, f_eval):
@@ -249,7 +251,7 @@ class Evaluator:
         if not golden_emotion and not golden_action:
             r = emotion_score(x["golden_emotion"],
                               x["gen_emotion"],
-                              self.model_checkpoint)
+                              self.result_dir)
             self.evaluation_result["emotion prediction"]["emotion"] = {}
             self.evaluation_result["emotion prediction"]["emotion"]["macro_f1"] = r["macro_f1"]
             self.evaluation_result["emotion prediction"]["emotion"]["sep_f1"] = {
@@ -264,10 +266,9 @@ class Evaluator:
                                     for emo in self.r["golden_emotion"]]
                 gen_sentiment = [self.emo2sent[emo]
                                  for emo in self.r["gen_emotion"]]
-            r = sentiment_score(
-                golden_sentiment,
-                gen_sentiment,
-                self.model_checkpoint)
+            r = sentiment_score(golden_sentiment,
+                                gen_sentiment,
+                                self.result_dir)
 
             self.evaluation_result["emotion prediction"]["sentiment"] = {}
             self.evaluation_result["emotion prediction"]["sentiment"]["macro_f1"] = r["macro_f1"]
