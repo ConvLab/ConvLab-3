@@ -98,7 +98,7 @@ class Evaluator:
         if self.sample:
             mode = "sample"
 
-        for dialog in tqdm(in_file['dialog'][:1]):
+        for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
 
