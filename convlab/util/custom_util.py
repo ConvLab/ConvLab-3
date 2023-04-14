@@ -169,7 +169,7 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
                             single_domain_goals, allowed_domains)
         goals.append(goal[0])
 
-    if conf['model']['process_num'] == 1:
+    if conf['model']['process_num'] == 1 or save_eval:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
             select_acts, offer_acts, recommend_acts = evaluate(sess,
@@ -331,7 +331,6 @@ def create_env(args, policy_sys):
 
 
 def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
-
     eval_save = {}
     turn_counter_dict = {}
     turn_counter = 0.0
@@ -427,10 +426,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         # print('length of dict ' + str(len(eval_save)))
 
     if save_flag:
-        # print("what are you doing")
-        save_file = open(os.path.join(save_path, 'evaluate_INFO.json'), 'w')
-        json.dump(eval_save, save_file, cls=NumpyEncoder)
-        save_file.close()
+        torch.save(eval_save, os.path.join(save_path, 'evaluate_INFO.pt'))
     # save dialogue_info and clear mem
 
     return task_success['All_user_sim'], task_success['All_evaluator'], task_success['All_evaluator_strict'], \

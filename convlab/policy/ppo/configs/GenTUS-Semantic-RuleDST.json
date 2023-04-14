@@ -1,0 +1,44 @@
+{
+	"model": {
+		"load_path": "convlab/policy/ppo/pretrained_models/mle",
+		"pretrained_load_path": "",
+		"use_pretrained_initialisation": false,
+		"num_train_dialogues": 100,
+		"seed": 0,
+		"epoch": 50,
+		"eval_frequency": 5,
+		"process_num": 1,
+		"num_eval_dialogues": 500,
+		"sys_semantic_to_usr": false
+	},
+	"vectorizer_sys": {
+		"uncertainty_vector_mul": {
+			"class_path": "convlab.policy.vector.vector_binary.VectorBinary",
+			"ini_params": {
+				"use_masking": true,
+				"manually_add_entity_names": true,
+				"seed": 0
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"RuleDST": {
+			"class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
+			"ini_params": {}
+		}
+	},
+	"sys_nlg": {},
+	"nlu_usr": {},
+	"dst_usr": {},
+	"policy_usr": {
+		"GenTUS": {
+			"class_path": "convlab.policy.genTUS.stepGenTUS.UserPolicy",
+			"ini_params": {
+				"model_checkpoint": "convlab/policy/genTUS/unify/experiments/multiwoz21_0_1.0",
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {}
+}

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='convlab',
-    version='3.0.0',
+    version='3.0.1',
     packages=find_packages(),
     license='Apache',
     description='An Open-source Dialog System Toolkit',

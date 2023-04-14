@@ -1,0 +1,12 @@
+{
+  "model_type": "Ensemble-SetSUMBT",
+  "dataset": "multiwoz21",
+  "ensemble_size": 5,
+  "data_sampling_size": 7500,
+  "no_action_prediction": false,
+  "model_name_or_path": "roberta-base",
+  "candidate_embedding_model_name": "roberta-base",
+  "train_batch_size": 3,
+  "dev_batch_size": 3,
+  "test_batch_size": 3
+}

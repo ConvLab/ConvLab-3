@@ -13,21 +13,15 @@ def create_description_dicts(name='multiwoz21'):
     default_state = ontology['state']
     domains = list(ontology['domains'].keys())
 
-    if name == "multiwoz21":
+    if name == "multiwoz21" or name == "crosswoz":
         db = load_database(name)
         db_domains = db.domains
     else:
         db = None
         db_domains = []
 
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    voc_file = os.path.join(root_dir, f'vector/action_dicts/{name}_VectorBinary/sys_da_voc.txt')
-    voc_opp_file = os.path.join(root_dir, f'vector/action_dicts/{name}_VectorBinary/user_da_voc.txt')
-
-    with open(voc_file) as f:
-        da_voc = f.read().splitlines()
-    with open(voc_opp_file) as f:
-        da_voc_opp = f.read().splitlines()
+    da_voc = vector.da_voc
+    da_voc_opp = vector.da_voc_opp
 
     description_dict_semantic = {}
 
@@ -47,13 +41,15 @@ def create_description_dicts(name='multiwoz21'):
         description_dict_semantic[f"general-{domain}"] = f"domain {domain}"
 
     for act in da_voc:
-        domain, intent, slot, value = act.split("-")
+        domain, intent, slot, value = act
         domain = domain.lower()
+        act = "_".join(act)
         description_dict_semantic["system-"+act.lower()] = f"last system act {domain} {intent} {slot} {value}"
 
     for act in da_voc_opp:
-        domain, intent, slot, value = [item.lower() for item in act.split("-")]
+        domain, intent, slot, value = [item.lower() for item in act]
         domain = domain.lower()
+        act = "_".join(act)
         description_dict_semantic["user-"+act.lower()] = f"user act {domain} {intent} {slot} {value}"
 
     root_dir = os.path.dirname(os.path.abspath(__file__))

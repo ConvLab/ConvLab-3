@@ -62,7 +62,7 @@ def TransformerForDST(parent_name):
     class TransformerForDST(PARENT_CLASSES[parent_name]):
         def __init__(self, config):
             assert config.model_type in PARENT_CLASSES
-            assert self.__class__.__bases__[0] in MODEL_CLASSES
+            # assert self.__class__.__bases__[0] in MODEL_CLASSES
             super(TransformerForDST, self).__init__(config)
             self.model_type = config.model_type
             self.slot_list = config.dst_slot_list
@@ -82,7 +82,7 @@ def TransformerForDST(parent_name):
                 self.refer_index = -1
 
             # Make sure this module has the same name as in the pretrained checkpoint you want to load!
-            self.add_module(self.model_type, MODEL_CLASSES[self.__class__.__bases__[0]](config))
+            self.add_module(self.model_type, MODEL_CLASSES[PARENT_CLASSES[self.model_type]](config))
             if self.model_type == "electra":
                 self.pooler = ElectraPooler(config)
             

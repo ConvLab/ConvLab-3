@@ -1,0 +1,61 @@
+{
+	"model": {
+		"load_path": "",
+		"pretrained_load_path": "",
+		"use_pretrained_initialisation": false,
+		"num_train_dialogues": 100,
+		"seed": 0,
+		"epoch": 50,
+		"eval_frequency": 5,
+		"process_num": 2,
+		"num_eval_dialogues": 500,
+		"sys_semantic_to_usr": true
+	},
+	"vectorizer_sys": {
+		"uncertainty_vector_mul": {
+			"class_path": "convlab.policy.vector.vector_binary.VectorBinary",
+			"ini_params": {
+				"use_masking": false,
+				"manually_add_entity_names": true,
+				"seed": 0
+			}
+		}
+	},
+	"nlu_sys": {},
+	"dst_sys": {
+		"setsumbt-mul": {
+			"class_path": "convlab.dst.setsumbt.tracker.SetSUMBTTracker",
+			"ini_params": {
+				"model_name_or_path": "ConvLab/setsumbt-dst_nlu-multiwoz21-EnD2"
+			}
+		}
+	},
+	"sys_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": false
+			}
+		}
+	},
+	"nlu_usr": {},
+	"dst_usr": {},
+	"policy_usr": {
+		"RulePolicy": {
+			"class_path": "convlab.policy.rule.multiwoz.RulePolicy",
+			"ini_params": {
+				"character": "usr"
+			}
+		}
+	},
+	"usr_nlg": {
+		"TemplateNLG": {
+			"class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+			"ini_params": {
+				"is_user": true,
+				"label_noise": 0.05,
+				"text_noise": 0.0
+			}
+		}
+	}
+}

@@ -37,6 +37,8 @@ from transformers import (
     AutoConfig,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
+    T5ForConditionalGeneration,
+    T5Tokenizer,
     DataCollatorForSeq2Seq,
     HfArgumentParser,
     EarlyStoppingCallback,
@@ -358,22 +360,40 @@ def main():
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
-        cache_dir=model_args.cache_dir,
-        use_fast=model_args.use_fast_tokenizer,
-        truncation_side=model_args.truncation_side,
-        revision=model_args.model_revision,
-        use_auth_token=True if model_args.use_auth_token else None,
-    )
-    model = AutoModelForSeq2SeqLM.from_pretrained(
-        model_args.model_name_or_path,
-        from_tf=bool(".ckpt" in model_args.model_name_or_path),
-        config=config,
-        cache_dir=model_args.cache_dir,
-        revision=model_args.model_revision,
-        use_auth_token=True if model_args.use_auth_token else None,
-    )
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
+            cache_dir=model_args.cache_dir,
+            use_fast=model_args.use_fast_tokenizer,
+            truncation_side=model_args.truncation_side,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+        model = AutoModelForSeq2SeqLM.from_pretrained(
+            model_args.model_name_or_path,
+            from_tf=bool(".ckpt" in model_args.model_name_or_path),
+            config=config,
+            cache_dir=model_args.cache_dir,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+    except:
+        tokenizer = T5Tokenizer.from_pretrained(
+            model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
+            cache_dir=model_args.cache_dir,
+            use_fast=model_args.use_fast_tokenizer,
+            truncation_side=model_args.truncation_side,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
+        model = T5ForConditionalGeneration.from_pretrained(
+            model_args.model_name_or_path,
+            from_tf=bool(".ckpt" in model_args.model_name_or_path),
+            config=config,
+            cache_dir=model_args.cache_dir,
+            revision=model_args.model_revision,
+            use_auth_token=True if model_args.use_auth_token else None,
+        )
 
     model.resize_token_embeddings(len(tokenizer))
 
@@ -612,16 +632,17 @@ def main():
 
     # Predict
     if training_args.do_predict:
-        logger.info("*** Predict ***")
-        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict")
+        file_prefix = os.path.splitext(os.path.basename(data_args.test_file))[0]
+        logger.info(f"*** Predict {file_prefix}***")
+        predict_results = trainer.predict(predict_dataset, metric_key_prefix=file_prefix)
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)
         )
-        metrics["predict_samples"] = min(max_predict_samples, len(predict_dataset))
+        metrics[f"{file_prefix}_samples"] = min(max_predict_samples, len(predict_dataset))
 
-        trainer.log_metrics("predict", metrics)
-        trainer.save_metrics("predict", metrics)
+        trainer.log_metrics(file_prefix, metrics)
+        trainer.save_metrics(file_prefix, metrics)
 
         if trainer.is_world_process_zero():
             if training_args.predict_with_generate:
@@ -629,10 +650,13 @@ def main():
                     predict_results.predictions, skip_special_tokens=True, clean_up_tokenization_spaces=True
                 )
                 predictions = [pred.strip() for pred in predictions]
-                output_prediction_file = os.path.join(training_args.output_dir, "generated_predictions.json")
+                output_prediction_file = os.path.join(training_args.output_dir, f"{file_prefix}_generated_predictions.json")
                 with open(output_prediction_file, "w", encoding='utf-8') as writer:
-                    for sample, pred in zip(raw_datasets["test"], predictions):
-                        sample["predictions"] = pred
+                    for idx, sample in enumerate(raw_datasets["test"]):
+                        if training_args.num_return_sequences > 1:
+                            sample["predictions"] = predictions[idx*training_args.num_return_sequences:(idx+1)*training_args.num_return_sequences]
+                        else:
+                            sample["predictions"] = predictions[idx]
                         writer.write(json.dumps(sample, ensure_ascii=False)+'\n')
 
     kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": data_args.task_name}

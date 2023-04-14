@@ -70,6 +70,10 @@ class VectorNodes(VectorBase):
         if self.filter_state:
             self.kg_info = self.filter_inactive_domains(domain_active_dict)
 
+            # make sure kg is not empty
+            if len(self.kg_info) == 0:
+                self.add_user_greet()
+
         if self.use_mask:
             mask = self.get_mask(domain_active_dict, number_entities_dict)
             for i in range(self.da_dim):
@@ -116,11 +120,12 @@ class VectorNodes(VectorBase):
         feature_type = 'last system act'
         action = state['system_action'] if self.character == 'sys' else state['user_action']
         action = delexicalize_da(action, self.requestable)
-        action = flat_da(action)
+        #action = flat_da(action)
         for da in action:
+            da = tuple(da)
             if da in self.act2vec:
-                domain = da.split('-')[0]
-                description = "system-" + da
+                domain = da[0]
+                description = "system-" + "_".join(da)
                 value = 1.0
                 self.add_graph_node(domain, feature_type, description.lower(), value)
 
@@ -129,12 +134,13 @@ class VectorNodes(VectorBase):
         feature_type = 'user act'
         action = state['user_action'] if self.character == 'sys' else state['system_action']
         opp_action = delexicalize_da(action, self.requestable)
-        opp_action = flat_da(opp_action)
+        #opp_action = flat_da(opp_action)
 
         for da in opp_action:
+            da = tuple(da)
             if da in self.opp2vec:
-                domain = da.split('-')[0]
-                description = "user-" + da
+                domain = da[0]
+                description = "user-" + "_".join(da)
                 value = 1.0
                 self.add_graph_node(domain, feature_type, description.lower(), value)
 
@@ -167,4 +173,15 @@ class VectorNodes(VectorBase):
                 kg_filtered.append(node)
 
         return kg_filtered
+
+    def add_user_greet(self):
+
+        feature_type = 'user act'
+        da = ("general", "greet", "none", "none")
+        if da in self.opp2vec:
+            domain = da[0]
+            description = "user-" + "_".join(da)
+            value = 1.0
+            self.add_graph_node(domain, feature_type, description.lower(), value)
+
 
