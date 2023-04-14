@@ -40,7 +40,7 @@ class Goal:
                json.dumps(self.domain_goals, indent=4) + \
                '\n-----Goal-----'
 
-    def _init_goal_from_data(self, goal=None, goal_generator=None):
+    def _old_goal(self, goal=None, goal_generator=None):
         if not goal and goal_generator:
             goal = ABUS_Goal(goal_generator)
             self.raw_goal = goal.domain_goals
@@ -56,6 +56,10 @@ class Goal:
 
         # else:
         #     print("unknow goal")
+        return goal
+
+    def _init_goal_from_data(self, goal=None, goal_generator=None):
+        goal = self._old_goal(goal, goal_generator)
 
         # be careful of this order
         for domain, intent, slot, value in goal:

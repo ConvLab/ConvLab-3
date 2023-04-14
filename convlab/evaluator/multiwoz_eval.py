@@ -27,8 +27,10 @@ for dom, ref_slots in REF_SYS_DA.items():
 REF_SYS_DA_M['taxi']['phone'] = 'phone'
 REF_SYS_DA_M['taxi']['car'] = 'car type'
 
-reverse_da = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da')
-reverse_da_slot_name_map = relative_import_module_from_unified_datasets('multiwoz21', 'preprocess.py', 'reverse_da_slot_name_map')
+reverse_da = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', 'reverse_da')
+reverse_da_slot_name_map = relative_import_module_from_unified_datasets(
+    'multiwoz21', 'preprocess.py', 'reverse_da_slot_name_map')
 
 
 requestable = \

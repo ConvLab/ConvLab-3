@@ -11,7 +11,7 @@ DATASET = "unify"
 
 class KnowledgeGraph:
     def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="multiwoz21"):
-        print("dataset", dataset)
+        # print("dataset", dataset)
         self.debug = DEBUG
         self.tokenizer = tokenizer
 
@@ -83,7 +83,7 @@ class KnowledgeGraph:
 
         if slot not in self.user_goal[domain]:
             self.user_goal[domain][slot] = []
-            self.add_token(domain, "slot")
+            self.add_token(slot, "slot")
 
         if value not in self.user_goal[domain][slot]:
             value = json.dumps(str(value))[1:-1]
@@ -97,7 +97,7 @@ class KnowledgeGraph:
         if not self.kg_map[map_type].token_name_is_in(token_name):
             self.kg_map[map_type].add_token(token_name, token_name)
 
-    def _get_max_score(self, outputs, candidate_list, map_type):
+    def _get_max_score(self, outputs, candidate_list, map_type, weight=None):
         score = {}
         if not candidate_list:
             print(f"ERROR: empty candidate list for {map_type}")
@@ -107,6 +107,8 @@ class KnowledgeGraph:
         for x in candidate_list:
             hash_id = self._get_token_id(x)[0]
             s = outputs[:, hash_id].item()
+            if weight:
+                s *= weight[x]
             score[s] = {"token_id": self._get_token_id(x),
                         "token_name": x}
         return score
@@ -199,6 +201,17 @@ class KnowledgeGraph:
                 candidate_type="slot", intent=intent, domain=domain, is_mentioned=is_mentioned)
             token_map = self._get_max_domain_token(
                 outputs=outputs, candidates=slot_list, map_type="slot", mode=mode)
+
+        return token_map
+
+    def get_book_slot(self, outputs, intent, domain, mode="max", is_mentioned=False):
+        slot_list = self.candidate(
+            candidate_type="slot", intent=intent, domain=domain, is_mentioned=is_mentioned)
+        book_slot_list = [s.replace("book", "")
+                          for s in slot_list if 'book' in s]
+
+        token_map = self._get_max_domain_token(
+            outputs=outputs, candidates=book_slot_list, map_type="slot", mode=mode)
 
         return token_map
 

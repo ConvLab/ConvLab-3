@@ -8,6 +8,7 @@ NOT_MENTIONED = "not mentioned"
 
 def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2ratio=1):
     ratio = {'train': split2ratio, 'validation': split2ratio}
+    print("data_name", data_name)
     if data_name == "all" or data_name == "sgd+tm" or data_name == "tm":
         print("merge all datasets...")
         if data_name == "all":
@@ -24,6 +25,15 @@ def load_experiment_dataset(data_name="multiwoz21", dial_ids_order=0, split2rati
                 dial_ids_order=dial_ids_order,
                 split2ratio=ratio)
         raw_data = merge_dataset(datasets, all_dataset[0])
+    elif data_name == "emowoz+dialmage":
+        all_dataset = ["emowoz", "dialmage"]
+        datasets = {}
+        for name in all_dataset:
+            datasets[name] = load_dataset(
+                name, dial_ids_order=None)
+        raw_data = merge_dataset(datasets, all_dataset[0])
+    elif data_name in ["dialmage", "emowoz"]:
+        raw_data = load_dataset(data_name, dial_ids_order=None)
 
     else:
         print(f"load single dataset {data_name}/{split2ratio}")
