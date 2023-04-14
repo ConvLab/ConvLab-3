@@ -235,7 +235,6 @@ class Evaluator:
             print("You must specify the input_file or the generated_file")
 
         gen_file = json.load(open(generated_file))
-        self.read_generated_result(generated_file)
 
         r = self.nlg_evaluation(
             self.r["golden_utts"], self.r["gen_utts"], self.r["gen_acts"])
