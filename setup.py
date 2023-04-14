@@ -77,6 +77,6 @@ setup(
     url='https://github.com/ConvLab/ConvLab-3',
     author='convlab',
     author_email='convlab@googlegroups.com',
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     zip_safe=False
 )
