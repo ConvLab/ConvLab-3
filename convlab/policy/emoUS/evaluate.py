@@ -50,6 +50,10 @@ class Evaluator:
         self.emotion_weight = kwargs.get("weight", None)
         self.sample = kwargs.get("sample", False)
         print("self.emotion_weight", self.emotion_weight)
+        self.evaluation_result = {
+            "emotion prediction": {},
+            "semantic action prediction": {},
+            "natural language generation": {}}
 
         self.usr = UserActionPolicy(
             model_checkpoint,
@@ -90,6 +94,7 @@ class Evaluator:
         mode = "max"
         if self.sample:
             mode = "sample"
+
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = self.usr._parse_output(dialog["out"])
@@ -129,6 +134,25 @@ class Evaluator:
 
             self._append_result(temp)
 
+        # save generations
+        generations = {}
+        generations["time"] = self.time
+        generations["golden"] = False
+        if golden_action:
+            # basically, golden_action includes golden_emotion
+            generations["golden"] = "golden_action"
+        elif golden_emotion:
+            generations["golden"] = "golden_emotion"
+        generations["mode"] = mode
+        generations["dialog"] = self._transform_result()
+
+        file_name = "generations.json"
+        if generations["golden"]:
+            file_name = generations['golden'] + "_" + file_name
+
+        with open(os.path.join(self.model_checkpoint, file_name), "w") as f:
+            json.dump(generations, f, indent=2)
+
     def read_generated_result(self, f_eval):
         in_file = json.load(open(f_eval))
 
@@ -148,61 +172,17 @@ class Evaluator:
             result.append(temp)
         return result
 
-    def nlg_evaluation(self, input_file=None, generated_file=None, golden_emotion=False, golden_action=False):
-        if input_file:
-            print("Force generation")
-            self.generate_results(input_file, golden_emotion, golden_action)
-
-        elif generated_file:
-            self.read_generated_result(generated_file)
-        else:
-            print("You must specify the input_file or the generated_file")
-        mode = "max"
-        if self.sample:
-            mode = "sample"
-
-        nlg_eval = {}
-        if golden_action:
-            nlg_eval["golden"] = "golden_action"
-        elif golden_emotion:
-            nlg_eval["golden"] = "golden_emotion"
-        else:
-            nlg_eval["golden"] = False
-
-        nlg_eval["mode"] = mode
-        nlg_eval["emotion_weight"] = self.emotion_weight
-        nlg_eval["metrics"] = {}
-        nlg_eval["dialog"] = self._transform_result()
-
-        # if golden_action:
-        # print("Calculate BLEU")
+    @staticmethod
+    def nlg_evaluation(golden_utts, gen_utts, gen_acts):
         bleu_metric = load_metric("sacrebleu")
-        labels = [[utt] for utt in self.r["golden_utts"]]
-
-        bleu_score = bleu_metric.compute(predictions=self.r["gen_utts"],
+        labels = [[utt] for utt in golden_utts]
+        bleu_score = bleu_metric.compute(predictions=gen_utts,
                                          references=labels,
                                          force=True)
-
-        nlg_eval["metrics"]["bleu"] = bleu_score
-
-        # else:
         missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-            self.r["gen_acts"], self.r["gen_utts"])
+            gen_acts, gen_utts)
 
-        # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-        #     "EmoUSNLG", missing, total, hallucinate, missing/total))
-        nlg_eval["metrics"]["SER"] = missing/total
-
-        print("=== Natural language generation ===")
-        print("Sacre-BLEU", nlg_eval["metrics"]["bleu"]["score"])
-        print("SER", nlg_eval["metrics"]["SER"])
-
-        dir_name = self.model_checkpoint
-        json.dump(nlg_eval,
-                  open(os.path.join(
-                      dir_name, f"{self.time}-nlg_eval.json"), 'w'),
-                  indent=2)
-        return os.path.join(dir_name, f"{self.time}-nlg_eval.json")
+        return {"bleu": bleu_score["score"], "SER": missing/total}
 
     @staticmethod
     def _intent_domain(action):
@@ -212,37 +192,21 @@ class Evaluator:
                 acts.append([intent, domain])
         return acts
 
-    def evaluation(self, generated_file, golden_emotion=False, golden_action=False):
-        gen_file = json.load(open(generated_file))
-        self.read_generated_result(generated_file)
+    def dialog_result(self, dialog):
+        x = {"gen_acts": [], "golden_acts": [],
+             "gen_emotions": [], "golden_emotions": []}
 
-        if golden_action:
-            print("golden_action, skip semantic evaluation")
-            return
+        for d in dialog:
+            x["gen_acts"].append(d["gen_acts"])
+            x["golden_acts"].append(d["golden_acts"])
+            x["gen_emotions"].append(d["gen_emotion"])
+            x["golden_emotions"].append(d["golden_emotion"])
+        return x
 
-        elif golden_emotion:
-            print("golden_emotion, skip emotion evaluation")
-            gen_acts, golden_acts = [], []
-            for dialog in gen_file['dialog']:
-                gen_acts.append(dialog["gen_acts"])
-                golden_acts.append(dialog["golden_acts"])
-            dialog_result = gen_file['dialog']
-
-        else:
-            gen_acts, golden_acts = [], []
-            gen_emotions, golden_emotions = [], []
-            for dialog in gen_file['dialog']:
-                gen_acts.append(dialog["gen_acts"])
-                golden_acts.append(dialog["golden_acts"])
-                gen_emotions.append(dialog["gen_emotion"])
-                golden_emotions.append(dialog["golden_emotion"])
-            dialog_result = gen_file['dialog']
-
+    def semantic_evaluation(self, x):
         scores = {"full action": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
                   "intent-domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
-
-        # full action
-        for gen_act, golden_act in zip(gen_acts, golden_acts):
+        for gen_act, golden_act in zip(x["gen_acts"], x["golden_acts"]):
             s = f1_measure(preds=gen_act, labels=golden_act)
             for metric in scores["full action"]:
                 scores["full action"][metric].append(s[metric])
@@ -252,59 +216,75 @@ class Evaluator:
                 scores["intent-domain"][metric].append(s[metric])
 
         result = {}
-        result["emotion_weight"] = self.emotion_weight
-        print("=== Semantic evaluation ===")
         for metric_type, score in scores.items():
             result[metric_type] = {}
-            print(f"> {metric_type}")
             for m, s in score.items():
                 result[metric_type][m] = sum(s)/len(s)
-                print(f"{m}: {result[metric_type][m]}")
-            print("")
+        return result
 
-        if not golden_emotion:
-            emo_score = emotion_score(
-                golden_emotions,
-                gen_emotions,
-                self.model_checkpoint,
-                time=self.time,
-                no_neutral=False)
-            result["emotion"] = {"macro_f1": emo_score["macro_f1"],
-                                 "sep_f1": emo_score["sep_f1"]}
+    def evaluation(self, input_file="", generated_file="", golden_emotion=False, golden_action=False):
+        if input_file:
+            print("Force generation")
+            self.generate_results(input_file, golden_emotion, golden_action)
+        elif generated_file:
+            self.read_generated_result(generated_file)
+        else:
+            print("You must specify the input_file or the generated_file")
+
+        gen_file = json.load(open(generated_file))
+        self.read_generated_result(generated_file)
+
+        r = self.nlg_evaluation(
+            self.r["golden_utts"], self.r["gen_utts"], self.r["gen_acts"])
+        for metric, score in r.items():
+            self.evaluation_result["natural language generation"][metric] = score
+        x = self.dialog_result(gen_file['dialog'])
+
+        if not golden_action:
+            r = self.semantic_evaluation(x)
+            for metric, score in r.items():
+                self.evaluation_result["semantic action prediction"][metric] = score
+
+        if not golden_emotion and not golden_action:
+            r = emotion_score(x["golden_emotions"],
+                              x["gen_emotions"],
+                              self.model_checkpoint)
+            self.evaluation_result["emotion prediction"]["emotion"] = {}
+            self.evaluation_result["emotion prediction"]["emotion"]["macro_f1"] = r["macro_f1"]
+            self.evaluation_result["emotion prediction"]["emotion"]["sep_f1"] = {
+                emo: f1 for emo, f1 in zip(r["label"], r["sep_f1"])}
+
             if self.use_sentiment:
-                sent_score = sentiment_score(
-                    self.r["golden_sentiment"],
-                    self.r["gen_sentiment"],
-                    self.model_checkpoint,
-                    time=self.time)
+                golden_sentiment = self.r["golden_sentiment"]
+                gen_sentiment = self.r["gen_sentiment"]
             else:
                 # transfer emotions to sentiment if the model do not generate sentiment
                 golden_sentiment = [self.emo2sent[emo]
-                                    for emo in golden_emotions]
-                gen_sentiment = [self.emo2sent[emo] for emo in gen_emotions]
-                sent_score = sentiment_score(
-                    golden_sentiment,
-                    gen_sentiment,
-                    self.model_checkpoint,
-                    time=self.time)
-            result["sentiment"] = {"macro_f1": sent_score["macro_f1"],
-                                   "sep_f1": sent_score["sep_f1"]}
+                                    for emo in self.r["golden_emotions"]]
+                gen_sentiment = [self.emo2sent[emo]
+                                 for emo in self.r["gen_emotions"]]
+            r = sentiment_score(
+                golden_sentiment,
+                gen_sentiment,
+                self.model_checkpoint)
 
-        # for metric in emo_score:
-        #     result[metric] = emo_score[metric]
-        #     print(f"{metric}: {result[metric]}")
+            self.evaluation_result["emotion prediction"]["sentiment"] = {}
+            self.evaluation_result["emotion prediction"]["sentiment"]["macro_f1"] = r["macro_f1"]
+            self.evaluation_result["emotion prediction"]["sentiment"]["sep_f1"] = {
+                emo: f1 for emo, f1 in zip(r["label"], r["sep_f1"])}
 
-        result["dialog"] = dialog_result
+        print(self.evaluation_result)
 
-        basename = "semantic_evaluation_result"
-        json.dump(
-            result,
-            open(os.path.join(self.model_checkpoint,
-                              f"{self.time}-{self.dataset}-{basename}.json"), 'w'),
-            indent=2)
+    # def save_results(self):
+
+    # def print_result(self):
+    #     print("=== Natural language generation ===")
+    #     print("Sacre-BLEU", nlg_eval["metrics"]["bleu"]["score"])
+    #     print("SER", nlg_eval["metrics"]["SER"])
+    #     self.r[""]
 
 
-def emotion_score(golden_emotions, gen_emotions, dirname=".", time="", no_neutral=False):
+def emotion_score(golden_emotions, gen_emotions, dirname=".", no_neutral=False):
     labels = ["Neutral", "Fearful", "Dissatisfied",
               "Apologetic", "Abusive", "Excited", "Satisfied"]
     if no_neutral:
@@ -318,19 +298,15 @@ def emotion_score(golden_emotions, gen_emotions, dirname=".", time="", no_neutra
     disp = metrics.ConfusionMatrixDisplay(
         confusion_matrix=cm, display_labels=labels)
     disp.plot()
-    plt.savefig(os.path.join(dirname, f"{time}-emotion.png"))
-    r = {"macro_f1": float(macro_f1), "sep_f1": list(
-        sep_f1), "cm": [list(c) for c in list(cm)]}
-    print("=== emotion score ===")
-    print("emotions:", labels)
-    print("macro_f1:", r["macro_f1"])
-    print("sep_f1:")
-    for i, l in enumerate(labels):
-        print(f"{l}: {r['sep_f1'][i]}")
+    plt.savefig(os.path.join(dirname, f"emotion.png"))
+    r = {"label": labels,
+         "macro_f1": float(macro_f1),
+         "sep_f1": list(sep_f1),
+         "cm": [list(c) for c in list(cm)]}
     return r
 
 
-def sentiment_score(golden_sentiment, gen_sentiment, dirname=".", time=""):
+def sentiment_score(golden_sentiment, gen_sentiment, dirname="."):
     labels = ["Neutral", "Negative", "Positive"]
 
     macro_f1 = metrics.f1_score(
@@ -342,15 +318,11 @@ def sentiment_score(golden_sentiment, gen_sentiment, dirname=".", time=""):
     disp = metrics.ConfusionMatrixDisplay(
         confusion_matrix=cm, display_labels=labels)
     disp.plot()
-    plt.savefig(os.path.join(dirname, f"{time}-sentiment.png"))
-    r = {"macro_f1": float(macro_f1), "sep_f1": list(
-        sep_f1), "cm": [list(c) for c in list(cm)]}
-    print("=== sentiment score ===")
-    print("sentiments:", labels)
-    print("macro_f1:", r["macro_f1"])
-    print("sep_f1:")
-    for i, l in enumerate(labels):
-        print(f"{l}: {r['sep_f1'][i]}")
+    plt.savefig(os.path.join(dirname, f"sentiment.png"))
+    r = {"label": labels,
+         "macro_f1": float(macro_f1),
+         "sep_f1": list(sep_f1),
+         "cm": [list(c) for c in list(cm)]}
     return r
 
 
@@ -385,16 +357,8 @@ def main():
     print("generated_file", args.generated_file)
     print("input_file", args.input_file)
     with torch.no_grad():
-        if args.generated_file:
-            generated_file = args.generated_file
-        else:
-            nlg_result = eval.nlg_evaluation(input_file=args.input_file,
-                                             generated_file=args.generated_file,
-                                             golden_emotion=args.golden_emotion,
-                                             golden_action=args.golden_action)
-
-            generated_file = nlg_result
-        eval.evaluation(generated_file,
+        eval.evaluation(input_file=args.input_file,
+                        generated_file=args.generated_file,
                         golden_emotion=args.golden_emotion,
                         golden_action=args.golden_action)
 
