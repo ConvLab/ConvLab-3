@@ -195,21 +195,10 @@ class Evaluator:
                 acts.append([intent, domain])
         return acts
 
-    def dialog_result(self, dialog):
-        x = {"gen_acts": [], "golden_acts": [],
-             "gen_emotion": [], "golden_emotion": []}
-
-        for d in dialog:
-            x["gen_acts"].append(d["gen_acts"])
-            x["golden_acts"].append(d["golden_acts"])
-            x["gen_emotion"].append(d["gen_emotion"])
-            x["golden_emotion"].append(d["golden_emotion"])
-        return x
-
-    def semantic_evaluation(self, x):
+    def semantic_evaluation(self, gen_acts, golden_acts):
         scores = {"full action": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
                   "intent-domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
-        for gen_act, golden_act in zip(x["gen_acts"], x["golden_acts"]):
+        for gen_act, golden_act in zip(gen_acts, golden_acts):
             s = f1_measure(preds=gen_act, labels=golden_act)
             for metric in scores["full action"]:
                 scores["full action"][metric].append(s[metric])
@@ -234,22 +223,20 @@ class Evaluator:
         else:
             print("You must specify the input_file or the generated_file")
 
-        gen_file = json.load(open(generated_file))
-
         r = self.nlg_evaluation(
             self.r["golden_utts"], self.r["gen_utts"], self.r["gen_acts"])
         for metric, score in r.items():
             self.evaluation_result["natural language generation"][metric] = score
-        x = self.dialog_result(gen_file['dialog'])
 
         if not golden_action:
-            r = self.semantic_evaluation(x)
+            r = self.semantic_evaluation(
+                self.r["gen_acts"], self.r["golden_acts"])
             for metric, score in r.items():
                 self.evaluation_result["semantic action prediction"][metric] = score
 
         if not golden_emotion and not golden_action:
-            r = emotion_score(x["golden_emotion"],
-                              x["gen_emotion"],
+            r = emotion_score(self.r["golden_emotion"],
+                              self.r["gen_emotion"],
                               self.result_dir)
             self.evaluation_result["emotion prediction"]["emotion"] = {}
             self.evaluation_result["emotion prediction"]["emotion"]["macro_f1"] = r["macro_f1"]
