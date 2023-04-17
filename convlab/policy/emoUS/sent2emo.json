@@ -1,0 +1,15 @@
+{
+    "Neutral": [
+        "Neutral"
+    ],
+    "Negative": [
+        "Fearful",
+        "Dissatisfied",
+        "Apologetic",
+        "Abusive"
+    ],
+    "Positive": [
+        "Excited",
+        "Satisfied"
+    ]
+}

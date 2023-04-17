@@ -27,7 +27,7 @@ class Environment():
         s, r, t = self.step([])
         return self.sys_dst.state
 
-    def step(self, action):
+    def step(self, action, user_reward=False):
         # save last system action
         self.sys_dst.state['system_action'] = action
         if not self.use_semantic_acts:
@@ -41,9 +41,9 @@ class Environment():
                 if intent == "book":
                     self.sys_dst.state['booked'][domain] = [{slot: value}]
         observation = self.usr.response(model_response)
-
         if self.evaluator:
-            self.evaluator.add_sys_da(self.usr.get_in_da(), self.sys_dst.state['belief_state'])
+            self.evaluator.add_sys_da(
+                self.usr.get_in_da(), self.sys_dst.state['belief_state'])
             self.evaluator.add_usr_da(self.usr.get_out_da())
 
         dialog_act = self.sys_nlu.predict(
@@ -59,9 +59,11 @@ class Environment():
         state = deepcopy(state)
 
         terminated = self.usr.is_terminated()
-
-        if self.evaluator:
-            reward = self.evaluator.get_reward(terminated)
+        if not user_reward:
+            if self.evaluator:
+                reward = self.evaluator.get_reward(terminated)
+            else:
+                reward = self.usr.get_reward()
         else:
             reward = self.usr.get_reward()
 

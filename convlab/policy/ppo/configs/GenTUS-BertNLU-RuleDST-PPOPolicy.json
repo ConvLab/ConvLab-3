@@ -1,0 +1,54 @@
+{
+    "model": {
+        "load_path": "convlab/policy/ppo/pretrained_models/mle",
+        "pretrained_load_path": "",
+        "use_pretrained_initialisation": false,
+        "batchsz": 200,
+        "seed": 0,
+        "epoch": 100,
+        "eval_frequency": 5,
+        "process_num": 1,
+        "num_eval_dialogues": 20,
+        "sys_semantic_to_usr": false
+    },
+    "vectorizer_sys": {
+        "uncertainty_vector_mul": {
+            "class_path": "convlab.policy.vector.vector_binary.VectorBinary",
+            "ini_params": {
+                "use_masking": true,
+                "manually_add_entity_names": true,
+                "seed": 0
+            }
+        }
+    },
+    "nlu_sys": {
+        "BertNLU": {
+            "class_path": "convlab.nlu.jointBERT.unified_datasets.BERTNLU",
+            "ini_params": {
+                "mode": "all",
+                "config_file": "multiwoz21_all.json",
+                "model_file": "https://huggingface.co/ConvLab/bert-base-nlu/resolve/main/bertnlu_unified_multiwoz21_all_context0.zip"
+            }
+        }
+    },
+    "dst_sys": {
+        "RuleDST": {
+            "class_path": "convlab.dst.rule.multiwoz.dst.RuleDST",
+            "ini_params": {}
+        }
+    },
+    "sys_nlg": {},
+    "nlu_usr": {},
+    "dst_usr": {},
+    "policy_usr": {
+        "GenTUS": {
+            "class_path": "convlab.policy.genTUS.stepGenTUS.UserPolicy",
+            "ini_params": {
+                "model_checkpoint": "convlab/policy/genTUS/unify/experiments/multiwoz21-exp",
+                "mode": "language",
+                "only_action": false
+            }
+        }
+    },
+    "usr_nlg": {}
+}

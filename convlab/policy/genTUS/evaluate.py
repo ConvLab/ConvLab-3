@@ -147,6 +147,14 @@ class Evaluator:
                   indent=2)
         return os.path.join(dir_name, "nlg_eval.json")
 
+    @staticmethod
+    def _intent_domain(action):
+        acts = []
+        for intent, domain, slot, value in action:
+            if [intent, domain] not in acts:
+                acts.append([intent, domain])
+        return acts
+
     def evaluation(self, input_file=None, generated_file=None):
         force_prediction = True
         if generated_file:
@@ -187,17 +195,28 @@ class Evaluator:
                 golden_acts.append(dialog["golden_acts"])
             dialog_result = gen_file['dialog']
 
-        scores = {"precision": [], "recall": [], "f1": [], "turn_acc": []}
+        scores = {"complete": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
+                  "intent_domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
 
         for gen_act, golden_act in zip(gen_acts, golden_acts):
             s = f1_measure(preds=gen_act, labels=golden_act)
-            for metric in scores:
-                scores[metric].append(s[metric])
+            for metric in scores["complete"]:
+                scores["complete"][metric].append(s[metric])
+            s = f1_measure(preds=self._intent_domain(gen_act),
+                           labels=self._intent_domain(golden_act))
+            for metric in scores["intent_domain"]:
+                scores["intent_domain"][metric].append(s[metric])
 
         result = {}
-        for metric in scores:
-            result[metric] = sum(scores[metric])/len(scores[metric])
-            print(f"{metric}: {result[metric]}")
+        # for metric in scores:
+        #     result[metric] = sum(scores[metric])/len(scores[metric])
+        #     print(f"{metric}: {result[metric]}")
+
+        for metric_type, score in scores.items():
+            result[metric_type] = {}
+            for m, s in score.items():
+                result[metric_type][m] = sum(s)/len(s)
+                print(f"{metric_type}-{m}: {result[metric_type][m]}")
 
         result["dialog"] = dialog_result
         basename = "semantic_evaluation_result"

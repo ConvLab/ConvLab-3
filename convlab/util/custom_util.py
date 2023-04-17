@@ -253,13 +253,14 @@ def env_config(conf, policy_sys, check_book_constraints=True):
     if dst_sys:
         try:
             if dst_sys.return_confidence_scores:
-                policy_sys.vector.setup_uncertain_query(dst_sys.confidence_thresholds)
+                policy_sys.vector.setup_uncertain_query(
+                    dst_sys.confidence_thresholds)
         except:
             logging.info('Uncertainty threshold not set.')
 
     simulator = PipelineAgent(nlu_usr, dst_usr, policy_usr, usr_nlg, 'user')
     system_pipeline = PipelineAgent(nlu_sys, dst_sys, policy_sys, sys_nlg,
-                                    'sys', return_semantic_acts=conf['model']['sys_semantic_to_usr'])
+                                    'sys')  # , return_semantic_acts=conf['model']['sys_semantic_to_usr'])
 
     # assemble
     evaluator = MultiWozEvaluator(

@@ -19,8 +19,8 @@ class stepGenTUSVector:
         self.mentioned_domain = []
         self.allow_general_intent = allow_general_intent
         self.candidate_num = 5
-        if self.allow_general_intent:
-            print("---> allow_general_intent")
+        # if self.allow_general_intent:
+        #     print("---> allow_general_intent")
 
     def init_session(self, goal: Goal):
         self.goal = goal

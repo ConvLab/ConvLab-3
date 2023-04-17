@@ -3,6 +3,8 @@ import os
 
 import torch
 from transformers import BartTokenizer
+from random import choices
+
 
 from convlab.policy.genTUS.ppo.vector import stepGenTUSVector
 from convlab.policy.genTUS.stepGenTUSmodel import stepGenTUSmodel
@@ -30,7 +32,7 @@ class UserActionPolicy(Policy):
         self.max_in_len = 500
         self.max_out_len = 100 if only_action else 200
         max_act_len = kwargs.get("max_act_len", 2)
-        print("max_act_len", max_act_len)
+        # print("max_act_len", max_act_len)
         self.max_action_len = max_act_len
         if "max_act_len" in kwargs:
             self.max_out_len = 30 * self.max_action_len
@@ -109,7 +111,7 @@ class UserActionPolicy(Policy):
         # get text output
         pos = self._update_seq(self.token_map.get_id("start_text"), pos)
 
-        text = self._get_text(model_input, pos)
+        text = self._get_text(model_input, pos, mode)
 
         return text
 
@@ -143,13 +145,18 @@ class UserActionPolicy(Policy):
         raw_output = self._get_text(model_input, pos)
         return self._parse_output(raw_output)["text"]
 
-    def _get_text(self, model_input, pos):
+    def _get_text(self, model_input, pos, mode="max"):
         s_pos = pos
+        mode = "sample"
         for i in range(s_pos, self.max_out_len):
             next_token_logits = self.model.get_next_token_logits(
                 model_input, self.seq[:1, :pos])
-            next_token = torch.argmax(next_token_logits, dim=-1)
-
+            if mode == "sample":
+                s = torch.multinomial(torch.softmax(
+                    next_token_logits, dim=-1), 1)
+                next_token = s
+            else:
+                next_token = torch.argmax(next_token_logits, dim=-1)
             if self._stop_text(next_token):
                 # text = self.vector.decode(self.seq[0, s_pos:pos])
                 # text = self._norm_str(text)
@@ -216,6 +223,11 @@ class UserActionPolicy(Policy):
         # get slot
         slot = self._get_slot(
             model_input, self.seq[:1, :pos], intent["token_name"], domain["token_name"], mode)
+        if "book" in slot["token_name"]:
+            pos = self._update_seq(self.token_map.get_id('book'), pos)
+            slot = self._get_book_slot(
+                model_input, self.seq[:1, :pos], intent["token_name"], domain["token_name"], mode)
+            slot["token_name"] = "book" + slot["token_name"]
         pos = self._update_seq(slot["token_id"], pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
@@ -244,6 +256,12 @@ class UserActionPolicy(Policy):
             model_input, generated_so_far)
         is_mentioned = self.vector.is_mentioned(domain)
         return self.kg.get_slot(next_token_logits, intent, domain, mode, is_mentioned)
+
+    def _get_book_slot(self, model_input, generated_so_far, intent, domain, mode="max"):
+        next_token_logits = self.model.get_next_token_logits(
+            model_input, generated_so_far)
+        is_mentioned = self.vector.is_mentioned(domain)
+        return self.kg.get_book_slot(next_token_logits, intent, domain, mode, is_mentioned)
 
     def _get_value(self, model_input, generated_so_far, intent, domain, slot, mode="max"):
         next_token_logits = self.model.get_next_token_logits(
@@ -277,6 +295,7 @@ class UserActionPolicy(Policy):
         return action
 
     def predict(self, sys_act, mode="max", allow_general_intent=True):
+        # TODO emotion
         # raw_sys_act = sys_act
         # sys_act = sys_act[:5]
         # update goal
@@ -592,7 +611,7 @@ class UserPolicy(Policy):
                  **kwargs):
         # self.config = config
         if not os.path.exists(os.path.dirname(model_checkpoint)):
-            os.mkdir(os.path.dirname(model_checkpoint))
+            os.makedirs(os.path.dirname(model_checkpoint))
             model_downloader(os.path.dirname(model_checkpoint),
                              "https://zenodo.org/record/7372442/files/multiwoz21-exp.zip")
 
@@ -612,10 +631,12 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         response = self.policy.predict(sys_act, mode)
+        self.semantic_action = self.policy.semantic_action
         return response
 
     def init_session(self, goal=None):
         self.policy.init_session(goal)
+        self.semantic_action = []
 
     def is_terminated(self):
         return self.policy.is_terminated()
