@@ -148,8 +148,8 @@ class PipelineAgent(Agent):
                 self.input_action = observation
         else:
             if self.nlu is not None:
-                self.input_action_eval = self.nlu.predict(
-                    observation, context=[x[1] for x in self.history[:-1]])
+                self.input_action_eval = deepcopy(self.nlu.predict(
+                    observation, context=[x[1] for x in self.history[:-1]]))
 
                 self.input_action = self.nlu.predict(
                     observation, context=[x[1] for x in self.history[:-1]])
