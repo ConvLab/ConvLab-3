@@ -235,3 +235,15 @@ def transform_data_act(data_action):
             action_list.append(
                 [act["intent"], act["domain"], act["slot"], value])
     return action_list
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+    from copy import deepcopy
+    goal_generator = GoalGenerator()
+    goal = Goal(goal_generator=goal_generator)
+    new_goal = deepcopy(goal)
+    new_goal.update_user_goal(
+        [["inform", "restaurant", "food", "asian oriental"]], char="sys")
+    pprint(goal.get_goal_list())
+    pprint(new_goal.get_goal_list())

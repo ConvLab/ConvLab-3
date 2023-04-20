@@ -1,15 +1,16 @@
-import os
 import json
+import os
+from copy import deepcopy
 
 import torch
 
 from convlab.policy.emoUS.token_map import tokenMap
+from convlab.policy.emoUS.unify.Goal import Goal
 from convlab.policy.emoUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.stepGenTUS import \
     UserActionPolicy as GenTUSUserActionPolicy
 from convlab.policy.policy import Policy
 from convlab.util.custom_util import model_downloader
-from convlab.policy.emoUS.unify.Goal import Goal
 
 DEBUG = False
 
@@ -46,6 +47,34 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         self.init_session()
 
+    def estimate_emotion(self, sys_act, mode="max"):
+        self.model.eval()
+        goal = deepcopy(self.goal)
+        goal.update_user_goal(action=sys_act, char="sys")
+        history = self._get_history()
+        time_step = self.time_step + 2
+
+        input_dict = {"system": sys_act,
+                      "goal": goal.get_goal_list(),
+                      "history": history,
+                      "turn": str(int(time_step/2))}
+        if self.add_persona:
+            for user, info in self.user_info.items():
+                input_dict[user] = info
+
+        inputs = json.dumps(input_dict)
+        emotion = self._generate_emotion(inputs, mode)
+        return emotion
+
+    def _get_history(self):
+        history = []
+        if self.usr_acts:
+            if self.max_history == 1:
+                history = self.usr_acts[-1]
+            else:
+                history = self.usr_acts[-1*self.max_history:]
+        return history
+
     def predict(self, sys_act, mode="max", allow_general_intent=True, emotion=None):
         allow_general_intent = False
         self.model.eval()
@@ -57,12 +86,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         # update constraint
         self.time_step += 2
 
-        history = []
-        if self.usr_acts:
-            if self.max_history == 1:
-                history = self.usr_acts[-1]
-            else:
-                history = self.usr_acts[-1*self.max_history:]
+        history = self._get_history()
 
         input_dict = {"system": sys_act,
                       "goal": self.goal.get_goal_list(),
@@ -221,6 +245,19 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
         return pos
+
+    def _generate_emotion(self, raw_inputs, mode="max", emotion_mode="normal"):
+        self.kg.parse_input(raw_inputs)
+        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        # start token
+        self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = self._update_seq([0], 0)
+        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode)
+        emotion = self.vector.decode(self.seq[0, :pos]) + '"}'
+
+        return emotion
 
     def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal"):
         self.kg.parse_input(raw_inputs)
@@ -438,6 +475,14 @@ class UserPolicy(Policy):
         self.semantic_action = self.policy.semantic_action
         return response
 
+    def estimate_emotion(self, sys_act, mode="max"):
+        if self.sample:
+            mode = "sample"
+        else:
+            mode = "max"
+        emotion = self.policy.estimate_emotion(sys_act, mode)
+        return emotion
+
     def init_session(self, goal=None):
         self.policy.init_session(goal)
         self.semantic_action = []
@@ -458,10 +503,11 @@ class UserPolicy(Policy):
 
 
 if __name__ == "__main__":
-    import os
+    import time
+    from pprint import pprint
+
     from convlab.dialog_agent import PipelineAgent
     from convlab.util.custom_util import set_seed
-    import time
 
     use_sentiment, emotion_mid = False, False
     set_seed(100)
@@ -471,18 +517,22 @@ if __name__ == "__main__":
         mode="semantic",
         sample=True,
         use_sentiment=use_sentiment,
-        emotion_mid=emotion_mid)
+        emotion_mid=emotion_mid,
+        weight=0.9)
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
     usr.init_session()
     usr.init_session()
-    print(usr.policy.get_goal())
     start = time.time()
 
     # print(usr.policy.policy.goal.status)
-    print(usr.response([['inform', 'train', 'day', 'saturday']]),
-          usr.policy.get_emotion())
+    print(usr.response([['inform', 'train', 'day', 'saturday']]))
+    pprint(usr.policy.policy.goal.get_goal_list())
+    print(usr.policy.estimate_emotion(
+        [['inform', 'train', 'arrive by', '15:30']]))
+    pprint(usr.policy.policy.goal.get_goal_list())
+
     # print(usr.policy.policy.goal.status)
     print(usr.response([]),
           usr.policy.get_emotion())
