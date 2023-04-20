@@ -262,7 +262,7 @@ class PPO(Policy):
         for value_mdl in value_mdl_candidates:
             if os.path.exists(value_mdl):
                 self.value.load_state_dict(torch.load(value_mdl, map_location=DEVICE))
-                print('<<dialog policy>> loaded checkpoint from file: {}'.format(value_mdl))
+                logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(value_mdl))
                 break
 
         policy_mdl_candidates = [
@@ -274,7 +274,7 @@ class PPO(Policy):
         for policy_mdl in policy_mdl_candidates:
             if os.path.exists(policy_mdl):
                 self.policy.load_state_dict(torch.load(policy_mdl, map_location=DEVICE))
-                print('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
+                logging.info('<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
                 break
 
     def load_policy(self, filename=""):
