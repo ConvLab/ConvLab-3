@@ -142,10 +142,13 @@ class Evaluator:
         nlg_eval["metrics"]["SER"] = (missing+hallucinate)/total
 
         dir_name = self.model_checkpoint
+        file_name = "nlg_eval.json"
+        if golden:
+            file_name = "golden_nlg_eval.json"
         json.dump(nlg_eval,
-                  open(os.path.join(dir_name, "nlg_eval.json"), 'w'),
+                  open(os.path.join(dir_name, file_name), 'w'),
                   indent=2)
-        return os.path.join(dir_name, "nlg_eval.json")
+        return os.path.join(dir_name, file_name)
 
     @staticmethod
     def _intent_domain(action):
