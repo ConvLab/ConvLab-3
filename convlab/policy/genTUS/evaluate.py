@@ -138,8 +138,8 @@ class Evaluator:
             gen_r["gen_acts"], gen_r["gen_utts"])
 
         print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-            "genTUSNLG", missing, total, hallucinate, missing/total))
-        nlg_eval["metrics"]["SER"] = missing/total
+            "genTUSNLG", missing, total, hallucinate, (missing+hallucinate)/total))
+        nlg_eval["metrics"]["SER"] = (missing+hallucinate)/total
 
         dir_name = self.model_checkpoint
         json.dump(nlg_eval,
