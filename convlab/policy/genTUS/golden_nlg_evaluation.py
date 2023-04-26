@@ -42,7 +42,7 @@ def nlu_evaluation(actions, utterances):
         score_list["redundant"].append(redundant)
 
     ser = {}
-    for metric, s in score_list.items:
+    for metric, s in score_list.items():
         ser[metric] = sum(s)
 
     ser["ser"] = (ser["missing"] + ser["redundant"])/ser["all"]
