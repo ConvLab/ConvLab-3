@@ -122,6 +122,7 @@ class Evaluator:
             })
 
         if golden:
+            print("GOLDEN")
             print("Calculate BLEU")
             bleu_metric = load_metric("sacrebleu")
             labels = [[utt] for utt in gen_r["golden_utts"]]
@@ -132,14 +133,13 @@ class Evaluator:
             print("bleu_metric", bleu_score)
             nlg_eval["metrics"]["bleu"] = bleu_score
 
-        else:
-            print("Calculate SER")
-            missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-                gen_r["gen_acts"], gen_r["gen_utts"])
+        print("Calculate SER")
+        missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+            gen_r["gen_acts"], gen_r["gen_utts"])
 
-            print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-                "genTUSNLG", missing, total, hallucinate, missing/total))
-            nlg_eval["metrics"]["SER"] = missing/total
+        print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+            "genTUSNLG", missing, total, hallucinate, missing/total))
+        nlg_eval["metrics"]["SER"] = missing/total
 
         dir_name = self.model_checkpoint
         json.dump(nlg_eval,
