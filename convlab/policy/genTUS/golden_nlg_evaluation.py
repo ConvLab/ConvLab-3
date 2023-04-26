@@ -96,15 +96,14 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
                     continue
                 if domain not in all_domains:
                     continue
-                if f' {slot.strip().lower()}' in f' {utterance.strip().lower()} ':
-                    if val == "free":  # workaround for "free/hotel-parking" -> yes/hotel-parking
-                        continue
-                    redundant_count += 1
-                    # print("------------------")
-                    # print(da)
-                    # print(all_values)
-                    # print(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
-                    # logger.log(f"redundant: {val}/{val2ds_dict[val]} | {item['prediction']} | {item['utterance']}")
+                if val == "free":  # workaround for "free/hotel-parking" -> yes/hotel-parking
+                    continue
+                redundant_count += 1
+                # print("------------------")
+                # print(da)
+                # print(all_values)
+                # print(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
+                # logger.log(f"redundant: {val}/{val2ds_dict[val]} | {item['prediction']} | {item['utterance']}")
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
         score_list["missing"].append(missing_count/all_count)
         score_list["redundant"].append(redundant_count/all_count)
@@ -114,6 +113,15 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
         ser[metric] = np.mean(s)
     ser["ser"] = (ser["missing"] + ser["redundant"])/ser["all"]
     return ser
+
+
+def action_norm(act):
+    a = []
+    for intent, domain, slot, value in act:
+        if value == "<?>":
+            value = "?"
+        a.append([intent, domain, slot, value])
+    return a
 
 
 def calculate(file_name):
@@ -129,24 +137,26 @@ def calculate(file_name):
         inputs = dialog["in"]
         labels = json.loads(dialog["out"])
         r["input"].append(inputs)
-        r["golden_acts"].append(labels["action"])
+        r["golden_acts"].append(action_norm((labels["action"])))
         r["golden_utts"].append(labels["text"])
-        r["generate_utts"].append(nlg.generate(labels["action"]))
+        r["generate_utts"].append(nlg.generate(action_norm(labels["action"])))
 
-    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-    #     r["golden_acts"], r["golden_utts"])
-    # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-    #     "human", missing, total, hallucinate, (missing+hallucinate)/total))
+    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+        r["golden_acts"], r["golden_utts"])
+    # print(hallucination_dialogs)
+    print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+        "human", missing, total, hallucinate, (missing+hallucinate)/total))
+
     # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
     #     r["golden_acts"], r["generate_utts"])
     # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
     #     "template", missing, total, hallucinate, (missing+hallucinate)/total))
-    # ontology = "multiwoz21"
-    # print("SER v2: ",
-    #       ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
-    #       ser_v2(r["golden_acts"], r["generate_utts"], ontology)
-    #       )
-    print(nlu_evaluation(r["golden_acts"], r["golden_utts"]))
+    ontology = "multiwoz21"
+    print("SER v2: ",
+          ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
+          ser_v2(r["golden_acts"], r["generate_utts"], ontology)
+          )
+    # print(nlu_evaluation(r["golden_acts"], r["golden_utts"]))
     return r
 
 
