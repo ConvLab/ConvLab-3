@@ -92,12 +92,12 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
             if f' {val.strip().lower()} ' in f' {utterance.strip().lower()} ' and val.strip().lower() not in all_values:
                 wlist = val2ds_dict[val].split('-')
                 domain, slot = wlist[0], wlist[1]
-                if val in ["yes", "no", "none", "dontcare"]:
-                    continue
+                # if val in ["yes", "no", "none", "dontcare"]:
+                #     continue
                 if domain not in all_domains:
                     continue
-                if val == "free":  # workaround for "free/hotel-parking" -> yes/hotel-parking
-                    continue
+                # if val == "free":  # workaround for "free/hotel-parking" -> yes/hotel-parking
+                #     continue
                 redundant_count += 1
                 # print("------------------")
                 # print(da)
