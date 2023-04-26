@@ -184,8 +184,9 @@ class Evaluator:
                                          force=True)
         missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
             gen_acts, gen_utts)
-
-        return {"bleu": bleu_score["score"], "SER": missing/total}
+        r = {"bleu": bleu_score["score"], "SER": (missing+hallucinate)/total,
+             "missing": missing, "hallucinate": hallucinate, "total": total}
+        return r
 
     @staticmethod
     def _intent_domain(action):
