@@ -12,6 +12,7 @@ from datasets import load_metric
 #     stepGenTUSPG as UserPolicy
 from convlab.policy.genTUS.stepGenTUS import UserActionPolicy
 from tqdm import tqdm
+from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -139,6 +140,9 @@ class Evaluator:
 
         print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
             "genTUSNLG", missing, total, hallucinate, (missing+hallucinate)/total))
+
+        new_ser = ser_v2(gen_r["gen_acts"], gen_r["gen_utts"])
+        print("new_ser", new_ser)
         nlg_eval["metrics"]["SER"] = (missing+hallucinate)/total
 
         dir_name = self.model_checkpoint

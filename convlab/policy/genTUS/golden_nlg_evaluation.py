@@ -23,7 +23,8 @@ def arg_parser():
     return parser.parse_args()
 
 
-def ser_v2(actions, utterances, ontology):
+def ser_v2(actions, utterances, ontology="multiwoz21"):
+    ontology = load_ontology(ontology)
     # ERROR Rate
     # get all values in ontology
     val2ds_dict = {}
@@ -114,7 +115,7 @@ def calculate(file_name):
         r["golden_acts"], r["generate_utts"])
     print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
         "template", missing, total, hallucinate, (missing+hallucinate)/total))
-    ontology = load_ontology("multiwoz21")
+    ontology = "multiwoz21"
     print("SER v2: ",
           ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
           # ser_v2(r["golden_acts"], r["generate_utts"], ontology)
