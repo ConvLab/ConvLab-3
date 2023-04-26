@@ -13,6 +13,8 @@ from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
 from convlab.policy.emoUS.emoUS import UserActionPolicy
+from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2
+
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -184,6 +186,7 @@ class Evaluator:
                                          force=True)
         missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
             gen_acts, gen_utts)
+        print(ser_v2(gen_acts, gen_utts))
         r = {"bleu": bleu_score["score"], "SER": (missing+hallucinate)/total,
              "missing": missing, "hallucinate": hallucinate, "total": total}
         return r

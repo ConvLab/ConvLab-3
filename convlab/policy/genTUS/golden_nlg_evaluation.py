@@ -55,7 +55,7 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
             all_values.add(value.strip().lower())
             if value.strip().lower() not in utterance.lower():
                 missing_count += 1
-                print(f"missing: {intent, domain, slot, value} | {utterance}")
+                # print(f"missing: {intent, domain, slot, value} | {utterance}")
             all_count += 1
         if all_count == 0:
             continue
@@ -74,10 +74,10 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
                     if val == "free":  # workaround for "free/hotel-parking" -> yes/hotel-parking
                         continue
                     redundant_count += 1
-                    print("------------------")
-                    print(da)
-                    print(all_values)
-                    print(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
+                    # print("------------------")
+                    # print(da)
+                    # print(all_values)
+                    # print(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
                     # logger.log(f"redundant: {val}/{val2ds_dict[val]} | {item['prediction']} | {item['utterance']}")
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
         score_list["missing"].append(missing_count/all_count)
