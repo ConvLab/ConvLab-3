@@ -149,6 +149,7 @@ class Evaluator:
         file_name = "nlg_eval.json"
         if golden:
             file_name = "golden_nlg_eval.json"
+        print(file_name)
         json.dump(nlg_eval,
                   open(os.path.join(dir_name, file_name), 'w'),
                   indent=2)

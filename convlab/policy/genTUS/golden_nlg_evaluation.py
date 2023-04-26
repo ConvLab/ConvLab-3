@@ -118,7 +118,7 @@ def calculate(file_name):
     ontology = "multiwoz21"
     print("SER v2: ",
           ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
-          # ser_v2(r["golden_acts"], r["generate_utts"], ontology)
+          ser_v2(r["golden_acts"], r["generate_utts"], ontology)
           )
     return r
 
