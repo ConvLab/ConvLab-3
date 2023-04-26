@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 from convlab.nlg.evaluate import fine_SER
 from convlab.nlg.template.multiwoz import TemplateNLG
 from convlab.util.unified_datasets_util import load_ontology
-
+from convlab.nlu.jointBERT.unified_datasets.nlu import BERTNLU
 
 from tqdm import tqdm
 import numpy as np
@@ -21,6 +21,31 @@ def arg_parser():
     parser.add_argument("--input-file", type=str, help="the testing input file",
                         default="")
     return parser.parse_args()
+
+
+def nlu_evaluation(actions, utterances):
+    nlu = BERTNLU(mode="sys", config_file="multiwoz21_all.json")
+    score_list = {"missing": [], "redundant": [], "all": []}
+
+    for act, utt in tqdm(zip(actions, utterances)):
+        pre = nlu.predict(utt)
+        score_list["all"].append(len(act))
+        missing = 0
+        redundant = 0
+        for da in act:
+            if da not in pre:
+                missing += 1
+        for da in pre:
+            if da not in act:
+                redundant += 1
+        score_list["missing"].append(missing)
+        score_list["redundant"].append(redundant)
+
+    ser = {}
+    for metric, s in score_list.items():
+        ser[metric] = np.mean(s)
+    ser["ser"] = (ser["missing"] + ser["redundant"])/ser["all"]
+    return ser
 
 
 def ser_v2(actions, utterances, ontology="multiwoz21"):
@@ -107,19 +132,20 @@ def calculate(file_name):
         r["golden_utts"].append(labels["text"])
         r["generate_utts"].append(nlg.generate(labels["action"]))
 
-    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-        r["golden_acts"], r["golden_utts"])
-    print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-        "human", missing, total, hallucinate, (missing+hallucinate)/total))
-    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-        r["golden_acts"], r["generate_utts"])
-    print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-        "template", missing, total, hallucinate, (missing+hallucinate)/total))
-    ontology = "multiwoz21"
-    print("SER v2: ",
-          ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
-          ser_v2(r["golden_acts"], r["generate_utts"], ontology)
-          )
+    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+    #     r["golden_acts"], r["golden_utts"])
+    # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+    #     "human", missing, total, hallucinate, (missing+hallucinate)/total))
+    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+    #     r["golden_acts"], r["generate_utts"])
+    # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+    #     "template", missing, total, hallucinate, (missing+hallucinate)/total))
+    # ontology = "multiwoz21"
+    # print("SER v2: ",
+    #       ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
+    #       ser_v2(r["golden_acts"], r["generate_utts"], ontology)
+    #       )
+    print(nlu_evaluation(r["golden_acts"], r["golden_utts"]))
     return r
 
 
