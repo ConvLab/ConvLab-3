@@ -125,7 +125,8 @@ class Evaluator:
 
             temp = {}
             temp["input"] = inputs
-            temp["golden_acts"] = labels["action"]
+            temp["golden_acts"] = self.usr._remove_illegal_action(
+                labels["action"])
             temp["golden_utts"] = labels["text"]
             temp["golden_emotion"] = labels["emotion"]
 
@@ -165,6 +166,8 @@ class Evaluator:
             for x in dialog:
                 if x not in self.r:
                     self.r[x] = []
+                if x == "golden_acts":
+                    dialog[x] = self.usr._remove_illegal_action(dialog[x])
                 self.r[x].append(dialog[x])
 
     def _transform_result(self):
