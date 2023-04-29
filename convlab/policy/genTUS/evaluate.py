@@ -76,7 +76,8 @@ class Evaluator:
                 usr_act = self.usr._remove_illegal_action(output["action"])
                 usr_utt = output["text"]
             r["input"].append(inputs)
-            r["golden_acts"].append(labels["action"])
+            r["golden_acts"].append(
+                self.usr._remove_illegal_action(labels["action"]))
             r["golden_utts"].append(labels["text"])
             r["gen_acts"].append(usr_act)
             r["gen_utts"].append(usr_utt)
