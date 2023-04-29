@@ -95,6 +95,8 @@ class Evaluator:
         }
         for dialog in tqdm(in_file['dialog']):
             for x in dialog:
+                if x == "golden_acts":
+                    dialog[x] = self.usr._remove_illegal_action(dialog[x])
                 r[x].append(dialog[x])
 
         return r
