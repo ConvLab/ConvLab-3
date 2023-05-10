@@ -70,13 +70,14 @@ class Evaluator:
 
         self.usr.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
 
-        self.r = {"input": [],
-                  "golden_acts": [],
-                  "golden_utts": [],
-                  "golden_emotion": [],
-                  "gen_acts": [],
-                  "gen_utts": [],
-                  "gen_emotion": []}
+        # self.r = {"input": [],
+        #           "golden_acts": [],
+        #           "golden_utts": [],
+        #           "golden_emotion": [],
+        #           "gen_acts": [],
+        #           "gen_utts": [],
+        #           "gen_emotion": []}
+        self.r = {}
 
         if self.use_sentiment:
             self.r["golden_sentiment"] = []
@@ -90,7 +91,10 @@ class Evaluator:
                 self.emo2sent[emo] = sent
 
     def _append_result(self, temp):
-        for x in self.r:
+        # for x in self.r:
+        for x in temp:
+            if x not in self.r:
+                self.r[x] = []
             self.r[x].append(temp[x])
 
     def generate_results(self, f_eval, golden_emotion=False, golden_action=False):
