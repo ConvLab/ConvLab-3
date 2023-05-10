@@ -78,7 +78,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
     def predict(self, sys_act, mode="max", allow_general_intent=True, emotion=None):
         allow_general_intent = False
         self.model.eval()
-
         if not self.add_sys_from_reward:
             self.goal.update_user_goal(action=sys_act, char="sys")
             self.sys_acts.append(sys_act)  # for terminate conversation
@@ -141,7 +140,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.usr_acts.append(self.semantic_action)
 
         del inputs
-
         if self.only_action:
             return self.semantic_action
 
@@ -179,7 +177,10 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         return pos
 
     def _update_semantic_act(self, pos, model_input, mode, allow_general_intent):
+        # print("update semantic act")
         mode = "max"
+        self.action_prob = []
+
         for act_len in range(self.max_action_len):
             pos = self._get_semantic_action(
                 model_input, pos, mode, allow_general_intent)
@@ -190,6 +191,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
             if terminate:
                 break
+
         return pos
 
     def _sent_act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent):
@@ -528,10 +530,10 @@ if __name__ == "__main__":
 
     # print(usr.policy.policy.goal.status)
     print(usr.response([['inform', 'train', 'day', 'saturday']]))
-    pprint(usr.policy.policy.goal.get_goal_list())
-    print(usr.policy.estimate_emotion(
-        [['inform', 'train', 'arrive by', '15:30']]))
-    pprint(usr.policy.policy.goal.get_goal_list())
+    # pprint(usr.policy.policy.goal.get_goal_list())
+    # print(usr.policy.estimate_emotion(
+    #    [['inform', 'train', 'arrive by', '15:30']]))
+    # pprint(usr.policy.policy.goal.get_goal_list())
 
     # print(usr.policy.policy.goal.status)
     print(usr.response([]),

@@ -23,20 +23,62 @@ def arg_parser():
     return parser.parse_args()
 
 
-def nlu_evaluation(actions, utterances):
+def norm(act):
+    new = []
+    for intent, domain, slot, value in act:
+        if value == "<?>" or intent.lower() == "request":
+            value = "?"
+        if intent == "thank":
+            domain = "general"
+
+        new.append([intent, domain, slot, value.lower()])
+    return new
+
+
+def bertnlu_evaluation(golden_utt, gen_utt, golden_act=None):
     nlu = BERTNLU(mode="sys", config_file="multiwoz21_all.json")
     score_list = {"missing": [], "redundant": [], "all": []}
+    r = []
+    if golden_act is not None:
+        acc = {"tp": 0, "fp": 0, "fn": 0, "all": 0}
+    for i in range(len(golden_utt)):
+        temp = {}
+        ans_utt = golden_utt[i]
+        pre_utt = gen_utt[i]
 
-    for act, utt in tqdm(zip(actions, utterances)):
-        pre = nlu.predict(utt)
-        score_list["all"].append(len(act))
+        pre = norm(nlu.predict(pre_utt))
+        ans = norm(nlu.predict(ans_utt))
+        temp["gen_utt"] = pre_utt
+        temp["golden_utt"] = ans_utt
+        temp["gen_act"] = pre
+        temp["golden_act"] = ans
+
+        if golden_act is not None:
+
+            label_act = norm(golden_act[i])
+            temp["label_act"] = label_act
+            # print("=====================")
+            # print("golden", label_act)
+            # print("ans from NLU", ans)
+            # print("pre from NLU", pre)
+            acc["all"] += len(ans)
+            for da in ans:
+                if da in label_act:
+                    acc["tp"] += 1
+                else:
+                    acc["fp"] += 1
+            for da in label_act:
+                if da not in ans:
+                    acc["fn"] += 1
+        r.append(temp)
+        score_list["all"].append(len(pre))
         missing = 0
         redundant = 0
-        for da in act:
+        for da in ans:
             if da not in pre:
                 missing += 1
         for da in pre:
-            if da not in act:
+            if da not in ans:
                 redundant += 1
         score_list["missing"].append(missing)
         score_list["redundant"].append(redundant)
@@ -46,7 +88,14 @@ def nlu_evaluation(actions, utterances):
         ser[metric] = sum(s)
 
     ser["ser"] = (ser["missing"] + ser["redundant"])/ser["all"]
-    return ser
+    if golden_act is not None:
+        ser["bertnlu"] = {
+            "acc": acc["tp"]/acc["all"],
+            "precision": acc["tp"]/(acc["tp"]+acc["fp"]),
+            "recall": acc["tp"]/(acc["tp"]+acc["fn"]),
+            "f1": 2*acc["tp"]/(2*acc["tp"]+acc["fp"]+acc["fn"])}
+
+    return ser, r
 
 
 def ser_v2(actions, utterances, ontology="multiwoz21"):
@@ -66,6 +115,7 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
                     val2ds_dict[val] = f'{domain_name}-{slot_name}'
     score_list = {"missing": [], "redundant": [], "all": []}
     for da, utterance in zip(actions, utterances):
+        da = norm(da)
         missing_count = 0
         redundant_count = 0
         all_count = 0
@@ -115,13 +165,13 @@ def ser_v2(actions, utterances, ontology="multiwoz21"):
     return ser
 
 
-def action_norm(act):
-    a = []
-    for intent, domain, slot, value in act:
-        if value == "<?>":
-            value = "?"
-        a.append([intent, domain, slot, value])
-    return a
+# def action_norm(act):
+#     a = []
+#     for intent, domain, slot, value in act:
+#         if value == "<?>":
+#             value = "?"
+#         a.append([intent, domain, slot, value])
+#     return a
 
 
 def calculate(file_name):
@@ -137,25 +187,28 @@ def calculate(file_name):
         inputs = dialog["in"]
         labels = json.loads(dialog["out"])
         r["input"].append(inputs)
-        r["golden_acts"].append(action_norm((labels["action"])))
+        r["golden_acts"].append(norm((labels["action"])))
         r["golden_utts"].append(labels["text"])
-        r["generate_utts"].append(nlg.generate(action_norm(labels["action"])))
+        r["generate_utts"].append(nlg.generate(norm(labels["action"])))
 
-    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-        r["golden_acts"], r["golden_utts"])
-    # print(hallucination_dialogs)
-    print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
-        "human", missing, total, hallucinate, (missing+hallucinate)/total))
+    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+    #     r["golden_acts"], r["golden_utts"])
+    # # print(hallucination_dialogs)
+    # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+    #     "human", missing, total, hallucinate, (missing+hallucinate)/total))
 
     # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
     #     r["golden_acts"], r["generate_utts"])
     # print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
     #     "template", missing, total, hallucinate, (missing+hallucinate)/total))
-    ontology = "multiwoz21"
-    print("SER v2: ",
-          ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
-          ser_v2(r["golden_acts"], r["generate_utts"], ontology)
-          )
+    # ontology = "multiwoz21"
+    # print("SER v2: ",
+    #       ser_v2(r["golden_acts"], r["golden_utts"], ontology), " | ",
+    #       ser_v2(r["golden_acts"], r["generate_utts"], ontology)
+    #       )
+    print("bertnlu_evaluation")
+    print(bertnlu_evaluation(r["golden_utts"],
+          r["generate_utts"], r["golden_acts"]))
     # print(nlu_evaluation(r["golden_acts"], r["golden_utts"]))
     return r
 

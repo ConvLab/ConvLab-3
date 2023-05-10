@@ -13,7 +13,7 @@ from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
 from convlab.policy.emoUS.emoUS import UserActionPolicy
-from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2
+from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2, norm, bertnlu_evaluation
 
 
 sys.path.append(os.path.dirname(os.path.dirname(
@@ -116,21 +116,23 @@ class Evaluator:
                 output = self.usr._parse_output(output[usr_emo])
                 usr_act = self.usr._remove_illegal_action(output["action"])
                 usr_utt = output["text"]
+                print(self.usr.action_prob)
             else:
                 output = self.usr._parse_output(
                     self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
                 usr_act = self.usr._remove_illegal_action(output["action"])
                 usr_utt = output["text"]
+                print(self.usr.action_prob)
 
             temp = {}
             temp["input"] = inputs
-            temp["golden_acts"] = self.usr._remove_illegal_action(
-                labels["action"])
+            temp["golden_acts"] = norm(self.usr._remove_illegal_action(
+                labels["action"]))
             temp["golden_utts"] = labels["text"]
             temp["golden_emotion"] = labels["emotion"]
 
-            temp["gen_acts"] = usr_act
+            temp["gen_acts"] = norm(usr_act)
             temp["gen_utts"] = usr_utt
             temp["gen_emotion"] = usr_emo
 
@@ -166,8 +168,9 @@ class Evaluator:
             for x in dialog:
                 if x not in self.r:
                     self.r[x] = []
-                if x == "golden_acts":
-                    dialog[x] = self.usr._remove_illegal_action(dialog[x])
+                if "acts" in x:
+                    dialog[x] = norm(
+                        self.usr._remove_illegal_action(dialog[x]))
                 self.r[x].append(dialog[x])
 
     def _transform_result(self):
@@ -229,6 +232,10 @@ class Evaluator:
             self.read_generated_result(generated_file)
         else:
             print("You must specify the input_file or the generated_file")
+
+        x = bertnlu_evaluation(
+            self.r["golden_utt"], self.r["gen_utt"], self.r["golden_act"])
+        print(x)
 
         r = self.nlg_evaluation(
             self.r["golden_utts"], self.r["gen_utts"], self.r["gen_acts"])

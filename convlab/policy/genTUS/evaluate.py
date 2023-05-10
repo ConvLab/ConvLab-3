@@ -12,7 +12,7 @@ from datasets import load_metric
 #     stepGenTUSPG as UserPolicy
 from convlab.policy.genTUS.stepGenTUS import UserActionPolicy
 from tqdm import tqdm
-from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2
+from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2, norm, bertnlu_evaluation
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -77,9 +77,9 @@ class Evaluator:
                 usr_utt = output["text"]
             r["input"].append(inputs)
             r["golden_acts"].append(
-                self.usr._remove_illegal_action(labels["action"]))
+                norm(self.usr._remove_illegal_action(labels["action"])))
             r["golden_utts"].append(labels["text"])
-            r["gen_acts"].append(usr_act)
+            r["gen_acts"].append(norm(usr_act))
             r["gen_utts"].append(usr_utt)
 
         return r
@@ -94,9 +94,10 @@ class Evaluator:
             "gen_utts": []
         }
         for dialog in tqdm(in_file['dialog']):
-            for x in dialog:
-                if x == "golden_acts":
-                    dialog[x] = self.usr._remove_illegal_action(dialog[x])
+            for x in r:
+                if "acts" in x:
+                    dialog[x] = norm(
+                        self.usr._remove_illegal_action(dialog[x]))
                 r[x].append(dialog[x])
 
         return r
@@ -171,8 +172,8 @@ class Evaluator:
         if generated_file:
             gen_file = json.load(open(generated_file))
             force_prediction = False
-            if gen_file["golden"]:
-                force_prediction = True
+            # if gen_file["golden"]:
+            #     force_prediction = True
 
         if force_prediction:
             in_file = json.load(open(input_file))
@@ -202,10 +203,16 @@ class Evaluator:
         else:
             gen_acts, golden_acts = [], []
             for dialog in gen_file['dialog']:
-                gen_acts.append(dialog["gen_acts"])
-                golden_acts.append(dialog["golden_acts"])
+                gen_acts.append(norm(dialog["gen_acts"]))
+                golden_acts.append(norm(dialog["golden_acts"]))
             dialog_result = gen_file['dialog']
 
+        x = bertnlu_evaluation(
+            [dialog["golden_utts"] for dialog in gen_file['dialog']],
+            [dialog["gen_utts"] for dialog in gen_file['dialog']],
+            golden_acts)
+        print("bertnlu_evaluation")
+        print(x)
         scores = {"complete": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
                   "intent_domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
 

@@ -1,6 +1,6 @@
 import json
 from random import choices
-
+from torch import softmax
 from convlab.policy.genTUS.token_map import tokenMap
 
 from transformers import BartTokenizer
@@ -99,6 +99,7 @@ class KnowledgeGraph:
 
     def _get_max_score(self, outputs, candidate_list, map_type, weight=None):
         score = {}
+        # outputs = softmax(outputs, dim=-1)  # do we need softmax?
         if not candidate_list:
             print(f"ERROR: empty candidate list for {map_type}")
             score[1] = {"token_id": self._get_token_id(
@@ -129,10 +130,11 @@ class KnowledgeGraph:
     def _get_max_domain_token(self, outputs, candidates, map_type, mode="max"):
         score = self._get_max_score(outputs, candidates, map_type)
         s = self._select(score, mode)
+        p = s/sum([x for x in score])
         token_id = score[s]["token_id"]
         token_name = score[s]["token_name"]
 
-        return {"token_id": token_id, "token_name": token_name}
+        return {"token_id": token_id, "token_name": token_name, "prob": p}
 
     def candidate(self, candidate_type, **kwargs):
         if "intent" in kwargs:

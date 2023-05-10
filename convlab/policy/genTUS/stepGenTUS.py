@@ -207,6 +207,13 @@ class UserActionPolicy(Policy):
 
         return terminate, token_name
 
+    def _get_action_prob(self, action):
+        prob = 1
+        for token in action:
+            if "prob" in token:
+                prob *= token["prob"]
+        return prob
+
     def _get_semantic_action(self, model_input, pos, mode="max", allow_general_intent=True):
 
         intent = self._get_intent(
@@ -236,6 +243,12 @@ class UserActionPolicy(Policy):
         value = self._get_value(
             model_input, self.seq[:1, :pos], intent["token_name"], domain["token_name"], slot["token_name"], mode)
         pos = self._update_seq(value["token_id"], pos)
+
+        act = [intent["token_name"], domain["token_name"],
+               slot["token_name"], value["token_name"]]
+        self.action_prob.append(
+            {"action": act,
+             "prob": self._get_action_prob([intent, domain, slot, value])})
 
         return pos
 
@@ -300,6 +313,7 @@ class UserActionPolicy(Policy):
         # sys_act = sys_act[:5]
         # update goal
         # TODO
+        self.action_prob = []
         allow_general_intent = False
         self.model.eval()
 
@@ -349,6 +363,7 @@ class UserActionPolicy(Policy):
         #     self.terminated = True
 
         del inputs
+        print(self.action_prob)
 
         if self.mode == "language":
             # print("in", sys_act)
