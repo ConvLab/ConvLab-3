@@ -233,10 +233,6 @@ class Evaluator:
         else:
             print("You must specify the input_file or the generated_file")
 
-        x = bertnlu_evaluation(
-            self.r["golden_utt"], self.r["gen_utt"], self.r["golden_act"])
-        print(x)
-
         r = self.nlg_evaluation(
             self.r["golden_utts"], self.r["gen_utts"], self.r["gen_acts"])
         for metric, score in r.items():

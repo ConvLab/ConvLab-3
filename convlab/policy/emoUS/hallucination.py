@@ -25,7 +25,7 @@ class Hallucinate(Evaluator):
             print("You must specify the input_file or the generated_file")
 
         ser, r = bertnlu_evaluation(
-            self.r["golden_utt"], self.r["gen_utt"], self.r["golden_act"])
+            self.r["golden_utts"], self.r["gen_utts"], self.r["golden_acts"])
         print(ser)
         with open(os.path.join(self.result_dir, "hallucination"), "w") as f:
             json.dump(r, f, indent=2)
