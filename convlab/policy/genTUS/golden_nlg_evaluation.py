@@ -30,6 +30,12 @@ def norm(act):
             value = "?"
         if intent == "thank":
             domain = "general"
+            slot = "none"
+            value = "none"
+        if len(slot) < 1:
+            slot = "none"
+        if len(value) < 1:
+            value = "none"
 
         new.append([intent, domain, slot, value.lower()])
     return new

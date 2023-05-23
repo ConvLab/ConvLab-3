@@ -45,6 +45,12 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         for emotion, index in data_emotion.items():
             self.emotion_list[index] = emotion
 
+        sent2emo = json.load(open("convlab/policy/emoUS/sent2emo.json"))
+        self.emo2sent = {}
+        for sent, emos in sent2emo.items():
+            for emo in emos:
+                self.emo2sent[emo] = sent
+
         self.init_session()
 
     def estimate_emotion(self, sys_act, mode="max"):
@@ -99,24 +105,13 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         inputs = json.dumps(input_dict)
 
         with torch.no_grad():
-            if emotion == "all":
-                raw_output = self.generate_from_emotion(
-                    raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
-                for emo in raw_output:
-                    output = self._parse_output(raw_output[emo])
-                    print("emo:", emo)
-                    print("act:", output["action"])
-                    print("utt:", output["text"])
-                raw_output = raw_output["Neutral"]
-            elif emotion is not None:
+            if emotion is not None:
                 raw_output = self.generate_from_emotion(
                     raw_inputs=inputs, emotion=emotion, mode=mode, allow_general_intent=allow_general_intent)
-                for emo in raw_output:
-                    output = self._parse_output(raw_output[emo])
-                    print("emo:", emo)
-                    print("act:", output["action"])
-                    print("utt:", output["text"])
-                raw_output = raw_output[emotion]
+                output = self._parse_output(raw_output)
+                print("emo:", emotion)
+                print("act:", output["action"])
+                # print("utt:", output["text"])
             else:
                 raw_output = self._generate_action(
                     raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
@@ -160,20 +155,28 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             print("-"*20)
         return action
 
-    def _update_sentiment(self, pos, model_input, mode):
+    def _update_sentiment(self, pos, model_input, mode, golden_sentiment=None):
         pos = self._update_seq(
             self.token_map.get_id('start_sentiment'), pos)
-        sentiment = self._get_sentiment(
-            model_input, self.seq[:1, :pos], mode)
-        pos = self._update_seq(sentiment["token_id"], pos)
+        if golden_sentiment:
+            sentiment = {"token_name": golden_sentiment}
+            pos = self._update_seq(
+                self.kg._get_token_id(golden_sentiment), pos)
+        else:
+            sentiment = self._get_sentiment(
+                model_input, self.seq[:1, :pos], mode)
+            pos = self._update_seq(sentiment["token_id"], pos)
         return sentiment, pos
 
-    def _update_emotion(self, pos, model_input, mode, emotion_mode, sentiment=None):
+    def _update_emotion(self, pos, model_input, mode, emotion_mode, golden_sentiment=None, golden_emotion=None):
         pos = self._update_seq(
             self.token_map.get_id('start_emotion'), pos)
-        emotion = self._get_emotion(
-            model_input, self.seq[:1, :pos], mode, emotion_mode, sentiment)
-        pos = self._update_seq(emotion["token_id"], pos)
+        if golden_emotion:
+            pos = self._update_seq(self.kg._get_token_id(golden_emotion), pos)
+        else:
+            emotion = self._get_emotion(
+                model_input, self.seq[:1, :pos], mode, emotion_mode, golden_sentiment)
+            pos = self._update_seq(emotion["token_id"], pos)
         return pos
 
     def _update_semantic_act(self, pos, model_input, mode, allow_general_intent):
@@ -194,56 +197,76 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         return pos
 
-    def _sent_act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+    def _sent_act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=None, golden_action=None):
         # sent
-        sentiment, pos = self._update_sentiment(pos, model_input, mode)
+        golden_sentiment = None
+        if golden_emotion:
+            golden_sentiment = self.emo2sent[golden_emotion]
+        sentiment, pos = self._update_sentiment(
+            pos, model_input, mode, golden_sentiment=golden_sentiment)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         # act
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
-        pos = self._update_semantic_act(
-            pos, model_input, mode, allow_general_intent)
+        if golden_action:
+            pos = self._update_given_act(golden_action, pos)
+        else:
+            pos = self._update_semantic_act(
+                pos, model_input, mode, allow_general_intent)
         # emo
         pos = self._update_emotion(
-            pos, model_input, mode, emotion_mode, sentiment["token_name"])
+            pos, model_input, mode, emotion_mode, sentiment["token_name"], golden_emotion=golden_emotion)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
         return pos
 
-    def _sent_emo_act(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+    def _sent_emo_act(self, pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=None, golden_action=None):
         # sent
-        sentiment, pos = self._update_sentiment(pos, model_input, mode)
+        golden_sentiment = None
+        if golden_emotion:
+            golden_sentiment = self.emo2sent[golden_emotion]
+        sentiment, pos = self._update_sentiment(
+            pos, model_input, mode, golden_sentiment=golden_sentiment)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         # emo
         pos = self._update_emotion(
-            pos, model_input, mode, emotion_mode, sentiment["token_name"])
+            pos, model_input, mode, emotion_mode, sentiment["token_name"], golden_emotion=golden_emotion)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         # act
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
-        pos = self._update_semantic_act(
-            pos, model_input, mode, allow_general_intent)
+        if golden_action:
+            pos = self._update_given_act(golden_action, pos)
+        else:
+            pos = self._update_semantic_act(
+                pos, model_input, mode, allow_general_intent)
 
         return pos
 
-    def _emo_act(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+    def _emo_act(self, pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=None, golden_action=None):
         # emo
         pos = self._update_emotion(
-            pos, model_input, mode, emotion_mode)
+            pos, model_input, mode, emotion_mode, golden_emotion=golden_emotion)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
         # act
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
-        pos = self._update_semantic_act(
-            pos, model_input, mode, allow_general_intent)
+        if golden_action:
+            pos = self._update_given_act(golden_action, pos)
+        else:
+            pos = self._update_semantic_act(
+                pos, model_input, mode, allow_general_intent)
 
         return pos
 
-    def _act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent):
+    def _act_emo(self, pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=None, golden_action=None):
         # act
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
-        pos = self._update_semantic_act(
-            pos, model_input, mode, allow_general_intent)
+        if golden_action:
+            pos = self._update_given_act(golden_action, pos)
+        else:
+            pos = self._update_semantic_act(
+                pos, model_input, mode, allow_general_intent)
         # emo
         pos = self._update_emotion(
-            pos, model_input, mode, emotion_mode)
+            pos, model_input, mode, emotion_mode, golden_emotion=golden_emotion)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
 
         return pos
@@ -261,7 +284,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         return emotion
 
-    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal"):
+    def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal", emotion=None, golden_action=None):
         self.kg.parse_input(raw_inputs)
         model_input = self.vector.encode(raw_inputs, self.max_in_len)
         # start token
@@ -271,16 +294,16 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         if self.use_sentiment and self.emotion_mid:
             pos = self._sent_act_emo(
-                pos, model_input, mode, emotion_mode, allow_general_intent)
+                pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=emotion, golden_action=golden_action)
         elif self.use_sentiment and not self.emotion_mid:
             pos = self._sent_emo_act(
-                pos, model_input, mode, emotion_mode, allow_general_intent)
+                pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=emotion, golden_action=golden_action)
         elif not self.use_sentiment and self.emotion_mid:
             pos = self._act_emo(
-                pos, model_input, mode, emotion_mode, allow_general_intent)
+                pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=emotion, golden_action=golden_action)
         else:  # defalut method
             pos = self._emo_act(
-                pos, model_input, mode, emotion_mode, allow_general_intent)
+                pos, model_input, mode, emotion_mode, allow_general_intent, golden_emotion=emotion, golden_action=golden_action)
 
         if self.only_action:
             # return semantic action. Don't need to generate text
@@ -292,60 +315,12 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         return text
 
     def generate_from_emotion(self, raw_inputs, emotion=None, mode="max", allow_general_intent=True):
-        self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
-        responses = {}
-        if emotion:
-            emotion_list = [emotion]
-        else:
-            emotion_list = self.emotion_list
-
-        for emotion in emotion_list:
-            # start token
-            self.seq = torch.zeros(1, self.max_out_len,
-                                   device=self.device).long()
-            pos = self._update_seq([0], 0)
-            pos = self._update_seq(self.token_map.get_id('start_json'), pos)
-            pos = self._update_seq(
-                self.token_map.get_id('start_emotion'), pos)
-
-            pos = self._update_seq(self.kg._get_token_id(emotion), pos)
-            pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
-            pos = self._update_seq(self.token_map.get_id('start_act'), pos)
-
-            # get semantic actions
-            for act_len in range(self.max_action_len):
-                pos = self._get_semantic_action(
-                    model_input, pos, mode, allow_general_intent)
-
-                terminate, token_name = self._stop_semantic(
-                    model_input, pos, act_len)
-                pos = self._update_seq(self.token_map.get_id(token_name), pos)
-
-                if terminate:
-                    break
-
-            if self.only_action:
-                return self.vector.decode(self.seq[0, :pos])
-
-            pos = self._update_seq(self.token_map.get_id("start_text"), pos)
-            text = self._get_text(model_input, pos)
-            responses[emotion] = text
-
-        return responses
+        return self._generate_action(raw_inputs, mode, allow_general_intent, emotion_mode="normal", emotion=emotion)
 
     def generate_text_from_give_semantic(self, raw_inputs, semantic_action, emotion="Neutral"):
-        self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
-        self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
-        pos = self._update_seq([0], 0)
-        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
-        pos = self._update_seq(
-            self.token_map.get_id('start_emotion'), pos)
-        pos = self._update_seq(self.kg._get_token_id(emotion), pos)
-        pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
-        pos = self._update_seq(self.token_map.get_id('start_act'), pos)
+        return self._generate_action(raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal", emotion=emotion, golden_action=semantic_action)
 
+    def _update_given_act(self, semantic_action, pos):
         if len(semantic_action) == 0:
             pos = self._update_seq(self.token_map.get_id("end_act"), pos)
 
@@ -363,10 +338,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             else:
                 token_name = "sep_act"
             pos = self._update_seq(self.token_map.get_id(token_name), pos)
-        pos = self._update_seq(self.token_map.get_id("start_text"), pos)
-
-        raw_output = self._get_text(model_input, pos)
-        return self._parse_output(raw_output)["text"]
+        return pos
 
     def _get_sentiment(self, model_input, generated_so_far, mode="max"):
         next_token_logits = self.model.get_next_token_logits(
@@ -529,15 +501,16 @@ if __name__ == "__main__":
     start = time.time()
 
     # print(usr.policy.policy.goal.status)
-    print(usr.response([['inform', 'train', 'day', 'saturday']]))
+    # print(usr.response([['inform', 'train', 'day', 'saturday']]))
     # pprint(usr.policy.policy.goal.get_goal_list())
     # print(usr.policy.estimate_emotion(
     #    [['inform', 'train', 'arrive by', '15:30']]))
     # pprint(usr.policy.policy.goal.get_goal_list())
 
     # print(usr.policy.policy.goal.status)
-    print(usr.response([]),
-          usr.policy.get_emotion())
+    # print(usr.response([]),
+    #       usr.policy.get_emotion())
+    print(usr.policy.policy.predict(sys_act=[], emotion="Neutral"))
     end = time.time()
     print("-"*50)
     print("time: ", end - start)

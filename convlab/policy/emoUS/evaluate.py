@@ -90,6 +90,15 @@ class Evaluator:
             for emo in emotions:
                 self.emo2sent[emo] = sent
 
+    def _get_model_type(self):
+        if self.use_sentiment and self.emotion_mid:
+            return "sent_act_emo"
+        elif self.use_sentiment and not self.emotion_mid:
+            return "sent_emo_act"
+        elif not self.use_sentiment and self.emotion_mid:
+            return "act_emo"
+        return "emo_act"
+
     def _append_result(self, temp):
         # for x in self.r:
         for x in temp:
@@ -111,23 +120,25 @@ class Evaluator:
             if golden_action:
                 usr_act = labels["action"]
                 usr_emo = labels["emotion"]
-                usr_utt = self.usr.generate_text_from_give_semantic(
+                output = self.usr.generate_text_from_give_semantic(
                     inputs, labels["action"], labels["emotion"])
+                output = self.usr._parse_output(output)
+                usr_utt = output["text"]
             elif golden_emotion:
                 usr_emo = labels["emotion"]
                 output = self.usr.generate_from_emotion(
                     inputs,  emotion=usr_emo, mode=mode)
-                output = self.usr._parse_output(output[usr_emo])
+                output = self.usr._parse_output(output)
                 usr_act = self.usr._remove_illegal_action(output["action"])
                 usr_utt = output["text"]
-                print(self.usr.action_prob)
+                # print(self.usr.action_prob)
             else:
                 output = self.usr._parse_output(
                     self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
                 usr_act = self.usr._remove_illegal_action(output["action"])
                 usr_utt = output["text"]
-                print(self.usr.action_prob)
+                # print(self.usr.action_prob)
 
             temp = {}
             temp["input"] = inputs
@@ -156,11 +167,12 @@ class Evaluator:
         elif golden_emotion:
             generations["golden"] = "golden_emotion"
         generations["mode"] = mode
+        generations["model_type"] = self._get_model_type()
         generations["dialog"] = self._transform_result()
 
-        file_name = "generations.json"
+        file_name = f"{self._get_model_type()}-generations.json"
         if generations["golden"]:
-            file_name = generations['golden'] + "_" + file_name
+            file_name = generations['golden'] + "-" + file_name
 
         with open(os.path.join(self.result_dir, file_name), "w") as f:
             json.dump(generations, f, indent=2)
@@ -274,7 +286,7 @@ class Evaluator:
             self.evaluation_result["emotion prediction"]["sentiment"]["macro_f1"] = r["macro_f1"]
             self.evaluation_result["emotion prediction"]["sentiment"]["sep_f1"] = {
                 emo: f1 for emo, f1 in zip(r["label"], r["sep_f1"])}
-
+        print("====== model type: ", self._get_model_type(), "======")
         pprint(self.evaluation_result)
 
     # def save_results(self):
