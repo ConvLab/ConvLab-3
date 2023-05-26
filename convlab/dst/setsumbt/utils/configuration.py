@@ -261,7 +261,7 @@ def get_starting_config(args):
             config["no_set_similarity"] = False
             config["no_descriptions"] = False
         elif config["model_type"].lower() == 'sumbt':
-            config["model_type"] = 'bert'
+            config["model_type"] = 'roberta'
             config["no_set_similarity"] = True
             config["no_descriptions"] = False
 
