@@ -225,8 +225,14 @@ class SetSUMBTHead(Module):
         # Model ontology placeholders
         if not hasattr(self.config, 'num_slots'):
             self.config.num_slots = 1
-        self.slot_embeddings = Parameter(torch.zeros(self.config.num_slots, self.config.max_candidate_len,
-                                                     self.config.hidden_size), requires_grad=False)
+
+        if self.config.set_similarity:
+            self.slot_embeddings = Parameter(torch.zeros(self.config.num_slots, self.config.max_candidate_len,
+                                                         self.config.hidden_size), requires_grad=False)
+        else:
+            self.slot_embeddings = Parameter(torch.zeros(self.config.num_slots, self.config.hidden_size),
+                                             requires_grad=False)
+
         if not hasattr(self.config, 'slot_ids'):
             self.config.slot_ids = dict()
             self.config.requestable_slot_ids = dict()
@@ -237,10 +243,16 @@ class SetSUMBTHead(Module):
         for slot in self.config.slot_ids:
             if slot not in self.config.num_values:
                 self.config.num_values[slot] = 1
-            setattr(self, slot + '_value_embeddings', Parameter(torch.zeros(self.config.num_values[slot],
-                                                                            self.config.max_candidate_len,
-                                                                            self.config.hidden_size),
-                                                                requires_grad=False))
+
+            if self.config.set_similarity:
+                setattr(self, slot + '_value_embeddings', Parameter(torch.zeros(self.config.num_values[slot],
+                                                                                self.config.max_candidate_len,
+                                                                                self.config.hidden_size),
+                                                                    requires_grad=False))
+            else:
+                setattr(self, slot + '_value_embeddings', Parameter(torch.zeros(self.config.num_values[slot],
+                                                                                self.config.hidden_size),
+                                                                    requires_grad=False))
 
         # Matching network similarity measure
         if config.distance_measure == 'cosine':
