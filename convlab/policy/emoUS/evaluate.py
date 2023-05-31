@@ -74,8 +74,6 @@ class Evaluator:
             emotion_mid=self.emotion_mid,
             weight=self.emotion_weight)
 
-        self.usr.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
-
         # self.r = {"input": [],
         #           "golden_acts": [],
         #           "golden_utts": [],
@@ -113,6 +111,7 @@ class Evaluator:
             self.r[x].append(temp[x])
 
     def generate_results(self, f_eval, golden_emotion=False, golden_action=False):
+        self.usr.load(os.path.join(self.model_checkpoint, "pytorch_model.bin"))
         emotion_mode = "normal"
         in_file = json.load(open(f_eval))
         mode = "max"
@@ -294,6 +293,7 @@ class Evaluator:
                 emo: f1 for emo, f1 in zip(r["label"], r["sep_f1"])}
         print("====== model type: ", self._get_model_type(), "======")
         pprint(self.evaluation_result)
+        return self.evaluation_result
 
     # def save_results(self):
 

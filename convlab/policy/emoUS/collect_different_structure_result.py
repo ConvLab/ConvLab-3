@@ -6,11 +6,12 @@ from convlab.policy.emoUS.evaluate import Evaluator
 
 def main():
     structures = json.load(open("convlab/policy/emoUS/structure.json"))
+    exp_dir = "convlab/policy/emoUS/unify/experiments"
     result = {"model": [], "weight": []}
     for s in structures:
         for weight in [0.98, 0.95, 0.9, 0.85, 0.8]:
             generated_file = os.path.join(
-                s["model"], f"weight-{weight}", f"{s['prefix']}-generations.json")
+                exp_dir, s["model"], f"weight-{weight}", f"{s['prefix']}-generations.json")
             eval = Evaluator(s["model"],
                              "multiwoz",
                              "",
