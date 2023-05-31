@@ -53,6 +53,10 @@ class Evaluator:
         self.add_persona = kwargs.get("add_persona", False)
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.emotion_weight = kwargs.get("weight", None)
+        if self.emotion_weight:
+            self.result_dir = os.path.join(
+                self.result_dir, f"weight-{self.emotion_weight}")
+
         self.sample = kwargs.get("sample", False)
         print("self.emotion_weight", self.emotion_weight)
         self.evaluation_result = {

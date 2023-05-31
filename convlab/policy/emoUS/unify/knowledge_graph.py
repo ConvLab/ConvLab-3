@@ -55,8 +55,7 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
         if weight:
             if use_sentiment:
                 self.sentiment_weight["Neutral"] = weight
-            else:
-                self.emotion_weight["Neutral"] = weight
+            self.emotion_weight["Neutral"] = weight
 
     def get_sentiment(self, outputs, mode="max"):
         score = self._get_max_score(

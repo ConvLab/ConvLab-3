@@ -103,7 +103,7 @@ def get_turn_emotion(conversation):
     for x in data:
         data[x] = np.array(data[x])
 
-    fig, ax = plt.subplots(figsize=(6.0, 2.5))
+    fig, ax = plt.subplots(figsize=(6, 3))
     p = {"Complete": {"color": "C0", "label": "Success"},
          "Not Complete": {"color": "C1", "label": "Fail"},
          "all": {"color": "C2", "label": "all"}}
@@ -127,7 +127,7 @@ def get_turn_emotion(conversation):
     plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, "turn2emotion.png"))
+    plt.savefig(os.path.join(result_dir, "turn2emotion.svg"))
 
 
 def turn_score(score_list):
