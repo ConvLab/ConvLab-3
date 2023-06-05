@@ -81,6 +81,20 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 history = self.usr_acts[-1*self.max_history:]
         return history
 
+    def predict_emotion_from_text(self, input_dict, mode="max"):
+        self.model.eval()
+        raw_inputs = json.dumps(input_dict)
+        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        # start token
+        self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = self._update_seq([0], 0)
+        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode="normal")
+        emotion = self.vector.decode(self.seq[0, :pos]) + '"}'
+
+        return emotion
+
     def predict(self, sys_act, mode="max", allow_general_intent=True, emotion=None):
         allow_general_intent = False
         self.model.eval()

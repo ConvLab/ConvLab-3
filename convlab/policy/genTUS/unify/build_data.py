@@ -26,6 +26,7 @@ def arg_parser():
 
     return parser.parse_args()
 
+
 class DataBuilder:
     def __init__(self, dataset='multiwoz21'):
         self.dataset = dataset
@@ -61,7 +62,8 @@ class DataBuilder:
             sys_act = self._get_sys_act(dialog, turn_id)
 
             user_goal.update_user_goal(action=sys_act, char="sys")
-            usr_goal_str = self._user_goal_str(user_goal, data_goal, random_order, no_status)
+            usr_goal_str = self._user_goal_str(
+                user_goal, data_goal, random_order, no_status)
 
             usr_act = self.norm_domain(transform_data_act(
                 dialog["turns"][turn_id]["dialogue_acts"]))
@@ -70,8 +72,10 @@ class DataBuilder:
             # change value "?" to "<?>"
             usr_act = self._modify_act(usr_act)
 
-            in_str = self._dump_in_str(sys_act, usr_goal_str, history, turn_id, add_history)
-            out_str = self._dump_out_str(usr_act, dialog["turns"][turn_id]["utterance"])
+            in_str = self._dump_in_str(
+                sys_act, usr_goal_str, history, turn_id, add_history)
+            out_str = self._dump_out_str(
+                usr_act, dialog["turns"][turn_id]["utterance"])
 
             history.append(usr_act)
             if usr_act:
@@ -85,6 +89,12 @@ class DataBuilder:
             sys_act = self.norm_domain(transform_data_act(
                 dialog["turns"][turn_id - 1]["dialogue_acts"]))
         return sys_act
+
+    def _get_sys_utt(self, dialog, turn_id):
+        sys_utt = ""
+        if turn_id > 0:
+            sys_utt = dialog["turns"][turn_id - 1]["utterance"]
+        return sys_utt
 
     def _user_goal_str(self, user_goal, data_goal, random_order, no_status):
         if random_order:
@@ -136,7 +146,8 @@ class DataBuilder:
                     value = "<?>"
                 else:
                     value = "none"
-            norm_result.append([self._norm_intent(intent), domain, slot, value])
+            norm_result.append(
+                [self._norm_intent(intent), domain, slot, value])
         return norm_result
 
     def norm_domain_goal(self, x):
@@ -156,7 +167,8 @@ class DataBuilder:
                     value = "<?>"
                 else:
                     value = "none"
-            norm_result.append([domain, self._norm_intent(intent), slot, value])
+            norm_result.append(
+                [domain, self._norm_intent(intent), slot, value])
         return norm_result
 
     @staticmethod

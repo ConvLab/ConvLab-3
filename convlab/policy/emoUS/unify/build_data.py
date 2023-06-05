@@ -39,7 +39,7 @@ class DataBuilder(GenTUSDataBuilder):
         self.emotion = {}
         for emotion, index in json.load(open("convlab/policy/emoUS/emotion.json")).items():
             self.emotion[int(index)] = emotion
-
+        use_sentiment = self.use_sentiment
         if use_sentiment:
             self.sentiment = {}
             for sentiment, index in json.load(open("convlab/policy/emoUS/sentiment.json")).items():
