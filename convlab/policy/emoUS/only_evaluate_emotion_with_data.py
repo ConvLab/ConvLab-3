@@ -24,7 +24,11 @@ def arg_parser():
 
 def one_sent_evaluate(sent_id, text, test_data, model_checkpoint):
     if sent_id is None:
-        sent_id = randint(0, len(test_data))
+        emotion = "Neutral"
+        while emotion == "Neutral":
+            sent_id = randint(0, len(test_data))
+            out_json = json.loads(test_data[sent_id]["out"])
+            emotion = out_json["emotion"]
     in_json = json.loads(test_data[sent_id]["in"])
     if text is None:
         text = in_json["system"]
