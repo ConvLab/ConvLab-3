@@ -32,6 +32,7 @@ def one_sent_evaluate(sent_id, text, test_data, model_checkpoint):
     in_json = json.loads(test_data[sent_id]["in"])
     if text is None:
         text = in_json["system"]
+    print("Sent_ID", sent_id)
     print("----> goal")
     pprint(in_json["goal"])
     print("----> history")
