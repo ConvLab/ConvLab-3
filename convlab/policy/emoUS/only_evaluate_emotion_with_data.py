@@ -39,7 +39,9 @@ def one_sent_evaluate(sent_id, text, test_data, model_checkpoint):
     print("----> system")
     print(text)
     model = load_model(model_checkpoint)
-    generate(model, in_json, text)
+    emotion = generate(model, in_json, text)
+    print("----> emotion")
+    print(emotion)
 
 
 def load_model(model_checkpoint):
@@ -53,8 +55,7 @@ def generate(model: UserActionPolicy, in_json, text=None):
     if text is not None:
         in_json["system"] = text
     emotion = model.predict_emotion_from_text(in_json)
-    if text:
-        print(emotion)
+
     return json.loads(emotion)
 
 
