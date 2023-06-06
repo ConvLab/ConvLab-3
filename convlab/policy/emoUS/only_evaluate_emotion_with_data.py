@@ -48,7 +48,9 @@ def generate(model: UserActionPolicy, in_json, text=None):
     if text is not None:
         in_json["system"] = text
     emotion = model.predict_emotion_from_text(in_json)
-    print(emotion)
+    if text:
+        print(emotion)
+    return emotion
 
 
 def whole_evaluate(test_data, model_checkpoint):
