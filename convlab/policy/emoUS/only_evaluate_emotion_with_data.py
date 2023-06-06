@@ -6,6 +6,7 @@ import torch
 from convlab.policy.emoUS.emoUS import UserActionPolicy
 import os
 from convlab.policy.emoUS.evaluate import emotion_score
+import tqdm
 
 
 def arg_parser():
@@ -50,14 +51,14 @@ def generate(model: UserActionPolicy, in_json, text=None):
     emotion = model.predict_emotion_from_text(in_json)
     if text:
         print(emotion)
-    return emotion
+    return json.loads(emotion)
 
 
 def whole_evaluate(test_data, model_checkpoint):
     model = load_model(model_checkpoint)
     preds = []
     labels = []
-    for data in test_data:
+    for data in tqdm(test_data):
         in_json = json.loads(data["in"])
         out_json = json.loads(data["out"])
         pred = generate(model, in_json)
