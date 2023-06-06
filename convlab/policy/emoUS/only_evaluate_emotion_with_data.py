@@ -77,7 +77,7 @@ def whole_evaluate(test_data, model_checkpoint):
     folder = os.path.join(model_checkpoint, "results")
     os.makedirs(folder, exist_ok=True)
     r = emotion_score(golden_emotions=labels,
-                      gen_emotions=preds, dirname=model_checkpoint)
+                      gen_emotions=preds, dirname=folder)
     print(r)
     with open(os.path.join(model_checkpoint, "generation.json"), "w") as f:
         json.dump(result, f, indent=2)
