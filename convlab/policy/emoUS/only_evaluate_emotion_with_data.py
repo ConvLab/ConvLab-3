@@ -64,15 +64,23 @@ def whole_evaluate(test_data, model_checkpoint):
     model = load_model(model_checkpoint)
     preds = []
     labels = []
+    result = {"dialog": []}
     for data in tqdm(test_data):
         in_json = json.loads(data["in"])
         out_json = json.loads(data["out"])
         pred = generate(model, in_json)
         preds.append(pred["emotion"])
         labels.append(out_json["emotion"])
+        result["dialog"].append(
+            {"input": data["in"], "golden_emotion": out_json["emotion"], "gen_emotion": pred["emotion"]})
+
+    folder = os.path.join(model_checkpoint, "results")
+    os.makedirs(folder, exist_ok=True)
     r = emotion_score(golden_emotions=labels,
                       gen_emotions=preds, dirname=model_checkpoint)
     print(r)
+    with open(os.path.join(model_checkpoint, "generation.json"), "w") as f:
+        json.dump(result, f, indent=2)
 
 
 def main():
