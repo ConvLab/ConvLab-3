@@ -6,7 +6,7 @@ import torch
 from convlab.policy.emoUS.emoUS import UserActionPolicy
 import os
 from convlab.policy.emoUS.evaluate import emotion_score
-import tqdm
+from tqdm import tqdm
 
 
 def arg_parser():
