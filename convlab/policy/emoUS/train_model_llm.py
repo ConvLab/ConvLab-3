@@ -14,7 +14,7 @@ from transformers import (DataCollatorForSeq2Seq, Seq2SeqTrainer,
 from torch.utils.data import DataLoader
 
 from transformers import default_data_collator
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
 from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
 from peft import PeftConfig, PeftModel
 
@@ -53,7 +53,7 @@ def get_model(model_path):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     # tokenizer.add_tokens(["<?>"])
-    model = AutoModelForCausalLM.from_pretrained(
+    model = AutoModelForSeq2SeqLM.from_pretrained(
         model_path, torch_dtype=torch.float16)
     if torch.cuda.is_available():
         print("use cuda")
@@ -202,7 +202,8 @@ class TrainerHelper:
                 labels = self.tokenizer(example["out"],
                                         max_length=self.max_target_length,
                                         truncation=True,
-                                        return_tensors="pt")
+                                        return_tensors="pt",
+                                        padding="max_length")
             for key in ["input_ids", "attention_mask"]:
                 model_inputs[key].append(inputs[key])
             labels[labels == self.tokenizer.pad_token_id] = -100
