@@ -225,31 +225,31 @@ def train(model_type,
     model, tokenizer, device, peft_config = get_model(model_checkpoint)
     # tokenizer = TOKENIZER
 
-    def compute_metrics(eval_preds):
-        preds, labels = eval_preds
-        # Replace -100 in the labels as we can't decode them.
-        labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
-        decoded_labels = tokenizer.batch_decode(
-            labels, skip_special_tokens=True, max_length=MAX_OUT_LEN)
-        if isinstance(preds, tuple):
-            preds = preds[0]
-        preds = np.where(preds != -100, preds, tokenizer.pad_token_id)
-        decoded_preds = tokenizer.batch_decode(
-            preds, skip_special_tokens=True, max_length=MAX_OUT_LEN)
+    # def compute_metrics(eval_preds):
+    #     preds, labels = eval_preds
+    #     # Replace -100 in the labels as we can't decode them.
+    #     labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+    #     decoded_labels = tokenizer.batch_decode(
+    #         labels, skip_special_tokens=True, max_length=MAX_OUT_LEN)
+    #     if isinstance(preds, tuple):
+    #         preds = preds[0]
+    #     preds = np.where(preds != -100, preds, tokenizer.pad_token_id)
+    #     decoded_preds = tokenizer.batch_decode(
+    #         preds, skip_special_tokens=True, max_length=MAX_OUT_LEN)
 
-        act, text = postprocess_text(decoded_preds, decoded_labels)
+    #     act, text = postprocess_text(decoded_preds, decoded_labels)
 
-        result = METRIC.compute(
-            # predictions=decoded_preds, references=decoded_labels)
-            predictions=text["preds"], references=text["labels"])
-        result = {"bleu": result["score"]}
-        f1_scores = f1_measure(
-            pred_acts=act["preds"], label_acts=act["labels"])
-        for s in f1_scores:
-            result[s] = f1_scores[s]
+    #     result = METRIC.compute(
+    #         # predictions=decoded_preds, references=decoded_labels)
+    #         predictions=text["preds"], references=text["labels"])
+    #     result = {"bleu": result["score"]}
+    #     f1_scores = f1_measure(
+    #         pred_acts=act["preds"], label_acts=act["labels"])
+    #     for s in f1_scores:
+    #         result[s] = f1_scores[s]
 
-        result = {k: round(v, 4) for k, v in result.items()}
-        return result
+    #     result = {k: round(v, 4) for k, v in result.items()}
+    #     return result
 
     train_helper = TrainerHelper(
         tokenizer=tokenizer, max_input_length=max_input_length, max_target_length=max_target_length)
@@ -272,7 +272,8 @@ def train(model_type,
         model.train()
         total_loss = 0
         for step, batch in enumerate(tqdm(data_loader["train"])):
-            batch = {k: v.to(device) for k, v in batch.items()}
+            batch = {k: batch[k].to(device)
+                     for k in ["input_ids", "attention_mask"]}
             outputs = model(**batch)
             loss = outputs.loss
             total_loss += loss.detach().float()
