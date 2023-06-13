@@ -10,7 +10,10 @@ import transformers
 from datasets import Dataset, load_metric
 from tqdm import tqdm
 from transformers import (DataCollatorForSeq2Seq, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments)
+                          Seq2SeqTrainingArguments, get_linear_schedule_with_warmup)
+from torch.utils.data import DataLoader
+
+from transformers import default_data_collator
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
 from peft import PeftConfig, PeftModel
@@ -54,13 +57,14 @@ def get_model(model_path):
         model_path, torch_dtype=torch.float16)
     if torch.cuda.is_available():
         print("use cuda")
+        device = "cuda"
         model.to("cuda")
 
     peft_config = LoraConfig(
-        task_type=TaskType.CAUSAL_LM, inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1)
+        task_type=TaskType.SEQ_2_SEQ_LM, inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1)
     model = get_peft_model(model, peft_config)
     model.print_trainable_parameters()
-    return model, tokenizer
+    return model, tokenizer, device, peft_config
 
 
 def postprocess_text(preds, labels):
@@ -189,22 +193,35 @@ class TrainerHelper:
         for example in tqdm(examples):
             inputs = self.tokenizer(example["in"],
                                     max_length=self.max_input_length,
-                                    truncation=True)
+                                    truncation=True,
+                                    padding="max_length",
+                                    return_tensors="pt")
 
             # Setup the tokenizer for targets
             with self.tokenizer.as_target_tokenizer():
                 labels = self.tokenizer(example["out"],
                                         max_length=self.max_target_length,
-                                        truncation=True)
+                                        truncation=True,
+                                        return_tensors="pt")
             for key in ["input_ids", "attention_mask"]:
                 model_inputs[key].append(inputs[key])
+            labels[labels == self.tokenizer.pad_token_id] = -100
             model_inputs["labels"].append(labels["input_ids"])
 
         return model_inputs
 
 
-def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max_input_length=500, max_target_length=500, model_checkpoint="facebook/bart-base"):
-    model, tokenizer = get_model(model_checkpoint)
+def train(model_type,
+          data_name,
+          dial_ids_order,
+          split2ratio,
+          batch_size=16,
+          max_input_length=500,
+          max_target_length=500,
+          model_checkpoint="facebook/bart-base",
+          learning_rate=2e-5,
+          num_epochs=5):
+    model, tokenizer, device, peft_config = get_model(model_checkpoint)
     # tokenizer = TOKENIZER
 
     def compute_metrics(eval_preds):
@@ -239,42 +256,54 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max
                                    data_name=data_name,
                                    dial_ids_order=dial_ids_order,
                                    split2ratio=split2ratio)
+    data_loader = {}
+    for x in data:
+        data_loader[x] = DataLoader(
+            data[x], shuffle=True, collate_fn=default_data_collator, batch_size=batch_size, pin_memory=True)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    lr_scheduler = get_linear_schedule_with_warmup(
+        optimizer=optimizer,
+        num_warmup_steps=0,
+        num_training_steps=(len(data_loader["train"]) * num_epochs),
+    )
+
+    for epoch in range(num_epochs):
+        model.train()
+        total_loss = 0
+        for step, batch in enumerate(tqdm(data_loader["train"])):
+            batch = {k: v.to(device) for k, v in batch.items()}
+            outputs = model(**batch)
+            loss = outputs.loss
+            total_loss += loss.detach().float()
+            loss.backward()
+            optimizer.step()
+            lr_scheduler.step()
+            optimizer.zero_grad()
+
+        model.eval()
+        eval_loss = 0
+        # eval_preds = []
+        for step, batch in enumerate(tqdm(data_loader["validation"])):
+            batch = {k: v.to(device) for k, v in batch.items()}
+            with torch.no_grad():
+                outputs = model(**batch)
+            loss = outputs.loss
+            eval_loss += loss.detach().float()
+            # eval_preds.extend(
+            #     tokenizer.batch_decode(torch.argmax(outputs.logits, -1).detach().cpu().numpy(), skip_special_tokens=True))
+
+        eval_epoch_loss = eval_loss / len(data_loader["validation"])
+        eval_ppl = torch.exp(eval_epoch_loss)
+        train_epoch_loss = total_loss / len(data_loader["train"])
+        train_ppl = torch.exp(train_epoch_loss)
+        print(f"{epoch}: {train_ppl} {train_epoch_loss} {eval_ppl} {eval_epoch_loss}")
 
     model_dir = os.path.join(
         train_helper.get_model_folder(model_type),
         f"{datetime.now().strftime('%y-%m-%d-%H-%M')}")
 
-    args = Seq2SeqTrainingArguments(
-        model_dir,
-        evaluation_strategy="epoch",
-        learning_rate=2e-5,
-        per_device_train_batch_size=batch_size,
-        per_device_eval_batch_size=batch_size,
-        weight_decay=0.01,
-        save_total_limit=2,
-        num_train_epochs=5,
-        predict_with_generate=True,
-        fp16=True,
-        push_to_hub=False,
-        generation_max_length=max_target_length,
-        logging_dir=os.path.join(model_dir, 'log')
-    )
-    data_collator = DataCollatorForSeq2Seq(
-        tokenizer, model=model, padding=True)
-
-    # customize this trainer
-    trainer = Seq2SeqTrainer(
-        model=model,
-        args=args,
-        train_dataset=data["train"],
-        eval_dataset=data["test"],
-        data_collator=data_collator,
-        tokenizer=tokenizer,
-        compute_metrics=compute_metrics)
-    print("start training...")
-    trainer.train()
-    print("saving model...")
-    trainer.save_model()
+    peft_model_id = f"{model_dir}_{peft_config.peft_type}_{peft_config.task_type}"
+    model.save_pretrained(peft_model_id)
 
 
 def main():
