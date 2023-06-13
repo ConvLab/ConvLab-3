@@ -48,6 +48,7 @@ MAX_OUT_LEN = 500
 def get_model(model_path):
     # Initialise models
     tokenizer = AutoTokenizer.from_pretrained(model_path)
+    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     # tokenizer.add_tokens(["<?>"])
     model = AutoModelForCausalLM.from_pretrained(
         model_path, torch_dtype=torch.float16)
