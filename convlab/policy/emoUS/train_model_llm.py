@@ -53,7 +53,7 @@ def get_model(model_path):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     # tokenizer.add_tokens(["<?>"])
-    model = AutoModelForSeq2SeqLM.from_pretrained(
+    model = AutoModelForCausalLM.from_pretrained(
         model_path, torch_dtype=torch.float16)
     if torch.cuda.is_available():
         print("use cuda")
