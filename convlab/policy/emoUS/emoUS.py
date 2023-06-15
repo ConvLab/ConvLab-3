@@ -173,6 +173,10 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         try:
             action = json.loads(in_str)
+            action["emotion"] = action["emotion"].strip()
+            if self.use_sentiment:
+                action["sentiment"] = action["sentiment"].strip()
+
         except:
             print("invalid action:", in_str)
             print("-"*20)
