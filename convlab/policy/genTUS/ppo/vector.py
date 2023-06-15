@@ -4,12 +4,12 @@ import torch
 from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.token_map import tokenMap
 from convlab.policy.tus.unify.Goal import Goal
-from transformers import BartTokenizer
+from transformers import AutoTokenizer
 
 
 class stepGenTUSVector:
     def __init__(self, model_checkpoint, max_in_len=400, max_out_len=80, allow_general_intent=True):
-        self.tokenizer = BartTokenizer.from_pretrained(model_checkpoint)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
         self.vocab = len(self.tokenizer)
         self.max_in_len = max_in_len
         self.max_out_len = max_out_len

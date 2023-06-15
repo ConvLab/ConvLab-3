@@ -3,14 +3,14 @@ from random import choices
 from torch import softmax
 from convlab.policy.genTUS.token_map import tokenMap
 
-from transformers import BartTokenizer
+from transformers import AutoTokenizer
 
 DEBUG = False
 DATASET = "unify"
 
 
 class KnowledgeGraph:
-    def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="multiwoz21"):
+    def __init__(self, tokenizer: AutoTokenizer, ontology_file=None, dataset="multiwoz21"):
         # print("dataset", dataset)
         self.debug = DEBUG
         self.tokenizer = tokenizer
