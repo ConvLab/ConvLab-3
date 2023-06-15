@@ -16,20 +16,17 @@ class stepGenTUSmodel(torch.nn.Module):
     def __init__(self, model_checkpoint, train_whole_model=True, model_status="evaluation", device="cuda", model_type="encoder_decoder", **kwargs):
         # config = AutoConfig.from_pretrained(model_checkpoint)
         super().__init__()
-        print("loading model from", model_checkpoint)
         self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
         peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
         if peft_model_checkpoint:
             model_type = "llama"
         self.model_type = model_type
-        print("===== model_type", model_type)
         if model_type == "encoder_decoder":
             self.model = AutoModelForSeq2SeqLM.from_pretrained(
                 model_checkpoint)
 
         else:
-            print("xx")
             self.model = AutoModelForCausalLM.from_pretrained(model_checkpoint)
             self.model = PeftModel.from_pretrained(
                 self.model, peft_model_checkpoint)
