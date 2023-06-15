@@ -20,9 +20,11 @@ class stepGenTUSmodel(torch.nn.Module):
         self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
         peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
-        if peft_model_checkpoint is not None:
+        print("===== peft_model_checkpoint", peft_model_checkpoint)
+        if peft_model_checkpoint:
             model_type = "llama"
         self.model_type = model_type
+        print("===== model_type", model_type)
         if model_type == "encoder_decoder":
             self.model = AutoModelForSeq2SeqLM.from_pretrained(
                 model_checkpoint)
@@ -80,7 +82,7 @@ class stepGenTUSmodel(torch.nn.Module):
             generated_so_far = generated_so_far.to(self.device)
             print(attention_mask)
             input_ids = torch.cat(
-                [model_input["input_ids"], generated_so_far], -1).to(self.device)
+                [input_ids, generated_so_far], -1).to(self.device)
             outputs = self.model(
                 input_ids=input_ids,
                 return_dict=True)
