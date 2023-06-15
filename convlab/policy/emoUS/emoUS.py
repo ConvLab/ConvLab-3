@@ -35,8 +35,9 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         super().__init__(model_checkpoint, mode, only_action, max_turn, **kwargs)
         weight = kwargs.get("weight", None)
+
         self.kg = KnowledgeGraph(
-            tokenizer=self.tokenizer,
+            tokenizer=self.model.tokenizer,
             dataset="emowoz",
             use_sentiment=self.use_sentiment,
             weight=weight)
@@ -373,7 +374,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
     def init_session(self, goal=None):
         self.token_map = tokenMap(
-            tokenizer=self.tokenizer, use_sentiment=self.use_sentiment)
+            tokenizer=self.model.tokenizer, use_sentiment=self.use_sentiment)
         self.token_map.default(only_action=self.only_action)
         self.time_step = 0
         remove_domain = "police"  # remove police domain in inference
@@ -450,8 +451,8 @@ class UserPolicy(Policy):
             mode=mode,
             action_penalty=action_penalty,
             **kwargs)
-        self.policy.load(os.path.join(
-            model_checkpoint, "pytorch_model.bin"))
+        # self.policy.load(os.path.join(
+        #     model_checkpoint, "pytorch_model.bin"))
         self.sample = sample
 
     def predict(self, sys_act, mode="max"):
@@ -506,7 +507,9 @@ if __name__ == "__main__":
         sample=True,
         use_sentiment=use_sentiment,
         emotion_mid=emotion_mid,
-        weight=0.9)
+        weight=0.9,
+        model_type="llama",
+        peft_model_checkpoint="")
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')

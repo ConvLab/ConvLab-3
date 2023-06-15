@@ -2,7 +2,7 @@ import json
 import os
 
 import torch
-from transformers import BartTokenizer
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from random import choices
 
 
@@ -43,21 +43,24 @@ class UserActionPolicy(Policy):
 
         self.reward = {"success":  self.max_turn*2,
                        "fail": self.max_turn*-1}
-        self.tokenizer = BartTokenizer.from_pretrained(model_checkpoint)
+        # self.model.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+
+        model_type = kwargs.get("model_type", "encoder_decoder")
+        peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        train_whole_model = kwargs.get("whole_model", True)
         self.model = stepGenTUSmodel(
-            model_checkpoint, train_whole_model=train_whole_model)
-        self.model.eval()
-        self.model.to(self.device)
-        self.model.share_memory()
+            model_checkpoint, device=self.device, model_type=model_type, peft_model_checkpoint=peft_model_checkpoint)
+        # self.model.from_pretrained(model_checkpoint)
+        # self.model.eval()
+        # self.model.to(self.device)
+        # self.model.share_memory()
 
         self.turn_level_reward = kwargs.get("turn_level_reward", True)
         self.cooperative = kwargs.get("cooperative", True)
 
         dataset = kwargs.get("dataset", "")
         self.kg = KnowledgeGraph(
-            tokenizer=self.tokenizer,
+            tokenizer=self.model.tokenizer,
             dataset=dataset)
 
         self.goal_gen = GoalGenerator()
@@ -373,7 +376,7 @@ class UserActionPolicy(Policy):
             return self.semantic_action
 
     def init_session(self, goal=None):
-        self.token_map = tokenMap(tokenizer=self.tokenizer)
+        self.token_map = tokenMap(tokenizer=self.model.tokenizer)
         self.token_map.default(only_action=self.only_action)
         self.time_step = 0
         remove_domain = "police"  # remove police domain in inference
@@ -412,7 +415,7 @@ class UserActionPolicy(Policy):
     def load(self, model_path):
         self.model.load_state_dict(torch.load(
             model_path, map_location=self.device))
-        # self.model = BartForConditionalGeneration.from_pretrained(
+        # self.model = AutoModelForCausalLM.from_pretrained(
         #     model_checkpoint)
 
     def get_goal(self):
@@ -636,8 +639,8 @@ class UserPolicy(Policy):
             only_action=only_action,
             action_penalty=action_penalty,
             **kwargs)
-        self.policy.load(os.path.join(
-            model_checkpoint, "pytorch_model.bin"))
+        # self.policy.load(os.path.join(
+        #     model_checkpoint, "pytorch_model.bin"))
         self.sample = sample
 
     def predict(self, sys_act, mode="max"):
