@@ -511,6 +511,7 @@ def arg_parser():
                         default="convlab/policy/emoUS/unify/default/EmoUS_default")
     parser.add_argument("--peft-model-checkpoint", type=str, default="")
     parser.add_argument("--mode", type=str, default="language")
+    parser.add_argument("--sample", action="store_true")
     return parser.parse_args()
 
 
@@ -527,7 +528,7 @@ if __name__ == "__main__":
     usr_policy = UserPolicy(
         model_checkpoint=args.model_checkpoint,
         mode=args.mode,
-        sample=True,
+        sample=args.sample,
         use_sentiment=use_sentiment,
         emotion_mid=emotion_mid,
         weight=0.9,
