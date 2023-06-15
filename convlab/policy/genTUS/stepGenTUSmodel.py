@@ -17,12 +17,14 @@ class stepGenTUSmodel(torch.nn.Module):
         # config = AutoConfig.from_pretrained(model_checkpoint)
         super().__init__()
         print("loading model from", model_checkpoint)
+        peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
+        if peft_model_checkpoint is not None:
+            model_type = "llama"
         self.model_type = model_type
         if model_type == "encoder_decoder":
             self.model = AutoModelForSeq2SeqLM.from_pretrained(
                 model_checkpoint)
         else:
-            peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
             self.model = AutoModelForCausalLM.from_pretrained(model_checkpoint)
             self.model = PeftModel.from_pretrained(
                 self.model, peft_model_checkpoint)

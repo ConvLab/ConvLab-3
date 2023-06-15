@@ -1,6 +1,7 @@
 import json
 import os
 from copy import deepcopy
+from argparse import ArgumentParser
 
 import torch
 
@@ -491,25 +492,33 @@ class UserPolicy(Policy):
         return self.policy.emotion
 
 
+def arg_parser():
+    parser = ArgumentParser()
+    parser.add_argument("--model-checkpoint", type=str,
+                        default="convlab/policy/emoUS/unify/default/EmoUS_default")
+    parser.add_argument("--peft-model-checkpoint", type=str, default="")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
     import time
     from pprint import pprint
 
     from convlab.dialog_agent import PipelineAgent
     from convlab.util.custom_util import set_seed
-
+    args = arg_parser()
     use_sentiment, emotion_mid = False, False
     set_seed(100)
     # Test semantic level behaviour
     usr_policy = UserPolicy(
-        # model_checkpoint, # default location = convlab/policy/emoUS/unify/default/EmoUS_default
+        model_checkpoint=args.model_checkpoint,
         mode="semantic",
         sample=True,
         use_sentiment=use_sentiment,
         emotion_mid=emotion_mid,
         weight=0.9,
-        model_type="llama",
-        peft_model_checkpoint="")
+        model_type="encoder_decoder",
+        peft_model_checkpoint=args.peft_model_checkpoint)
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
