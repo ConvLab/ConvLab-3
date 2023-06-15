@@ -38,10 +38,7 @@ class tokenMap:
             workaround = f"#{value}"
             token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
                 "input_ids"][1:]
-            print("token_map", value,
-                  token_id,
-                  self.tokenizer(str(value), add_special_tokens=False)[
-                      "input_ids"])
+
         else:
             token_id = self.tokenizer(str(value), add_special_tokens=False)[
                 "input_ids"]
