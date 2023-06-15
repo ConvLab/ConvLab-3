@@ -23,6 +23,7 @@ class tokenMap:
             'end_json': '}',
             'end_json_2': '"}',
             'end_json_3': "'}",
+            'end_json_4': "'},",
             'book': 'book'
         }
 

@@ -21,6 +21,7 @@ class tokenMap:
             'end_json': '}',                # 24303
             'end_json_2': '"}',             # 48805
             'end_json_3': "'}",
+            'end_json_4': "'},",
             'book': 'book'                  # 6298
         }
         if only_action:
