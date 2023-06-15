@@ -83,8 +83,6 @@ class stepGenTUSmodel(torch.nn.Module):
                 [model_input["input_ids"], generated_so_far], -1).to(self.device)
             outputs = self.model.forward(
                 input_ids=input_ids,
-                attention_mask=attention_mask,
-                labels=generated_so_far,
                 return_dict=True)
         return outputs.logits[:, -1, :]
 
