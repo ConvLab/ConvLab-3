@@ -175,6 +175,10 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             if self.use_sentiment:
                 action["sentiment"] = action["sentiment"].strip()
             action["action"] = self._remove_illegal_action(action["action"])
+            if "text" in action:
+                text = action["text"].strip()
+                text = text.split('"}')[0]
+                text = text.split("'}")[0]
 
         except:
             print("invalid action:", in_str)
