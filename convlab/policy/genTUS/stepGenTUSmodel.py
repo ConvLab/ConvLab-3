@@ -70,12 +70,15 @@ class stepGenTUSmodel(torch.nn.Module):
     def get_next_token_logits(self, model_input, generated_so_far):
         input_ids = model_input["input_ids"].to(self.device)
         attention_mask = model_input["attention_mask"].to(self.device)
+        generated_so_far = generated_so_far.to(self.device)
         if self.model_type == "encoder_decoder":
+            print("-------> ", self.model_type)
             outputs = self.model.forward(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 decoder_input_ids=generated_so_far,
                 return_dict=True)
+            print(outputs)
         else:
             # print(model_input["input_ids"].shape)
             # print(generated_so_far.shape)
