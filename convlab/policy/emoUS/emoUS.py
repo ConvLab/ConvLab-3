@@ -90,6 +90,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = 0
         if self.model.model_type == "encoder_decoder":
             pos = self._update_seq([0], 0)
         # else:
@@ -298,6 +299,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = 0
         if self.model.model_type == "encoder_decoder":
             pos = self._update_seq([0], 0)
         # else:
@@ -315,6 +317,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = 0
         if self.model.model_type == "encoder_decoder":
             pos = self._update_seq([0], 0)
         # else:
