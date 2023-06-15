@@ -17,6 +17,8 @@ class stepGenTUSmodel(torch.nn.Module):
         # config = AutoConfig.from_pretrained(model_checkpoint)
         super().__init__()
         print("loading model from", model_checkpoint)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+
         peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
         if peft_model_checkpoint is not None:
             model_type = "llama"
@@ -24,6 +26,7 @@ class stepGenTUSmodel(torch.nn.Module):
         if model_type == "encoder_decoder":
             self.model = AutoModelForSeq2SeqLM.from_pretrained(
                 model_checkpoint)
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         else:
             self.model = AutoModelForCausalLM.from_pretrained(model_checkpoint)
             self.model = PeftModel.from_pretrained(
@@ -31,7 +34,6 @@ class stepGenTUSmodel(torch.nn.Module):
         self.model.to(device)
         self.device = device
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
         self.vocab = len(self.tokenizer)
         self.kg = KnowledgeGraph(self.tokenizer)
         self.action_kg = KnowledgeGraph(self.tokenizer)

@@ -10,6 +10,7 @@ from transformers import AutoTokenizer
 class stepGenTUSVector:
     def __init__(self, model_checkpoint, max_in_len=400, max_out_len=80, allow_general_intent=True):
         self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.vocab = len(self.tokenizer)
         self.max_in_len = max_in_len
         self.max_out_len = max_out_len
