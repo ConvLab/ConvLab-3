@@ -35,9 +35,10 @@ class stepGenTUSmodel(torch.nn.Module):
         self.device = device
 
         self.vocab = len(self.tokenizer)
-        self.kg = KnowledgeGraph(self.tokenizer)
-        self.action_kg = KnowledgeGraph(self.tokenizer)
-        self.token_map = tokenMap(self.tokenizer)
+        self.kg = KnowledgeGraph(self.tokenizer, model_type=self.model_type)
+        self.action_kg = KnowledgeGraph(
+            self.tokenizer, model_type=self.model_type)
+        self.token_map = tokenMap(self.tokenizer, model_type=self.model_type)
         # only_action doesn't matter. it is only used for get_log_prob
         self.token_map.default(only_action=True)
 

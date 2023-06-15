@@ -65,12 +65,13 @@ class UserActionPolicy(Policy):
         dataset = kwargs.get("dataset", "")
         self.kg = KnowledgeGraph(
             tokenizer=self.model.tokenizer,
-            dataset=dataset)
+            dataset=dataset,
+            model_type=self.model.model_type)
 
         self.goal_gen = GoalGenerator()
 
         self.vector = stepGenTUSVector(
-            model_checkpoint, self.max_in_len, self.max_out_len, force_pad=self.padding)
+            model_checkpoint, self.max_in_len, self.max_out_len, force_pad=self.padding, model_type=self.model.model_type)
         self.norm_reward = False
 
         self.action_penalty = kwargs.get("action_penalty", False)

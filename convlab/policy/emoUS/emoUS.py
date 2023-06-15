@@ -41,7 +41,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             tokenizer=self.model.tokenizer,
             dataset="emowoz",
             use_sentiment=self.use_sentiment,
-            weight=weight)
+            weight=weight,
+            model_type=self.model.model_type)
         data_emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
         self.emotion_list = [""]*len(data_emotion)
         for emotion, index in data_emotion.items():

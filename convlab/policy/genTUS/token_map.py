@@ -2,11 +2,12 @@ import json
 
 
 class tokenMap:
-    def __init__(self, tokenizer):
+    def __init__(self, tokenizer, **kwargs):
         self.tokenizer = tokenizer
         self.token_name = {}
         self.hash_map = {}
         self.debug = False
+        self.model_type = kwargs.get("model_type", "encoder_decoder")
         self.default()
 
     def default(self, only_action=False):
@@ -31,8 +32,13 @@ class tokenMap:
         if token_name in self.token_name and self.debug:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
 
-        token_id = self.tokenizer(str(value), add_special_tokens=False)[
-            "input_ids"]
+        if self.model_type != "encoder_decoder" and value[0].isalpha():
+            workaround = f"#{value}"
+            token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
+                "input_ids"][1:]
+        else:
+            token_id = self.tokenizer(str(value), add_special_tokens=False)[
+                "input_ids"]
         self.token_name[token_name] = {"value": value, "token_id": token_id}
         # print(token_id)
         hash_id = token_id[0]

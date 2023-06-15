@@ -10,10 +10,11 @@ DATASET = "unify"
 
 
 class KnowledgeGraph:
-    def __init__(self, tokenizer: AutoTokenizer, ontology_file=None, dataset="multiwoz21"):
+    def __init__(self, tokenizer: AutoTokenizer, ontology_file=None, dataset="multiwoz21", **kwargs):
         # print("dataset", dataset)
         self.debug = DEBUG
         self.tokenizer = tokenizer
+        self.model_type = kwargs.get("model_type", "encoder_decoder")
 
         if "multiwoz" in dataset:
             self.domain_intent = ["inform", "request"]
@@ -32,7 +33,8 @@ class KnowledgeGraph:
             self.general_intent = ["thank_you", "goodbye"]
 
         self.general_domain = "none"
-        self.kg_map = {"intent": tokenMap(tokenizer=self.tokenizer)}
+        self.kg_map = {"intent": tokenMap(
+            tokenizer=self.tokenizer, model_type=self.model_type)}
 
         for intent in self.domain_intent + self.general_intent:
             self.kg_map["intent"].add_token(intent, intent)
@@ -41,7 +43,8 @@ class KnowledgeGraph:
 
     def init(self):
         for map_type in ["domain", "slot", "value"]:
-            self.kg_map[map_type] = tokenMap(tokenizer=self.tokenizer)
+            self.kg_map[map_type] = tokenMap(
+                tokenizer=self.tokenizer, model_type=self.model_type)
         self.add_token("<?>", "value")
 
     def parse_input(self, in_str):

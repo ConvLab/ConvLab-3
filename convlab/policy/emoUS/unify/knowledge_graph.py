@@ -13,20 +13,22 @@ DATASET = "unify"
 
 
 class KnowledgeGraph(GenTUSKnowledgeGraph):
-    def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="emowoz", use_sentiment=False, weight=None):
-        super().__init__(tokenizer, ontology_file, dataset="multiwoz")
+    def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="emowoz", use_sentiment=False, weight=None, **kwargs):
+        super().__init__(tokenizer, ontology_file, dataset="multiwoz", **kwargs)
         self.use_sentiment = use_sentiment
 
         if use_sentiment:
             data_sentiment = json.load(
                 open("convlab/policy/emoUS/sentiment.json"))
-            self.kg_map = {"sentiment": tokenMap(tokenizer=self.tokenizer)}
+            self.kg_map = {"sentiment": tokenMap(
+                tokenizer=self.tokenizer, model_type=self.model_type)}
             self.sentiment = [""]*len(data_sentiment)
             for sentiment, index in data_sentiment.items():
                 self.sentiment[index] = sentiment
             for sentiment in self.sentiment:
                 self.kg_map["sentiment"].add_token(sentiment, sentiment)
-                self.kg_map[sentiment] = tokenMap(tokenizer=self.tokenizer)
+                self.kg_map[sentiment] = tokenMap(
+                    tokenizer=self.tokenizer, model_type=self.model_type)
             self.sent2emo = json.load(
                 open("convlab/policy/emoUS/sent2emo.json"))
             for sent in self.sent2emo:
@@ -39,7 +41,8 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
             self.emotion = [""]*len(data_emotion)
             for emotion, index in data_emotion.items():
                 self.emotion[index] = emotion
-            self.kg_map = {"emotion": tokenMap(tokenizer=self.tokenizer)}
+            self.kg_map = {"emotion": tokenMap(
+                tokenizer=self.tokenizer, model_type=self.model_type)}
             for emotion in self.emotion:
                 self.kg_map["emotion"].add_token(emotion, emotion)
 
