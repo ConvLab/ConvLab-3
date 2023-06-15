@@ -190,6 +190,8 @@ class UserActionPolicy(Policy):
             return True
         elif next_token == self.token_map.get_id("end_json_2")[0]:
             return True
+        elif next_token == self.token_map.get_id("end_json_3")[0]:
+            return True
 
         return False
 

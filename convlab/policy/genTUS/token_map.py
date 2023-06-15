@@ -20,6 +20,7 @@ class tokenMap:
             'start_text': 'text": "',       # 29015, 7862, 22
             'end_json': '}',                # 24303
             'end_json_2': '"}',             # 48805
+            'end_json_3': "'}",
             'book': 'book'                  # 6298
         }
         if only_action:
@@ -32,14 +33,20 @@ class tokenMap:
         if token_name in self.token_name and self.debug:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
 
-        if self.model_type != "encoder_decoder" and value[0].isalpha():
-            workaround = f"#{value}"
+        if self.model_type != "encoder_decoder":
+            if value[0].isalpha():
+                prefix = '#'
+            if value[-1].isalpha():
+                suffix = '#'
+            workaround = f"{prefix}{value}{suffix}"
+
             token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
-                "input_ids"][1:]
-            print("token_map", value,
-                  token_id,
-                  self.tokenizer(str(value), add_special_tokens=False)[
-                      "input_ids"])
+                "input_ids"]
+            if prefix:
+                token_id = token_id[1:]
+            if suffix:
+                token_id = token_id[:-1]
+
         else:
             token_id = self.tokenizer(str(value), add_special_tokens=False)[
                 "input_ids"]

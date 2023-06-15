@@ -34,10 +34,19 @@ class tokenMap:
     def add_token(self, token_name, value):
         if token_name in self.token_name and self.debug:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
-        if self.model_type != "encoder_decoder" and value[0].isalpha():
-            workaround = f"#{value}"
+        if self.model_type != "encoder_decoder":
+            if value[0].isalpha():
+                prefix = '#'
+            if value[-1].isalpha():
+                suffix = '#'
+            workaround = f"{prefix}{value}{suffix}"
+
             token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
-                "input_ids"][1:]
+                "input_ids"]
+            if prefix:
+                token_id = token_id[1:]
+            if suffix:
+                token_id = token_id[:-1]
 
         else:
             token_id = self.tokenizer(str(value), add_special_tokens=False)[
