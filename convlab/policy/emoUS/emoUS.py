@@ -179,6 +179,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 text = action["text"].strip()
                 text = text.split('"}')[0]
                 text = text.split("'}")[0]
+                action["text"] = text
 
         except:
             print("invalid action:", in_str)
