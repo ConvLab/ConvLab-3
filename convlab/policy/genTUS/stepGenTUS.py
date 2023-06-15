@@ -311,9 +311,7 @@ class UserActionPolicy(Policy):
         new_action = []
         for act in action:
             if len(act) == 4:
-                print("before", act)
                 act = [a.strip() for a in act]
-                print("after", act)
                 if "<?>" in act[-1]:
                     act = [act[0], act[1], act[2], "?"]
                 if act not in new_action:
@@ -329,6 +327,7 @@ class UserActionPolicy(Policy):
         action = {"action": [], "text": ""}
         try:
             action = json.loads(in_str)
+            action["action"] = self._remove_illegal_action(action["action"])
 
         except:
             print("invalid action:", in_str)

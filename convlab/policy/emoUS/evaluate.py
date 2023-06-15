@@ -134,14 +134,14 @@ class Evaluator:
                 output = self.usr.generate_from_emotion(
                     inputs,  emotion=usr_emo, mode=mode)
                 output = self.usr._parse_output(output)
-                usr_act = self.usr._remove_illegal_action(output["action"])
+                usr_act = output["action"]
                 usr_utt = output["text"]
                 # print(self.usr.action_prob)
             else:
                 output = self.usr._parse_output(
                     self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
-                usr_act = self.usr._remove_illegal_action(output["action"])
+                usr_act = output["action"]
                 usr_utt = output["text"]
                 # print(self.usr.action_prob)
 

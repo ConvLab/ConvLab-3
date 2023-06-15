@@ -131,14 +131,12 @@ class UserActionPolicy(GenTUSUserActionPolicy):
                 raw_output = self.generate_from_emotion(
                     raw_inputs=inputs, emotion=emotion, mode=mode, allow_general_intent=allow_general_intent)
                 output = self._parse_output(raw_output)
-                print("emo:", emotion)
-                print("act:", output["action"])
                 # print("utt:", output["text"])
             else:
                 raw_output = self._generate_action(
                     raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
         output = self._parse_output(raw_output)
-        self.semantic_action = self._remove_illegal_action(output["action"])
+        self.semantic_action = output["action"]
 
         if not self.only_action:
             self.utterance = output["text"]
@@ -176,6 +174,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             action["emotion"] = action["emotion"].strip()
             if self.use_sentiment:
                 action["sentiment"] = action["sentiment"].strip()
+            action["action"] = self._remove_illegal_action(action["action"])
 
         except:
             print("invalid action:", in_str)
@@ -560,6 +559,9 @@ if __name__ == "__main__":
     # print(usr.response([]),
     #       usr.policy.get_emotion())
     print(usr.policy.policy.predict(sys_act=[], emotion="Neutral"))
+    print("emotion", usr.policy.policy.emotion)
+    print("act", usr.policy.policy.semantic_action)
+
     end = time.time()
     print("-"*50)
     print("time: ", end - start)
