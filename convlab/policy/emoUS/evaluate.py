@@ -23,6 +23,8 @@ sys.path.append(os.path.dirname(os.path.dirname(
 def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--model-checkpoint", type=str, help="the model path")
+    parser.add_argument("--peft-model-checkpoint",
+                        type=str, help="the model path")
     parser.add_argument("--model-weight", type=str,
                         help="the model weight", default="")
     parser.add_argument("--input-file", type=str, help="the testing input file",
@@ -45,6 +47,7 @@ class Evaluator:
     def __init__(self, model_checkpoint, dataset, model_weight=None, **kwargs):
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
+        peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
 
         self.model_weight = model_weight
         self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M-%S')}"
@@ -72,7 +75,8 @@ class Evaluator:
             use_sentiment=self.use_sentiment,
             add_persona=self.add_persona,
             emotion_mid=self.emotion_mid,
-            weight=self.emotion_weight)
+            weight=self.emotion_weight,
+            peft_model_checkpoint=peft_model_checkpoint)
 
         # self.r = {"input": [],
         #           "golden_acts": [],
@@ -111,7 +115,7 @@ class Evaluator:
             self.r[x].append(temp[x])
 
     def generate_results(self, f_eval, golden_emotion=False, golden_action=False):
-        self.usr.load(os.path.join(self.model_checkpoint, "pytorch_model.bin"))
+        # self.usr.load(os.path.join(self.model_checkpoint, "pytorch_model.bin"))
         emotion_mode = "normal"
         in_file = json.load(open(f_eval))
         mode = "max"
@@ -372,7 +376,8 @@ def main():
                      use_sentiment=args.use_sentiment,
                      emotion_mid=args.emotion_mid,
                      weight=args.weight,
-                     sample=args.sample)
+                     sample=args.sample,
+                     peft_model_checkpoint=args.peft_model_checkpoint)
     print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
