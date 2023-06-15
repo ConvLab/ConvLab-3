@@ -20,7 +20,6 @@ class stepGenTUSmodel(torch.nn.Module):
         self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
         peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
-        print("===== peft_model_checkpoint", peft_model_checkpoint)
         if peft_model_checkpoint:
             model_type = "llama"
         self.model_type = model_type
@@ -28,11 +27,13 @@ class stepGenTUSmodel(torch.nn.Module):
         if model_type == "encoder_decoder":
             self.model = AutoModelForSeq2SeqLM.from_pretrained(
                 model_checkpoint)
-            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
         else:
+            print("xx")
             self.model = AutoModelForCausalLM.from_pretrained(model_checkpoint)
             self.model = PeftModel.from_pretrained(
                 self.model, peft_model_checkpoint)
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.model.to(device)
         self.device = device
 
@@ -72,18 +73,15 @@ class stepGenTUSmodel(torch.nn.Module):
         attention_mask = model_input["attention_mask"].to(self.device)
         generated_so_far = generated_so_far.to(self.device)
         if self.model_type == "encoder_decoder":
-            print("-------> ", self.model_type)
+            print(input_ids.shape)
+            print(attention_mask.shape)
+            print(generated_so_far.shape)
             outputs = self.model.forward(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 decoder_input_ids=generated_so_far,
                 return_dict=True)
-            print(outputs)
         else:
-            # print(model_input["input_ids"].shape)
-            # print(generated_so_far.shape)
-            generated_so_far = generated_so_far.to(self.device)
-            print(attention_mask)
             input_ids = torch.cat(
                 [input_ids, generated_so_far], -1).to(self.device)
             outputs = self.model(
