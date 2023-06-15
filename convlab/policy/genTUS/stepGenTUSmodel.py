@@ -73,9 +73,6 @@ class stepGenTUSmodel(torch.nn.Module):
         attention_mask = model_input["attention_mask"].to(self.device)
         generated_so_far = generated_so_far.to(self.device)
         if self.model_type == "encoder_decoder":
-            print(input_ids.shape)
-            print(attention_mask.shape)
-            print(generated_so_far.shape)
             outputs = self.model.forward(
                 input_ids=input_ids,
                 attention_mask=attention_mask,

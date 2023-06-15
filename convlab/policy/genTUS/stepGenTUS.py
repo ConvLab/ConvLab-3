@@ -70,7 +70,7 @@ class UserActionPolicy(Policy):
         self.goal_gen = GoalGenerator()
 
         self.vector = stepGenTUSVector(
-            model_checkpoint, self.max_in_len, self.max_out_len)
+            model_checkpoint, self.max_in_len, self.max_out_len, force_pad=self.padding)
         self.norm_reward = False
 
         self.action_penalty = kwargs.get("action_penalty", False)
@@ -228,14 +228,18 @@ class UserActionPolicy(Policy):
             model_input, self.seq[:1, :pos], mode, allow_general_intent)
         pos = self._update_seq(intent["token_id"], pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
-        print(self.model.tokenizer.decode(self.seq[0, :pos]))
+        print("_get_semantic_action",
+              self.model.tokenizer.decode(self.seq[0, :pos]))
+        print(self.seq[0, :pos])
 
         # get domain
         domain = self._get_domain(
             model_input, self.seq[:1, :pos], intent["token_name"], mode)
         pos = self._update_seq(domain["token_id"], pos)
         pos = self._update_seq(self.token_map.get_id('sep_token'), pos)
-        print(self.model.tokenizer.decode(self.seq[0, :pos]))
+        print("_get_semantic_action",
+              self.model.tokenizer.decode(self.seq[0, :pos]))
+        print(self.seq[0, :pos])
 
         # get slot
         slot = self._get_slot(
