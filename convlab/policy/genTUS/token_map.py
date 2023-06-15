@@ -34,6 +34,8 @@ class tokenMap:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
 
         if self.model_type != "encoder_decoder":
+            prefix = ''
+            suffix = ''
             if value[0].isalpha():
                 prefix = '#'
             if value[-1].isalpha():
