@@ -54,6 +54,10 @@ class UserActionPolicy(Policy):
         # self.model.eval()
         # self.model.to(self.device)
         # self.model.share_memory()
+        if self.model.model_type == "encoder_decoder":
+            self.padding = True
+        else:
+            self.padding = False
 
         self.turn_level_reward = kwargs.get("turn_level_reward", True)
         self.cooperative = kwargs.get("cooperative", True)
@@ -86,7 +90,8 @@ class UserActionPolicy(Policy):
     def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True):
         # TODO no duplicate
         self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        model_input = self.vector.encode(
+            raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
@@ -120,7 +125,8 @@ class UserActionPolicy(Policy):
 
     def generate_text_from_give_semantic(self, raw_inputs, semantic_action):
         self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        model_input = self.vector.encode(
+            raw_inputs, self.max_in_len, do_padding=self.padding)
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)

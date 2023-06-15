@@ -27,7 +27,11 @@ class stepGenTUSVector:
         self.goal = goal
         self.mentioned_domain = []
 
-    def encode(self, raw_inputs, max_length, return_tensors="pt", truncation=True):
+    def encode(self, raw_inputs, max_length, return_tensors="pt", truncation=True, do_padding=True):
+        if do_padding:
+            padding = "max_length"
+        else:
+            padding = False
         model_input = self.tokenizer(raw_inputs,
                                      max_length=max_length,
                                      return_tensors=return_tensors,

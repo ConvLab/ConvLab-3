@@ -86,7 +86,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
     def predict_emotion_from_text(self, input_dict, mode="max"):
         self.model.eval()
         raw_inputs = json.dumps(input_dict)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        model_input = self.vector.encode(
+            raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
@@ -289,7 +290,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
     def _generate_emotion(self, raw_inputs, mode="max", emotion_mode="normal"):
         self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        model_input = self.vector.encode(
+            raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
@@ -302,7 +304,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
     def _generate_action(self, raw_inputs, mode="max", allow_general_intent=True, emotion_mode="normal", emotion=None, golden_action=None):
         self.kg.parse_input(raw_inputs)
-        model_input = self.vector.encode(raw_inputs, self.max_in_len)
+        model_input = self.vector.encode(
+            raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq([0], 0)
