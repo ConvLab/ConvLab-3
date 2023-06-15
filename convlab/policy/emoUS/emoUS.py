@@ -92,8 +92,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         if self.model.model_type == "encoder_decoder":
             pos = self._update_seq([0], 0)
-        else:
-            pos = self._update_seq([1], 0)
+        # else:
+        #     pos = self._update_seq([1], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
         pos = self._update_emotion(
             pos, model_input, mode, emotion_mode="normal")
@@ -300,8 +300,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         if self.model.model_type == "encoder_decoder":
             pos = self._update_seq([0], 0)
-        else:
-            pos = self._update_seq([1], 0)
+        # else:
+        #     pos = self._update_seq([1], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
         pos = self._update_emotion(
             pos, model_input, mode, emotion_mode)
@@ -317,8 +317,8 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         if self.model.model_type == "encoder_decoder":
             pos = self._update_seq([0], 0)
-        else:
-            pos = self._update_seq([1], 0)
+        # else:
+        #     pos = self._update_seq([1], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
 
         if self.use_sentiment and self.emotion_mid:
