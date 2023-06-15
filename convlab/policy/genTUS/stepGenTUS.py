@@ -94,7 +94,10 @@ class UserActionPolicy(Policy):
             raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
-        pos = self._update_seq([0], 0)
+        if self.model.model_type == "encoder_decoder":
+            pos = self._update_seq([0], 0)
+        else:
+            pos = self._update_seq([1], 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
         pos = self._update_seq(self.token_map.get_id('start_act'), pos)
 
