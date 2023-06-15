@@ -311,7 +311,9 @@ class UserActionPolicy(Policy):
         new_action = []
         for act in action:
             if len(act) == 4:
+                print("before", act)
                 act = [a.strip() for a in act]
+                print("after", act)
                 if "<?>" in act[-1]:
                     act = [act[0], act[1], act[2], "?"]
                 if act not in new_action:
