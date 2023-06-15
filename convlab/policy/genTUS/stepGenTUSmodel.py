@@ -75,8 +75,10 @@ class stepGenTUSmodel(torch.nn.Module):
                 decoder_input_ids=generated_so_far,
                 return_dict=True)
         else:
+            print(model_input["input_ids"].shape)
+            print(generated_so_far.shape)
             input_ids = torch.cat(
-                model_input["input_ids"], generated_so_far).to(self.device)
+                [model_input["input_ids"], generated_so_far]).to(self.device)
             outputs = self.model.forward(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
