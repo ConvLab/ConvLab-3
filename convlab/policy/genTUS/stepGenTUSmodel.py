@@ -77,8 +77,8 @@ class stepGenTUSmodel(torch.nn.Module):
         else:
             # print(model_input["input_ids"].shape)
             # print(generated_so_far.shape)
-            model_input["input_ids"] = model_input["input_ids"].to(self.device)
             generated_so_far = generated_so_far.to(self.device)
+            print(attention_mask)
             input_ids = torch.cat(
                 [model_input["input_ids"], generated_so_far], -1).to(self.device)
             outputs = self.model(
