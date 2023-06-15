@@ -28,6 +28,7 @@ class stepGenTUSVector:
         self.mentioned_domain = []
 
     def encode(self, raw_inputs, max_length, return_tensors="pt", truncation=True, do_padding=True):
+        print("do_padding", do_padding)
         if do_padding:
             padding = "max_length"
         else:
@@ -36,7 +37,7 @@ class stepGenTUSVector:
                                      max_length=max_length,
                                      return_tensors=return_tensors,
                                      truncation=truncation,
-                                     padding="max_length")
+                                     padding=padding)
         return model_input
 
     def decode(self, generated_so_far, skip_special_tokens=True):
