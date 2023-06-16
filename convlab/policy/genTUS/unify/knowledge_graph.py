@@ -272,6 +272,6 @@ class KnowledgeGraph:
             token_id = token_id[1:-1]
             workaround_text = self.tokenizer.decode(token_id)
             if workaround_text != token:
-                print("error!!!", token, workaround_text)
+                print(f"error!!! +{token}+ +{workaround_text}+")
             return token_id
         return self.tokenizer(token, add_special_tokens=False)["input_ids"]
