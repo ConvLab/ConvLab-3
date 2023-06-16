@@ -549,16 +549,9 @@ if __name__ == "__main__":
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
-    usr.init_session()
+    # usr.init_session()
     usr.init_session()
     start = time.time()
-
-    # print(usr.policy.policy.goal.status)
-    # print(usr.response([['inform', 'train', 'day', 'saturday']]))
-    # pprint(usr.policy.policy.goal.get_goal_list())
-    # print(usr.policy.estimate_emotion(
-    #    [['inform', 'train', 'arrive by', '15:30']]))
-    # pprint(usr.policy.policy.goal.get_goal_list())
 
     print(usr.policy.policy.goal)
 
