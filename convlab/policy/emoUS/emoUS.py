@@ -560,10 +560,10 @@ if __name__ == "__main__":
     #    [['inform', 'train', 'arrive by', '15:30']]))
     # pprint(usr.policy.policy.goal.get_goal_list())
 
-    # print(usr.policy.policy.goal.status)
-    # print(usr.response([]),
-    #       usr.policy.get_emotion())
+    print(usr.policy.policy.goal)
+
     print(usr.policy.policy.predict(sys_act=[], emotion="Neutral"))
+    print(usr.policy.policy.predict(sys_act=[], emotion="Dissatisfied"))
     print("emotion", usr.policy.policy.emotion)
     print("act", usr.policy.policy.semantic_action)
 
