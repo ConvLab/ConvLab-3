@@ -38,9 +38,9 @@ class tokenMap:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
         if self.model_type != "encoder_decoder":
             prefix = ''
-            suffix = '#'
+            suffix = '!'
             if token_name != "start_json":
-                prefix = '#'
+                prefix = '!'
 
             workaround = f"{prefix}{value}{suffix}"
 
