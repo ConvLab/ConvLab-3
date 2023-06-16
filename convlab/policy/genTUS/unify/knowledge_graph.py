@@ -179,8 +179,7 @@ class KnowledgeGraph:
     def get_domain(self, outputs, intent, mode="max"):
         if intent in self.general_intent:
             token_name = self.general_domain
-            token_id = self._get_token_id(token_name)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent in self.domain_intent:
@@ -197,8 +196,7 @@ class KnowledgeGraph:
     def get_slot(self, outputs, intent, domain, mode="max", is_mentioned=False):
         if intent in self.general_intent:
             token_name = "none"
-            token_id = self._get_token_id(token_name)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent in self.domain_intent:
@@ -223,14 +221,12 @@ class KnowledgeGraph:
     def get_value(self, outputs, intent, domain, slot, mode="max"):
         if intent in self.general_intent or slot.lower() == "none":
             token_name = "none"
-            token_id = self._get_token_id(token_name)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent.lower() == "request":
             token_name = "<?>"
-            token_id = self._get_token_id(token_name)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent in self.domain_intent:
