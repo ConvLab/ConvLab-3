@@ -38,11 +38,10 @@ class tokenMap:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
         if self.model_type != "encoder_decoder":
             prefix = ''
-            suffix = ''
-            if value[0].isalpha():
+            suffix = '#'
+            if token_name != "start_json":
                 prefix = '#'
-            if value[-1].isalpha():
-                suffix = '#'
+
             workaround = f"{prefix}{value}{suffix}"
 
             token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
@@ -51,6 +50,9 @@ class tokenMap:
                 token_id = token_id[1:]
             if suffix:
                 token_id = token_id[:-1]
+            workaround_text = self.tokenizer.decode(token_id)
+            if workaround_text != value:
+                print("error!!!", token_name, value, workaround_text)
 
         else:
             token_id = self.tokenizer(str(value), add_special_tokens=False)[
