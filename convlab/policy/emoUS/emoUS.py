@@ -162,6 +162,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
     def _parse_output(self, in_str):
         in_str = str(in_str)
+        print("_parse_output", in_str)
         in_str = in_str.replace('<s>', '').replace(
             '<\\s>', '').replace('o"clock', "o'clock")
         action = {"emotion": "Neutral", "action": [], "text": ""}
