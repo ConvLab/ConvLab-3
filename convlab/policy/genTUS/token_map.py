@@ -49,7 +49,6 @@ class tokenMap:
             if suffix:
                 token_id = token_id[:-1]
             workaround_text = self.tokenizer.decode(token_id)
-            print("error!!!", token_name, value, workaround_text, token_id)
 
         else:
             token_id = self.tokenizer(str(value), add_special_tokens=False)[

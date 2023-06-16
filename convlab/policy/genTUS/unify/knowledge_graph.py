@@ -267,4 +267,15 @@ class KnowledgeGraph:
         return value_list
 
     def _get_token_id(self, token):
+        if self.model_type != "encoder_decoder":
+
+            workaround = f"!{token}!"
+
+            token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
+                "input_ids"]
+            token_id = token_id[1:-1]
+            workaround_text = self.tokenizer.decode(token_id)
+            if workaround_text != token:
+                print("error!!!", token, workaround_text)
+            return token_id
         return self.tokenizer(token, add_special_tokens=False)["input_ids"]
