@@ -98,7 +98,7 @@ class SemanticActionGenerator:
             input_text, return_tensors="pt").to(self.device)
 
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
-        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+        pos = self._update_seq(self.token_map.get_id('start_json'), 0)
         pos = self._update_seq(self.token_map.get_id('start_json'), pos)
 
         for act_len in range(max_act_len):
@@ -136,7 +136,7 @@ class SemanticActionGenerator:
 
         return terminate, token_name
 
-    def _get_act(self, model_input, mode="max", allow_general_intent=True):
+    def _get_act(self, model_input, pos, mode="max", allow_general_intent=True):
         intent = self._get_intent(
             model_input, self.seq[:1, :pos], mode, allow_general_intent)
         pos = self._update_seq(intent["token_id"], pos)
