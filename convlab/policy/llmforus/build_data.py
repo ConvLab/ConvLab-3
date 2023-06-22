@@ -111,7 +111,7 @@ def basic_prompt(history: list, event: dict, user: dict, goal: list):
     history_prompt = ""
     if history:
         history_prompt += "The conversation so far:\n"
-        for turn in history:
+        for turn in history[-3:]:
             history_prompt += f"{turn['role']}: {turn['text']}\n"
     goal_prompt = "The given goal status is:\n"
     for intent, domain, slot, value, status in goal:
