@@ -208,7 +208,7 @@ class SemanticActionGenerator:
 
 
 def get_action(text: str, generator: SemanticActionGenerator, max_act_len=2):
-    act = generator.generate(text, max_act_len)
+    act = generator.generate(text, max_act_len=max_act_len)
     print(act)
     return act
 
