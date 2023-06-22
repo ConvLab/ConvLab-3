@@ -6,7 +6,7 @@ import torch
 from peft import PeftModel
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
+from convlab.policy.llmforus.knowledge_graph import KnowledgeGraph
 import re
 from convlab.policy.genTUS.stepGenTUSmodel import stepGenTUSmodel
 from convlab.policy.llmforus.token_map import tokenMap
