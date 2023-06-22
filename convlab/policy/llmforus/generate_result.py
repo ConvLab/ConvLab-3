@@ -89,8 +89,10 @@ class SemanticActionGenerator:
             model_type=model_type)
         self.max_out_len = 100
         self.token_map = tokenMap(tokenizer=tokenizer, model_type=model_type,)
+        self.max_action_len = 3
 
     def generate(self, input_text, mode="max", allow_general_intent=True, max_act_len=3):
+        self.max_action_len = max_act_len
         goal = get_goal(input_text)
         self.kg.init_from_given_goal(goal)
         self.mentioned_domain = []  # TODO need to be updateds
