@@ -121,8 +121,6 @@ class SemanticActionGenerator:
                 break
         action = self.tokenizer.batch_decode(
             self.seq, skip_special_tokens=True)[0]
-        print("preds", self.seq)
-        print("preds", action)
         return action
 
     def _stop_semantic(self, model_input, pos, act_length=0):
@@ -242,10 +240,8 @@ def direct_get_action(text, model, tokenizer, device, max_token):
     inputs = tokenizer(text, return_tensors="pt").to(device)
     generate_ids = model.generate(
         input_ids=inputs.input_ids, max_new_tokens=max_token,)
-    print("direc", generate_ids)
     output = parse_direct_action(tokenizer.batch_decode(
         generate_ids, skip_special_tokens=True)[0])
-    print("direc", output)
     return output
 
 
@@ -266,6 +262,8 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
     utterance_results = []
     action_results = []
     act_generator = SemanticActionGenerator(model, tokenizer)
+    force_time = []
+    direct_time = []
 
     for x in tqdm(data):
         if "emotion" in x["id"]:
@@ -288,17 +286,23 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
                                       "predict": output,
                                       "label": x["out"]})
         if "action" in x["id"]:
+            t1 = time.time()
             output = get_action(x["in"], act_generator, max_act_len=2)
+            t2 = time.time()
             direct_output = direct_get_action(
                 x["in"],  model.model, tokenizer, device, max_token=100)
+            t3 = time.time()
+            force_time.append(t2-t1)
+            direct_time.append(t3-t2)
 
-            print("label", x["out"])
             action_results.append({"id": x["id"],
                                    "in": x["in"],
                                    "predict": output,
                                    "direct_predict": direct_output,
                                    "label": x["out"]})
         # TODO how to evaluate action?
+    print("force time: ", sum(force_time)/len(force_time))
+    print("direct time: ", sum(direct_time)/len(direct_time))
 
     with open(os.path.join(output_dir, "emotion_result.json"), "w") as fout:
         json.dump(emotion_results, fout, indent=2)
