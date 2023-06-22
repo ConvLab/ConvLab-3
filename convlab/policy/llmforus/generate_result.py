@@ -119,7 +119,11 @@ class SemanticActionGenerator:
 
             if terminate:
                 break
-        return self.tokenizer.batch_decode(self.seq, skip_special_tokens=True)[0]
+        action = self.tokenizer.batch_decode(
+            self.seq, skip_special_tokens=True)[0]
+        print("preds", self.seq)
+        print("preds", action)
+        return action
 
     def _stop_semantic(self, model_input, pos, act_length=0):
 
@@ -238,8 +242,10 @@ def direct_get_action(text, model, tokenizer, device, max_token):
     inputs = tokenizer(text, return_tensors="pt").to(device)
     generate_ids = model.generate(
         input_ids=inputs.input_ids, max_new_tokens=max_token,)
+    print("direc", generate_ids)
     output = parse_direct_action(tokenizer.batch_decode(
         generate_ids, skip_special_tokens=True)[0])
+    print("direc", output)
     return output
 
 
@@ -284,9 +290,8 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
         if "action" in x["id"]:
             output = get_action(x["in"], act_generator, max_act_len=2)
             direct_output = direct_get_action(
-                x["in"],  model.model, tokenizer, device, max_token)
-            print("preds", output)
-            print("direc", direct_output)
+                x["in"],  model.model, tokenizer, device, max_token=100)
+
             print("label", x["out"])
             action_results.append({"id": x["id"],
                                    "in": x["in"],
