@@ -59,6 +59,14 @@ class KnowledgeGraph:
         for intent, domain, slot, value in self.sys_act:
             self._update_user_goal(intent, domain, slot, value, source="sys")
 
+    def init_from_given_goal(self, goal: list):
+        self.init()
+        self.user_goal = {}
+        self._add_none_domain()
+        for intent, domain, slot, value in goal:
+            self._update_user_goal(
+                intent, domain, slot, value, source="goal", replace_question_mark=False)
+
     def _add_none_domain(self):
         self.user_goal["none"] = {"none": "none"}
         # add slot
@@ -66,9 +74,9 @@ class KnowledgeGraph:
         self.add_token("none", "slot")
         self.add_token("none", "value")
 
-    def _update_user_goal(self, intent, domain, slot, value, source="goal"):
+    def _update_user_goal(self, intent, domain, slot, value, source="goal", replace_question_mark=True):
 
-        if value == "?":
+        if value == "?" and replace_question_mark:
             value = "<?>"
 
         if intent == "request" and source == "sys":

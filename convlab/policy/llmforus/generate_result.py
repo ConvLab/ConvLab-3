@@ -10,6 +10,7 @@ from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 import re
 from convlab.policy.genTUS.stepGenTUSmodel import stepGenTUSmodel
 from convlab.policy.llmforus.token_map import tokenMap
+import time
 
 
 def arg_parser():
@@ -207,8 +208,7 @@ class SemanticActionGenerator:
 
 
 def get_action(text: str, generator: SemanticActionGenerator, max_act_len=2):
-    goal = get_goal(text)
-    act = generator.generate(goal, max_act_len)
+    act = generator.generate(text, max_act_len)
     print(act)
     return act
 
@@ -242,6 +242,7 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
 
     for x in tqdm(data):
         if "emotion" in x["id"]:
+            pass
             # only evaluate emotion
             output = get_emotion(
                 x["in"], model.model, tokenizer, device, max_token)
@@ -251,6 +252,7 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
                                     "label": x["out"]})
 
         if "utterance" in x["id"]:
+            pass
             # only evaluate emotion
             output = get_utterance(
                 x["in"],  model.model, tokenizer, device, max_token)
@@ -282,8 +284,9 @@ def main():
     result_folder = os.path.join(args.peft_checkpoint, "result")
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
-
+    t = time.time()
     evaluation(data['dialog'], model, tokenizer, output_dir=result_folder)
+    print("evaluation time: ", time.time() - t)
 
 
 if __name__ == "__main__":
