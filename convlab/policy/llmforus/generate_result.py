@@ -310,6 +310,9 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
         json.dump(utterance_results, fout, indent=2)
     with open(os.path.join(output_dir, "action_result.json"), "w") as fout:
         json.dump(action_results, fout, indent=2)
+    with open(os.path.join(output_dir, "time.json"), "w") as fout:
+        json.dump({"force_time": force_time,
+                  "direct_time": direct_time}, fout, indent=2)
 
 
 def main():
