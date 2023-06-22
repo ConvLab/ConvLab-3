@@ -93,6 +93,7 @@ class SemanticActionGenerator:
     def generate(self, input_text, mode="max", allow_general_intent=True, max_act_len=3):
         goal = get_goal(input_text)
         self.kg.init_from_given_goal(goal)
+        self.mentioned_domain = []  # TODO need to be updateds
 
         model_input = self.tokenizer(
             input_text, return_tensors="pt").to(self.device)
@@ -191,13 +192,13 @@ class SemanticActionGenerator:
     def _get_slot(self, model_input, generated_so_far, intent, domain, mode="max"):
         next_token_logits = self.model.get_next_token_logits(
             model_input, generated_so_far)
-        is_mentioned = self.vector.is_mentioned(domain)
+        is_mentioned = self.is_mentioned(domain)
         return self.kg.get_slot(next_token_logits, intent, domain, mode, is_mentioned)
 
     def _get_book_slot(self, model_input, generated_so_far, intent, domain, mode="max"):
         next_token_logits = self.model.get_next_token_logits(
             model_input, generated_so_far)
-        is_mentioned = self.vector.is_mentioned(domain)
+        is_mentioned = self.is_mentioned(domain)
         return self.kg.get_book_slot(next_token_logits, intent, domain, mode, is_mentioned)
 
     def _get_value(self, model_input, generated_so_far, intent, domain, slot, mode="max"):
@@ -205,6 +206,11 @@ class SemanticActionGenerator:
             model_input, generated_so_far)
 
         return self.kg.get_value(next_token_logits, intent, domain, slot, mode)
+
+    def is_mentioned(self, domain):
+        if domain in self.mentioned_domain:
+            return True
+        return False
 
 
 def get_action(text: str, generator: SemanticActionGenerator, max_act_len=2):
