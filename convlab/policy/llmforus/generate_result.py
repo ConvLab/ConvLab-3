@@ -114,8 +114,7 @@ class SemanticActionGenerator:
 
             if terminate:
                 break
-        print(self.seq)
-        return self.tokenizer.decode(self.seq, skip_special_tokens=True)
+        return self.tokenizer.batch_decode(self.seq, skip_special_tokens=True)[0]
 
     def _stop_semantic(self, model_input, pos, act_length=0):
 
