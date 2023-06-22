@@ -51,6 +51,12 @@ def parse_utterance(text: str):
     return text.strip()
 
 
+def parse_direct_action(text: str):
+    text = text.split("your action is:")[-1]
+    text = text.strip()
+    return text.strip()
+
+
 def parse_input_string(input_string):
     pattern = r"The (\w+) (\w+)-(\w+): (.+) is (\w+)."
     match = re.match(pattern, input_string)
@@ -102,7 +108,6 @@ class SemanticActionGenerator:
 
         self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
         pos = self._update_seq(self.token_map.get_id('start_json'), 0)
-        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
 
         for act_len in range(max_act_len):
             pos = self._get_act(
@@ -217,7 +222,6 @@ class SemanticActionGenerator:
 
 def get_action(text: str, generator: SemanticActionGenerator, max_act_len=2):
     act = generator.generate(text, max_act_len=max_act_len)
-    print(act)
     return act
 
 
@@ -226,6 +230,15 @@ def get_emotion(text, model, tokenizer, device, max_token):
     generate_ids = model.generate(
         input_ids=inputs.input_ids, max_new_tokens=max_token,)
     output = parse_emotion(tokenizer.batch_decode(
+        generate_ids, skip_special_tokens=True)[0])
+    return output
+
+
+def direct_get_action(text, model, tokenizer, device, max_token):
+    inputs = tokenizer(text, return_tensors="pt").to(device)
+    generate_ids = model.generate(
+        input_ids=inputs.input_ids, max_new_tokens=max_token,)
+    output = parse_direct_action(tokenizer.batch_decode(
         generate_ids, skip_special_tokens=True)[0])
     return output
 
@@ -270,9 +283,15 @@ def evaluation(data: dict, model: stepGenTUSmodel, tokenizer: AutoTokenizer, max
                                       "label": x["out"]})
         if "action" in x["id"]:
             output = get_action(x["in"], act_generator, max_act_len=2)
+            direct_output = direct_get_action(
+                x["in"],  model.model, tokenizer, device, max_token)
+            print("preds", output)
+            print("direc", direct_output)
+            print("label", x["out"])
             action_results.append({"id": x["id"],
                                    "in": x["in"],
                                    "predict": output,
+                                   "direct_predict": direct_output,
                                    "label": x["out"]})
         # TODO how to evaluate action?
 
