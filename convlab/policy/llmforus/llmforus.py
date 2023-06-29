@@ -1,4 +1,5 @@
 import os
+from argparse import ArgumentParser
 
 import torch
 from transformers import AutoTokenizer
@@ -232,48 +233,71 @@ class UserActionPolicy:
         self.is_finish()
         return self.terminated
 
+    def get_goal(self):
+        if self.goal.raw_goal is not None:
+            return self.goal.raw_goal
+        goal = {}
+        for domain in self.goal.domain_goals:
+            if domain not in goal:
+                goal[domain] = {}
+            for intent in self.goal.domain_goals[domain]:
+                if intent == "inform":
+                    slot_type = "info"
+                elif intent == "request":
+                    slot_type = "reqt"
+                elif intent == "book":
+                    slot_type = "book"
+                else:
+                    print("unknown slot type")
+                if slot_type not in goal[domain]:
+                    goal[domain][slot_type] = {}
+                for slot, value in self.goal.domain_goals[domain][intent].items():
+                    goal[domain][slot_type][slot] = value
+        return goal
+
 
 class UserPolicy(Policy):
     def __init__(self,
-                 model_checkpoint="convlab/policy/emoUS/unify/default/EmoUS_default",
+                 model_checkpoint="",
+                 peft_checkpoint="",
                  mode="language",
-                 sample=False,
-                 action_penalty=False,
+                 max_turn=40,
                  **kwargs):
         # self.config = config
         print("emoUS model checkpoint: ", model_checkpoint)
-        if sample:
-            print("EmoUS will sample action, but emotion is always max")
-        if not os.path.exists(os.path.dirname(model_checkpoint)):
-            os.makedirs(os.path.dirname(model_checkpoint))
-            model_downloader(os.path.dirname(model_checkpoint),
-                             "https://zenodo.org/record/7801525/files/EmoUS_default.zip")
+        # if sample:
+        #     print("EmoUS will sample action, but emotion is always max")
+        # if not os.path.exists(os.path.dirname(model_checkpoint)):
+        #     os.makedirs(os.path.dirname(model_checkpoint))
+        #     model_downloader(os.path.dirname(model_checkpoint),
+        #                      "https://zenodo.org/record/7801525/files/EmoUS_default.zip")
 
         self.policy = UserActionPolicy(
-            model_checkpoint,
+            model_checkpoint=model_checkpoint,
+            peft_checkpoint=peft_checkpoint,
             mode=mode,
-            action_penalty=action_penalty,
+            max_turn=max_turn,
             **kwargs)
         # self.policy.load(os.path.join(
         #     model_checkpoint, "pytorch_model.bin"))
-        self.sample = sample
+        # self.sample = sample
 
-    def predict(self, sys_act, mode="max"):
-        if self.sample:
-            mode = "sample"
-        else:
-            mode = "max"
-        response = self.policy.predict(sys_act, mode)
+    def predict(self, sys_utt, sys_act=None, mode="max"):
+        # if self.sample:
+        #     mode = "sample"
+        # else:
+        #     mode = "max"
+        response = self.policy.predict(sys_utt=sys_utt, sys_act=sys_act)
         self.semantic_action = self.policy.semantic_action
         return response
 
-    def estimate_emotion(self, sys_act, mode="max"):
-        if self.sample:
-            mode = "sample"
-        else:
-            mode = "max"
-        emotion = self.policy.estimate_emotion(sys_act, mode)
-        return emotion
+    # def estimate_emotion(self, sys_act, mode="max"):
+    #     if self.sample:
+    #         mode = "sample"
+    #     else:
+    #         mode = "max"
+    #     emotion = self.policy.estimate_emotion(sys_act, mode)
+    #     return emotion
 
     def init_session(self, goal=None):
         self.policy.init_session(goal)
@@ -292,3 +316,27 @@ class UserPolicy(Policy):
 
     def get_emotion(self):
         return self.policy.emotion
+
+
+def arg_parser():
+    parser = ArgumentParser()
+    parser.add_argument("--model_checkpoint", type=str)
+    parser.add_argument("--peft_checkpoint", type=str)
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    from convlab.dialog_agent import PipelineAgent
+    from convlab.util.custom_util import set_seed
+
+    set_seed(20220220)
+
+    args = arg_parser()
+    usr_policy = UserPolicy(model_checkpoint=args.model_checkpoint,
+                            peft_checkpoint=args.peft_checkpoint)
+    usr = PipelineAgent(None, None, usr_policy, None, name='user')
+    print(usr.policy.get_goal())
+
+    print(usr.response("Hi, what can I help you?"))
+    print("emotion", usr.policy.get_emotion())
+    print("action", usr.policy.semantic_action)
