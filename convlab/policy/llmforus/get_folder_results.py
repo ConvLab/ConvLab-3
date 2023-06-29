@@ -12,7 +12,7 @@ def arg_parse():
 
 def read_result(folder):
     result = {"Complete": [], "Success": [], "Success strict": []}
-    for f_name in glob(folder + "/*.json"):
+    for f_name in glob(folder + "/dialog*.json"):
         with open(f_name, "r") as f:
             r = json.load(f)
             for x in result:
