@@ -22,11 +22,11 @@ def read_result(folder):
                 result[x].append(r[x])
     for x, y in result.items():
         print(x, np.mean(y))
-    merge_result(conversation, folder)
+    merge_result({"conversation": conversation}, folder)
 
 
 def merge_result(conversation, folder):
-    with open(os.path.join(folder, "conversation.json")) as f:
+    with open(os.path.join(folder, "conversation.json"), 'w') as f:
         json.dump(conversation, f, indent=2)
 
 
