@@ -160,6 +160,10 @@ class Evaluator:
             temp["gen_utts"] = usr_utt
             temp["gen_emotion"] = usr_emo
 
+            print(f"labe ({labels['emotion']}):", labels["text"])
+            print(f"pred ({usr_emo}):", usr_utt)
+            print("=====================")
+
             if self.use_sentiment:
                 temp["golden_sentiment"] = labels["sentiment"]
                 temp["gen_sentiment"] = output["sentiment"]
