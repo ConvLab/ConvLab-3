@@ -64,7 +64,7 @@ class PipelineAgent(Agent):
            =====   =====    ======  ===     ==      ===
     """
 
-    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str, return_semantic_acts: bool = False):
+    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str, return_semantic_acts: bool = False, debug: bool = False):
         """The constructor of PipelineAgent class.
 
         Here are some special combination cases:
@@ -96,6 +96,7 @@ class PipelineAgent(Agent):
         self.policy = policy
         self.nlg = nlg
         self.return_semantic_acts = return_semantic_acts
+        self.debug = debug
 
         self.init_session()
         self.agent_saves = []
@@ -132,7 +133,7 @@ class PipelineAgent(Agent):
 
         return agent_state
 
-    def response(self, observation):
+    def response(self, observation, action=None):
         """Generate agent response using the agent modules."""
         # Note: If you modify the logic of this function, please ensure that it is consistent with deploy.server.ServerCtrl._turn()
         if self.dst is not None:
@@ -156,9 +157,14 @@ class PipelineAgent(Agent):
                 # print("system semantic action: ", self.input_action)
             else:
                 self.input_action = observation
-                self.input_action_eval = observation
+                if action is not None:
+                    self.input_action_eval = action
+                else:
+                    self.input_action_eval = observation
         # get rid of reference problem
         self.input_action = deepcopy(self.input_action)
+        if self.debug:
+            print(f"({self.name}) input_action: ", self.input_action)
 
         # get state
         if self.dst is not None:
@@ -171,9 +177,22 @@ class PipelineAgent(Agent):
             state = self.input_action
 
         state = deepcopy(state)  # get rid of reference problem
+        # if self.debug:
+        #     print(f"({self.name}) state: ", state)
         # get action
         # get rid of reference problem
-        self.output_action = deepcopy(self.policy.predict(state))
+        if self.name == "sys":
+            self.output_action = deepcopy(self.policy.predict(state))
+
+        else:
+            if action is not None:
+                self.output_action = deepcopy(self.policy.predict(
+                    sys_act=action, sys_utt=observation))
+            else:
+                self.output_action = deepcopy(self.policy.predict(state))
+
+        if self.debug:
+            print(f"({self.name}) action: ", self.output_action)
 
         # get model response
         if self.nlg is not None:

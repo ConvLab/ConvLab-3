@@ -480,7 +480,7 @@ class UserPolicy(Policy):
         #     model_checkpoint, "pytorch_model.bin"))
         self.sample = sample
 
-    def predict(self, sys_act, mode="max"):
+    def predict(self, sys_act, sys_utt=None, mode="max"):
         if self.sample:
             mode = "sample"
         else:

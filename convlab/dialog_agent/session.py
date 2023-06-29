@@ -121,7 +121,8 @@ class BiSession(Session):
         """
         user_response = self.next_response(last_observation)
         if self.evaluator:
-            self.evaluator.add_sys_da(self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
+            self.evaluator.add_sys_da(
+                self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
             self.evaluator.add_usr_da(self.user_agent.get_out_da())
 
         session_over = self.user_agent.is_terminated()
@@ -132,11 +133,64 @@ class BiSession(Session):
             # print('inform prec. {} rec. {} F1 {}'.format(prec, rec, f1))
             # print('book rate {}'.format(self.evaluator.book_rate()))
             # print('task success {}'.format(self.evaluator.task_success()))
-        reward = self.user_agent.get_reward() if self.evaluator is None else self.evaluator.get_reward()
+        reward = self.user_agent.get_reward(
+        ) if self.evaluator is None else self.evaluator.get_reward()
         sys_response = self.next_response(user_response)
         self.dialog_history.append([self.user_agent.name, user_response])
         self.dialog_history.append([self.sys_agent.name, sys_response])
         return sys_response, user_response, session_over, reward
+
+    def next_turn_two_way(self, system_utterance, system_action):
+        """Conduct a new turn of dialog, which consists of the system response and user response.
+
+        The variable type of responses can be either 1) str or 2) dialog act, depends on the dialog mode settings of the
+        two agents which are supposed to be the same.
+
+        Args:
+            system_utterance:
+                The utterance of system.
+
+            system_action:
+                The action of system.
+
+        Returns:
+            sys_response:
+                The response of system.
+
+            user_response:
+                The response of user simulator.
+
+            session_over (boolean):
+                True if session ends, else session continues.
+
+            reward (float):
+                The reward given by the user.
+        """
+        user = self.next_agent()
+        user_response = user.response(system_utterance, system_action)
+
+        if self.evaluator:
+            self.evaluator.add_sys_da(
+                self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
+            self.evaluator.add_usr_da(self.user_agent.get_out_da())
+
+        session_over = self.user_agent.is_terminated()
+        if hasattr(self.sys_agent, 'dst'):
+            self.sys_agent.dst.state['terminated'] = session_over
+        # if session_over and self.evaluator:
+            # prec, rec, f1 = self.evaluator.inform_F1()
+            # print('inform prec. {} rec. {} F1 {}'.format(prec, rec, f1))
+            # print('book rate {}'.format(self.evaluator.book_rate()))
+            # print('task success {}'.format(self.evaluator.task_success()))
+        reward = self.user_agent.get_reward(
+        ) if self.evaluator is None else self.evaluator.get_reward()
+
+        system = self.next_agent()
+        sys_response = system.response(user_response)
+        sys_action = system.get_out_da()
+        self.dialog_history.append([self.user_agent.name, user_response])
+        self.dialog_history.append([self.sys_agent.name, sys_response])
+        return sys_response, sys_action, user_response, session_over, reward
 
     def train_policy(self):
         """

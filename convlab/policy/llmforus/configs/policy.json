@@ -1,0 +1,31 @@
+{
+    "model": {
+        "load_path": "convlab/policy/ppo/pretrained_models/mle",
+        "pretrained_load_path": "",
+        "use_pretrained_initialisation": false,
+        "batchsz": 200,
+        "seed": 0,
+        "epoch": 100,
+        "eval_frequency": 5,
+        "process_num": 1,
+        "num_eval_dialogues": 20,
+        "sys_semantic_to_usr": false
+    },
+    "vectorizer_sys": {
+        "uncertainty_vector_mul": {
+            "class_path": "convlab.policy.vector.vector_binary.VectorBinary",
+            "ini_params": {
+                "use_masking": true,
+                "manually_add_entity_names": true,
+                "seed": 0
+            }
+        }
+    },
+    "nlu_sys": {},
+    "dst_sys": {},
+    "sys_nlg": {},
+    "nlu_usr": {},
+    "dst_usr": {},
+    "policy_usr": {},
+    "usr_nlg": {}
+}

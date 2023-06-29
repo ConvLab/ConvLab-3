@@ -25,9 +25,9 @@
         "BertNLU": {
             "class_path": "convlab.nlu.jointBERT.unified_datasets.BERTNLU",
             "ini_params": {
-                "mode": "all",
-                "config_file": "multiwoz21_all.json",
-                "model_file": "https://huggingface.co/ConvLab/bert-base-nlu/resolve/main/bertnlu_unified_multiwoz21_all_context0.zip"
+                "mode": "sys",
+                "config_file": "multiwoz21_user_context3.json",
+                "model_file": "https://huggingface.co/ConvLab/bert-base-nlu/resolve/main/bertnlu_unified_multiwoz21_user_context3.zip"
             }
         }
     },
@@ -37,7 +37,14 @@
             "ini_params": {}
         }
     },
-    "sys_nlg": {},
+    "sys_nlg": {
+        "TemplateNLG": {
+            "class_path": "convlab.nlg.template.multiwoz.TemplateNLG",
+            "ini_params": {
+                "is_user": false
+            }
+        }
+    },
     "nlu_usr": {},
     "dst_usr": {},
     "policy_usr": {

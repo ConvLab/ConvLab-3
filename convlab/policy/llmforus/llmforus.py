@@ -266,7 +266,8 @@ class UserPolicy(Policy):
                  max_turn=40,
                  **kwargs):
         # self.config = config
-        print("emoUS model checkpoint: ", model_checkpoint)
+        print("LLM model checkpoint:", model_checkpoint)
+        print("Adaptor model checkpoint:", peft_checkpoint)
         # if sample:
         #     print("EmoUS will sample action, but emotion is always max")
         # if not os.path.exists(os.path.dirname(model_checkpoint)):
