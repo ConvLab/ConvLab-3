@@ -248,7 +248,7 @@ def direct_get_action(text, model, tokenizer, device, max_token):
 def get_utterance(text, model, tokenizer, device, max_token):
     inputs = tokenizer(text, return_tensors="pt").to(device)
     generate_ids = model.generate(
-        input_ids=inputs.input_ids, max_new_tokens=max_token, do_sample=True, temperature=0.9)
+        input_ids=inputs.input_ids, max_new_tokens=max_token, do_sample=True, top_p=0.92, )
     output = parse_utterance(tokenizer.batch_decode(
         generate_ids, skip_special_tokens=True)[0])
     return output
