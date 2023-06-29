@@ -115,7 +115,7 @@ class UserActionPolicy:
                                          event=self._get_user_event(),
                                          user=self.user_info,
                                          goal=goal,
-                                         motion=emotion,
+                                         emotion=emotion,
                                          action=action)
         utterance = get_utterance(text=input_str,
                                   model=self.model.model,
