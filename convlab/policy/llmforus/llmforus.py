@@ -101,7 +101,7 @@ class UserActionPolicy:
                                       event=self._get_user_event(),
                                       user=self.user_info,
                                       goal=goal,
-                                      motion=emotion)
+                                      emotion=emotion)
         action = direct_get_action(text=input_str,
                                    model=self.model.model,
                                    tokenizer=self.tokenizer,
