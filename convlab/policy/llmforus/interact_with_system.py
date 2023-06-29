@@ -49,6 +49,7 @@ def get_system_policy(model_config):
 
 
 if __name__ == "__main__":
+    import os
 
     set_seed(20220220)
 
@@ -110,8 +111,11 @@ if __name__ == "__main__":
         dialogue['turns'] = turns
 
         conversation.append(dialogue)
-
-    with open("convlab/policy/llmforus/conversation.json", "w") as f:
+    basename = os.path.basename(args.model_config).split(".")[0]
+    result_folder = os.path.join("convlab/policy/llmforus/results", basename)
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+    with open(os.path.join(result_folder, "conversation.json"), "w") as f:
         json.dump(conversation, f, indent=2)
     # print(sys.response("I want to find a hotel in the north"))
 
