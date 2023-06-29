@@ -222,33 +222,6 @@ class Evaluator:
              "missing": missing, "hallucinate": hallucinate, "total": total}
         return r
 
-    @staticmethod
-    def _intent_domain(action):
-        acts = []
-        for intent, domain, slot, value in action:
-            if [intent, domain] not in acts:
-                acts.append([intent, domain])
-        return acts
-
-    def semantic_evaluation(self, gen_acts, golden_acts):
-        scores = {"full action": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
-                  "intent-domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
-        for gen_act, golden_act in zip(gen_acts, golden_acts):
-            s = f1_measure(preds=gen_act, labels=golden_act)
-            for metric in scores["full action"]:
-                scores["full action"][metric].append(s[metric])
-            s = f1_measure(preds=self._intent_domain(gen_act),
-                           labels=self._intent_domain(golden_act))
-            for metric in scores["intent-domain"]:
-                scores["intent-domain"][metric].append(s[metric])
-
-        result = {}
-        for metric_type, score in scores.items():
-            result[metric_type] = {}
-            for m, s in score.items():
-                result[metric_type][m] = sum(s)/len(s)
-        return result
-
     def evaluation(self, input_file="", generated_file="", golden_emotion=False, golden_action=False):
         if input_file:
             print("Force generation")
@@ -264,7 +237,7 @@ class Evaluator:
             self.evaluation_result["natural language generation"][metric] = score
 
         if not golden_action:
-            r = self.semantic_evaluation(
+            r = semantic_evaluation(
                 self.r["gen_acts"], self.r["golden_acts"])
             for metric, score in r.items():
                 self.evaluation_result["semantic action prediction"][metric] = score
@@ -366,6 +339,34 @@ def f1_measure(preds, labels):
     if tp == len(preds) and tp == len(labels):
         score["turn_acc"] = 1
     return score
+
+
+def intent_domain(action):
+    acts = []
+    for intent, domain, _, _ in action:
+        if [intent, domain] not in acts:
+            acts.append([intent, domain])
+    return acts
+
+
+def semantic_evaluation(gen_acts, golden_acts):
+    scores = {"full action": {"precision": [], "recall": [], "f1": [], "turn_acc": []},
+              "intent-domain": {"precision": [], "recall": [], "f1": [], "turn_acc": []}}
+    for gen_act, golden_act in zip(gen_acts, golden_acts):
+        s = f1_measure(preds=gen_act, labels=golden_act)
+        for metric in scores["full action"]:
+            scores["full action"][metric].append(s[metric])
+        s = f1_measure(preds=intent_domain(gen_act),
+                       labels=intent_domain(golden_act))
+        for metric in scores["intent-domain"]:
+            scores["intent-domain"][metric].append(s[metric])
+
+    result = {}
+    for metric_type, score in scores.items():
+        result[metric_type] = {}
+        for m, s in score.items():
+            result[metric_type][m] = sum(s)/len(s)
+    return result
 
 
 def main():
