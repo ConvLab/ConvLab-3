@@ -320,8 +320,8 @@ class UserPolicy(Policy):
 
 def arg_parser():
     parser = ArgumentParser()
-    parser.add_argument("--model_checkpoint", type=str)
-    parser.add_argument("--peft_checkpoint", type=str)
+    parser.add_argument("--model-checkpoint", type=str)
+    parser.add_argument("--peft-checkpoint", type=str)
     return parser.parse_args()
 
 
