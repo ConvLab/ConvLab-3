@@ -56,6 +56,12 @@ if __name__ == "__main__":
     args = arg_parser()
     # sys, usr = get_agents(args.model_config)
     policy_sys = get_system_policy(args.policy_config)
+
+    basename = os.path.basename(args.model_config).split(".")[0]
+    result_folder = os.path.join("convlab/policy/llmforus/results", basename)
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
     print("policy_config", args.policy_config)
     print(args.model_config)
     conf = get_config(args.model_config, [])
@@ -64,7 +70,7 @@ if __name__ == "__main__":
     num_goals = args.num_goals
     goals = create_goals(goal_generator, num_goals=num_goals,
                          single_domains=False, allowed_domains=None)
-    conversation = []
+
     for seed in tqdm(range(1000, 1000 + num_goals)):
         dialogue = {"seed": seed, "log": []}
         set_seed(seed)
@@ -110,13 +116,8 @@ if __name__ == "__main__":
         dialogue['total_return'] = total_return
         dialogue['turns'] = turns
 
-        conversation.append(dialogue)
-    basename = os.path.basename(args.model_config).split(".")[0]
-    result_folder = os.path.join("convlab/policy/llmforus/results", basename)
-    if not os.path.exists(result_folder):
-        os.makedirs(result_folder)
-    with open(os.path.join(result_folder, "conversation.json"), "w") as f:
-        json.dump(conversation, f, indent=2)
+        with open(os.path.join(result_folder, f"dialog-{seed}.json"), "w") as f:
+            json.dump(dialogue, f, indent=2)
     # print(sys.response("I want to find a hotel in the north"))
 
     # usr_policy = UserPolicy(model_checkpoint=args.model_checkpoint,
