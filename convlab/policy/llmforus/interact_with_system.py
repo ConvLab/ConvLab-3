@@ -56,6 +56,7 @@ if __name__ == "__main__":
     # sys, usr = get_agents(args.model_config)
     policy_sys = get_system_policy(args.policy_config)
     print("policy_config", args.policy_config)
+    print(args.model_config)
     conf = get_config(args.model_config, [])
     env, sess = env_config(conf, policy_sys)
     goal_generator = GoalGenerator()
