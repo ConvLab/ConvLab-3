@@ -1,10 +1,14 @@
-from convlab.nlg.scgpt.util import act2str
-from convlab.nlg.nlg import NLG
-from torch.nn.parallel import DistributedDataParallel as DDP
-from transformers import GPT2Tokenizer, GPT2LMHeadModel, GPT2Config
-import torch
 import pdb
 import sys
+
+import torch
+from torch.nn.parallel import DistributedDataParallel as DDP
+from transformers import GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
+
+from convlab.nlg.nlg import NLG
+from convlab.nlg.scgpt.util import act2str
+from convlab.util.file_util import cached_path
+
 sys.path.append('../../..')
 
 
@@ -13,11 +17,13 @@ class SCGPT(NLG):
         super(SCGPT, self).__init__()
         self.dataset_name = dataset_name
         self.device = device
-        # self.model = GPT2LMHeadModel(config=GPT2Config.from_pretrained('gpt2-medium')).to(self.device)
-        self.model = GPT2LMHeadModel.from_pretrained(
-            model_path).to(self.device)
-        self.tokenizer = GPT2Tokenizer.from_pretrained(model_path)
-        # self.model.load_state_dict(torch.load(model_path, map_location=torch.device(self.device)))
+        self.model = GPT2LMHeadModel(
+            config=GPT2Config.from_pretrained('gpt2-medium')).to(self.device)
+
+        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2-medium")
+        model_path = cached_path(model_path)
+        self.model.load_state_dict(torch.load(
+            model_path, map_location=torch.device(self.device)))
 
     def generate(self, action):
         if isinstance(action, dict):
