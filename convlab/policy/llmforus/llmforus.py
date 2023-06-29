@@ -66,12 +66,13 @@ class UserActionPolicy:
             pass
         self._update_history(role="system", text=sys_utt)
         history = self.history[-3:]
+        goal = self.goal.get_goal_list()
         self.emotion = self.generate_emotion(
-            history=history, goal=self.goal)
+            history=history, goal=goal)
         self.semantic_action = self.generate_action(
-            history=history, goal=self.goal, emotion=self.emotion)
+            history=history, goal=goal, emotion=self.emotion)
         self.utterance = self.generate_utterance(
-            history=history, goal=self.goal, emotion=self.emotion, action=self.semantic_action)
+            history=history, goal=goal, emotion=self.emotion, action=self.semantic_action)
         self._update_history(role="user", text=self.utterance)
         self.goal.update_user_goal(action=self.semantic_action, char="usr")
 
