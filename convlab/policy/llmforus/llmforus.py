@@ -225,8 +225,9 @@ class UserActionPolicy:
                 history.append(h["text"])
             if len(history) > 2:
                 break
-        if history[0] == history[1] and history[1] == history[2]:
-            return True
+        if len(history) > 2:
+            if history[0] == history[1] and history[1] == history[2]:
+                return True
         return False
 
     def is_terminated(self):
