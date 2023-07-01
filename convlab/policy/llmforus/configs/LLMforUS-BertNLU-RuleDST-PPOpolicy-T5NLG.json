@@ -38,7 +38,7 @@
         }
     },
     "sys_nlg": {
-        "TemplateNLG": {
+        "T5NLG": {
             "class_path": "convlab.base_models.t5.nlg.nlg.T5NLG",
             "ini_params": {
                 "speaker": "system",

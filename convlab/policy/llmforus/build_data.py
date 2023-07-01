@@ -19,6 +19,9 @@ def parse_args():
     parser = ArgumentParser(description='Build data for the model')
     parser.add_argument('--dataset', type=str, default="emowoz+dialmage",
                         help='create from which dataset')
+    parser.add_argument('-T', '--T5-regenerate', action="store_true")
+    parser.add_argument('--language-style', type=str, default="all",
+                        choices=["multiwoz", "dialmage", "all"])
     return parser.parse_args()
 
 
@@ -29,6 +32,12 @@ class DataBuilder(GenTUSDataBuilder):
         self.emotion = {}
         for emotion, index in json.load(open("convlab/policy/emoUS/emotion.json")).items():
             self.emotion[int(index)] = emotion
+        self.T5_regenerate = kwargs.get("T5_regenerate", False)
+        self.language_style = kwargs.get("language_style", "multiwoz")
+        if self.T5_regenerate:
+            from convlab.base_models.t5.nlg.nlg import T5NLG
+            self.nlg = T5NLG(speaker="system", context_window_size=0,
+                             model_name_or_path="ConvLab/t5-small-nlg-multiwoz21_sgd_tm1_tm2_tm3")
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
         example = []
@@ -51,7 +60,14 @@ class DataBuilder(GenTUSDataBuilder):
         for turn_id in range(0, len(dialog["turns"]), 2):
             data_id = f"{dialog['dialogue_id']}-{turn_id}"
             sys_act = self._get_sys_act(dialog, turn_id)
-            sys_utt = self._get_sys_utt(dialog, turn_id)
+            # only regenerate dialmage data
+            if self.T5_regenerate and "dialmage" in data_id and sys_act:
+                print("act", sys_act)
+                print("old", self._get_sys_utt(dialog, turn_id))
+                sys_utt = self.nlg.generate(sys_act)
+                print("new", sys_utt)
+            else:
+                sys_utt = self._get_sys_utt(dialog, turn_id)
             history.append({"role": "system", "text": sys_utt})
 
             user_goal.update_user_goal(action=sys_act, char="sys")
@@ -75,18 +91,27 @@ class DataBuilder(GenTUSDataBuilder):
                            "in": in_str, "out": out_str})
 
             # action
-            in_str = get_action_prompt(
-                history, event, user_info, usr_goal_str, usr_emotion)
-            out_str = json.dumps(usr_act)
-            example.append({"id": f"{data_id}-action",
-                           "in": in_str, "out": out_str})
+            # Do not include empty action
+            if usr_act:
+                in_str = get_action_prompt(
+                    history, event, user_info, usr_goal_str, usr_emotion)
+                out_str = json.dumps(usr_act)
+                example.append({"id": f"{data_id}-action",
+                                "in": in_str, "out": out_str})
 
             # utterance
-            in_str = get_utterance_prompt(
-                history, event, user_info, usr_goal_str, usr_emotion, usr_act)
-            out_str = usr_utt
-            example.append({"id": f"{data_id}-utterance",
-                           "in": in_str, "out": out_str})
+            add_utt_data = True
+            if self.language_style == "dialmage" and "dialmage" not in data_id:
+                add_utt_data = False
+            elif self.language_style == "multiwoz" and "dialmage" in data_id:
+                add_utt_data = False
+
+            if add_utt_data and usr_act:
+                in_str = get_utterance_prompt(
+                    history, event, user_info, usr_goal_str, usr_emotion, usr_act)
+                out_str = usr_utt
+                example.append({"id": f"{data_id}-utterance",
+                                "in": in_str, "out": out_str})
 
             history.append({"role": "user", "text": usr_utt})
 
@@ -153,7 +178,10 @@ def get_utterance_prompt(history: list, event: dict, user: dict, goal: list, emo
 def main():
     args = parse_args()
     base_name = "convlab/policy/llmforus/unify/data"
-    dir_name = f"{args.dataset}"
+    dir_name = f"{args.dataset}_{args.language_style}"
+    if args.T5_regenerate:
+        dir_name += "_T5"
+
     folder_name = os.path.join(base_name, dir_name)
 
     if not os.path.exists(folder_name):
@@ -162,7 +190,9 @@ def main():
         data_name=args.dataset,
         dial_ids_order=0,
         split2ratio=1)
-    data_builder = DataBuilder(dataset=args.dataset)
+    data_builder = DataBuilder(dataset=args.dataset,
+                               language_style=args.language_style,
+                               T5_regenerate=args.T5_regenerate)
 
     data = data_builder.setup_data(
         raw_data=dataset)
