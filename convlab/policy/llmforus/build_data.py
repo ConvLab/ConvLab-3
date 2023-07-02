@@ -59,6 +59,7 @@ class DataBuilder(GenTUSDataBuilder):
 
         for turn_id in range(0, len(dialog["turns"]), 2):
             data_id = f"{dialog['dialogue_id']}-{turn_id}"
+
             sys_act = self._get_sys_act(dialog, turn_id)
             # only regenerate dialmage data
             if self.T5_regenerate and "dialmage" in data_id and sys_act:
@@ -111,7 +112,7 @@ class DataBuilder(GenTUSDataBuilder):
                                 "in": in_str, "out": out_str})
 
             history.append({"role": "user", "text": usr_utt})
-
+        print(dialog['dialogue_id'])
         return example
 
     def _dump_in_str(self, sys_act, usr_goal_str, history, turn_id, add_history, user_info=None):
