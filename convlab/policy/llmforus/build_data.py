@@ -62,10 +62,7 @@ class DataBuilder(GenTUSDataBuilder):
             sys_act = self._get_sys_act(dialog, turn_id)
             # only regenerate dialmage data
             if self.T5_regenerate and "dialmage" in data_id and sys_act:
-                print("act", sys_act)
-                print("old", self._get_sys_utt(dialog, turn_id))
                 sys_utt = self.nlg.generate(sys_act)
-                print("new", sys_utt)
             else:
                 sys_utt = self._get_sys_utt(dialog, turn_id)
             history.append({"role": "system", "text": sys_utt})
