@@ -189,8 +189,8 @@ class LLaMa2(HFModels):
 
 if __name__ == '__main__':
     # model = LLM('openai', 'gpt-3.5-turbo')
-    # model = LLM('huggingface', '/data/zhuqi/pre-trained-models/Llama-2-7b-chat-hf')
-    model = LLM('huggingface', '/data/zhuqi/pre-trained-models/chatglm2-6b')
+    # model = LLM('huggingface', 'Llama-2-7b-chat-hf')
+    model = LLM('huggingface', 'chatglm2-6b')
     print(model.__dict__)
     print(model.chat("Help me to find a Chinese restaurant in Beijing."))
     print(model.chat("Great"))

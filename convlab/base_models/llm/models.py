@@ -544,11 +544,14 @@ def test_LLM_NLG():
     ]
     dataset = load_dataset('multiwoz21')
     example_dialogs = dataset['train'][:3]
-    nlg = LLM_NLG('multiwoz21', 'huggingface', '/data/zhuqi/pre-trained-models/Llama-2-7b-chat-hf', 'system', example_dialogs)
+    nlg = LLM_NLG('multiwoz21', 'huggingface', 'Llama-2-7b-chat-hf', 'system', example_dialogs)
     for da, context in zip(das, contexts):
         print(da)
         print(nlg.generate(da, context))
         print()
 
 if __name__ == '__main__':
+    test_LLM_US_RG()
+    test_LLM_DST()
+    test_LLM_NLU()
     test_LLM_NLG()
