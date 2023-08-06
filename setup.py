@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='convlab',
-    version='3.0.2a',
+    version='3.0.2b',
     packages=find_packages(),
     license='Apache',
     description='An Open-source Dialog System Toolkit',
@@ -55,7 +55,8 @@ setup(
         'fuzzywuzzy',
         'json_lines',
         'gtts',
-        'pydub'
+        'pydub',
+        'openai'
     ],
     extras_require={
         'develop': [
