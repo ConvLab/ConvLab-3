@@ -31,6 +31,7 @@ class stepGenTUSmodel(torch.nn.Module):
             self.model = PeftModel.from_pretrained(
                 self.model, peft_model_checkpoint)
             self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        print(device, "device")
         self.model.to(device)
         self.device = device
 

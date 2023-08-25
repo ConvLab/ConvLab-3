@@ -24,7 +24,7 @@ class UserActionPolicy(Policy):
         self.mode = mode
         # if mode == "semantic" and only_action:
         #     # only generate semantic action in prediction
-        print("model_checkpoint", model_checkpoint)
+        print("model_checkpoint (UserActionPolicy)", model_checkpoint)
         self.only_action = only_action
         if self.only_action:
             print("change mode to semantic because only_action=True")
@@ -384,7 +384,7 @@ class UserActionPolicy(Policy):
         #     self.terminated = True
 
         del inputs
-        print(self.action_prob)
+        # print(self.action_prob)
 
         if self.mode == "language":
             # print("in", sys_act)
@@ -650,7 +650,7 @@ class UserPolicy(Policy):
             os.makedirs(os.path.dirname(model_checkpoint))
             model_downloader(os.path.dirname(model_checkpoint),
                              "https://zenodo.org/record/7372442/files/multiwoz21-exp.zip")
-
+        print("---> model_checkpoint", model_checkpoint)
         self.policy = UserActionPolicy(
             model_checkpoint,
             mode=mode,
