@@ -57,7 +57,7 @@ setup(
         'gtts',
         'pydub',
         'openai',
-        'GitPython
+        'GitPython'
     ],
     extras_require={
         'develop': [
