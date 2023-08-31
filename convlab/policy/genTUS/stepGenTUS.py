@@ -603,7 +603,7 @@ class UserActionPolicy(Policy):
 
 class UserPolicy(Policy):
     def __init__(self,
-                 model_checkpoint,
+                 model_checkpoint="convlab/policy/genTUS/unify/experiments/multiwoz21-exp",
                  mode="semantic",
                  only_action=True,
                  sample=False,
@@ -657,20 +657,16 @@ if __name__ == "__main__":
     # from convlab.nlu.jointBERT.multiwoz import BERTNLU
     from convlab.util.custom_util import set_seed
 
-    set_seed(20220220)
+    set_seed(20230831)
     # Test semantic level behaviour
-    model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21-exp'
-    usr_policy = UserPolicy(
-        model_checkpoint,
-        mode="semantic")
+    # model_checkpoint = 'convlab/policy/genTUS/unify/experiments/multiwoz21-exp'
+    usr_policy = UserPolicy(mode="semantic")
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
     print(usr.policy.get_goal())
 
     print(usr.response([]))
-    print(usr.policy.policy.goal.status)
-    print(usr.response([["request", "attraction", "area", "?"]]))
-    print(usr.policy.policy.goal.status)
-    print(usr.response([["request", "attraction", "area", "?"]]))
-    print(usr.policy.policy.goal.status)
+    print(usr.response(
+        [['inform', 'attraction', 'name', 'test attraction name']]))
+    print(usr.response([["inform", "attraction", "address", "test address"]]))
