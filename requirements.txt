@@ -42,6 +42,7 @@ jsonpointer==2.3
 kiwisolver==1.4.4
 langcodes==3.3.0
 Levenshtein==0.20.8
+litellm==0.1.516
 lxml==4.9.1
 Markdown==3.4.1
 MarkupSafe==2.1.1

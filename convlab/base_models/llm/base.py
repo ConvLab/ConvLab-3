@@ -1,6 +1,7 @@
 """Wrapper for LLMs' API. Need transformers>=4.31.0 to use Llama-2."""
 import os
 import openai
+from litellm import completion
 import torch
 from copy import deepcopy
 from transformers import pipeline, AutoTokenizer, AutoModel
@@ -81,7 +82,7 @@ class OpenAI_API(BaseLLM):
         self.model_name_or_path = model_name_or_path
     
     def chat(self, messages, **kwargs) -> str:
-        completion = openai.ChatCompletion.create(
+        completion = completion(
             model=self.model_name_or_path,
             messages=messages,
             **kwargs
