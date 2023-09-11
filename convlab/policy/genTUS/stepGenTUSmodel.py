@@ -9,7 +9,6 @@ from convlab.policy.genTUS.token_map import tokenMap
 from convlab.policy.genTUS.utils import append_tokens
 from transformers import (AutoConfig, AutoModelForCausalLM,
                           AutoTokenizer, AutoModelForSeq2SeqLM)
-from peft import PeftModel, PeftConfig
 
 
 class stepGenTUSmodel(torch.nn.Module):
@@ -27,6 +26,7 @@ class stepGenTUSmodel(torch.nn.Module):
                 model_checkpoint)
 
         else:
+            from peft import PeftModel
             self.model = AutoModelForCausalLM.from_pretrained(model_checkpoint)
             self.model = PeftModel.from_pretrained(
                 self.model, peft_model_checkpoint)
