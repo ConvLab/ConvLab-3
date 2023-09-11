@@ -27,3 +27,7 @@ def test():
     usr.init_session()
     print(usr.policy.policy.predict(sys_act=[], sys_conduct="neutral"))
     print(usr.policy.policy.predict(sys_act=[], sys_conduct="enthusiastic"))
+
+
+if __name__ == "__main__":
+    test()
