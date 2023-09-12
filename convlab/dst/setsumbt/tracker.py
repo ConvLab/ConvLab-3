@@ -211,14 +211,8 @@ class SetSUMBTTracker(DST):
                 belief_state_confidence['general'] = dict()
             belief_state_confidence['general']['none'] = general_act_probs
 
-        # Get new domain activation actions
-        new_domains = [d for d, active in outputs.state['active_domains'].items() if active]
-        new_domains = [d for d in new_domains if not self.active_domains.get(d, False)]
-        self.active_domains = outputs.state['active_domains']
-
+        # Update belief state
         user_acts = outputs.state['user_action']
-        for domain in new_domains:
-            user_acts.append(['inform', domain, 'none', 'none'])
 
         new_belief_state = copy.deepcopy(prev_state['belief_state'])
         for domain, substate in outputs.state['belief_state'].items():
@@ -245,6 +239,21 @@ class SetSUMBTTracker(DST):
                 else:
                     bug = f'Unknown slot name <{slot}> with value <{value}> of domain <{domain}>'
                     logging.debug(bug)
+
+        # Make all action domains active
+        for domain in outputs.state['active_domains']:
+            if domain in user_act.lower():
+                outputs.state['active_domains'][domain] = True
+        for intent, domain, slot, value in user_acts:
+            outputs.state['active_domains'][domain] = True
+
+        # Get new domain activation actions
+        new_domains = [d for d, active in outputs.state['active_domains'].items() if active]
+        new_domains = [d for d in new_domains if not self.active_domains.get(d, False)]
+        self.active_domains = outputs.state['active_domains']
+
+        for domain in new_domains:
+            user_acts.append(['inform', domain, 'none', 'none'])
 
         new_state = copy.deepcopy(dict(prev_state))
         new_state['belief_state'] = new_belief_state

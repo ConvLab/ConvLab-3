@@ -52,6 +52,10 @@ def create_description_dicts(name='multiwoz21'):
         act = "_".join(act)
         description_dict_semantic["user-"+act.lower()] = f"user act {domain} {intent} {slot} {value}"
 
+    emotions = ["neutral", "satisfied", "dissatisfied", "abusive", "excited", "fearful", "apologetic"]
+    for emotion in emotions:
+        description_dict_semantic[f"user emotion-{emotion}"] = f"user emotion {emotion}"
+
     root_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(os.path.join(root_dir, "descriptions"), exist_ok=True)
     with open(os.path.join(root_dir, 'descriptions', f'semantic_information_descriptions_{name}.json'), "w") as f:

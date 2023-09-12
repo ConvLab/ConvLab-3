@@ -240,7 +240,7 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
             "recommend_acts": recommend_acts/total_acts}
 
 
-def env_config(conf, policy_sys, check_book_constraints=True):
+def env_config(conf, policy_sys, check_book_constraints=True, action_length_penalty=0.0):
     nlu_sys = conf['nlu_sys_activated']
     dst_sys = conf['dst_sys_activated']
     sys_nlg = conf['sys_nlg_activated']
@@ -264,7 +264,7 @@ def env_config(conf, policy_sys, check_book_constraints=True):
 
     # assemble
     evaluator = MultiWozEvaluator(
-        check_book_constraints=check_book_constraints)
+        check_book_constraints=check_book_constraints, action_length_penalty=action_length_penalty)
     env = Environment(sys_nlg, simulator, nlu_sys, dst_sys, evaluator=evaluator,
                       use_semantic_acts=conf['model']['sys_semantic_to_usr'])
     sess = BiSession(system_pipeline, simulator, None, evaluator)

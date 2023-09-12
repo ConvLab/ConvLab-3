@@ -34,7 +34,8 @@ class Memory:
         self.number_episodes = 0
 
         self.data_keys = ['states', 'actions', 'rewards', 'small_actions', 'mu', 'action_masks', 'critic_value',
-                          'description_idx_list', 'value_list', 'current_domain_mask', 'non_current_domain_mask']
+                          'description_idx_list', 'value_list', 'current_domain_mask',
+                          'non_current_domain_mask', 'use_temperature']
         self.reset()
         set_seed(seed)
 
@@ -51,7 +52,8 @@ class Memory:
             setattr(self, k, [[]])
 
     def update_episode(self, state_list, action_list, reward_list, small_act_list, mu_list, action_mask_list,
-                       critic_value_list, description_idx_list, value_list, current_domain_mask, non_current_domain_mask):
+                       critic_value_list, description_idx_list, value_list, current_domain_mask,
+                       non_current_domain_mask, use_temperature_list):
 
         if len(self.states) > self.max_size:
             # delete the oldest episode when max-size is reached
@@ -78,6 +80,7 @@ class Memory:
         self.value_list[-1] = value_list
         self.current_domain_mask[-1] = current_domain_mask
         self.non_current_domain_mask[-1] = non_current_domain_mask
+        self.use_temperature[-1] = use_temperature_list
 
         self.states.append([])
         self.actions.append([])
@@ -90,6 +93,7 @@ class Memory:
         self.value_list.append([])
         self.current_domain_mask.append([])
         self.non_current_domain_mask.append([])
+        self.use_temperature.append([])
 
         self.number_episodes += 1
 

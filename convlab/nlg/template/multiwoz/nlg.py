@@ -175,10 +175,13 @@ class TemplateNLG(NLG):
         dialog_acts = self.sorted_dialog_act(dialog_acts)
         action = collections.OrderedDict()
         for intent, domain, slot, value in dialog_acts:
+            if intent.lower() == "book":
+                domain = "Booking"
             k = '-'.join([domain.lower(), intent.lower()])
             action.setdefault(k, [])
             action[k].append([slot.lower(), value])
         dialog_acts = action
+
         mode = self.mode
         try:
             is_user = self.is_user
