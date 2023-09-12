@@ -25,8 +25,8 @@ def test():
         model_type="encoder_decoder")
     usr = PipelineAgent(None, None, usr_policy, None, name='user')
     usr.init_session()
-    print(usr.policy.policy.predict(sys_act=[], sys_conduct="neutral"))
-    print(usr.policy.policy.predict(sys_act=[], sys_conduct="enthusiastic"))
+    print(usr.response([], sys_conduct="neutral"))
+    print(usr.response([], sys_conduct="enthusiastic"))
 
 
 if __name__ == "__main__":
