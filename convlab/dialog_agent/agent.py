@@ -133,7 +133,9 @@ class PipelineAgent(Agent):
 
         return agent_state
 
-    def response(self, observation, action=None):
+    def response(self, observation, **kwargs):
+        action = kwargs.get("action", None)
+        conduct = kwargs.get("conduct", "default")
         """Generate agent response using the agent modules."""
         # Note: If you modify the logic of this function, please ensure that it is consistent with deploy.server.ServerCtrl._turn()
         if self.dst is not None:
@@ -185,7 +187,11 @@ class PipelineAgent(Agent):
             self.output_action = deepcopy(self.policy.predict(state))
 
         else:
-            if action is not None:
+            # check this part care fully!
+            if conduct != "default":
+                self.output_action = deepcopy(self.policy.predict(
+                    sys_act=observation, sys_conduct=conduct))
+            elif action is not None:
                 self.output_action = deepcopy(self.policy.predict(
                     sys_act=action, sys_utt=observation))
             else:

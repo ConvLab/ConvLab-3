@@ -91,9 +91,14 @@ class BiSession(Session):
         # print(agent + " " + str(self.__turn_indicator))
         return next_agent
 
-    def next_response(self, observation):
+    def next_response(self, observation, **kwargs):
+        sys_conduct = kwargs.get("sys_conduct", "default")
         next_agent = self.next_agent()
-        response = next_agent.response(observation)
+        if sys_conduct == "default":
+            response = next_agent.response(observation)
+        else:
+            # only for user simulator
+            response = next_agent.response(observation, conduct=sys_conduct)
         # print(response)
         return response
 
@@ -119,7 +124,12 @@ class BiSession(Session):
             reward (float):
                 The reward given by the user.
         """
-        user_response = self.next_response(last_observation)
+        if hasattr(self.sys_agent.policy, 'get_conduct'):
+            sys_conduct = self.sys_agent.policy.get_conduct()
+            user_response = self.next_response(
+                last_observation, sys_conduct=sys_conduct)
+        else:
+            user_response = self.next_response(last_observation)
         if self.evaluator:
             self.evaluator.add_sys_da(
                 self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
