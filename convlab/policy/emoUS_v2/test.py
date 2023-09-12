@@ -44,7 +44,9 @@ def test():
     # test for seestion
     dst = RuleDST()
     sys = PipelineAgent(None, dst, sys_policy, None, name='sys')
+    print("Create session")
     sess = BiSession(sys, usr)
+    print("get next turn")
     x = sess.next_turn([])
     print(x)
 
