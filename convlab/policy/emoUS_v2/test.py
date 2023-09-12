@@ -6,6 +6,7 @@ from convlab.policy.vector.vector_nodes import VectorNodes
 from convlab.policy.vtrace_DPT import VTRACE
 from convlab.dst.rule.multiwoz.dst import RuleDST
 from convlab.dialog_agent.session import BiSession
+from convlab.dialog_agent.env import Environment
 
 
 def arg_parser():
@@ -48,6 +49,14 @@ def test():
     sess = BiSession(sys, usr)
     print("get next turn")
     x = sess.next_turn([])
+    print(x)
+
+    print("="*20)
+    env = Environment(sys_nlg=None, usr=usr, sys_nlu=None, sys_dst=dst)
+    s = env.reset()
+    sys_act = sys_policy.predict(s)
+    sys_conduct = sys_policy.get_conduct()
+    s = env.step(action=sys_act, sys_conduct=sys_conduct)
     print(x)
 
 
