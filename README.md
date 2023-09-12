@@ -16,6 +16,7 @@
 
 ## Updates
 
+- **2023.8.6**: Add LLM-based models.
 - **2023.2.26**: Update ConvLab on PyPI to 3.0.1 to reflect bug fixes.
 - **2022.11.30**: ConvLab-3 release.
 
@@ -98,15 +99,15 @@ We list newly integrated models in ConvLab-3 that support unified data format an
 
 | Task                           | Models                                                       | Input           | Output           |
 | ------------------------------ | ------------------------------------------------------------ | --------------- | ---------------- |
-| Response Generation            | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Context         | Response         |
-| Goal-to-Dialogue                 | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Goal            | Dialog           |
-| Natural Language Understanding | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [BERTNLU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/jointBERT), [MILU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/milu) | Context         | DA-U             |
-| Dialog State Tracking          | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/sumbt), [SetSUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/setsumbt), [TripPy](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/trippy) | Context         | State            |
+| Response Generation            | [T5RG](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [LLMs](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/llm) | Context         | Response         |
+| Goal-to-Dialogue                 | [T5Goal2Dialogue](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5) | Goal            | Dialog           |
+| Natural Language Understanding | [T5NLU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [BERTNLU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/jointBERT), [MILU](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlu/milu), [LLMs](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/llm) | Context         | DA-U             |
+| Dialog State Tracking          | [T5DST](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/sumbt), [SetSUMBT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/setsumbt), [TripPy](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/dst/trippy), [LLMs](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/llm) | Context         | State            |
 | RL Policy                      | [DDPT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/vtrace_DPT), [PPO](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/ppo), [PG](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/pg) | State, DA-U, DB | DA-S             |
 | Word-Policy | [LAVA](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/lava) | Context, State, DB | Response |
-| Natural Language Generation    | [T5](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SC-GPT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlg/scgpt) | DA-S            | Response         |
+| Natural Language Generation    | [T5NLG](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/t5), [SC-GPT](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/nlg/scgpt), [LLMs](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/llm) | DA-S            | Response         |
 | End-to-End                     | [SOLOIST](https://github.com/ConvLab/ConvLab-3/blob/master/convlab/e2e/soloist/README.md)                                                      | Context, DB     | State, Response  |
-| User simulator                 | [TUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/tus), [GenTUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/genTUS) | Goal, DA-S      | DA-U, (Response) |
+| User simulator                 | [TUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/tus), [GenTUS](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/policy/genTUS), [LLMs](https://github.com/ConvLab/ConvLab-3/tree/master/convlab/base_models/llm) | Goal, DA-S      | DA-U, (Response) |
 
 Trained models are available on [Hugging Face Hub](https://huggingface.co/ConvLab).
 
@@ -124,12 +125,18 @@ We welcome contributions from community. Please see issues to find what we need.
 ├── convlab                             # Source code, installed in pypi package
 │   ├── dialog_agent                    # Interface for dialog agent and session
 │   ├── base_models
+│   │   ├── llm                         # LLM-based models
+│   │   │   ├── user_simulator          # LLM-based user simulator and RG
+│   │   │   ├── dst                     # LLM-based DST
+│   │   │   ├── nlu                     # LLM-based NLU
+│   │   │   └── nlg                     # LLM-based NLG
+│   │   │
 │   │   └── t5                          # T5 models with a unified training script
-│   │       ├── goal2dialogue           # T5-Goal2Dialogue
-│   │       ├── dst                     # T5-DST
-│   │       ├── nlu                     # T5-NLU
-│   │       ├── nlg                     # T5-NLG
-│   │       └── rg                      # T5-RG
+│   │       ├── goal2dialogue           # T5Goal2Dialogue
+│   │       ├── dst                     # T5DST
+│   │       ├── nlu                     # T5NLU
+│   │       ├── nlg                     # T5NLG
+│   │       └── rg                      # T5RG
 │   │
 │   ├── nlu                             # NLU models, interface, and evaluation script
 │   │   ├── jointBERT                   # BERTNLU

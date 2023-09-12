@@ -6,6 +6,7 @@ import sys
 import torch
 import torch.nn as nn
 import urllib.request
+import random
 
 from torch import optim
 from convlab.policy.vector.vector_nodes import VectorNodes
@@ -22,7 +23,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class VTRACE(nn.Module, Policy):
 
-    def __init__(self, is_train=True, seed=0, vectorizer=None, load_path="", **kwargs):
+    def __init__(self, is_train=True, seed=0, vectorizer=None, load_path="", emotion_model=None, **kwargs):
 
         super(VTRACE, self).__init__()
 
@@ -50,11 +51,28 @@ class VTRACE(nn.Module, Policy):
         self.info_dict = {}
         self.use_regularization = False
         self.supervised_weight = cfg.get('supervised_weight', 0.0)
+        self.use_emotion = cfg['use_emotion']
+        self.use_emotion_temperature = cfg['use_emotion_temperature']
+        self.only_negative_emotion_temperature = cfg['only_negative_emotion_temperature']
+        self.use_emotion_reward = cfg['use_emotion_reward']
+        self.emotion_model = emotion_model
+        self.use_emotion_prediction = cfg['use_emotion_prediction']
+        self.emotion_exploitation = cfg['emotion_exploitation']
+        self.use_emotion_reward_difference = cfg['use_emotion_reward_difference']
+        self.argmax = cfg['argmax']
+        self.predict_conduct = cfg['predict_conduct']
 
         logging.info(f"Entropy weight: {self.entropy_weight}")
         logging.info(f"Online-Offline-ratio: {self.online_offline_ratio}")
         logging.info(f"Behaviour cloning weight: {self.behaviour_cloning_weight}")
         logging.info(f"Supervised weight: {self.supervised_weight}")
+        logging.info(f"We use emotion: {self.use_emotion}")
+        logging.info(f"We use emotion temperature: {self.use_emotion_temperature}")
+        logging.info(f"We use only negative emotion temperature: {self.only_negative_emotion_temperature}")
+        logging.info(f"We use emotion reward: {self.use_emotion_reward}")
+        logging.info(f"Temperature activation is: {cfg['temperature_activation']}")
+        logging.info(f"We use emotion prediction for action selection: {self.use_emotion_prediction}")
+        logging.info(f"We use argmax for sampling: {self.argmax}")
 
         set_seed(seed)
 
@@ -66,6 +84,7 @@ class VTRACE(nn.Module, Policy):
                          manually_add_entity_names=kwargs.get('manually_add_entity_names', True),
                          seed=seed,
                          filter_state=kwargs.get('filter_state', True))
+        vectorizer.use_emotion = self.use_emotion
 
         self.vector = vectorizer
         self.cfg['dataset_name'] = self.vector.dataset_name
@@ -106,7 +125,7 @@ class VTRACE(nn.Module, Policy):
 
     def predict(self, state):
         """
-        Predict an system action given state.
+        Predict a system action given state.
         Args:
             state (dict): Dialog state. Please refer to util/state.py
         Returns:
@@ -121,25 +140,75 @@ class VTRACE(nn.Module, Policy):
         s, action_mask = self.vector.state_vectorize(state)
 
         kg_states = [self.vector.kg_info]
-        a = self.policy.select_action(kg_states, mask=action_mask, eval=not self.is_train).detach().cpu()
-        self.info_dict = self.policy.info_dict
+        use_temperature = False
+        if self.use_emotion and self.use_emotion_temperature:
+            if "emotion" in state:
+                user_emotion = state["emotion"]
+                if not self.only_negative_emotion_temperature:
+                    use_temperature = True
+                elif user_emotion in ["dissatisfied", "abusive"]:
+                    use_temperature = True
 
-        descr_list = self.info_dict["description_idx_list"]
-        value_list = self.info_dict["value_list"]
-        current_domain_mask = self.info_dict["current_domain_mask"].unsqueeze(0)
-        non_current_domain_mask = self.info_dict["non_current_domain_mask"].unsqueeze(0)
+        # sample whether the emotion model should be used
+        use_emotion_model = np.random.binomial(1, self.emotion_exploitation)
 
-        a_prob, _ = self.policy.get_prob(a.unsqueeze(0), self.info_dict['action_mask'].unsqueeze(0),
-                                         len(self.info_dict['small_act']), [self.info_dict['small_act']],
-                                         current_domain_mask, non_current_domain_mask, [descr_list], [value_list])
+        if self.emotion_model is not None and self.use_emotion_prediction and use_emotion_model:
+            action_candidates = []
+            for i in range(5):
+                a = self.policy.select_action(kg_states, mask=action_mask, eval=not self.is_train,
+                                              use_temperature=use_temperature).detach().cpu()
+                self.info_dict = self.policy.info_dict
 
+                descr_list = self.info_dict["description_idx_list"]
+                value_list = self.info_dict["value_list"]
+                current_domain_mask = self.info_dict["current_domain_mask"].unsqueeze(0)
+                non_current_domain_mask = self.info_dict["non_current_domain_mask"].unsqueeze(0)
+
+                a_prob, _ = self.policy.get_prob(a.unsqueeze(0), self.info_dict['action_mask'].unsqueeze(0),
+                                                 len(self.info_dict['small_act']), [self.info_dict['small_act']],
+                                                 current_domain_mask, non_current_domain_mask, [descr_list], [value_list],
+                                                 temperature_used=torch.Tensor([float(use_temperature)]).unsqueeze(-1).to(DEVICE))
+                semantic_action = self.vector.action_devectorize(a.detach().numpy())
+                emotion = self.emotion_model.estimate_emotion(semantic_action)
+                try:
+                    emotion = json.loads(emotion)
+                    emotion = emotion["emotion"].lower()
+                except:
+                    emotion = "neutral"
+                action_candidates.append((semantic_action, emotion))
+
+            emotion_dict = {"satisfied": 1, "neutral": 0, "dissatisfied": -1}
+            max_emotion = max([emotion_dict.get(emotion, 0) for _, emotion in action_candidates])
+            best_action = [action for action, emotion in action_candidates if emotion_dict.get(emotion, 0) == max_emotion]
+            action = random.choice(best_action)
+
+        else:
+            a = self.policy.select_action(kg_states, mask=action_mask, eval=not self.is_train,
+                                          use_temperature=use_temperature).detach().cpu()
+            self.info_dict = self.policy.info_dict
+
+            descr_list = self.info_dict["description_idx_list"]
+            value_list = self.info_dict["value_list"]
+            current_domain_mask = self.info_dict["current_domain_mask"].unsqueeze(0)
+            non_current_domain_mask = self.info_dict["non_current_domain_mask"].unsqueeze(0)
+
+            a_prob, _ = self.policy.get_prob(a.unsqueeze(0), self.info_dict['action_mask'].unsqueeze(0),
+                                             len(self.info_dict['small_act']), [self.info_dict['small_act']],
+                                             current_domain_mask, non_current_domain_mask, [descr_list],
+                                             [value_list],
+                                             temperature_used=torch.Tensor([float(use_temperature)]).unsqueeze(
+                                                 -1).to(DEVICE))
+            action = self.vector.action_devectorize(a.detach().numpy())
+
+        self.info_dict["use_temperature"] = int(use_temperature)
         self.info_dict['big_act'] = a
         self.info_dict['a_prob'] = a_prob.prod()
         self.info_dict['critic_value'] = self.value([descr_list], [value_list]).squeeze()
 
-        action = self.vector.action_devectorize(a.detach().numpy())
-
         return action
+
+    def get_conduct(self):
+        return self.info_dict.get("conduct", "neutral")
 
     def update(self, memory):
         p_loss, v_loss = self.get_loss(memory)
@@ -173,7 +242,7 @@ class VTRACE(nn.Module, Policy):
             batch, num_online = self.get_batch(memory)
 
             action_masks, actions, critic_v, current_domain_mask, description_batch, max_length, mu, \
-            non_current_domain_mask, rewards, small_actions, unflattened_states, value_batch \
+            non_current_domain_mask, rewards, small_actions, unflattened_states, value_batch, use_temperature \
                 = self.prepare_batch(batch)
 
             with torch.no_grad():
@@ -181,7 +250,7 @@ class VTRACE(nn.Module, Policy):
 
                 pi_prob, _ = self.policy.get_prob(actions, action_masks, max_length, small_actions,
                                                   current_domain_mask, non_current_domain_mask,
-                                                  description_batch, value_batch)
+                                                  description_batch, value_batch, temperature_used=use_temperature)
                 pi_prob = pi_prob.prod(dim=-1)
 
                 rho = torch.min(torch.Tensor([self.rho_bar]).to(DEVICE), pi_prob / mu)
@@ -208,7 +277,8 @@ class VTRACE(nn.Module, Policy):
 
                 actor_loss, entropy = self.policy.get_log_prob(actions, action_masks, max_length, small_actions,
                                                                current_domain_mask, non_current_domain_mask,
-                                                               description_batch, value_batch)
+                                                               description_batch, value_batch,
+                                                               temperature_used=use_temperature)
                 actor_loss = -1 * actor_loss
                 actor_loss = actor_loss * (advantages.to(DEVICE) * rho)
                 actor_loss = actor_loss.mean() - entropy * self.entropy_weight
@@ -255,6 +325,8 @@ class VTRACE(nn.Module, Policy):
         small_actions = [act for act_list in small_actions for act in act_list]
         rewards = batch['rewards']
         rewards = torch.stack([r for r_episode in rewards for r in r_episode]).to(DEVICE)
+        use_temperature = batch['use_temperature']
+        use_temperature = torch.stack([use_temp for temp_epi in use_temperature for use_temp in temp_epi]).to(DEVICE)
         # rewards = torch.from_numpy(np.concatenate(np.array(rewards), axis=0)).to(DEVICE)
         mu = batch['mu']
         mu = torch.stack([mu_ for mu_list in mu for mu_ in mu_list], dim=0).to(DEVICE)
@@ -269,7 +341,7 @@ class VTRACE(nn.Module, Policy):
                 DEVICE)],
             dim=0) for action_mask in action_mask_list]).to(DEVICE)
         return action_masks, actions, critic_v, current_domain_mask, description_batch, max_length, mu, \
-               non_current_domain_mask, rewards, small_actions, unflattened_states, value_batch
+               non_current_domain_mask, rewards, small_actions, unflattened_states, value_batch, use_temperature
 
     def compute_vtrace_advantage(self, states, rewards, rho, cs, values):
 

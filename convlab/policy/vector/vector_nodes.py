@@ -14,6 +14,7 @@ class VectorNodes(VectorBase):
 
         super().__init__(dataset_name, character, use_masking, manually_add_entity_names, seed)
         self.filter_state = filter_state
+        self.use_emotion = False
         logging.info(f"We filter state by active domains: {self.filter_state}")
 
     def get_state_dim(self):
@@ -61,6 +62,8 @@ class VectorNodes(VectorBase):
         self.get_sys_act_feature(state)
         domain_active_dict = self.get_user_goal_feature(state, domain_active_dict)
         self.get_general_features(state, domain_active_dict)
+        if self.use_emotion:
+            self.get_emotion_features(state)
 
         if self.db is not None:
             number_entities_dict = self.get_db_features()
@@ -99,6 +102,13 @@ class VectorNodes(VectorBase):
             # self.add_graph_node(domain, feature_type, description, int(num_entities > 0))
             self.add_graph_node(domain, feature_type, description, min(num_entities, 5) / 5)
         return number_entities_dict
+
+    def get_emotion_features(self, state):
+        feature_type = 'user emotion'
+        if 'emotion' in state:
+            user_emotion = state['emotion']
+            description = f"user emotion-{user_emotion}".lower()
+            self.add_graph_node("general", feature_type, description, value=1.0)
 
     def get_user_goal_feature(self, state, domain_active_dict):
 

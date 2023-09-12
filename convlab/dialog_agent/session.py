@@ -128,6 +128,9 @@ class BiSession(Session):
         session_over = self.user_agent.is_terminated()
         if hasattr(self.sys_agent, 'dst'):
             self.sys_agent.dst.state['terminated'] = session_over
+        if hasattr(self.user_agent.policy, 'get_emotion'):
+            emotion = self.user_agent.policy.get_emotion().lower()
+            self.sys_agent.dst.state['emotion'] = emotion
         # if session_over and self.evaluator:
             # prec, rec, f1 = self.evaluator.inform_F1()
             # print('inform prec. {} rec. {} F1 {}'.format(prec, rec, f1))

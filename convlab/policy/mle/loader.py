@@ -105,7 +105,8 @@ class PolicyDataVectorizer:
                 state['terminated'] = data_point['terminated']
                 if self.dst is not None and state['terminated']:
                     self.dst.init_session()
-                state['booked'] = data_point['booked']
+                if "booked" in data_point:
+                    state['booked'] = data_point['booked']
                 dialogue_act = flatten_acts(data_point['dialogue_acts'])
 
                 vectorized_state, mask = self.vector.state_vectorize(state)

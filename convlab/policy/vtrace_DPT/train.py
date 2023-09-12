@@ -9,6 +9,7 @@ import os
 import logging
 import time
 import torch
+import json
 
 from torch import multiprocessing as mp
 from argparse import ArgumentParser
@@ -33,6 +34,8 @@ try:
 except RuntimeError:
     pass
 
+emotion_dict = {"satisfied": 1, "neutral": 0, "dissatisfied": -1, "abusive": -1}
+
 
 def create_episodes(environment, policy, num_episodes, memory, goals):
     sampled_num = 0
@@ -41,17 +44,30 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
     while sampled_num < num_episodes:
         goal = goals.pop()
         s = environment.reset(goal)
+        prev_emotion = "none"
 
         user_act_list, sys_act_list, s_vec_list, action_list, reward_list, small_act_list, action_mask_list, mu_list, \
         trajectory_list, vector_mask_list, critic_value_list, description_idx_list, value_list, current_domain_mask, \
-        non_current_domain_mask = \
-            [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
+        non_current_domain_mask, use_temperature_list = \
+            [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
+
+        emotion_temperature_list = []
 
         for t in range(traj_len):
+
+            if hasattr(environment.usr.policy, 'get_emotion'):
+                emotion = environment.usr.policy.get_emotion().lower()
+            else:
+                emotion = "none"
+
+            if policy.use_emotion and emotion != "none":
+                s['emotion'] = emotion
 
             s_vec, mask = policy.vector.state_vectorize(s)
             with torch.no_grad():
                 a = policy.predict(s)
+
+            emotion_temperature_list.append([emotion, policy.info_dict["temperature"]])
 
             # s_vec_list.append(policy.info_dict['kg'])
             action_list.append(policy.info_dict['big_act'].detach())
@@ -64,12 +80,30 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             value_list.append(policy.info_dict["value_list"])
             current_domain_mask.append(policy.info_dict["current_domain_mask"])
             non_current_domain_mask.append(policy.info_dict["non_current_domain_mask"])
+            use_temperature_list.append(torch.Tensor([policy.info_dict["use_temperature"]]))
 
             sys_act_list.append(policy.vector.action_vectorize(a))
             trajectory_list.extend([s['user_action'], a])
 
             # interact with env
             next_s, r, done = environment.step(a)
+
+            if policy.use_emotion_reward:
+                if hasattr(environment.usr.policy, 'get_emotion'):
+                    emotion = environment.usr.policy.get_emotion().lower()
+                    emotion_reward = emotion_dict.get(emotion, 0)
+                    r += emotion_reward
+
+            if policy.use_emotion_reward_difference:
+                if hasattr(environment.usr.policy, 'get_emotion'):
+                    emotion = environment.usr.policy.get_emotion().lower()
+                    if prev_emotion != "none":
+                        emotion_reward = emotion_dict.get(emotion, 0) - emotion_dict.get(prev_emotion, 0)
+                        # exclude the case where we go from satisfaction to neutral because that happens
+                        if not (emotion_dict.get(emotion, 0) == 0 and emotion_dict.get(prev_emotion, 0) == 1):
+                            r += emotion_reward
+                    prev_emotion = emotion
+
             reward_list.append(torch.Tensor([r]))
 
             next_s_vec, next_mask = policy.vector.state_vectorize(next_s)
@@ -80,8 +114,10 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             if done:
                 memory.update_episode(description_idx_list, action_list, reward_list, small_act_list, mu_list,
                                       action_mask_list, critic_value_list, description_idx_list, value_list,
-                                      current_domain_mask, non_current_domain_mask)
+                                      current_domain_mask, non_current_domain_mask, use_temperature_list)
                 break
+
+        emotion_temperature_logs.append(emotion_temperature_list)
 
         sampled_num += 1
 
@@ -137,7 +173,12 @@ if __name__ == '__main__':
 
     save_config(vars(parser.parse_args()), environment_config, config_save_path, policy_config=policy_sys.cfg)
 
-    env, sess = env_config(conf, policy_sys)
+    env, sess = env_config(conf, policy_sys, check_book_constraints=conf['model'].get('check_book_constraints', True),
+                           action_length_penalty=conf['model'].get('action_length_penalty', 0.0))
+
+    if policy_sys.use_emotion_prediction:
+        policy_sys.emotion_model = sess.user_agent.policy
+        logging.info("Set emotion model for policy")
 
     # Setup uncertainty thresholding
     if env.sys_dst:
@@ -151,6 +192,8 @@ if __name__ == '__main__':
     allowed_domains = conf['goals']['allowed_domains']
     logging.info(f"Single domains only: {single_domains}")
     logging.info(f"Allowed domains {allowed_domains}")
+    logging.info(f"We check booking constraints: {conf['model'].get('check_book_constraints', True)}")
+    logging.info(f"Action length penalty: {conf['model'].get('action_length_penalty', 0.0)}")
 
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
@@ -178,6 +221,8 @@ if __name__ == '__main__':
     new_dialogues = conf['model']["new_dialogues"]
     total_dialogues = conf['model']["total_dialogues"]
 
+    emotion_temperature_logs = []
+
     log_train_configs()
 
     while num_dialogues < total_dialogues:
@@ -191,8 +236,12 @@ if __name__ == '__main__':
             create_episodes(env, policy_sys, new_dialogues, memory, goals)
         num_dialogues += new_dialogues
 
+        with open(os.path.join(save_path, 'emotion_temperature_logs.json'), 'w') as f:
+            json.dump(emotion_temperature_logs, f)
+
         for r in range(conf['model']['update_rounds']):
             if num_dialogues > 50:
+                print("Updating policy")
                 policy_sys.update(memory)
                 torch.cuda.empty_cache()
 

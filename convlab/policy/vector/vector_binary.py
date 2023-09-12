@@ -47,8 +47,15 @@ class VectorBinary(VectorBase):
         opp_act_vec = self.vectorize_user_act(state)
         last_act_vec = self.vectorize_system_act(state)
         belief_state, domain_active_dict = self.vectorize_belief_state(state, domain_active_dict)
-        book = self.vectorize_booked(state)
-        degree, number_entities_dict = self.pointer()
+        if "booked" in state:
+            book = self.vectorize_booked(state)
+        else:
+            book = []
+        if self.db is not None:
+            degree, number_entities_dict = self.pointer()
+        else:
+            degree = []
+            number_entities_dict = {}
         final = 1. if state['terminated'] else 0.
 
         state_vec = np.r_[opp_act_vec, last_act_vec,
@@ -82,13 +89,14 @@ class VectorBinary(VectorBase):
         belief_state = np.zeros(self.belief_state_dim)
         i = 0
         for domain in self.belief_domains:
-            for slot, value in state['belief_state'][domain].items():
-                if value:
-                    belief_state[i] = 1.
-                i += 1
+            if domain in state['belief_state']:
+                for slot, value in state['belief_state'][domain].items():
+                    if value:
+                        belief_state[i] = 1.
+                    i += 1
 
-            if [slot for slot, value in state['belief_state'][domain].items() if value]:
-                domain_active_dict[domain] = True
+                if [slot for slot, value in state['belief_state'][domain].items() if value]:
+                    domain_active_dict[domain] = True
         return belief_state, domain_active_dict
 
     def vectorize_system_act(self, state):
