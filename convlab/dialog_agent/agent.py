@@ -190,7 +190,7 @@ class PipelineAgent(Agent):
             # check this part care fully!
             if conduct != "default":
                 self.output_action = deepcopy(self.policy.predict(
-                    sys_act=observation, sys_conduct=conduct))
+                    state, sys_conduct=conduct))
             elif action is not None:
                 self.output_action = deepcopy(self.policy.predict(
                     sys_act=action, sys_utt=observation))
