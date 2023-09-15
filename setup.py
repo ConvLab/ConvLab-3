@@ -56,7 +56,8 @@ setup(
         'json_lines',
         'gtts',
         'pydub',
-        'openai'
+        'openai',
+        'litellm==0.1.516'
     ],
     extras_require={
         'develop': [
