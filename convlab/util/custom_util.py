@@ -172,7 +172,7 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     if conf['model']['process_num'] == 1 or save_eval:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts, recommend_acts = evaluate(sess,
+            select_acts, offer_acts, recommend_acts, emotion_return = evaluate(sess,
                                                                num_dialogues=conf['model']['num_eval_dialogues'],
                                                                sys_semantic_to_usr=conf['model'][
                                                                    'sys_semantic_to_usr'],
@@ -183,7 +183,7 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts, recommend_acts = \
+            select_acts, offer_acts, recommend_acts, emotion_return = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'], goals)
         total_acts = book_acts + inform_acts + request_acts + \
@@ -220,7 +220,8 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
                  f"Average Actions: {mean_actions}+-{round(err_actions, 2)}, "
                  f"Book Actions: {book_acts/total_acts}, Inform Actions: {inform_acts/total_acts}, "
                  f"Request Actions: {request_acts/total_acts}, Select Actions: {select_acts/total_acts}, "
-                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}")
+                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}, "
+                 f"Emotion Return: {emotion_return}")
 
     for key in task_success:
         logging.info(
@@ -237,7 +238,8 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
             "request_acts": request_acts/total_acts,
             "select_acts": select_acts/total_acts,
             "offer_acts": offer_acts/total_acts,
-            "recommend_acts": recommend_acts/total_acts}
+            "recommend_acts": recommend_acts/total_acts,
+            "emotion_return": emotion_return}
 
 
 def env_config(conf, policy_sys, check_book_constraints=True, action_length_penalty=0.0):
@@ -334,11 +336,12 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
     eval_save = {}
     turn_counter_dict = {}
     turn_counter = 0.0
+    emotion_dict = {"satisfied": 1, "neutral": 0, "dissatisfied": -1, "abusive": -1}
 
     task_success = {'All_user_sim': [], 'All_evaluator': [], "All_evaluator_strict": [],
                     'total_return': [], 'turns': [], 'avg_actions': [],
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
-                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': []}
+                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': [], 'emotion_return': []}
     dial_count = 0
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
@@ -354,11 +357,17 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         request = 0
         select = 0
         offer = 0
+        total_emotion_return = 0.0
         recommend = 0
         # this 40 represents the max turn of dialogue
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
+
+            if hasattr(sess.user_agent.policy, 'get_emotion'):
+                emotion = sess.user_agent.policy.get_emotion().lower()
+                emotion_reward = emotion_dict.get(emotion, 0)
+                total_emotion_return += emotion_reward
 
             if len(sys_response) not in turn_counter_dict:
                 turn_counter_dict[len(sys_response)] = 1
@@ -404,8 +413,6 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['All_user_sim'].append(complete)
         task_success['All_evaluator'].append(task_succ)
         task_success['All_evaluator_strict'].append(task_succ_strict)
-        total_return = 80 if task_succ_strict else -40
-        total_return -= turns
         task_success['total_return'].append(total_return)
         task_success['turns'].append(turns)
         task_success['avg_actions'].append(avg_actions / turns)
@@ -417,6 +424,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_offer_acts'].append(offer)
         task_success['total_offer_acts'].append(offer)
         task_success['total_recommend_acts'].append(recommend)
+        task_success['emotion_return'].append(total_emotion_return)
 
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
@@ -434,7 +442,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
         np.average(task_success['total_offer_acts']), np.average(
-            task_success['total_recommend_acts'])
+            task_success['total_recommend_acts']), np.average(task_success['emotion_return'])
 
 
 def model_downloader(download_dir, model_path):

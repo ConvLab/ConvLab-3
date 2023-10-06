@@ -98,7 +98,7 @@ class UserPolicyAgendaMultiWoz(Policy):
         self.domain_goals = self.goal.domain_goals
         self.agenda = Agenda(self.goal)
 
-    def predict(self, sys_dialog_act):
+    def predict(self, sys_dialog_act, **kwargs):
         """
         Predict an user act based on state and preorder system action.
         Args:

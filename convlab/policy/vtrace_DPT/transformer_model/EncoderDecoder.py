@@ -244,7 +244,6 @@ class EncoderDecoder(nn.Module):
             action_list.append('eos')
             action_list_num.append(self.action_embedder.small_action_dict['eos'])
 
-        emotion = "none"
         if self.predict_conduct:
             # predict the conduct for the semantic action
             action = action_list_num[-1]  # last chosen action is always eos
@@ -265,8 +264,8 @@ class EncoderDecoder(nn.Module):
 
             action_mask_list.append(action_mask)
             action_list_num.append(emotion)
+            self.info_dict["conduct"] = self.action_embedder.small_action_dict_reversed[emotion]
 
-        self.info_dict["conduct"] = emotion
         self.info_dict["kg"] = kg_list[0]
         self.info_dict["small_act"] = torch.Tensor(action_list_num)
         self.info_dict["action_mask"] = torch.stack(action_mask_list)

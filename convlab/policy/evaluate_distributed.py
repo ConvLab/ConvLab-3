@@ -7,6 +7,8 @@ import numpy as np
 from convlab.policy.rlmodule import Memory_evaluator
 from torch import multiprocessing as mp
 
+emotion_dict = {"satisfied": 1, "neutral": 0, "dissatisfied": -1, "abusive": -1}
+
 
 def sampler(pid, queue, evt, sess, seed_range, goals):
     """
@@ -44,12 +46,18 @@ def sampler(pid, queue, evt, sess, seed_range, goals):
         select = 0
         offer = 0
         recommend = 0
+        total_emotion_return = 0
         task_success = {}
 
         for i in range(40):
             # TODO: I think the reward here is also from user simulator and not evaluator, check for task-success if yes
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
+
+            if hasattr(sess.user_agent.policy, 'get_emotion'):
+                emotion = sess.user_agent.policy.get_emotion().lower()
+                emotion_reward = emotion_dict.get(emotion, 0)
+                total_emotion_return += emotion_reward
 
             turns += 1
             total_return_success += sess.evaluator.get_reward(terminated=session_over)
@@ -84,7 +92,7 @@ def sampler(pid, queue, evt, sess, seed_range, goals):
             task_success[key].append(success_strict)
 
         buff.push(complete, success, success_strict, total_return_complete, total_return_success, turns, avg_actions / turns,
-                  task_success, book, inform, request, select, offer, recommend)
+                  task_success, book, inform, request, select, offer, recommend, total_emotion_return)
 
     # this is end of sampling all batchsz of items.
     # when sampling is over, push all buff data into queue
@@ -139,7 +147,7 @@ def evaluate_distributed(sess, seed_range, process_num, goals):
     return batch.complete, batch.success, batch.success_strict, batch.total_return_success, batch.turns, \
            batch.avg_actions, batch.task_success, np.average(batch.book_actions), np.average(batch.inform_actions), \
            np.average(batch.request_actions), np.average(batch.select_actions), np.average(batch.offer_actions), \
-           np.average(batch.recommend_actions)
+           np.average(batch.recommend_actions), np.average(batch.emotion_return)
 
 
 if __name__ == "__main__":

@@ -126,7 +126,6 @@ class BiSession(Session):
         """
         if hasattr(self.sys_agent.policy, 'get_conduct'):
             sys_conduct = self.sys_agent.policy.get_conduct()
-            print("sys_conduct: ", sys_conduct)
             user_response = self.next_response(
                 last_observation, sys_conduct=sys_conduct)
         else:
