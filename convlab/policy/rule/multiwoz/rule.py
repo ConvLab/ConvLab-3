@@ -20,7 +20,7 @@ class RulePolicy(Policy):
         else:
             raise NotImplementedError('unknown character {}'.format(character))
 
-    def predict(self, state):
+    def predict(self, state, **kwargs):
         """
         Predict an system action given state.
         Args:
@@ -28,7 +28,7 @@ class RulePolicy(Policy):
         Returns:
             action : System act, with the form of (act_type, {slot_name_1: value_1, slot_name_2, value_2, ...})
         """
-        return self.policy.predict(state)
+        return self.policy.predict(state, **kwargs)
 
     def init_session(self, **kwargs):
         """

@@ -73,6 +73,7 @@ class VTRACE(nn.Module, Policy):
         logging.info(f"Temperature activation is: {cfg['temperature_activation']}")
         logging.info(f"We use emotion prediction for action selection: {self.use_emotion_prediction}")
         logging.info(f"We use argmax for sampling: {self.argmax}")
+        logging.info(f"We predict conduct: {self.predict_conduct}")
 
         set_seed(seed)
 

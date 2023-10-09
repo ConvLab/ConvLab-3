@@ -287,7 +287,7 @@ class Value(nn.Module):
 Transition_evaluator = namedtuple('Transition_evaluator',
                                   ('complete', 'success', 'success_strict', 'total_return_complete', 'total_return_success', 'turns',
                                    'avg_actions', 'task_success', 'book_actions', 'inform_actions', 'request_actions', 'select_actions',
-                                   'offer_actions', 'recommend_actions'))
+                                   'offer_actions', 'recommend_actions', 'emotion_return'))
 
 
 class Memory_evaluator(object):

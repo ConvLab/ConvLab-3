@@ -66,8 +66,9 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             s_vec, mask = policy.vector.state_vectorize(s)
             with torch.no_grad():
                 a = policy.predict(s)
+                sys_conduct = policy.get_conduct()
 
-            emotion_temperature_list.append([emotion, policy.info_dict["temperature"]])
+            emotion_temperature_list.append([emotion, policy.info_dict["temperature"], sys_conduct])
 
             # s_vec_list.append(policy.info_dict['kg'])
             action_list.append(policy.info_dict['big_act'].detach())
@@ -86,7 +87,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             trajectory_list.extend([s['user_action'], a])
 
             # interact with env
-            next_s, r, done = environment.step(a)
+            next_s, r, done = environment.step(a, sys_conduct=sys_conduct)
 
             if policy.use_emotion_reward:
                 if hasattr(environment.usr.policy, 'get_emotion'):
