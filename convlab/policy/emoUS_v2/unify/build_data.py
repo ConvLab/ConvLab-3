@@ -74,7 +74,8 @@ class DataBuilder(GenTUSDataBuilder):
             if turn_id - 1 < 0:
                 sys_emo = self.emotion_system_label["0"]
             else:
-                x = self.system_emotion[f"{original_id}-{turn_id-1}"]
+                # todo get default emotion?
+                x = self.system_emotion.get(f"{original_id}-{turn_id-1}", 0)
                 sys_emo = self.emotion_system_label[str(x)]
 
             user_goal.update_user_goal(action=sys_act, char="sys")

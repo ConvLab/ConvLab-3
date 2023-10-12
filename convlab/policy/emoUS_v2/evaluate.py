@@ -40,11 +40,13 @@ def arg_parser():
     parser.add_argument("--emotion-mid", action="store_true")
     parser.add_argument("--weight", type=float, default=None)
     parser.add_argument("--sample", action="store_true")
+    parser.add_argument("--debug", action="store_true")
     return parser.parse_args()
 
 
 class Evaluator:
     def __init__(self, model_checkpoint, dataset, model_weight=None, **kwargs):
+        self.debug = kwargs.get("debug", False)
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
         peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
@@ -63,7 +65,8 @@ class Evaluator:
         os.makedirs(self.result_dir, exist_ok=True)
 
         self.sample = kwargs.get("sample", False)
-        print("self.emotion_weight", self.emotion_weight)
+        if self.debug:
+            print("self.emotion_weight", self.emotion_weight)
         self.evaluation_result = {
             "emotion prediction": {},
             "semantic action prediction": {},
@@ -159,10 +162,10 @@ class Evaluator:
             temp["gen_acts"] = norm(usr_act)
             temp["gen_utts"] = usr_utt
             temp["gen_emotion"] = usr_emo
-
-            print(f"labe ({labels['emotion']}):", labels["text"])
-            print(f"pred ({usr_emo}):", usr_utt)
-            print("=====================")
+            if self.debug:
+                print(f"labe ({labels['emotion']}):", labels["text"])
+                print(f"pred ({usr_emo}):", usr_utt)
+                print("=====================")
 
             if self.use_sentiment:
                 temp["golden_sentiment"] = labels["sentiment"]
@@ -382,7 +385,8 @@ def main():
                      emotion_mid=args.emotion_mid,
                      weight=args.weight,
                      sample=args.sample,
-                     peft_model_checkpoint=args.peft_model_checkpoint)
+                     peft_model_checkpoint=args.peft_model_checkpoint,
+                     debug=args.debug)
     print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
