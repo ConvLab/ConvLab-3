@@ -21,8 +21,8 @@ sys.path.append(os.path.dirname(os.path.dirname(
 METRIC = load_metric("sacrebleu")
 TOKENIZER = BartTokenizer.from_pretrained("facebook/bart-base")
 TOKENIZER.add_tokens(["<?>"])
-MAX_IN_LEN = 500
-MAX_OUT_LEN = 500
+MAX_IN_LEN = 700
+MAX_OUT_LEN = 200
 
 
 def arg_parser():
