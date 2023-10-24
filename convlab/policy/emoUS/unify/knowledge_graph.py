@@ -13,7 +13,13 @@ DATASET = "unify"
 
 
 class KnowledgeGraph(GenTUSKnowledgeGraph):
-    def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="emowoz", use_sentiment=False, weight=None, **kwargs):
+    def __init__(self,
+                 tokenizer: BartTokenizer,
+                 ontology_file=None,
+                 dataset="emowoz",
+                 use_sentiment=False,
+                 weight=None,
+                 **kwargs):
         super().__init__(tokenizer, ontology_file, dataset="multiwoz", **kwargs)
         self.use_sentiment = use_sentiment
 
@@ -59,6 +65,12 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
             if use_sentiment:
                 self.sentiment_weight["Neutral"] = weight
             self.emotion_weight["Neutral"] = weight
+
+        for emotion in self.emotion_weight:
+            if emotion in kwargs:
+                self.emotion_weight[emotion] = kwargs[emotion]
+        print(kwargs)
+        print(self.emotion_weight)
 
     def get_sentiment(self, outputs, mode="max"):
         score = self._get_max_score(
