@@ -41,6 +41,15 @@ def arg_parser():
     parser.add_argument("--weight", type=float, default=None)
     parser.add_argument("--sample", action="store_true")
     parser.add_argument("--debug", action="store_true")
+    parser.add_argument("--Neutral", type=float, default=1)
+    parser.add_argument("--Fearful", type=float, default=1)
+    parser.add_argument("--Dissatisfied", type=float, default=1)
+    parser.add_argument("--Apologetic", type=float, default=1)
+    parser.add_argument("--Abusive", type=float, default=1)
+    parser.add_argument("--Excited", type=float, default=1)
+    parser.add_argument("--Satisfied", type=float, default=1)
+    parser.add_argument("--result-base-name", type=str, default="result")
+
     return parser.parse_args()
 
 
@@ -56,9 +65,23 @@ class Evaluator:
         self.use_sentiment = kwargs.get("use_sentiment", False)
         self.add_persona = kwargs.get("add_persona", True)
         self.emotion_mid = kwargs.get("emotion_mid", False)
-        self.emotion_weight = kwargs.get("weight", None)
+        self.emotion_weight = {"Neutral": 1,
+                               "Fearful": 1,
+                               "Dissatisfied": 1,
+                               "Apologetic": 1,
+                               "Abusive": 1,
+                               "Excited": 1,
+                               "Satisfied": 1}
+        for emotion in self.emotion_weight:
+            if emotion in kwargs:
+                self.emotion_weight[emotion] = kwargs[emotion]
+
         self.result_dir = os.path.join(model_checkpoint, "results")
-        if self.emotion_weight:
+        result_base_name = kwargs.get("result_base_name", "result")
+        if result_base_name:
+            self.result_dir = os.path.join(
+                self.result_dir, result_base_name)
+        elif self.emotion_weight:
             self.result_dir = os.path.join(
                 self.result_dir, f"weight-{self.emotion_weight}")
 
@@ -78,8 +101,9 @@ class Evaluator:
             use_sentiment=self.use_sentiment,
             add_persona=self.add_persona,
             emotion_mid=self.emotion_mid,
-            weight=self.emotion_weight,
-            peft_model_checkpoint=peft_model_checkpoint)
+            # weight=self.emotion_weight,
+            peft_model_checkpoint=peft_model_checkpoint,
+            **self.emotion_weight)
 
         # self.r = {"input": [],
         #           "golden_acts": [],
@@ -386,7 +410,15 @@ def main():
                      weight=args.weight,
                      sample=args.sample,
                      peft_model_checkpoint=args.peft_model_checkpoint,
-                     debug=args.debug)
+                     debug=args.debug,
+                     Neutral=args.Neutral,
+                     Fearful=args.Fearful,
+                     Dissatisfied=args.Dissatisfied,
+                     Apologetic=args.Apologetic,
+                     Abusive=args.Abusive,
+                     Excited=args.Excited,
+                     Satisfied=args.Satisfied,
+                     result_base_name=args.result_base_name)
     print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
