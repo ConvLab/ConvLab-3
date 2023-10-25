@@ -1,10 +1,10 @@
 import torch
 import numpy as np
 
-from convlab.dst.emodst.modeling.erc_models import BertERC
+from convlab.dst.emodst.modeling.erc_models import ContextBERT_ERToD
 
 ERC_MODELS = {
-    'bert-base-uncased': BertERC
+    'contextbert-ertod': ContextBERT_ERToD
 }
 
 class EmotionEstimator():
@@ -13,7 +13,7 @@ class EmotionEstimator():
         
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-        self.model = ERC_MODELS[kwargs_for_model['base_model_type']](**kwargs_for_model).to(self.device)
+        self.model = ERC_MODELS[kwargs_for_model['model_type']](**kwargs_for_model).to(self.device)
         self.model.load_state_dict(torch.load(kwargs_for_model['model_name_or_path'])['state_dict'])
         self.model.eval()
     

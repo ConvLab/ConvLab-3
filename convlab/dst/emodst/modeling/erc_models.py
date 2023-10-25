@@ -13,12 +13,13 @@ MODEL_CLASSES = {
     'roberta': (RobertaConfig, RobertaModel, RobertaTokenizer)
     }
 
-class BertERC(nn.Module):
+class ContextBERT_ERToD(nn.Module):
     """ContextBERT-ERToD ERC Model"""
 
     def __init__(self,
                  model_name_or_path: str = "",
                  base_model_type: str = "bert-base-uncased",
+                 model_type: str = "contextbert-ertod",
                  use_context: bool = True,
                  use_dialog_state: bool = True,
                  mtl_valence: bool = True,
@@ -29,7 +30,7 @@ class BertERC(nn.Module):
                  ds_ctx_window_size: int = 3,
                  ds_output_dim: int = 256,
                  dropout_rate: float = 0.3):
-        super(BertERC, self).__init__()
+        super(ContextBERT_ERToD, self).__init__()
         
         self.use_dialog_state = use_dialog_state
         self.max_token_len = max_token_len
