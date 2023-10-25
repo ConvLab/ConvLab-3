@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import os
 
 from convlab.dst.emodst.modeling.erc_models import ContextBERT_ERToD
 
@@ -14,7 +15,10 @@ class EmotionEstimator():
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
         self.model = ERC_MODELS[kwargs_for_model['model_type']](**kwargs_for_model).to(self.device)
-        self.model.load_state_dict(torch.load(kwargs_for_model['model_name_or_path'])['state_dict'])
+        if os.path.exists(kwargs_for_model['model_name_or_path']):
+            self.model.load_state_dict(torch.load(kwargs_for_model['model_name_or_path'])['state_dict'])
+        else:
+            raise NameError('ERCModelCheckpointNotFound')
         self.model.eval()
     
     def predict(self, 
