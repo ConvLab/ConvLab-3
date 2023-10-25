@@ -23,10 +23,15 @@ import transformers
 
 
 from convlab.dst.emodst.modeling.emotion_estimator import EmotionEstimator
+
+# dst prerequisit
 from convlab.dst.dst import DST
-# supported dst
+# for supported dst
 from convlab.dst.setsumbt.tracker import SetSUMBTTracker
 from convlab.dst.trippy.tracker import TRIPPY
+# for supported nlu-ruledst pipeline
+from convlab.dst.rule.multiwoz.dst import RuleDST
+from convlab.nlu.jointBERT.unified_datasets.nlu import BERTNLU
 
 # list of todos:
 # currently only support trippy and setsubmt (or single DST). Expand to NLU-DST scenarios
@@ -36,7 +41,30 @@ SUPPORTED_DST = {
     'trippy': TRIPPY
 }
 
+SUPPORTED_NLU = {
+    'bertnlu': BERTNLU
+}
+
 transformers.logging.set_verbosity_error()
+
+
+class NLU_DST(DST):
+    def __init__(self,
+                 nlu_model_name: str = 'bert',
+                 kwargs_for_nlu: dict = {}):
+        super(NLU_DST, self).__init__()
+        self.nlu = SUPPORTED_NLU[nlu_model_name](**kwargs_for_nlu)
+        self.dst = RuleDST()
+
+    def init_session(self):
+        self.dst.init_session()
+        self.state = self.dst.state
+
+    def update(self, user_act: str = '') -> dict:
+        sem_act = self.nlu.predict(user_act, context=self.state['history'])
+        self.state = self.dst.update(sem_act)
+        return self.state
+
 
 class EMODST(DST):
     """ERC object combined with DST for Convlab dialogue system"""
@@ -50,14 +78,17 @@ class EMODST(DST):
 
         self.erc = EmotionEstimator(kwargs_for_erc)
         
+        # if use dst
         if dst_model_name in SUPPORTED_DST:
             self.dst = SUPPORTED_DST[dst_model_name](**kwargs_for_dst)
+        # if use nlu-ruledst pipeline
+        elif dst_model_name in SUPPORTED_NLU:
+            self.dst = NLU_DST(nlu_model_name=dst_model_name, kwargs_for_nlu=kwargs_for_dst)
         else:
             raise NameError('DSTNotImplemented')
 
     def init_session(self):
         self.dst.init_session()
-        # self.erc.init_session()
         self.dialog_state_history = []
         self.state = self.dst.state
         self.state['user_emotion'] = None
@@ -69,7 +100,7 @@ class EMODST(DST):
         Update dialogue state based on user utterance.
 
         Args:
-            user_act: User utterance
+            user_act: User utterance, or actions for RuleDST
 
         Returns:
             state: Dialogue state
