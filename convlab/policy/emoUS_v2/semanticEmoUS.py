@@ -10,6 +10,7 @@ from convlab.policy.emoUS.unify.Goal import Goal
 from convlab.policy.emoUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.stepGenTUS import \
     UserActionPolicy as GenTUSUserActionPolicy
+from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
 from convlab.policy.policy import Policy
 from convlab.util.custom_util import model_downloader
 
@@ -186,7 +187,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             action["emotion"] = action["emotion"].strip()
             if self.use_sentiment:
                 action["sentiment"] = action["sentiment"].strip()
-            action["action"] = self._remove_illegal_action(action["action"])
+            action["action"] = remove_illegal_action(action["action"])
             if "text" in action:
                 text = action["text"].strip()
                 text = text.split('"}')[0]

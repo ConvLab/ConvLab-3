@@ -13,6 +13,8 @@ from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
 from convlab.policy.emoUS_v2.semanticEmoUS import UserActionPolicy
+from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
+
 from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2, norm, bertnlu_evaluation
 
 
@@ -22,7 +24,8 @@ sys.path.append(os.path.dirname(os.path.dirname(
 
 def arg_parser():
     parser = ArgumentParser()
-    parser.add_argument("--model-checkpoint", type=str, help="the model path")
+    parser.add_argument("--model-checkpoint", type=str,
+                        default=".", help="the model path")
     parser.add_argument("--peft-model-checkpoint",
                         type=str, help="the model path")
     parser.add_argument("--model-weight", type=str,
@@ -58,7 +61,7 @@ class Evaluator:
         self.debug = kwargs.get("debug", False)
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
-        peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
+        self.peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
 
         self.model_weight = model_weight
         self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M-%S')}"
@@ -75,17 +78,15 @@ class Evaluator:
         for emotion in self.emotion_weight:
             if emotion in kwargs:
                 self.emotion_weight[emotion] = kwargs[emotion]
-
-        self.result_dir = os.path.join(model_checkpoint, "results")
-        result_base_name = kwargs.get("result_base_name", "result")
-        if result_base_name:
+        print(self.model_checkpoint)
+        self.result_dir = os.path.join(self.model_checkpoint, "results")
+        self.result_base_name = kwargs.get("result_base_name", "result")
+        if self.result_base_name:
             self.result_dir = os.path.join(
-                self.result_dir, result_base_name)
+                self.result_dir, self.result_base_name)
         elif self.emotion_weight:
             self.result_dir = os.path.join(
                 self.result_dir, f"weight-{self.emotion_weight}")
-
-        os.makedirs(self.result_dir, exist_ok=True)
 
         self.sample = kwargs.get("sample", False)
         if self.debug:
@@ -94,16 +95,6 @@ class Evaluator:
             "emotion prediction": {},
             "semantic action prediction": {},
             "natural language generation": {}}
-
-        self.usr = UserActionPolicy(
-            model_checkpoint,
-            dataset=self.dataset,
-            use_sentiment=self.use_sentiment,
-            add_persona=self.add_persona,
-            emotion_mid=self.emotion_mid,
-            # weight=self.emotion_weight,
-            peft_model_checkpoint=peft_model_checkpoint,
-            **self.emotion_weight)
 
         # self.r = {"input": [],
         #           "golden_acts": [],
@@ -178,7 +169,7 @@ class Evaluator:
 
             temp = {}
             temp["input"] = inputs
-            temp["golden_acts"] = norm(self.usr._remove_illegal_action(
+            temp["golden_acts"] = norm(remove_illegal_action(
                 labels["action"]))
             temp["golden_utts"] = labels["text"]
             temp["golden_emotion"] = labels["emotion"]
@@ -214,6 +205,8 @@ class Evaluator:
         if generations["golden"]:
             file_name = generations['golden'] + "-" + file_name
 
+        os.makedirs(self.result_dir, exist_ok=True)
+
         with open(os.path.join(self.result_dir, file_name), "w") as f:
             json.dump(generations, f, indent=2)
 
@@ -225,8 +218,7 @@ class Evaluator:
                 if x not in self.r:
                     self.r[x] = []
                 if "acts" in x:
-                    dialog[x] = norm(
-                        self.usr._remove_illegal_action(dialog[x]))
+                    dialog[x] = norm(remove_illegal_action(dialog[x]))
                 self.r[x].append(dialog[x])
 
     def _transform_result(self):
@@ -256,8 +248,18 @@ class Evaluator:
     def evaluation(self, input_file="", generated_file="", golden_emotion=False, golden_action=False):
         if input_file:
             print("Force generation")
+            self.usr = UserActionPolicy(
+                self.model_checkpoint,
+                dataset=self.dataset,
+                use_sentiment=self.use_sentiment,
+                add_persona=self.add_persona,
+                emotion_mid=self.emotion_mid,
+                # weight=self.emotion_weight,
+                peft_model_checkpoint=self.peft_model_checkpoint,
+                **self.emotion_weight)
             self.generate_results(input_file, golden_emotion, golden_action)
         elif generated_file:
+            self.result_dir = os.path.dirname(generated_file)
             self.read_generated_result(generated_file)
         else:
             print("You must specify the input_file or the generated_file")

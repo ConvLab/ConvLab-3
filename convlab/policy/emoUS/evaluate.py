@@ -13,6 +13,8 @@ from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
 from convlab.policy.emoUS.emoUS import UserActionPolicy
+from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
+
 from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2, norm, bertnlu_evaluation
 
 
@@ -151,8 +153,7 @@ class Evaluator:
 
             temp = {}
             temp["input"] = inputs
-            temp["golden_acts"] = norm(self.usr._remove_illegal_action(
-                labels["action"]))
+            temp["golden_acts"] = norm(remove_illegal_action(labels["action"]))
             temp["golden_utts"] = labels["text"]
             temp["golden_emotion"] = labels["emotion"]
 
@@ -198,8 +199,7 @@ class Evaluator:
                 if x not in self.r:
                     self.r[x] = []
                 if "acts" in x:
-                    dialog[x] = norm(
-                        self.usr._remove_illegal_action(dialog[x]))
+                    dialog[x] = norm(remove_illegal_action(dialog[x]))
                 self.r[x].append(dialog[x])
 
     def _transform_result(self):

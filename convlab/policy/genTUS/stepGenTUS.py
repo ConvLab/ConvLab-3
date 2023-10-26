@@ -686,6 +686,21 @@ class UserPolicy(Policy):
         return None
 
 
+def remove_illegal_action(action):
+    # Transform illegal action to legal action
+    new_action = []
+    for act in action:
+        if len(act) == 4:
+            act = [a.strip() for a in act]
+            if "<?>" in act[-1]:
+                act = [act[0], act[1], act[2], "?"]
+            if act not in new_action:
+                new_action.append(act)
+        else:
+            print("illegal action:", action)
+    return new_action
+
+
 if __name__ == "__main__":
     import os
 
