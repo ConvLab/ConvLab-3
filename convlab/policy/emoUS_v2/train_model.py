@@ -38,6 +38,8 @@ def arg_parser():
     parser.add_argument("--model-checkpoint", type=str,
                         default="facebook/bart-base")
     parser.add_argument("--fine-tune", action="store_true")
+    parser.add_argument("--max-in-len", type=int, default=MAX_IN_LEN)
+    parser.add_argument("--max-out-len", type=int, default=MAX_OUT_LEN)
     return parser.parse_args()
 
 
@@ -376,8 +378,8 @@ def main():
             dial_ids_order=args.dial_ids_order,
             split2ratio=args.split2ratio,
             batch_size=args.batch_size,
-            max_input_length=MAX_IN_LEN,
-            max_target_length=MAX_OUT_LEN,
+            max_input_length=args.max_in_len,
+            max_target_length=args.max_out_len,
             model_checkpoint=args.model_checkpoint
         )
     else:
@@ -388,8 +390,8 @@ def main():
             dial_ids_order=args.dial_ids_order,
             split2ratio=args.split2ratio,
             batch_size=args.batch_size,
-            max_input_length=MAX_IN_LEN,
-            max_target_length=MAX_OUT_LEN,
+            max_input_length=args.max_in_len,
+            max_target_length=args.max_out_len,
             model_checkpoint=args.model_checkpoint
         )
 
