@@ -12,7 +12,7 @@ from tqdm import tqdm
 from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
-from convlab.policy.emoUS.emoUS import UserActionPolicy
+from convlab.policy.emoUS.emoUS import UserActionPolicy, parse_output
 from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
 
 from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2, norm, bertnlu_evaluation
@@ -126,25 +126,25 @@ class Evaluator:
 
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
-            labels = self.usr._parse_output(dialog["out"])
+            labels = parse_output(dialog["out"])
 
             if golden_action:
                 usr_act = labels["action"]
                 usr_emo = labels["emotion"]
                 output = self.usr.generate_text_from_give_semantic(
                     inputs, labels["action"], labels["emotion"])
-                output = self.usr._parse_output(output)
+                output = parse_output(output)
                 usr_utt = output["text"]
             elif golden_emotion:
                 usr_emo = labels["emotion"]
                 output = self.usr.generate_from_emotion(
                     inputs,  emotion=usr_emo, mode=mode)
-                output = self.usr._parse_output(output)
+                output = parse_output(output)
                 usr_act = output["action"]
                 usr_utt = output["text"]
                 # print(self.usr.action_prob)
             else:
-                output = self.usr._parse_output(
+                output = parse_output(
                     self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
                 usr_act = output["action"]
