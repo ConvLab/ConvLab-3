@@ -52,7 +52,7 @@ class KnowledgeGraph:
         inputs = json.loads(in_str)
         if sys_act:
             self.sys_act = sys_act
-            print(self.sys_act)
+
         else:
             self.sys_act = inputs["system"]
         self.user_goal = {}
@@ -60,6 +60,7 @@ class KnowledgeGraph:
         for intent, domain, slot, value, _ in inputs["goal"]:
             self._update_user_goal(intent, domain, slot, value, source="goal")
 
+        print(self.sys_act)
         for intent, domain, slot, value in self.sys_act:
             self._update_user_goal(intent, domain, slot, value, source="sys")
 
