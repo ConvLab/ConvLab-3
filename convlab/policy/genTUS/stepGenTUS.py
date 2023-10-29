@@ -159,7 +159,7 @@ class UserActionPolicy(Policy):
         pos = self._update_seq(self.token_map.get_id("start_text"), pos)
 
         raw_output = self._get_text(model_input, pos)
-        return self._parse_output(raw_output)["text"]
+        return parse_output(raw_output)["text"]
 
     def _get_text(self, model_input, pos, mode="max"):
         s_pos = pos
@@ -300,34 +300,6 @@ class UserActionPolicy(Policy):
 
         return self.kg.get_value(next_token_logits, intent, domain, slot, mode)
 
-    def _remove_illegal_action(self, action):
-        # Transform illegal action to legal action
-        new_action = []
-        for act in action:
-            if len(act) == 4:
-                act = [a.strip() for a in act]
-                if "<?>" in act[-1]:
-                    act = [act[0], act[1], act[2], "?"]
-                if act not in new_action:
-                    new_action.append(act)
-            else:
-                print("illegal action:", action)
-        return new_action
-
-    def _parse_output(self, in_str):
-        in_str = str(in_str)
-        in_str = in_str.replace('<s>', '').replace(
-            '<\\s>', '').replace('o"clock', "o'clock")
-        action = {"action": [], "text": ""}
-        try:
-            action = json.loads(in_str)
-            action["action"] = self._remove_illegal_action(action["action"])
-
-        except:
-            print("invalid action:", in_str)
-            print("-"*20)
-        return action
-
     def predict(self, sys_act, mode="max", allow_general_intent=True):
         # TODO emotion
         # raw_sys_act = sys_act
@@ -358,8 +330,8 @@ class UserActionPolicy(Policy):
         with torch.no_grad():
             raw_output = self._generate_action(
                 raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
-        output = self._parse_output(raw_output)
-        self.semantic_action = self._remove_illegal_action(output["action"])
+        output = parse_output(raw_output)
+        self.semantic_action = remove_illegal_action(output["action"])
         if not self.only_action:
             self.utterance = output["text"]
 
@@ -684,6 +656,36 @@ class UserPolicy(Policy):
         if hasattr(self.policy, 'get_goal'):
             return self.policy.get_goal()
         return None
+
+
+def remove_illegal_action(action):
+    # Transform illegal action to legal action
+    new_action = []
+    for act in action:
+        if len(act) == 4:
+            act = [a.strip() for a in act]
+            if "<?>" in act[-1]:
+                act = [act[0], act[1], act[2], "?"]
+            if act not in new_action:
+                new_action.append(act)
+        else:
+            print("illegal action:", action)
+    return new_action
+
+
+def parse_output(in_str):
+    in_str = str(in_str)
+    in_str = in_str.replace('<s>', '').replace(
+        '<\\s>', '').replace('o"clock', "o'clock")
+    action = {"action": [], "text": ""}
+    try:
+        action = json.loads(in_str)
+        action["action"] = remove_illegal_action(action["action"])
+
+    except:
+        print("invalid action:", in_str)
+        print("-"*20)
+    return action
 
 
 if __name__ == "__main__":

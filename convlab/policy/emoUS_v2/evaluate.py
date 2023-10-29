@@ -12,7 +12,11 @@ from tqdm import tqdm
 from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
-from convlab.policy.emoUS_v2.semanticEmoUS import UserActionPolicy
+from convlab.policy.emoUS_v2.semanticEmoUS import UserActionPolicy as semanticEmoUS
+from convlab.policy.emoUS_v2.langEmoUS import UserActionPolicy as langEmoUS
+from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
+from convlab.policy.emoUS.emoUS import parse_output
+
 from convlab.policy.genTUS.golden_nlg_evaluation import ser_v2, norm, bertnlu_evaluation
 
 
@@ -22,7 +26,8 @@ sys.path.append(os.path.dirname(os.path.dirname(
 
 def arg_parser():
     parser = ArgumentParser()
-    parser.add_argument("--model-checkpoint", type=str, help="the model path")
+    parser.add_argument("--model-checkpoint", type=str,
+                        default=".", help="the model path")
     parser.add_argument("--peft-model-checkpoint",
                         type=str, help="the model path")
     parser.add_argument("--model-weight", type=str,
@@ -49,6 +54,8 @@ def arg_parser():
     parser.add_argument("--Excited", type=float, default=1)
     parser.add_argument("--Satisfied", type=float, default=1)
     parser.add_argument("--result-base-name", type=str, default="result")
+    parser.add_argument("--language", "-l",
+                        action="store_true", help="language EmoUS")
 
     return parser.parse_args()
 
@@ -56,9 +63,10 @@ def arg_parser():
 class Evaluator:
     def __init__(self, model_checkpoint, dataset, model_weight=None, **kwargs):
         self.debug = kwargs.get("debug", False)
+        self.language = kwargs.get("language", False)
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
-        peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
+        self.peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
 
         self.model_weight = model_weight
         self.time = f"{datetime.now().strftime('%y-%m-%d-%H-%M-%S')}"
@@ -75,17 +83,15 @@ class Evaluator:
         for emotion in self.emotion_weight:
             if emotion in kwargs:
                 self.emotion_weight[emotion] = kwargs[emotion]
-
-        self.result_dir = os.path.join(model_checkpoint, "results")
-        result_base_name = kwargs.get("result_base_name", "result")
-        if result_base_name:
+        print(self.model_checkpoint)
+        self.result_dir = os.path.join(self.model_checkpoint, "results")
+        self.result_base_name = kwargs.get("result_base_name", "result")
+        if self.result_base_name:
             self.result_dir = os.path.join(
-                self.result_dir, result_base_name)
+                self.result_dir, self.result_base_name)
         elif self.emotion_weight:
             self.result_dir = os.path.join(
                 self.result_dir, f"weight-{self.emotion_weight}")
-
-        os.makedirs(self.result_dir, exist_ok=True)
 
         self.sample = kwargs.get("sample", False)
         if self.debug:
@@ -94,16 +100,6 @@ class Evaluator:
             "emotion prediction": {},
             "semantic action prediction": {},
             "natural language generation": {}}
-
-        self.usr = UserActionPolicy(
-            model_checkpoint,
-            dataset=self.dataset,
-            use_sentiment=self.use_sentiment,
-            add_persona=self.add_persona,
-            emotion_mid=self.emotion_mid,
-            # weight=self.emotion_weight,
-            peft_model_checkpoint=peft_model_checkpoint,
-            **self.emotion_weight)
 
         # self.r = {"input": [],
         #           "golden_acts": [],
@@ -151,25 +147,25 @@ class Evaluator:
 
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
-            labels = self.usr._parse_output(dialog["out"])
+            labels = parse_output(dialog["out"])
 
             if golden_action:
                 usr_act = labels["action"]
                 usr_emo = labels["emotion"]
                 output = self.usr.generate_text_from_give_semantic(
                     inputs, labels["action"], labels["emotion"])
-                output = self.usr._parse_output(output)
+                output = parse_output(output)
                 usr_utt = output["text"]
             elif golden_emotion:
                 usr_emo = labels["emotion"]
                 output = self.usr.generate_from_emotion(
                     inputs,  emotion=usr_emo, mode=mode)
-                output = self.usr._parse_output(output)
+                output = parse_output(output)
                 usr_act = output["action"]
                 usr_utt = output["text"]
                 # print(self.usr.action_prob)
             else:
-                output = self.usr._parse_output(
+                output = parse_output(
                     self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
                 usr_act = output["action"]
@@ -178,7 +174,7 @@ class Evaluator:
 
             temp = {}
             temp["input"] = inputs
-            temp["golden_acts"] = norm(self.usr._remove_illegal_action(
+            temp["golden_acts"] = norm(remove_illegal_action(
                 labels["action"]))
             temp["golden_utts"] = labels["text"]
             temp["golden_emotion"] = labels["emotion"]
@@ -214,6 +210,8 @@ class Evaluator:
         if generations["golden"]:
             file_name = generations['golden'] + "-" + file_name
 
+        os.makedirs(self.result_dir, exist_ok=True)
+
         with open(os.path.join(self.result_dir, file_name), "w") as f:
             json.dump(generations, f, indent=2)
 
@@ -225,8 +223,7 @@ class Evaluator:
                 if x not in self.r:
                     self.r[x] = []
                 if "acts" in x:
-                    dialog[x] = norm(
-                        self.usr._remove_illegal_action(dialog[x]))
+                    dialog[x] = norm(remove_illegal_action(dialog[x]))
                 self.r[x].append(dialog[x])
 
     def _transform_result(self):
@@ -256,8 +253,29 @@ class Evaluator:
     def evaluation(self, input_file="", generated_file="", golden_emotion=False, golden_action=False):
         if input_file:
             print("Force generation")
+            if self.language:
+                self.usr = langEmoUS(
+                    self.model_checkpoint,
+                    dataset=self.dataset,
+                    use_sentiment=self.use_sentiment,
+                    add_persona=self.add_persona,
+                    emotion_mid=self.emotion_mid,
+                    # weight=self.emotion_weight,
+                    peft_model_checkpoint=self.peft_model_checkpoint,
+                    **self.emotion_weight)
+            else:
+                self.usr = semanticEmoUS(
+                    self.model_checkpoint,
+                    dataset=self.dataset,
+                    use_sentiment=self.use_sentiment,
+                    add_persona=self.add_persona,
+                    emotion_mid=self.emotion_mid,
+                    # weight=self.emotion_weight,
+                    peft_model_checkpoint=self.peft_model_checkpoint,
+                    **self.emotion_weight)
             self.generate_results(input_file, golden_emotion, golden_action)
         elif generated_file:
+            self.result_dir = os.path.dirname(generated_file)
             self.read_generated_result(generated_file)
         else:
             print("You must specify the input_file or the generated_file")
@@ -418,7 +436,8 @@ def main():
                      Abusive=args.Abusive,
                      Excited=args.Excited,
                      Satisfied=args.Satisfied,
-                     result_base_name=args.result_base_name)
+                     result_base_name=args.result_base_name,
+                     language=args.language)
     print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)

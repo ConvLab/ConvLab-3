@@ -10,6 +10,8 @@ from convlab.policy.emoUS.unify.Goal import Goal
 from convlab.policy.emoUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.stepGenTUS import \
     UserActionPolicy as GenTUSUserActionPolicy
+from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
+
 from convlab.policy.policy import Policy
 from convlab.util.custom_util import model_downloader
 
@@ -130,12 +132,11 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             if emotion is not None:
                 raw_output = self.generate_from_emotion(
                     raw_inputs=inputs, emotion=emotion, mode=mode, allow_general_intent=allow_general_intent)
-                output = self._parse_output(raw_output)
                 # print("utt:", output["text"])
             else:
                 raw_output = self._generate_action(
                     raw_inputs=inputs, mode=mode, allow_general_intent=allow_general_intent)
-        output = self._parse_output(raw_output)
+        output = parse_output(raw_output, self.use_sentiment)
         self.semantic_action = output["action"]
 
         if not self.only_action:
@@ -159,31 +160,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             return self.semantic_action
 
         return self.utterance
-
-    def _parse_output(self, in_str):
-        in_str = str(in_str)
-        in_str = in_str.replace('<s>', '').replace(
-            '<\\s>', '').replace('o"clock', "o'clock")
-        action = {"emotion": "Neutral", "action": [], "text": ""}
-        if self.use_sentiment:
-            action["sentiment"] = "Neutral"
-
-        try:
-            action = json.loads(in_str)
-            action["emotion"] = action["emotion"].strip()
-            if self.use_sentiment:
-                action["sentiment"] = action["sentiment"].strip()
-            action["action"] = self._remove_illegal_action(action["action"])
-            if "text" in action:
-                text = action["text"].strip()
-                text = text.split('"}')[0]
-                text = text.split("'}")[0]
-                action["text"] = text
-
-        except:
-            print("invalid action:", in_str)
-            print("-"*20)
-        return action
 
     def _update_sentiment(self, pos, model_input, mode, golden_sentiment=None):
         pos = self._update_seq(
@@ -453,6 +429,32 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
             self.success = None
         return reward
+
+
+def parse_output(in_str, use_sentiment=False):
+    in_str = str(in_str)
+    in_str = in_str.replace('<s>', '').replace(
+        '<\\s>', '').replace('o"clock', "o'clock")
+    action = {"emotion": "Neutral", "action": [], "text": ""}
+    if use_sentiment:
+        action["sentiment"] = "Neutral"
+
+    try:
+        action = json.loads(in_str)
+        action["emotion"] = action["emotion"].strip()
+        if use_sentiment:
+            action["sentiment"] = action["sentiment"].strip()
+        action["action"] = remove_illegal_action(action["action"])
+        if "text" in action:
+            text = action["text"].strip()
+            text = text.split('"}')[0]
+            text = text.split("'}")[0]
+            action["text"] = text
+
+    except:
+        print("invalid action:", in_str)
+        print("-"*20)
+    return action
 
 
 class UserPolicy(Policy):
