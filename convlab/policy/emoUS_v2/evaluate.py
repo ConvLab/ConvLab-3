@@ -168,7 +168,7 @@ class Evaluator:
             else:
                 if self.language:
                     output = parse_output(
-                        self.usr._generate_action(inputs, json.loads(dialog["act"]), mode=mode, emotion_mode=emotion_mode))
+                        self.usr._generate_action(inputs, sys_act=json.loads(dialog["act"]), mode=mode, emotion_mode=emotion_mode))
 
                 else:
                     output = parse_output(
@@ -261,6 +261,7 @@ class Evaluator:
         if input_file:
             print("Force generation")
             if self.language:
+                print("system language")
                 self.usr = langEmoUS(
                     self.model_checkpoint,
                     dataset=self.dataset,
