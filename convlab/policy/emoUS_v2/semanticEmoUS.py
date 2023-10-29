@@ -525,15 +525,22 @@ if __name__ == "__main__":
     use_sentiment, emotion_mid = False, False
     set_seed(100)
     # Test semantic level behaviour
+    emotion_weight = {"Neutral": 0.9,
+                      "Fearful": 1,
+                      "Dissatisfied": 1,
+                      "Apologetic": 1,
+                      "Abusive": 1,
+                      "Excited": 1,
+                      "Satisfied": 0.9}
     usr_policy = UserPolicy(
         model_checkpoint=args.model_checkpoint,
         mode=args.mode,
         sample=args.sample,
         use_sentiment=use_sentiment,
         emotion_mid=emotion_mid,
-        weight=0.9,
         model_type="encoder_decoder",
-        peft_model_checkpoint=args.peft_model_checkpoint)
+        peft_model_checkpoint=args.peft_model_checkpoint,
+        **emotion_weight)
     # usr_policy.policy.load(os.path.join(model_checkpoint, "pytorch_model.bin"))
     usr_nlu = None  # BERTNLU()
     usr = PipelineAgent(usr_nlu, None, usr_policy, None, name='user')
