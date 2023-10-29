@@ -1,13 +1,17 @@
+import json
+
 import torch
-from convlab.policy.emoUS_v2.semanticEmoUS import UserActionPolicy as semanticEmoUS
+
+from convlab.policy.emoUS_v2.semanticEmoUS import \
+    UserActionPolicy as semanticEmoUS
 
 
 class UserActionPolicy(semanticEmoUS):
     def __init__(self, model_checkpoint, mode="language", max_turn=40, **kwargs):
         super().__init__(model_checkpoint, mode, max_turn, **kwargs)
 
-    def _generate_action(self, raw_inputs, sys_act=None, mode="max", allow_general_intent=True, emotion_mode="normal", emotion=None, golden_action=None):
-        self.kg.parse_input(raw_inputs, sys_act)
+    def _generate_action(self, raw_inputs, sys_act: str = None, mode="max", allow_general_intent=True, emotion_mode="normal", emotion=None, golden_action=None):
+        self.kg.parse_input(raw_inputs, json.dumps(sys_act))
         model_input = self.vector.encode(
             raw_inputs, self.max_in_len, do_padding=self.padding)
         # start token
