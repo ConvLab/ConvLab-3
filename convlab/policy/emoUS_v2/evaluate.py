@@ -167,6 +167,7 @@ class Evaluator:
                 # print(self.usr.action_prob)
             else:
                 if self.language:
+                    print(dialog["id"])
                     output = parse_output(
                         self.usr._generate_action(inputs, sys_act=json.loads(dialog["act"]), mode=mode, emotion_mode=emotion_mode))
 
