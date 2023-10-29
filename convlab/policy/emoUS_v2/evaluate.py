@@ -148,6 +148,7 @@ class Evaluator:
         for dialog in tqdm(in_file['dialog']):
             inputs = dialog["in"]
             labels = parse_output(dialog["out"])
+            # todo 1. add data id 2. add system action if language emoUS
 
             if golden_action:
                 usr_act = labels["action"]
@@ -165,14 +166,20 @@ class Evaluator:
                 usr_utt = output["text"]
                 # print(self.usr.action_prob)
             else:
-                output = parse_output(
-                    self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
+                if self.language:
+                    output = parse_output(
+                        self.usr._generate_action(inputs, json.loads(dialog["act"]), mode=mode, emotion_mode=emotion_mode))
+
+                else:
+                    output = parse_output(
+                        self.usr._generate_action(inputs, mode=mode, emotion_mode=emotion_mode))
                 usr_emo = output["emotion"]
                 usr_act = output["action"]
                 usr_utt = output["text"]
                 # print(self.usr.action_prob)
 
             temp = {}
+            temp["id"] = dialog["id"]
             temp["input"] = inputs
             temp["golden_acts"] = norm(remove_illegal_action(
                 labels["action"]))
