@@ -52,6 +52,7 @@ class KnowledgeGraph:
         inputs = json.loads(in_str)
         if sys_act:
             self.sys_act = sys_act
+            print(self.sys_act)
         else:
             self.sys_act = inputs["system"]
         self.user_goal = {}
