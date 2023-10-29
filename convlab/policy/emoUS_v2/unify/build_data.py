@@ -118,8 +118,16 @@ class DataBuilder(GenTUSDataBuilder):
 
             history.append(usr_act)
             if usr_act:
-                example.append({"id": f"{original_id}-{turn_id}",
-                               "in": in_str, "out": out_str})
+                if self.language:
+                    example.append({"id": f"{original_id}-{turn_id}",
+                                    "in": in_str,
+                                    "act": json.dumps(sys_act),
+                                    "out": out_str})
+
+                else:
+                    example.append({"id": f"{original_id}-{turn_id}",
+                                    "in": in_str,
+                                    "out": out_str})
 
         return example
 
