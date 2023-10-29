@@ -59,7 +59,6 @@ class KnowledgeGraph:
         for intent, domain, slot, value, _ in inputs["goal"]:
             self._update_user_goal(intent, domain, slot, value, source="goal")
 
-        print(self.sys_act)
         for intent, domain, slot, value in self.sys_act:
             self._update_user_goal(intent, domain, slot, value, source="sys")
 
