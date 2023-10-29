@@ -1,17 +1,16 @@
 import json
 import os
-from copy import deepcopy
 from argparse import ArgumentParser
+from copy import deepcopy
 
 import torch
 
+from convlab.policy.emoUS.emoUS import parse_output
 from convlab.policy.emoUS.token_map import tokenMap
 from convlab.policy.emoUS.unify.Goal import Goal
 from convlab.policy.emoUS.unify.knowledge_graph import KnowledgeGraph
-from convlab.policy.emoUS.emoUS import parse_output
 from convlab.policy.genTUS.stepGenTUS import \
     UserActionPolicy as GenTUSUserActionPolicy
-from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
 from convlab.policy.policy import Policy
 from convlab.util.custom_util import model_downloader
 

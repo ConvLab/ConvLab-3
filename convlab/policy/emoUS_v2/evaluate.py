@@ -12,7 +12,8 @@ from tqdm import tqdm
 from pprint import pprint
 
 from convlab.nlg.evaluate import fine_SER
-from convlab.policy.emoUS_v2.semanticEmoUS import UserActionPolicy
+from convlab.policy.emoUS_v2.semanticEmoUS import UserActionPolicy as semanticEmoUS
+from convlab.policy.emoUS_v2.langEmoUS import UserActionPolicy as langEmoUS
 from convlab.policy.genTUS.stepGenTUS import remove_illegal_action
 from convlab.policy.emoUS.emoUS import parse_output
 
@@ -53,6 +54,8 @@ def arg_parser():
     parser.add_argument("--Excited", type=float, default=1)
     parser.add_argument("--Satisfied", type=float, default=1)
     parser.add_argument("--result-base-name", type=str, default="result")
+    parser.add_argument("--language", "-l",
+                        action="store_true", help="language EmoUS")
 
     return parser.parse_args()
 
@@ -60,6 +63,7 @@ def arg_parser():
 class Evaluator:
     def __init__(self, model_checkpoint, dataset, model_weight=None, **kwargs):
         self.debug = kwargs.get("debug", False)
+        self.language = kwargs.get("language", False)
         self.dataset = dataset
         self.model_checkpoint = model_checkpoint
         self.peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
@@ -249,15 +253,26 @@ class Evaluator:
     def evaluation(self, input_file="", generated_file="", golden_emotion=False, golden_action=False):
         if input_file:
             print("Force generation")
-            self.usr = UserActionPolicy(
-                self.model_checkpoint,
-                dataset=self.dataset,
-                use_sentiment=self.use_sentiment,
-                add_persona=self.add_persona,
-                emotion_mid=self.emotion_mid,
-                # weight=self.emotion_weight,
-                peft_model_checkpoint=self.peft_model_checkpoint,
-                **self.emotion_weight)
+            if self.language:
+                self.usr = langEmoUS(
+                    self.model_checkpoint,
+                    dataset=self.dataset,
+                    use_sentiment=self.use_sentiment,
+                    add_persona=self.add_persona,
+                    emotion_mid=self.emotion_mid,
+                    # weight=self.emotion_weight,
+                    peft_model_checkpoint=self.peft_model_checkpoint,
+                    **self.emotion_weight)
+            else:
+                self.usr = semanticEmoUS(
+                    self.model_checkpoint,
+                    dataset=self.dataset,
+                    use_sentiment=self.use_sentiment,
+                    add_persona=self.add_persona,
+                    emotion_mid=self.emotion_mid,
+                    # weight=self.emotion_weight,
+                    peft_model_checkpoint=self.peft_model_checkpoint,
+                    **self.emotion_weight)
             self.generate_results(input_file, golden_emotion, golden_action)
         elif generated_file:
             self.result_dir = os.path.dirname(generated_file)
@@ -421,7 +436,8 @@ def main():
                      Abusive=args.Abusive,
                      Excited=args.Excited,
                      Satisfied=args.Satisfied,
-                     result_base_name=args.result_base_name)
+                     result_base_name=args.result_base_name,
+                     language=args.language)
     print("=== evaluation ===")
     print("model checkpoint", args.model_checkpoint)
     print("generated_file", args.generated_file)
