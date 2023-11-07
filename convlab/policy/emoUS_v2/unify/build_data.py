@@ -24,6 +24,8 @@ def arg_parser():
     parser.add_argument("--add-persona", action="store_true")
     parser.add_argument("--emotion-mid", action="store_true")
     parser.add_argument("--emotion-only", action="store_true")
+    parser.add_argument("--language", action="store_true",
+                        help="system response is in natural language")
 
     return parser.parse_args()
 
@@ -35,6 +37,10 @@ class DataBuilder(GenTUSDataBuilder):
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.add_persona = kwargs.get("add_persona", False)
         self.emotion_only = kwargs.get("emotion_only", False)
+        self.language = kwargs.get("language", False)
+
+        if not self.add_persona:
+            print("!!! You are not including user persona. !!!")
 
         self.emotion = {}
         for emotion, index in json.load(open("convlab/policy/emoUS/emotion.json")).items():
@@ -91,8 +97,14 @@ class DataBuilder(GenTUSDataBuilder):
             usr_emotion = self.emotion[
                 dialog["turns"][turn_id]["emotion"][-1]["emotion"]]
 
-            in_str = self._dump_in_str(
-                sys_act, sys_emo, usr_goal_str, history, turn_id, add_history, user_info)
+            if self.language:
+                sys_utt = self._get_sys_utt(dialog, turn_id)
+                in_str = self._dump_in_str(
+                    sys_utt, sys_emo, usr_goal_str, history, turn_id, add_history, user_info)
+
+            else:
+                in_str = self._dump_in_str(
+                    sys_act, sys_emo, usr_goal_str, history, turn_id, add_history, user_info)
 
             if self.use_sentiment:
                 usr_sentiment = self.sentiment[
@@ -106,14 +118,28 @@ class DataBuilder(GenTUSDataBuilder):
 
             history.append(usr_act)
             if usr_act:
-                example.append({"in": in_str, "out": out_str})
+                if self.language:
+                    example.append({"id": f"{original_id}-{turn_id}",
+                                    "in": in_str,
+                                    "act": json.dumps(sys_act),
+                                    "out": out_str})
+
+                else:
+                    example.append({"id": f"{original_id}-{turn_id}",
+                                    "in": in_str,
+                                    "out": out_str})
 
         return example
 
     def _dump_in_str(self, sys_act, sys_emo, usr_goal_str, history, turn_id, add_history, user_info=None):
         in_str = {}
-        in_str["system"] = self._modify_act(sys_act)
-        in_str["conduct"] = sys_emo
+        if type(sys_act) == list:
+            # only conduct in semantic level
+            in_str["system"] = self._modify_act(sys_act)
+            in_str["conduct"] = sys_emo
+        else:
+            in_str["system"] = sys_act
+
         in_str["goal"] = usr_goal_str
         if add_history:
             h = []
@@ -164,6 +190,7 @@ if __name__ == "__main__":
     use_sentiment = args.use_sentiment
     emotion_mid = args.emotion_mid
     add_persona = args.add_persona
+    language = args.language
 
     data_status = [use_sentiment, emotion_mid, add_persona]
 
@@ -195,6 +222,10 @@ if __name__ == "__main__":
 
     if args.emotion_only:
         dir_name = dir_name + '_emotion_only'
+
+    if language:
+        dir_name = 'language_' + dir_name
+
     print("dir_name", dir_name)
 
     folder_name = os.path.join(base_name, dir_name)
@@ -210,7 +241,8 @@ if __name__ == "__main__":
         use_sentiment=use_sentiment,
         add_persona=add_persona,
         emotion_mid=emotion_mid,
-        emotion_only=args.emotion_only)
+        emotion_only=args.emotion_only,
+        language=language)
     data = data_builder.setup_data(
         raw_data=dataset,
         random_order=False,

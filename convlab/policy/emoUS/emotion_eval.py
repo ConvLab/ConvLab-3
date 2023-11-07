@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 from convlab.nlg.evaluate import fine_SER
 from convlab.policy.emoUS.emoUS import UserActionPolicy
+from convlab.policy.genTUS.stepGenTUS import parse_output
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))))
@@ -95,7 +96,7 @@ class Evaluator:
         for dialog in tqdm(in_file['dialog']):
             temp = {}
             inputs = dialog["in"]
-            labels = self.usr._parse_output(dialog["out"])
+            labels = parse_output(dialog["out"])
 
             response = self.usr.generate_from_emotion(
                 raw_inputs=inputs)
@@ -106,7 +107,7 @@ class Evaluator:
             temp["golden_emotion"] = labels["emotion"]
 
             for emotion, resp in response.items():
-                output = self.usr._parse_output(resp)
+                output = parse_output(resp)
                 temp[f"{emotion}_acts"] = output["action"]
                 temp[f"{emotion}_utts"] = output["text"]
 

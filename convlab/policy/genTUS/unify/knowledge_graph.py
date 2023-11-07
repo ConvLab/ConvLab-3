@@ -47,10 +47,13 @@ class KnowledgeGraph:
                 tokenizer=self.tokenizer, model_type=self.model_type)
         self.add_token("<?>", "value")
 
-    def parse_input(self, in_str):
+    def parse_input(self, in_str, sys_act=None):
         self.init()
         inputs = json.loads(in_str)
-        self.sys_act = inputs["system"]
+        if sys_act:
+            self.sys_act = json.loads(sys_act)
+        else:
+            self.sys_act = inputs["system"]
         self.user_goal = {}
         self._add_none_domain()
         for intent, domain, slot, value, _ in inputs["goal"]:
