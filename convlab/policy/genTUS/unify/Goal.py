@@ -215,6 +215,8 @@ class Goal:
 def is_inform(intent):
     if "inform" in intent:
         return True
+    if "recommend" in intent:
+        return True
     return False
 
 
