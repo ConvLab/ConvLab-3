@@ -19,7 +19,8 @@ class stepGenTUSVector:
         self.token_map = tokenMap(
             tokenizer=self.tokenizer, model_type=self.model_type)
         self.token_map.default(only_action=True)
-        self.kg = KnowledgeGraph(self.tokenizer, model_type=self.model_type)
+        self.kg = KnowledgeGraph(
+            self.tokenizer, model_type=self.model_type, dataset=kwargs.get("dataset", "multiwoz21"))
         self.mentioned_domain = []
         self.allow_general_intent = allow_general_intent
         self.candidate_num = 5

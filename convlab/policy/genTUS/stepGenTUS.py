@@ -22,13 +22,14 @@ DEBUG = False
 class UserActionPolicy(Policy):
     def __init__(self, model_checkpoint, mode="semantic", only_action=True, max_turn=40, **kwargs):
         self.mode = mode
+        if mode == "semantic":
+            self.only_action = True
+        else:
+            self.only_action = False
         # if mode == "semantic" and only_action:
         #     # only generate semantic action in prediction
         print("model_checkpoint (UserActionPolicy)", model_checkpoint)
-        self.only_action = only_action
-        if self.only_action:
-            print("change mode to semantic because only_action=True")
-            self.mode = "semantic"
+
         self.max_in_len = 500
         self.max_out_len = 100 if only_action else 200
         max_act_len = kwargs.get("max_act_len", 2)
@@ -48,8 +49,13 @@ class UserActionPolicy(Policy):
         model_type = kwargs.get("model_type", "encoder_decoder")
         peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.dataset = kwargs.get("dataset", "multiwoz21")
         self.model = stepGenTUSmodel(
-            model_checkpoint, device=self.device, model_type=model_type, peft_model_checkpoint=peft_model_checkpoint)
+            model_checkpoint,
+            dataset=self.dataset,
+            device=self.device,
+            model_type=model_type,
+            peft_model_checkpoint=peft_model_checkpoint)
         # self.model.from_pretrained(model_checkpoint)
         # self.model.eval()
         # self.model.to(self.device)
@@ -62,16 +68,20 @@ class UserActionPolicy(Policy):
         self.turn_level_reward = kwargs.get("turn_level_reward", True)
         self.cooperative = kwargs.get("cooperative", True)
 
-        dataset = kwargs.get("dataset", "")
         self.kg = KnowledgeGraph(
             tokenizer=self.model.tokenizer,
-            dataset=dataset,
+            dataset=self.dataset,
             model_type=self.model.model_type)
 
         self.goal_gen = GoalGenerator()
 
         self.vector = stepGenTUSVector(
-            model_checkpoint, self.max_in_len, self.max_out_len, force_pad=self.padding, model_type=self.model.model_type)
+            model_checkpoint,
+            self.max_in_len,
+            self.max_out_len,
+            force_pad=self.padding,
+            model_type=self.model.model_type,
+            dataset=self.dataset)
         self.norm_reward = False
 
         self.action_penalty = kwargs.get("action_penalty", False)
@@ -411,6 +421,8 @@ class UserActionPolicy(Policy):
     def get_goal(self):
         if self.goal.raw_goal is not None:
             return self.goal.raw_goal
+        if self.dataset != "multiwoz21":
+            return self.goal
         goal = {}
         for domain in self.goal.domain_goals:
             if domain not in goal:
@@ -666,6 +678,8 @@ def remove_illegal_action(action):
             act = [a.strip() for a in act]
             if "<?>" in act[-1]:
                 act = [act[0], act[1], act[2], "?"]
+            if "_" == act[0][0]:
+                act = [act[0][1:], act[1], act[2], act[3]]
             if act not in new_action:
                 new_action.append(act)
         else:
