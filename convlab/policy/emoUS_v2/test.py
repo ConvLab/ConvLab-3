@@ -41,7 +41,7 @@ def test():
     sys_policy = VTRACE(is_train=False,
                         seed=0,
                         vectorizer=vectorizer,
-                        load_path="from_pretrained")
+                        load_path="")
     # test for seestion
     dst = RuleDST()
     sys = PipelineAgent(None, dst, sys_policy, None, name='sys')
