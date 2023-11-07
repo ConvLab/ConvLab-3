@@ -56,7 +56,8 @@ setup(
         'json_lines',
         'gtts',
         'pydub',
-        'openai'
+        'openai',
+        'GitPython'
     ],
     extras_require={
         'develop': [

@@ -33,7 +33,7 @@
 	"dialogue_order": 0,
 	"multiwoz_like": false,
 	"regularization_weight": 0.0,
-	"use_emotion": false,
+	"use_emotion": true,
 	"use_emotion_temperature": false,
 	"only_negative_emotion_temperature": false,
 	"use_emotion_reward": false,
@@ -43,19 +43,16 @@
 	"emotion_exploitation": 0.0,
 	"argmax": false,
 	"predict_conduct": true,
-
 	"enc_input_dim": 128,
 	"enc_nhead": 2,
 	"enc_d_hid": 128,
 	"enc_nlayers": 4,
 	"enc_dropout": 0.1,
-
 	"dec_input_dim": 128,
 	"dec_nhead": 2,
 	"dec_d_hid": 128,
 	"dec_nlayers": 2,
 	"dec_dropout": 0.0,
-
 	"action_embedding_dim": 128,
 	"domain_embedding_dim": 64,
 	"value_embedding_dim": 12,
@@ -70,14 +67,19 @@
 	"independent_descriptions": true,
 	"random_matrix": false,
 	"distance_metric": false,
-
 	"verbose": false,
 	"ignore_features": [],
-	"domains_removed": ["hospital", "police", "train", "hotel", "attraction", "taxi"],
+	"domains_removed": [
+		"hospital",
+		"police",
+		"train",
+		"hotel",
+		"attraction",
+		"taxi"
+	],
 	"only_active_values": false,
 	"permuted_data": false,
 	"need_weights": false,
-
 	"cls_dim": 128,
 	"independent": true,
 	"old_critic": false,
