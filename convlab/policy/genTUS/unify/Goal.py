@@ -191,6 +191,7 @@ class Goal:
                 self._set_status(goal_intent, domain, slot, REQUESTED)
 
     def _set_status(self, intent, domain, slot, status):
+        print("set statue", intent, domain, slot, status)
         self.status[domain][intent][slot]["status"] = status
 
     def _set_goal(self, intent, domain, slot, value):

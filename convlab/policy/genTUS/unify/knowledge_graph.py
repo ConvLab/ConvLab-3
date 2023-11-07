@@ -38,7 +38,7 @@ class KnowledgeGraph:
 
         for intent in self.domain_intent + self.general_intent:
             self.kg_map["intent"].add_token(intent, intent)
-        print("kg dataset", dataset)
+
         self.init()
 
     def init(self):
