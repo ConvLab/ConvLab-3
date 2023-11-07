@@ -149,6 +149,7 @@ class Goal:
     # TODO change to update()?
     def update_user_goal(self, action, char="usr"):
         # update request and booked
+        print("---> ", char)
         if char == "usr":
             self._user_action_update(action)
         elif char == "sys":
