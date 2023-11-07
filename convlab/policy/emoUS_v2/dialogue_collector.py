@@ -69,7 +69,6 @@ def interact(model_name, config, seed=0, num_goals=500, model_path=None):
                  "emotion": env.usr.policy.policy.emotion,
                  "act": env.usr.policy.policy.semantic_action})
             conduct = sess.sys_agent.policy.get_conduct()
-            print(conduct)
             dialogue["log"].append(
                 {"role": "sys", "utt": sys_response, "conduct": conduct})
 
