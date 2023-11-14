@@ -97,7 +97,7 @@ if __name__ == "__main__":
     import json
     from datetime import datetime
     import os
-    time = f"{datetime.now().strftime('%y-%m-%d-%H-%M')}"
+    time = f"{datetime.now().strftime('%y-%m-%d-%H-%M-%s')}"
     args = arg_parser()
     conversation = interact(model_name=args.model,
                             config=args.config,

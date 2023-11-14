@@ -24,6 +24,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.add_persona = kwargs.get("add_persona", True)
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.no_conduct = kwargs.get("no_conduct", False)
+        self.sub_goal_succ = kwargs.get("sub_goal_succ", False)
 
         if not os.path.exists(os.path.dirname(model_checkpoint)):
             os.makedirs(os.path.dirname(model_checkpoint))
@@ -78,7 +79,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         time_step = self.time_step + 2
 
         input_dict = {"system": sys_act,
-                      "goal": goal.get_goal_list(sub_goal_success=True),
+                      "goal": goal.get_goal_list(sub_goal_success=self.sub_goal_succ),
                       "history": history,
                       "turn": str(int(time_step/2))}
         if self.add_persona:
@@ -133,7 +134,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         input_dict = {"system": sys_act,
                       "conduct": sys_conduct,
-                      "goal": self.goal.get_goal_list(sub_goal_success=True),
+                      "goal": self.goal.get_goal_list(sub_goal_success=self.sub_goal_succ),
                       "history": history,
                       "turn": str(int(self.time_step/2))}
 
