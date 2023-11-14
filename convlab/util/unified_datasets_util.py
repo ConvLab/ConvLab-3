@@ -162,17 +162,18 @@ def load_unified_data(
         dataset, 
         data_split='all', 
         speaker='all', 
-        utterance=False, 
-        dialogue_acts=False, 
-        state=False, 
-        db_results=False,
-        delex_utterance=False,
-        use_context=False, 
-        context_window_size=0, 
-        terminated=False, 
+        #utterance=False,
+        #dialogue_acts=False,
+        #state=False,
+        #db_results=False,
+        #delex_utterance=False,
+        use_context=False,
+        context_window_size=0,
+        terminated=False,
         goal=False, 
         active_domains=False,
-        split_to_turn=True
+        split_to_turn=True,
+        **kwargs
     ):
     """
     > This function takes in a dataset, and returns a dictionary of data splits, where each data split
@@ -201,7 +202,8 @@ def load_unified_data(
     data_splits = dataset.keys() if data_split == 'all' else [data_split]
     assert speaker in ['user', 'system', 'all']
     assert not use_context or context_window_size > 0
-    info_list = list(filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results', 'delex_utterance']))
+    info_list = [ele for ele, val in kwargs.items() if val]
+    #info_list += list(filter(eval, ['utterance', 'dialogue_acts', 'state', 'db_results', 'delex_utterance']))
     info_list += ['utt_idx']
     data_by_split = {}
     for data_split in data_splits:
@@ -219,6 +221,7 @@ def load_unified_data(
                     context.append(sample_copy)
 
                 if split_to_turn and speaker in [turn['speaker'], 'all']:
+                    sample["dialogue_id"] = dialogue["original_id"]
                     if use_context:
                         sample['context'] = context[-context_window_size-1:-1]
                     if goal:
