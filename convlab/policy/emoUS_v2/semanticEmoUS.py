@@ -119,7 +119,6 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
     def predict(self, sys_act, sys_conduct="neutral", mode="max", allow_general_intent=True, emotion=None):
         if self.no_conduct:
-            print("original conduct:", sys_conduct)
             sys_conduct = "neutral"
         allow_general_intent = False
         self.model.eval()

@@ -149,7 +149,6 @@ class Goal:
     # TODO change to update()?
     def update_user_goal(self, action, char="usr"):
         # update request and booked
-        print("---> ", char)
         if char == "usr":
             self._user_action_update(action)
         elif char == "sys":
@@ -192,7 +191,6 @@ class Goal:
                 self._set_status(goal_intent, domain, slot, REQUESTED)
 
     def _set_status(self, intent, domain, slot, status):
-        print("set statue", intent, domain, slot, status)
         self.status[domain][intent][slot]["status"] = status
 
     def _set_goal(self, intent, domain, slot, value):
