@@ -78,7 +78,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         time_step = self.time_step + 2
 
         input_dict = {"system": sys_act,
-                      "goal": goal.get_goal_list(),
+                      "goal": goal.get_goal_list(sub_goal_success=True),
                       "history": history,
                       "turn": str(int(time_step/2))}
         if self.add_persona:
@@ -133,7 +133,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
 
         input_dict = {"system": sys_act,
                       "conduct": sys_conduct,
-                      "goal": self.goal.get_goal_list(),
+                      "goal": self.goal.get_goal_list(sub_goal_success=True),
                       "history": history,
                       "turn": str(int(self.time_step/2))}
 
@@ -510,9 +510,9 @@ class UserPolicy(Policy):
 def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--model-checkpoint", type=str,
-                        default="convlab/policy/emoUS/unify/default/EmoUS_default")
+                        default="convlab/policy/emoUS_v2/unify/experiments/EmoUS_emowoz+dialmage_0_1/23-10-12-06-33")
     parser.add_argument("--peft-model-checkpoint", type=str, default="")
-    parser.add_argument("--mode", type=str, default="language")
+    parser.add_argument("--mode", type=str, default="semantic")
     parser.add_argument("--sample", action="store_true")
     return parser.parse_args()
 

@@ -155,7 +155,9 @@ def emotion_score(emotion):
         return 0
     if emotion in ["Satisfied", "Excited"]:
         return 1
-    return -1
+    if emotion in ["Abusive", "Dissatisfied"]:
+        return -1
+    return 0
 
 
 def plot(conversation):
@@ -176,7 +178,8 @@ def turn_level(dialog):
         info = miss_info(pre_usr, sys, cur_usr)
         append_info(dialog_info, info)
         if index > 2:
-            info = loop(dialog[index-3], sys, cur_usr)
+            # info = loop(dialog[index-3], sys, cur_usr)
+            info = loop(pre_usr, cur_usr)
             append_info(dialog_info, info)
 
     return dialog_info
@@ -266,8 +269,11 @@ def confirm(pre_usr, sys, cur_usr):
     return {cur_usr["emotion"]: "no confirm"}
 
 
-def loop(s0, s1, u1):
-    if s0 == s1:
+# def loop(s0, s1, u1):
+#     if s0 == s1:
+#         return {u1["emotion"]: "loop"}
+def loop(u0, u1):
+    if u0 == u1:
         return {u1["emotion"]: "loop"}
 
 
