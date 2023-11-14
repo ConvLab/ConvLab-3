@@ -23,6 +23,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.use_sentiment = kwargs.get("use_sentiment", False)
         self.add_persona = kwargs.get("add_persona", True)
         self.emotion_mid = kwargs.get("emotion_mid", False)
+        self.no_conduct = kwargs.get("no_conduct", False)
 
         if not os.path.exists(os.path.dirname(model_checkpoint)):
             os.makedirs(os.path.dirname(model_checkpoint))
@@ -117,6 +118,9 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         return emotion
 
     def predict(self, sys_act, sys_conduct="neutral", mode="max", allow_general_intent=True, emotion=None):
+        if self.no_conduct:
+            print("original conduct:", sys_conduct)
+            sys_conduct = "neutral"
         allow_general_intent = False
         self.model.eval()
         if not self.add_sys_from_reward:

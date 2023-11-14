@@ -14,6 +14,7 @@ def arg_parser():
     parser.add_argument("--input-file", '-i', type=str, default="")
     parser.add_argument("--original-file", '-o', type=str, default="")
     parser.add_argument("--normalize", '-n', action="store_true")
+    parser.add_argument("--result-dir", '-r', type=str, default="figs")
     return parser.parse_args()
 
 
@@ -43,11 +44,11 @@ def emotion_plot(golden_emotions, gen_emotions, dirname=".", file_name="emotion"
 
 
 def main():
-    emotion_system_label = json.load(
-        open("data/unified_datasets/emowoz/data/emotion_system_label.json"))
+    system_conduct_label = json.load(
+        open("data/unified_datasets/emowoz/data/system_conduct_label.json"))
     args = arg_parser()
-    for golden_conduct, c1 in tqdm(emotion_system_label.items()):
-        for target_conduct, c2 in emotion_system_label.items():
+    for golden_conduct, c1 in tqdm(system_conduct_label.items()):
+        for target_conduct, c2 in system_conduct_label.items():
             f_name = f"{c1}-{c2}"
             golden_conduct = int(golden_conduct)
             target_conduct = int(target_conduct)
@@ -77,26 +78,33 @@ def main():
                     continue
                 if c1 != c2:
                     if d["id"] == id_list[x]["label"]:
-                        id_list[x]["ori_emo"] = d["gen_emotion"]
+                        temp = parser_system_emotion_user(d, "ori")
+                        for k, v in temp.items():
+                            id_list[x][k] = v
                 if d["id"] == id_list[x]["pred"]:
-                    id_list[x]["new_emo"] = d["gen_emotion"]
+                    temp = parser_system_emotion_user(d, "new")
+                    for k, v in temp.items():
+                        id_list[x][k] = v
             if c1 == c2:
                 for d in ori_file["dialog"]:
                     x = '-'.join(d["id"].split("-")[:2])
                     if x not in id_list:
                         continue
                     if d["id"] == x:
-                        id_list[x]["ori_emo"] = d["gen_emotion"]
+                        temp = parser_system_emotion_user(d, "ori")
+                        for k, v in temp.items():
+                            id_list[x][k] = v
+
             label = []
             pred = []
             for x, r in id_list.items():
-                if "ori_emo" not in r or "new_emo" not in r:
+                if "ori_emotion" not in r or "new_emotion" not in r:
                     continue
-                label.append(r["ori_emo"])
-                pred.append(r["new_emo"])
+                label.append(r["ori_emotion"])
+                pred.append(r["new_emotion"])
 
             normalize = None
-            dirname = "figs"
+            dirname = args.result_dir
             if args.normalize:
                 f_name += "-normalize"
                 dirname = os.path.join(dirname, "normalize")
@@ -106,6 +114,17 @@ def main():
                          dirname=dirname,
                          file_name=f_name,
                          normalize=normalize)
+            json.dump(id_list, open(os.path.join(
+                dirname, f"{f_name}.json"), "w"))
+
+
+def parser_system_emotion_user(d, x: str):
+    if x not in ["new", "ori"]:
+        raise ValueError("x should be new or ori")
+
+    return {f"{x}_system": json.loads(d["input"])["system"],
+            f"{x}_emotion": d["gen_emotion"],
+            f"{x}_utterance": d["gen_utts"]}
 
 
 if __name__ == "__main__":
