@@ -200,6 +200,8 @@ class Goal:
                 continue
             # fulfill request by system
             if is_inform(intent) and is_request(goal_intent):
+                if value in ["not available", "none"]:
+                    continue
                 self._set_status(goal_intent, domain, slot, FULFILLED)
                 self._set_goal(goal_intent, domain, slot, value)
 
@@ -239,8 +241,10 @@ def is_inform(intent):
         return True
     if "recommend" in intent:
         return True
-    if "select" in intent:
-        return True
+    # if "select" in intent:
+    #     return True
+    # if "offerbook" in intent:
+    #     return True
     return False
 
 
