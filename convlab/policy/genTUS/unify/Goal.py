@@ -239,6 +239,8 @@ def is_inform(intent):
         return True
     if "recommend" in intent:
         return True
+    if "select" in intent:
+        return True
     return False
 
 
