@@ -53,10 +53,10 @@ class DataBuilder(GenTUSDataBuilder):
             self.sent2emo = json.load(
                 open("convlab/policy/emoUS/sent2emo.json"))
             # TODO check excited distribution
-        self.emotion_system_label = json.load(
-            open("data/unified_datasets/emowoz/data/emotion_system_label.json"))
+        self.system_conduct_label = json.load(
+            open("data/unified_datasets/emowoz/data/system_conduct_label.json"))
         self.system_emotion = json.load(
-            open("data/unified_datasets/emowoz/data/system_emotion.json"))
+            open("data/unified_datasets/emowoz/data/system_conduct.json"))
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
         example = []
@@ -78,11 +78,11 @@ class DataBuilder(GenTUSDataBuilder):
         for turn_id in range(0, len(dialog["turns"]), 2):
             sys_act = self._get_sys_act(dialog, turn_id)
             if turn_id - 1 < 0:
-                sys_emo = self.emotion_system_label["0"]
+                sys_emo = self.system_conduct_label["0"]
             else:
                 # todo get default emotion?
                 x = self.system_emotion.get(f"{original_id}-{turn_id-1}", 0)
-                sys_emo = self.emotion_system_label[str(x)]
+                sys_emo = self.system_conduct_label[str(x)]
 
             user_goal.update_user_goal(action=sys_act, char="sys")
             usr_goal_str = self._user_goal_str(

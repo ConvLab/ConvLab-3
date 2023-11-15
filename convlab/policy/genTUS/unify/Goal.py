@@ -94,7 +94,7 @@ class Goal:
                         "value": str(sub_domain_goal[slot]),
                         "status": NOT_MENTIONED}
 
-    def get_goal_list(self, data_goal=None):
+    def get_goal_list(self, data_goal=None, sub_goal_success=False):
         goal_list = []
         if data_goal:
             # make sure the order!!!
@@ -104,11 +104,18 @@ class Goal:
                 goal_list.append([intent, domain, slot, value, status])
             return goal_list
         else:
+            add_next_domain = True
             for domain, domain_goal in self.domain_goals.items():
+                if not add_next_domain:
+                    return goal_list
+
                 for intent, sub_goal in domain_goal.items():
                     for slot, value in sub_goal.items():
                         status = self._get_status(domain, intent, slot)
                         goal_list.append([intent, domain, slot, value, status])
+                if sub_goal_success:
+                    add_next_domain = self.sub_goal_success(
+                        domain, domain_goal)
 
         return goal_list
 
@@ -127,29 +134,45 @@ class Goal:
         Returns:
             (boolean): True to accomplish.
         """
-        for domain, domain_goal in self.status.items():
-            if domain not in self.domain_goals:
-                continue
-            for slot_type, sub_domain_goal in domain_goal.items():
-                if slot_type not in self.domain_goals[domain]:
-                    continue
-                for slot, status in sub_domain_goal.items():
-                    if slot not in self.domain_goals[domain][slot_type]:
+        for domain, domain_goal in self.domain_goals.items():
+            if not self.sub_goal_success(domain, domain_goal):
+                return False
+
+        # for domain, domain_goal in self.status.items():
+        #     if domain not in self.domain_goals:
+        #         continue
+        #     for slot_type, sub_domain_goal in domain_goal.items():
+        #         if slot_type not in self.domain_goals[domain]:
+        #             continue
+        #         for slot, status in sub_domain_goal.items():
+        #             if slot not in self.domain_goals[domain][slot_type]:
+        #                 continue
+        #             # for strict success, turn this on
+        #             if status["status"] in [NOT_MENTIONED, CONFLICT]:
+        #                 if status["status"] == CONFLICT and slot in ["arrive by", "leave at"]:
+        #                     continue
+        #                 return False
+        #             if "?" in status["value"]:
+        #                 return False
+
+        return True
+
+    def sub_goal_success(self, domain, goal):
+        for intent, sub_goal in goal.items():
+            for slot in sub_goal:
+                if "?" in self.status[domain][intent][slot]["value"]:
+                    return False
+                status = self.status[domain][intent][slot]["status"]
+                if status in [NOT_MENTIONED, CONFLICT]:
+                    if status == CONFLICT and slot in ["arrive by", "leave at"]:
                         continue
-                    # for strict success, turn this on
-                    if status["status"] in [NOT_MENTIONED, CONFLICT]:
-                        if status["status"] == CONFLICT and slot in ["arrive by", "leave at"]:
-                            continue
-                        return False
-                    if "?" in status["value"]:
-                        return False
+                    return False
 
         return True
 
     # TODO change to update()?
     def update_user_goal(self, action, char="usr"):
         # update request and booked
-        print("---> ", char)
         if char == "usr":
             self._user_action_update(action)
         elif char == "sys":
@@ -192,7 +215,6 @@ class Goal:
                 self._set_status(goal_intent, domain, slot, REQUESTED)
 
     def _set_status(self, intent, domain, slot, status):
-        print("set statue", intent, domain, slot, status)
         self.status[domain][intent][slot]["status"] = status
 
     def _set_goal(self, intent, domain, slot, value):
