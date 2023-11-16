@@ -42,7 +42,7 @@ def advance(conversation):
     return info
 
 
-def get_turn_emotion(conversation, result_dir):
+def get_turn_emotion(conversation):
     """ Get the emotion of each turn in the conversation 
     Args:
         conversation (list): a list of dialog
@@ -104,9 +104,11 @@ def get_turn_emotion(conversation, result_dir):
                     data[f"{metric}_std"].append(std)
     for x in data:
         data[x] = np.array(data[x])
+    return data, max_turn
 
+
+def plot(data, max_turn, result_dir, pick="Complete"):
     fig, ax = plt.subplots(figsize=(6, 6))
-    pick = "Complete"
     p = {f"{pick}": {"color": "C0", "label": "Success"},
          f"Not {pick}": {"color": "C1", "label": "Fail"},
          "all": {"color": "C2", "label": "all"}}
@@ -130,7 +132,7 @@ def get_turn_emotion(conversation, result_dir):
     plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, "turn2emotion.png"))
+    plt.savefig(os.path.join(result_dir, f"{pick}.png"))
 
 
 def turn_score(score_list):
@@ -159,10 +161,6 @@ def emotion_score(emotion):
     if emotion in ["Abusive", "Dissatisfied"]:
         return -1
     return 0
-
-
-def plot(conversation):
-    pass
 
 
 def turn_level(dialog):
@@ -311,7 +309,8 @@ def main():
         os.path.join(result_dir, "conversation_result.json"), 'w'), indent=2)
 
     dict2csv(advance_info, result_dir)
-    get_turn_emotion(conversation, result_dir)
+    data, max_turn = get_turn_emotion(conversation)
+    plot(data, max_turn, result_dir)
 
 
 if __name__ == "__main__":

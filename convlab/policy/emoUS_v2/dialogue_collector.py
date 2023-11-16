@@ -16,6 +16,7 @@ def arg_parser():
                         default=500, help="# of evaluation dialogue")
     parser.add_argument("--model", type=str,
                         default="ddpt", help="# of evaluation dialogue")
+    parser.add_argument("--sub-folder", type=str, default="")
     return parser.parse_args()
 
 
@@ -106,8 +107,10 @@ if __name__ == "__main__":
     data = {"config": json.load(open(args.config)),
             "conversation": conversation}
     folder_name = os.path.join("convlab/policy/emoUS_v2", "conversation")
+    if args.sub_folder:
+        folder_name = os.path.join(folder_name, args.sub_folder)
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     json.dump(data,
-              open(os.path.join(folder_name, f"{time}.json"), 'w'),
+              open(os.path.join(folder_name, "conversation.json"), 'w'),
               indent=2)
