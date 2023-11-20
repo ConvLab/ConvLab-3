@@ -66,7 +66,9 @@ def main():
     # tracker.dst.state['history'].append(['sys', ''])
     user_act = 'hey. I need a cheap restaurant.'
     state = tracker.update(user_act)
-    print(state)
+    # print(state)
+    print(user_act)
+    print(tracker.get_emotion())
 
     tracker.dst.state['history'].append(
         ['usr', 'hey. I need a cheap restaurant.'])
@@ -74,7 +76,10 @@ def main():
         ['sys', 'There are many cheap places, which food do you like?'])
     user_act = 'If you have something Asian that would be great.'
     state = tracker.update(user_act)
-    print(state)
+    # print(state)
+    print(user_act)
+
+    print(tracker.get_emotion())
 
     tracker.dst.state['history'].append(
         ['usr', 'If you have something Asian that would be great.'])
@@ -84,7 +89,9 @@ def main():
                                           ['inform', 'restaurant', 'name', 'the golden wok']]
     user_act = 'Fuck!'
     state = tracker.update(user_act)
-    print(state)
+    print(user_act)
+    print(tracker.get_emotion())
+    # print(state)
 
     # tracker.state['history'].append(['usr', 'Great. Where are they located?'])
     # state = tracker.state
