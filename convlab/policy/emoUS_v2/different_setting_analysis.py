@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 import json
 import os
+import pandas as pd
 
 from convlab.policy.emoUS_v2.analysis import get_turn_emotion
 import matplotlib.pyplot as plt
@@ -16,23 +17,25 @@ def arg_parser():
                         help="rl-conduct")
     parser.add_argument("--file4", type=str,
                         help="rl-no-conduct")
+    parser.add_argument("--file5", type=str,
+                        help="sl-conduct")
+    parser.add_argument("--file6", type=str,
+                        help="sl-no-conduct")
     parser.add_argument("--pick", type=str, default="all")
     parser.add_argument("--result-dir", type=str,
                         default="convlab/policy/emoUS_v2/result")
     return parser.parse_args()
 
 
-def plot(data, max_turn, result_dir, pick="all"):
+def plot(data, max_turn, result_dir, p, pick="all"):
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     fig, ax = plt.subplots(figsize=(6, 6))
-    p = {
-        'sl-conduct': {pick: {"color": "lightcoral", "label": "sl-conduct", "marker": "o"}},
-        'sl-no-conduct': {pick: {"color": "lightcoral", "label": "sl-no-conduct", "marker": "x"}},
-        'rl-conduct': {pick: {"color": "cornflowerblue", "label": "rl-conduct", "marker": "o"}},
-        'rl-no-conduct': {pick: {"color": "cornflowerblue", "label": "rl-no-conduct", "marker": "x"}}
-    }
+
     for d_type, para in p.items():
+        if pick != "all" and "no-conduct" in d_type:
+            continue
+
         d = data[d_type]
         name = pick
         p = para[pick]
@@ -45,7 +48,7 @@ def plot(data, max_turn, result_dir, pick="all"):
         ax.fill_between(d['x'],
                         d[f"{name}_mean"]+d[f"{name}_std"],
                         d[f"{name}_mean"]-d[f"{name}_std"],
-                        color=p["color"], alpha=0.2)
+                        color=p["color"], alpha=0.1)
 
     ax.legend()
     ax.set_xlabel("turn")
@@ -59,22 +62,57 @@ def plot(data, max_turn, result_dir, pick="all"):
     plt.savefig(os.path.join(result_dir, f"{pick}.png"))
 
 
+def success_table():
+    pass
+
+
 def main():
     args = arg_parser()
     data = {}
+    pick = args.pick
+    if "-" in pick:
+        pick = pick.replace("-", " ")
 
-    data["sl-conduct"], max_turn = get_turn_emotion(
-        json.load(open(args.file1))["conversation"])
-    data["sl-no-conduct"], max_turn = get_turn_emotion(
-        json.load(open(args.file2))["conversation"])
-    data["rl-conduct"], max_turn = get_turn_emotion(
-        json.load(open(args.file3))["conversation"])
-    data["rl-no-conduct"], max_turn = get_turn_emotion(
-        json.load(open(args.file4))["conversation"])
+    p_list = ['rl-scratch-conduct',
+              'rl-scratch-no-conduct',
+              'rl-pretrain-conduct',
+              'rl-pretrain-no-conduct',
+              'sl-conduct',
+              'sl-no-conduct']
+    c1 = "cornflowerblue"
+    c2 = "mediumseagreen"
+    c3 = "coral"
+    p = {
+        p_list[0]: {pick: {"color": c1, "label": p_list[0], "marker": "o"}},
+        p_list[1]: {pick: {"color": c1, "label": p_list[1], "marker": "x"}},
+        p_list[2]: {pick: {"color": c2, "label": p_list[2], "marker": "o"}},
+        p_list[3]: {pick: {"color": c2, "label": p_list[3], "marker": "x"}},
+        p_list[4]: {pick: {"color": c3, "label": p_list[4], "marker": "o"}},
+        p_list[5]: {pick: {"color": c3, "label": p_list[5], "marker": "x"}}
+    }
+    p_list = [x for x in p]
+
+    for index, folder in enumerate([args.file1, args.file2, args.file3, args.file4, args.file5, args.file6]):
+
+        data[p_list[index]], max_turn = get_turn_emotion(
+            json.load(open(os.path.join(folder, "conversation.json")))["conversation"])
+
+    if pick == "all":
+
+        basic_info = {}
+        col = ["Complete", "Success", "Success strict", "turns"]
+        for index, folder in enumerate([args.file1, args.file2, args.file3, args.file4, args.file5, args.file6]):
+            basic_info[p_list[index]] = [json.load(
+                open(os.path.join(folder, "conversation_result.json")))["basic_info"][s] for s in col]
+
+        df = pd.DataFrame(basic_info, index=col)
+        df.to_csv(os.path.join(args.result_dir, "basic_info.csv"))
+
     plot(data,
          max_turn,
          args.result_dir,
-         pick=args.pick)
+         p,
+         pick)
 
 
 if __name__ == "__main__":
