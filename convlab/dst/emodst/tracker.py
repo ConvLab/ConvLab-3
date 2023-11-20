@@ -119,7 +119,7 @@ class EMODST(DST):
             user_utt=user_act,
             dialog_state_history=self.dialog_state_history
         )
-        emotion = emotion.to('cpu').item()
+        emotion = self.id2emotion[emotion.to('cpu').item()]
 
         self.state['user_emotion_trajectory'].append(emotion)
         self.state['user_emotion'] = emotion
@@ -127,4 +127,5 @@ class EMODST(DST):
         return self.state
 
     def get_emotion(self):
-        return self.id2emotion[self.state['user_emotion']]
+        # TODO
+        return self.state['user_emotion']
