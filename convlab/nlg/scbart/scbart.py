@@ -48,7 +48,7 @@ class SCBART(NLG):
         return output
 
     def _inference(self, act_str):
-        print(act_str)
+        # print(act_str)
         with torch.no_grad():
             model_input = self.tokenizer.encode_plus(
                 act_str,
