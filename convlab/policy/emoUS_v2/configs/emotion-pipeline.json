@@ -52,7 +52,7 @@
 		"SCBART": {
 			"class_path": "convlab.nlg.scbart.scbart.SCBART",
 			"ini_params": {
-				"model_checkpoint": "convlab/nlg/scbart/scbart-nlprompt-semact-conduct.pt",
+				"model_checkpoint": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct.pt",
 				"dataset_name": "multiwoz21",
 				"device": "cuda"
 			}
@@ -64,7 +64,7 @@
 		"emoUS": {
 			"class_path": "convlab.policy.emoUS_v2.langEmoUS.UserPolicy",
 			"ini_params": {
-				"model_checkpoint": "convlab/policy/emoUS_v2/unify/experiments/language_EmoUS_emowoz+dialmage_0_1",
+				"model_checkpoint": "convlab/policy/emoUS_v2/unify/experiments/language_EmoUS_emowoz+dialmage_0_1/23-10-26-11-50",
 				"character": "usr",
 				"mode": "language",
 				"use_sentiment": false,
