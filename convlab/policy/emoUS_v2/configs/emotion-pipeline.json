@@ -52,7 +52,7 @@
 		"SCBART": {
 			"class_path": "convlab.nlg.scbart.scbart.SCBART",
 			"ini_params": {
-				"model_checkpoint": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct.pt",
+				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct.pt",
 				"dataset_name": "multiwoz21",
 				"device": "cuda"
 			}
