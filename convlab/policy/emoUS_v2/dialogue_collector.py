@@ -51,7 +51,10 @@ def interact(model_name, config, seed=0, num_goals=500, model_path=None):
         dialogue = {"seed": seed, "log": []}
         set_seed(seed)
         sess.init_session(goal=goals[seed-1000])
-        sys_response = []
+        if sess.sys_agent.nlg is not None:
+            sys_response = ""
+        else:
+            sys_response = []
         actions = 0.0
         total_return = 0.0
         turns = 0
