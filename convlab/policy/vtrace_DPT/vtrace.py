@@ -144,7 +144,7 @@ class VTRACE(nn.Module, Policy):
         use_temperature = False
         if self.use_emotion and self.use_emotion_temperature:
             if "emotion" in state:
-                user_emotion = state["emotion"]
+                user_emotion = state["user_emotion"]
                 if not self.only_negative_emotion_temperature:
                     use_temperature = True
                 elif user_emotion in ["dissatisfied", "abusive"]:
