@@ -114,6 +114,19 @@ class PipelineAgent(Agent):
             logging.warning('nlg info_dict is not initialized')
         # logging.info("Done")
 
+        self.response_type = self.get_response_type()
+
+    def get_response_type(self):
+        if hasattr(self.policy, "get_conduct"):
+            return "conduct_system"
+        if self.name == "user" and hasattr(self.policy, "system_utterance"):
+            if self.policy.system_utterance:
+                return "utterance_to_user"
+        if self.name == "user" and hasattr(self.policy, "need_conduct"):
+            if self.policy.need_conduct:
+                return "need_conduct_user"
+        return "default"
+
     def state_replace(self, agent_state):
         """
         this interface is reserved to replace all interal states of agent
@@ -133,15 +146,46 @@ class PipelineAgent(Agent):
 
         return agent_state
 
-    def response(self, observation, **kwargs):
-        action = kwargs.get("action", None)
-        conduct = kwargs.get("conduct", "default")
-        """Generate agent response using the agent modules."""
-        # Note: If you modify the logic of this function, please ensure that it is consistent with deploy.server.ServerCtrl._turn()
-        if self.dst is not None:
-            # [['sys', sys_utt], ['user', user_utt],...]
-            self.dst.state['history'].append([self.opponent_name, observation])
-        self.history.append([self.opponent_name, observation])
+    def _do_nlu(self, observation):
+        if self.nlu is None:
+            return observation
+        return self.nlu.predict(
+            observation, context=[x[1] for x in self.history[:-1]])
+
+    def _do_dst(self, observation):
+        if self.dst is None:
+            return observation
+
+        if self.name == 'sys':
+            self.dst.state['user_action'] = observation
+        else:
+            self.dst.state['system_action'] = observation
+
+        return self.dst.update(observation)
+
+    def _do_policy(self, state):
+        return self.policy.predict(state)
+
+    def _do_nlg(self, action):
+        if self.nlg is None:
+            return action
+        return self.nlg.generate(action)
+
+    def _update_dst(self, model_response):
+        self.dst.state['history'].append([self.name, model_response])
+        if self.name == 'sys':
+            self.dst.state['system_action'] = self.output_action
+
+            if type(self.output_action) == list:
+                for intent, domain, slot, value in self.output_action:
+                    if intent.lower() == "book":
+                        self.dst.state['booked'][domain] = [{slot: value}]
+        else:
+            self.dst.state['user_action'] = self.output_action
+            # user dst is also updated by itself
+            self.dst.update(self.output_action)
+
+    def _complex_response(self, observation, action=None, conduct="default"):
         # get dialog act
         if self.name == 'sys':
             if self.nlu is not None:
@@ -205,26 +249,125 @@ class PipelineAgent(Agent):
             model_response = self.nlg.generate(self.output_action)
         else:
             model_response = self.output_action
-        # print(model_response)
+        return model_response
 
+    def _before_prediction(self, observation):
         if self.dst is not None:
-            self.dst.state['history'].append([self.name, model_response])
-            if self.name == 'sys':
-                self.dst.state['system_action'] = self.output_action
+            # [['sys', sys_utt], ['user', user_utt],...]
+            self.dst.state['history'].append([self.opponent_name, observation])
+        self.history.append([self.opponent_name, observation])
 
-                if type(self.output_action) == list:
-                    for intent, domain, slot, value in self.output_action:
-                        if intent.lower() == "book":
-                            self.dst.state['booked'][domain] = [{slot: value}]
-            else:
-                self.dst.state['user_action'] = self.output_action
-                # user dst is also updated by itself
-                state = self.dst.update(self.output_action)
+    def _after_prediction(self, model_response):
+        if self.dst is not None:
+            self._update_dst(model_response)
 
         self.history.append([self.name, model_response])
 
         self.turn += 1
         self.agent_saves.append(self.save_info())
+
+    def _default_response(self, observation):
+
+        # nlu
+        self.input_action = deepcopy(self._do_nlu(observation))
+
+        # dst
+        self.state = deepcopy(self._do_dst(self.input_action))
+
+        # policy
+        self.output_action = deepcopy(self._do_policy(self.state))
+
+        # nlg
+        model_response = self._do_nlg(self.output_action)
+
+        return model_response
+
+    def _conduct_do_policy(self, state):
+        output_action = deepcopy(self._do_policy(state))
+        conduct = "neutral"
+        if hasattr(self.policy, "get_conduct"):
+            conduct = self.policy.get_conduct()
+        return output_action, conduct
+
+    def _conduct_response(self, observation, emotion=None):
+        # nlu
+        self.input_action = deepcopy(self._do_nlu(observation))
+
+        # dst
+        self.state = deepcopy(self._do_dst(self.input_action))
+        # overwrite emotion if emotion is provided and observation is not a string
+        if emotion is not None and type(observation) is not str:
+            self.state["user_emotion"] = emotion
+
+        # policy
+        self.output_action, conduct = self._conduct_do_policy(self.state)
+
+        # nlg
+        if hasattr(self.nlg, "require_conduct"):
+            self.nlg.generate(self.output_action, conduct)
+        else:
+            model_response = self._do_nlg(self.output_action)
+
+        return model_response
+
+    def _utterance_semantic_response(self, utterance, action):
+        if self.name != "user":
+            raise Exception("This function is only for user agent")
+        # nlu
+        self.input_action = action
+        if action is None:
+            self.input_action = deepcopy(self._do_nlu(utterance))
+
+        # dst
+        self.state = deepcopy(self._do_dst(self.input_action))
+
+        # policy
+        self.output_action = deepcopy(self.policy.predict(
+            sys_act=action, sys_utt=utterance))
+
+        # nlg
+        model_response = self._do_nlg(self.output_action)
+
+        return model_response
+
+    def _user_conduct_response(self, observation, conduct):
+        if self.name != "user":
+            raise Exception("This function is only for user agent")
+        # nlu
+        self.input_action = deepcopy(self._do_nlu(observation))
+
+        # dst
+        self.state = deepcopy(self._do_dst(self.input_action))
+
+        self.output_action = deepcopy(self.policy.predict(
+            self.state, sys_conduct=conduct))
+
+        # nlg
+        model_response = self._do_nlg(self.output_action)
+
+        return model_response
+
+    def response(self, observation, **kwargs):
+        """Generate agent response using the agent modules."""
+        # Please ensure this is consistent with deploy.server.ServerCtrl._turn()
+        self._before_prediction(observation)
+        # response generation
+        if self.response_type == "conduct_system":
+            emotion = kwargs.get("emotion", None)
+            model_response = self._conduct_response(observation, emotion)
+        elif self.response_type == "utterance_to_user":
+            action = kwargs.get("action", None)
+            model_response = self._utterance_semantic_response(
+                observation, action)
+        elif self.response_type == "need_conduct_user":
+            conduct = kwargs.get("conduct", "Neutral")
+            model_response = self._user_conduct_response(observation, conduct)
+        else:
+            # default response generation
+            model_response = self._default_response(observation)
+
+        self._after_prediction(model_response)
+
         if self.return_semantic_acts:
             return self.output_action
         return model_response
@@ -277,8 +420,8 @@ class PipelineAgent(Agent):
             self.nlg.init_session()
         self.history = []
 
-    def get_in_da_eval(self):
-        return self.input_action_eval
+    # def get_in_da_eval(self):
+    #     return self.input_action_eval
 
     def get_in_da(self):
         return self.input_action

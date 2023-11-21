@@ -25,6 +25,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.no_conduct = kwargs.get("no_conduct", False)
         self.sub_goal_succ = kwargs.get("sub_goal_succ", False)
+        self.need_conduct = True
 
         if not os.path.exists(os.path.dirname(model_checkpoint)):
             os.makedirs(os.path.dirname(model_checkpoint))
@@ -454,6 +455,7 @@ class UserPolicy(Policy):
                  sample=False,
                  action_penalty=False,
                  **kwargs):
+        self.need_conduct = True
         # self.config = config
         print("emoUS model checkpoint: ", model_checkpoint)
         if sample:
