@@ -305,7 +305,7 @@ class PipelineAgent(Agent):
 
         # nlg
         if hasattr(self.nlg, "require_conduct"):
-            self.nlg.generate(self.output_action, conduct)
+            model_response = self.nlg.generate(self.output_action, conduct)
         else:
             model_response = self._do_nlg(self.output_action)
 
