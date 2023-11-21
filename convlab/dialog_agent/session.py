@@ -92,15 +92,14 @@ class BiSession(Session):
         return next_agent
 
     def next_response(self, observation, **kwargs):
-        sys_conduct = kwargs.get("sys_conduct", "default")
         next_agent = self.next_agent()
-        if sys_conduct == "default":
-            response = next_agent.response(observation)
-        else:
-            # only for user simulator
-            response = next_agent.response(observation, conduct=sys_conduct)
-        # print(response)
-        return response
+        return next_agent.response(observation, **kwargs)
+
+    def _system_action(self):
+        if self.user_agent.nlu is not None:
+            # predict user action by user nlu
+            return None
+        return self.sys_agent.output_action
 
     def next_turn(self, last_observation):
         """Conduct a new turn of dialog, which consists of the system response and user response.
@@ -124,12 +123,21 @@ class BiSession(Session):
             reward (float):
                 The reward given by the user.
         """
-        if hasattr(self.sys_agent.policy, 'get_conduct'):
+        user_response_type = self.user_agent.get_response_type()
+        if user_response_type == "utterance_to_user":
+            if type(last_observation) is not str:
+                raise Exception(
+                    "last_observation from the system should be string")
+            system_action = self._system_action()
+            user_response = self.next_response(
+                last_observation, action=system_action)
+        elif user_response_type == "need_conduct_user":
             sys_conduct = self.sys_agent.policy.get_conduct()
             user_response = self.next_response(
-                last_observation, sys_conduct=sys_conduct)
+                last_observation, conduct=sys_conduct)
         else:
             user_response = self.next_response(last_observation)
+
         if self.evaluator:
             self.evaluator.add_sys_da(
                 self.user_agent.get_in_da(), self.sys_agent.dst.state['belief_state'])

@@ -7,6 +7,7 @@ from convlab.policy.policy import Policy
 
 from convlab.policy.emoUS_v2.semanticEmoUS import \
     UserActionPolicy as semanticEmoUS
+from convlab.policy.emoUS.emoUS import parse_output
 
 
 class UserActionPolicy(semanticEmoUS):
@@ -48,6 +49,63 @@ class UserActionPolicy(semanticEmoUS):
         text = self._get_text(model_input, pos)
 
         return text
+
+    def predict(self, sys_utt, sys_act, mode="max", allow_general_intent=True, emotion=None):
+
+        allow_general_intent = False
+        self.model.eval()
+        if not self.add_sys_from_reward:
+            self.goal.update_user_goal(action=sys_act, char="sys")
+            self.sys_acts.append(sys_act)  # for terminate conversation
+
+        # update constraint
+        self.time_step += 2
+
+        history = self._get_history()
+
+        input_dict = {"system": sys_utt,
+                      "goal": self.goal.get_goal_list(sub_goal_success=self.sub_goal_succ),
+                      "history": history,
+                      "turn": str(int(self.time_step/2))}
+
+        if self.add_persona:
+            for user, info in self.user_info.items():
+                input_dict[user] = info
+
+        inputs = json.dumps(input_dict)
+
+        with torch.no_grad():
+            if emotion is not None:
+                raw_output = self.generate_from_emotion(
+                    raw_inputs=inputs, emotion=emotion, mode=mode, allow_general_intent=allow_general_intent)
+                # print("utt:", output["text"])
+            else:
+                raw_output = self._generate_action(
+                    raw_inputs=inputs, sys_act=sys_act, mode=mode, allow_general_intent=allow_general_intent)
+        output = parse_output(raw_output)
+        self.semantic_action = output["action"]
+
+        if not self.only_action:
+            self.utterance = output["text"]
+
+        self.emotion = output["emotion"]
+        if self.use_sentiment:
+            self.sentiment = output["sentiment"]
+
+        if self.is_finish():
+            self.emotion, self.semantic_action, self.utterance = self._good_bye()
+            if self.use_sentiment:
+                self.sentiment = "Neutral"
+
+        self.goal.update_user_goal(action=self.semantic_action, char="usr")
+        self.vector.update_mentioned_domain(self.semantic_action)
+        self.usr_acts.append(self.semantic_action)
+
+        del inputs
+        if self.only_action:
+            return self.semantic_action
+
+        return self.utterance
 
 
 class UserPolicy(Policy):
