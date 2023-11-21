@@ -134,12 +134,12 @@ class UserPolicy(Policy):
         #     model_checkpoint, "pytorch_model.bin"))
         self.sample = sample
 
-    def predict(self, sys_act, sys_conduct="neutral", mode="max"):
+    def predict(self, sys_utt, sys_act, mode="max"):
         if self.sample:
             mode = "sample"
         else:
             mode = "max"
-        response = self.policy.predict(sys_act, sys_conduct, mode)
+        response = self.policy.predict(sys_utt, sys_act, mode)
         self.semantic_action = self.policy.semantic_action
         return response
 
