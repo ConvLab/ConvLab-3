@@ -55,15 +55,10 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
         emotion_temperature_list = []
 
         for t in range(traj_len):
-            if hasattr(environment.sys_dst, 'get_emotion'):
-                emotion = environment.sys_dst.get_emotion().lower()
-            elif hasattr(environment.usr.policy, 'get_emotion'):
-                emotion = environment.usr.policy.get_emotion().lower()
-            else:
-                emotion = "none"
 
-            if policy.use_emotion and emotion != "none":
-                s['emotion'] = emotion
+            if not hasattr(environment.sys_dst, 'get_emotion') and hasattr(environment.usr.policy, 'get_emotion'):
+                emotion = environment.usr.policy.get_emotion().lower()
+                s['user_emotion'] = emotion
 
             s_vec, mask = policy.vector.state_vectorize(s)
             with torch.no_grad():
