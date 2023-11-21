@@ -102,6 +102,7 @@ class PipelineAgent(Agent):
         self.agent_saves = []
         self.history = []
         self.turn = 0
+        self.output_action = []
 
         # logging.info("Pipeline Agent info_dict check")
         if hasattr(self.nlu, 'info_dict') == False:
