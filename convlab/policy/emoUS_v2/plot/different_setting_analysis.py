@@ -3,7 +3,7 @@ import json
 import os
 import pandas as pd
 
-from convlab.policy.emoUS_v2.analysis import get_turn_emotion
+from convlab.policy.emoUS_v2.plot.success_all_fail import get_turn_emotion
 import matplotlib.pyplot as plt
 
 

@@ -70,7 +70,8 @@
 				"use_sentiment": false,
 				"sample": false,
 				"Neutral": 0.95,
-				"Satisfied": 0.95
+				"Satisfied": 0.95,
+				"sub_goal_succ": true
 			}
 		}
 	},

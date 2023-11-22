@@ -14,6 +14,7 @@ def arg_parser():
     parser.add_argument("--file", type=str, help="the conversation file")
     parser.add_argument("--result-dir", type=str,
                         default="convlab/policy/emoUS_v2/result")
+    parser.add_argument("--task-map", '-t', type=str, default="")
     return parser.parse_args()
 
 
@@ -292,13 +293,11 @@ def dict2csv(data, result_dir):
     dataframe.to_csv(open(os.path.join(result_dir, "act2emotion.csv"), 'w'))
 
 
-def main():
-    args = arg_parser()
-    result_dir = args.result_dir
+def do_analysis(result_dir, file):
     result = {}
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    conversation = json.load(open(args.file))["conversation"]
+    conversation = json.load(open(file))["conversation"]
     basic_info = basic_analysis(conversation)
     result["basic_info"] = basic_info
     # print(basic_info)
@@ -311,6 +310,19 @@ def main():
     dict2csv(advance_info, result_dir)
     data, max_turn = get_turn_emotion(conversation)
     plot(data, max_turn, result_dir)
+
+
+def main():
+    args = arg_parser()
+    if args.task_map:
+        task_map = json.load(open(args.task_map))
+        for model, config in task_map["models"].items():
+            file = config["file"]
+            result_dir = os.path.dirname(file)
+            do_analysis(result_dir, file)
+
+    else:
+        do_analysis(args.result_dir, args.file)
 
 
 if __name__ == "__main__":
