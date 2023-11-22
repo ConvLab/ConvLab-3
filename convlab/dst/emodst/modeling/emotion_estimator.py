@@ -19,6 +19,8 @@ class EmotionEstimator():
             self.model.load_state_dict(torch.load(kwargs_for_model['model_name_or_path'])['state_dict'])
         else:
             raise NameError('ERCModelCheckpointNotFound')
+        # self.model.save_config('/home/shutong/models/contextbert-ertod/config.json')
+        # self.model.save_pretrained('/home/shutong/models/contextbert-ertod')
         self.model.eval()
     
     def predict(self, 

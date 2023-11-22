@@ -89,7 +89,7 @@ class EMODST(DST):
             raise NameError('DSTNotImplemented')
 
         self.emotion2id = json.load(
-            open('convlab/dst/emodst/modeling/emotion2id.json'))
+            open('./modeling/emotion2id.json'))
         self.id2emotion = {v: k for k, v in self.emotion2id.items()}
 
     def init_session(self):
