@@ -74,7 +74,7 @@ def interact(model_name, config, seed=0, num_goals=500, model_path=None):
                  "act": env.usr.policy.policy.semantic_action})
             conduct = sess.sys_agent.policy.get_conduct()
             dialogue["log"].append(
-                {"role": "sys", "utt": sys_response, "conduct": conduct, "act": sess.sys_agent.output_action})
+                {"role": "sys", "utt": sys_response, "conduct": conduct, "act": sess.sys_agent.output_action, "state": sess.sys_agent.state})
 
             # logging.info(f"Actions in turn: {len(sys_response)}")
             turns += 1
