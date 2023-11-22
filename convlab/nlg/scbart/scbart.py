@@ -14,19 +14,24 @@ PROMPT_TEMPLATE = f"The realisation of dialogue actions {ACT_PLACEHOLDER} in nat
 
 
 class SCBART(NLG):
-    def __init__(self, dataset_name='multiwoz21', model_path='/home/shutong/models/scbart-nlprompt-semact-conduct.pt', device='cuda'):
+    def __init__(self, dataset_name='multiwoz21', model_path='/home/shutong/models/scbart-nlprompt-semact-conduct', device='cuda'):
         super(SCBART, self).__init__()
         self.dataset_name = dataset_name
         self.device = device
-        self.model = BartForConditionalGeneration.from_pretrained(
-            'facebook/bart-base').to(self.device)
+        self.model = BartForConditionalGeneration.from_pretrained(model_path).to(self.device)
 
-        self.tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
-        model_path = cached_path(model_path)
-        self.model.load_state_dict(torch.load(
-            model_path, map_location=torch.device(self.device))['state_dict'])  # model checkpoint: {'epoch': e, 'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
+        self.tokenizer = BartTokenizer.from_pretrained(model_path)
+        # model_path = cached_path(model_path)
+        # self.model.load_state_dict(torch.load(
+            # model_path, map_location=torch.device(self.device))['state_dict'])  # model checkpoint: {'epoch': e, 'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
         self.model.eval()
         self.require_conduct = True
+
+    def save_to_pretrained(self, output_dir):
+        self.model = BartForConditionalGeneration.from_pretrained(
+            'facebook/bart-base').to(self.device)
+        self.tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
+        self.model.save_pretrained(output_dir)
 
     def generate(self, action, conduct='neutral'):
         if isinstance(action, dict):

@@ -4,7 +4,7 @@ ipt = {'categorical': [{'intent': 'inform', 'domain': 'restaurant', 'slot': 'are
 
 nlg = SCBART(
     dataset_name='multiwoz21', # default, dummy argument, reserved for future use
-    model_path='/home/shutong/models/scbart-nlprompt-semact-conduct.pt',  # the path to the model checkpoint
+    model_path='/home/shutong/models/scbart-nlprompt-semact-conduct-aug-downsample',  # the path to the model checkpoint
     device='cuda' # default cuda.
 )
 
