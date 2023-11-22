@@ -21,7 +21,7 @@ bertnlu_args = {
 tracker = EMODST(
     kwargs_for_erc={
         'base_model_type': 'bert-base-uncased',
-        'base_model_path': '/home/shutong/models/bert-base-uncased',   # path to the BERT model that saved locally
+        'base_model_path': '/home/shutong/models/bert-base-uncased',   # NEW: path to the BERT model that saved locally
         'model_type': 'contextbert-ertod',
         'model_name_or_path': '/home/shutong/models/contextbert-ertod.pt'  # path to the contextbert checkpoint
     },
