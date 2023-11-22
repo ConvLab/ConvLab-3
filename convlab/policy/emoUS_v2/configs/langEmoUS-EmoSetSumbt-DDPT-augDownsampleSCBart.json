@@ -52,7 +52,7 @@
 		"SCBART": {
 			"class_path": "convlab.nlg.scbart.scbart.SCBART",
 			"ini_params": {
-				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-aug.pt",
+				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-aug-downsample.pt",
 				"dataset_name": "multiwoz21",
 				"device": "cuda"
 			}
@@ -70,7 +70,8 @@
 				"use_sentiment": false,
 				"sample": false,
 				"Neutral": 0.95,
-				"Satisfied": 0.95
+				"Satisfied": 0.95,
+				"sub_goal_succ": true
 			}
 		}
 	},
