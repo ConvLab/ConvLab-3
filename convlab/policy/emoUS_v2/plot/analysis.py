@@ -132,7 +132,7 @@ def plot(data, max_turn, result_dir, pick="Complete"):
     plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, f"{pick}.png"))
+    plt.savefig(os.path.join(result_dir, f"success-all-fail.png"))
 
 
 def turn_score(score_list):
@@ -225,7 +225,7 @@ def neglect_reply(pre_usr, sys, cur_usr):
     if not request:
         return {}
 
-    system_inform = get_inform(sys["utt"])
+    system_inform = get_inform(sys["act"])
 
     for domain, slots in request.items():
         if domain not in system_inform:
@@ -237,7 +237,7 @@ def neglect_reply(pre_usr, sys, cur_usr):
 
 
 def miss_info(pre_usr, sys, cur_usr):
-    system_request = get_request(sys["utt"])
+    system_request = get_request(sys["act"])
     if not system_request:
         return {}
     user_inform = get_inform(pre_usr["act"])
@@ -256,7 +256,7 @@ def confirm(pre_usr, sys, cur_usr):
     if not user_inform:
         return {}
 
-    system_inform = get_inform(sys["utt"])
+    system_inform = get_inform(sys["act"])
 
     for domain, slots in user_inform.items():
         if domain not in system_inform:

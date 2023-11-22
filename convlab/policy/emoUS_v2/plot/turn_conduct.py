@@ -1,0 +1,111 @@
+import json
+from argparse import ArgumentParser
+from collections import Counter
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def arg_parser():
+    parser = ArgumentParser()
+    parser.add_argument("--file1", type=str,
+                        help="sl-conduct")
+    parser.add_argument("--file2", type=str,
+                        help="sl-no-conduct")
+    parser.add_argument("--file3", type=str,
+                        help="rl-conduct")
+    parser.add_argument("--file4", type=str,
+                        help="rl-no-conduct")
+    parser.add_argument("--file5", type=str,
+                        help="sl-conduct")
+    parser.add_argument("--file6", type=str,
+                        help="sl-no-conduct")
+    parser.add_argument("--result-dir", type=str,
+                        default="convlab/policy/emoUS_v2/result")
+
+    return parser.parse_args()
+
+
+def get_turn_conduct_distribution(conversation, pick="all"):
+    turn = Counter([len(dialog["log"])//2 for dialog in conversation])
+    conduct = {"neutral": [0]*20,
+               "compassionate": [0]*20,
+               "apologetic": [0]*20,
+               "enthusiastic": [0]*20,
+               "appreciative": [0]*20}
+    normalize = [0]*20
+    for dialog in conversation:
+        if pick == "Success strict" and dialog["Success strict"] != 1:
+            continue
+        if pick == "Not Success strict" and dialog["Success strict"] == 1:
+            continue
+
+        for t, turn in enumerate(dialog["log"]):
+            if turn["role"] == "usr":
+                continue
+            if int(t/2) >= 20:
+                continue
+            conduct[turn["conduct"]][int(t / 2)] += 1
+            normalize[int(t / 2)] += 1
+
+    conduct = {k: np.array(v) for k, v in conduct.items()}
+    return conduct, np.array(normalize)
+
+
+def plot(data, max_turn, result_dir, normalize=None, pick="all"):
+    # colors = {"neutral": "darkgrey",
+    #           "compassionate": "blueviolet",
+    #           "apologetic": "cornflowerblue",
+    #           "enthusiastic": "coral",
+    #           "appreciative": "tan"}
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+    fig, ax = plt.subplots(figsize=(6, 6))
+    width = 0.5
+    x = list(range(max_turn))
+    bottom = np.zeros(max_turn)
+
+    for c, d in data.items():
+        if normalize is not None:
+            d = d / normalize
+        ax.bar(x,
+               d,
+               width,
+               label=c,
+               # color=colors[c],
+               bottom=bottom)
+        bottom += d
+
+    ax.legend()
+    # ax.set_xlabel("turn")
+    # ax.set_ylabel("% of dialogues")
+    # # ax.set_ylim([-1.0, 0.4])
+    # ax.set_xticks([t for t in range(0, max_turn, 2)])
+    # plt.grid(axis='x', color='0.95')
+    # plt.grid(axis='y', color='0.95')
+    # plt.show()
+    plt.tight_layout()
+    plt.savefig(os.path.join(result_dir, f"{pick}-conduct.png"))
+
+
+def main():
+    args = arg_parser()
+    p_list = ['rl-scratch-conduct',
+              'rl-pretrain-conduct',
+              'sl-conduct']
+    for index, folder in enumerate([args.file1, args.file2, args.file3]):
+        file_name = os.path.join(folder, "conversation.json")
+        for pick in ["all", "Success strict", "Not Success strict"]:
+            data, normalize = get_turn_conduct_distribution(
+                json.load(open(file_name))["conversation"], pick)
+            # if pick == "all":
+            #     normalize = None
+            plot(data,
+                 20,
+                 os.path.join(args.result_dir, p_list[index]),
+                 normalize,
+                 pick)
+
+
+if __name__ == "__main__":
+    main()
