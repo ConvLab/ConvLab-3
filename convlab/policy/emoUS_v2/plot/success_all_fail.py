@@ -226,7 +226,10 @@ def neglect_reply(pre_usr, sys, cur_usr):
     if not request:
         return {}
 
-    system_inform = get_inform(sys["act"])
+    if "act" in sys:
+        system_inform = get_inform(sys["act"])
+    else:
+        system_inform = get_inform(sys["utt"])
 
     for domain, slots in request.items():
         if domain not in system_inform:
@@ -238,7 +241,10 @@ def neglect_reply(pre_usr, sys, cur_usr):
 
 
 def miss_info(pre_usr, sys, cur_usr):
-    system_request = get_request(sys["act"])
+    if "act" in sys:
+        system_request = get_request(sys["act"])
+    else:
+        system_request = get_request(sys["utt"])
     if not system_request:
         return {}
     user_inform = get_inform(pre_usr["act"])
@@ -256,8 +262,10 @@ def confirm(pre_usr, sys, cur_usr):
 
     if not user_inform:
         return {}
-
-    system_inform = get_inform(sys["act"])
+    if "act" in sys:
+        system_inform = get_inform(sys["act"])
+    else:
+        system_inform = get_inform(sys["utt"])
 
     for domain, slots in user_inform.items():
         if domain not in system_inform:
@@ -279,7 +287,9 @@ def loop(u0, u1):
 
 def dict2csv(data, result_dir):
     r = {}
-    emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
+    dirname = os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))))
+    emotion = json.load(open(os.path.join(dirname, "emoUS/emotion.json")))
     for act, value in data.items():
         temp = [0]*(len(emotion)+1)
         for emo, count in value.items():
@@ -318,6 +328,7 @@ def main():
         task_map = json.load(open(args.task_map))
         for model, config in task_map["models"].items():
             file = config["file"]
+            print(file)
             result_dir = os.path.dirname(file)
             do_analysis(result_dir, file)
 

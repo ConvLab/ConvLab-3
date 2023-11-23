@@ -273,7 +273,8 @@ def loop(s0, s1, u1):
 
 def dict2csv(data, result_dir):
     r = {}
-    emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    emotion = json.load(open(os.path.join(dirname, "emotion.json")))
     for act, value in data.items():
         temp = [0]*(len(emotion)+1)
         for emo, count in value.items():

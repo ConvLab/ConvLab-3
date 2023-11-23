@@ -17,6 +17,7 @@
 
 import copy
 import logging
+import os
 
 import torch
 import transformers
@@ -87,10 +88,9 @@ class EMODST(DST):
                                kwargs_for_nlu=kwargs_for_dst)
         else:
             raise NameError('DSTNotImplemented')
-        # I think we need something like "sys.path.append()"
-        # I just rewrite this as a workaround
+        dir_name = os.path.dirname(os.path.abspath(__file__))
         self.emotion2id = json.load(
-            open('convlab/dst/emodst/modeling/emotion2id.json'))
+            open(os.path.join(dir_name, 'modeling/emotion2id.json')))
         self.id2emotion = {v: k for k, v in self.emotion2id.items()}
 
     def init_session(self):
