@@ -38,6 +38,7 @@
 			"ini_params": {
 				"kwargs_for_erc": {
 					"base_model_type": "bert-base-uncased",
+					"base_model_path": "convlab/dst/emodst/emodst-models/bert-base-uncased",
 					"model_type": "contextbert-ertod",
 					"model_name_or_path": "convlab/dst/emodst/emodst-models/contextbert-ertod.pt"
 				},
@@ -52,7 +53,7 @@
 		"SCBART": {
 			"class_path": "convlab.nlg.scbart.scbart.SCBART",
 			"ini_params": {
-				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct.pt",
+				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct",
 				"dataset_name": "multiwoz21",
 				"device": "cuda"
 			}
