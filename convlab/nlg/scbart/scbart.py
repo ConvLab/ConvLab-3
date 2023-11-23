@@ -37,6 +37,8 @@ class SCBART(NLG):
         if isinstance(action, dict):
             # da in unified format
             pass
+        elif not action:
+            return ""
         elif isinstance(action[0], dict):
             # da without da type
             action = {'categorical': action}
@@ -44,8 +46,6 @@ class SCBART(NLG):
             # da is a list of list (convlab-2 format)
             action = {'categorical': [
                 {'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]} for da in action]}
-        elif not action:
-            return ""
         else:
             raise ValueError(f"invalid dialog acts format {action}")
         action_str = act2str(action)
