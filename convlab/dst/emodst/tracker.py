@@ -87,9 +87,10 @@ class EMODST(DST):
                                kwargs_for_nlu=kwargs_for_dst)
         else:
             raise NameError('DSTNotImplemented')
-
+        # I think we need something like "sys.path.append()"
+        # I just rewrite this as a workaround
         self.emotion2id = json.load(
-            open('./modeling/emotion2id.json'))
+            open('convlab/dst/emodst/modeling/emotion2id.json'))
         self.id2emotion = {v: k for k, v in self.emotion2id.items()}
 
     def init_session(self):
