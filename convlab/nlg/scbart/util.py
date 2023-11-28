@@ -41,15 +41,31 @@ def dict2seq(d):
     s = ''
     for domain in d:
         for intent in d[domain]:
-            s += f'{domain}-{intent}('
+            if 'book' in intent.lower():
+                domain_str = 'booking'
+                intent_str = 'book'
+            else:
+                domain_str = domain
+                intent_str = intent
+            domain_action_str = f'{domain_str}-{intent_str}'
+            s += f'{domain_action_str}('
             inner_strs = []
             for slot, value in d[domain][intent]:
-                if (slot == None and value == None):
+                slot_str = str(slot).lower()
+                value_str = str(value).lower()
+                if domain_action_str == 'booking-book':
+                    slot_str = 'ref'
+                if slot_str == 'price range':
+                    slot_str = 'price'
+
+                if (slot_str == 'none' and value_str == 'none'):
                     inner_strs.append(f' ')
-                elif (slot != None and value == None):
-                    inner_strs.append(f'{slot}=?')
+                elif (slot_str != 'none' and value_str == 'none'):
+                    inner_strs.append(f'{slot_str}=?')
+                elif (slot_str == 'none' and value_str != 'none'):
+                    inner_strs.append(f'{value_str}')
                 else:
-                    inner_strs.append(f'{slot}={value}')
+                    inner_strs.append(f'{slot_str}={value_str}')
             s += ','.join(inner_strs)
             s += ') '
     # return s.lower()

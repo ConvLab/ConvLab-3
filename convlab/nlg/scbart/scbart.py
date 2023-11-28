@@ -49,6 +49,7 @@ class SCBART(NLG):
         action_str = act2str(action)
         prompt = PROMPT_TEMPLATE.replace(
             ACT_PLACEHOLDER, action_str).replace(CON_PLACEHOLDER, conduct)
+        print(prompt)
         output = self._inference(prompt)[0]
         return output
 
@@ -76,27 +77,3 @@ class SCBART(NLG):
             nlg_outputs = self.tokenizer.batch_decode(
                 output_ids.cpu(), skip_special_tokens=True)
         return nlg_outputs
-
-    # def _inference_batch(self, sents):
-    #     with torch.no_grad():
-    #         sents = [sent for sent in sents]
-    #         sent_ids = [self.tokenizer.encode(
-    #             sent) + [self.tokenizer._convert_token_to_id_with_added_voc('&')] for sent in sents]
-    #         max_len = max([len(sent) for sent in sent_ids])
-    #         sent_ids = [sent + [0] * (max_len - len(sent))
-    #                     for sent in sent_ids]
-    #         inputs = torch.LongTensor(sent_ids).to(self.device)
-    #         model_to_run = self.model.module if type(
-    #             self.model) is DDP else self.model
-    #         outputs = model_to_run.generate(inputs, max_length=256, attention_mask=(inputs != 0).float(),
-    #                                         eos_token_id=self.tokenizer.pad_token_id)  # greedy
-    #         outputs = outputs[:, len(inputs[0]):]
-
-    #         def clean_sentence(sent):
-    #             sent = sent.strip()
-    #             if self.tokenizer.eos_token in sent:
-    #                 sent = sent[:sent.index(self.tokenizer.eos_token)]
-    #             return sent
-    #         output_strs = [clean_sentence(self.tokenizer.decode(
-    #             item, skip_special_tokens=True)) for item in outputs]
-    #         return output_strs
