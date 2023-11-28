@@ -51,7 +51,7 @@ class SCBART(NLG):
         action_str = act2str(action)
         prompt = PROMPT_TEMPLATE.replace(
             ACT_PLACEHOLDER, action_str).replace(CON_PLACEHOLDER, conduct)
-        print(prompt)
+        # print(prompt)
         output = self._inference(prompt)[0]
         return output
 
