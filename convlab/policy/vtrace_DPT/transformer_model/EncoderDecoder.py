@@ -491,7 +491,7 @@ class EncoderDecoder(nn.Module):
 
         return attention_mask.bool().to(DEVICE)
 
-    def get_action_masks(self, actions):
+    def get_action_masks(self, actions, conduct_mask=False):
         # active domains
         # active_domain_list = [set([node['domain'].lower() for node in kg] + ['general', 'booking']) for kg in kg_list]
         # print("active domain list", active_domain_list)
@@ -499,6 +499,10 @@ class EncoderDecoder(nn.Module):
         action_targets = [self.action_embedder.real_action_to_small_action_list(act) for act in actions]
         action_lengths = [len(actions) for actions in action_targets]
         max_length = max(action_lengths)
+
+        if conduct_mask:
+            # need one more element since we add conduct mask
+            max_length += 1
 
         semantic_acts = [self.action_embedder.real_action_to_small_action_list(act, semantic=True) for act in actions]
         action_mask_list = []
@@ -529,6 +533,8 @@ class EncoderDecoder(nn.Module):
                     action_mask.append(self.action_embedder.get_action_mask(start=False))
 
             # pad action mask to get list of max_length
+            if conduct_mask:
+                action_mask.append(self.action_embedder.get_emotion_mask())
             action_mask = torch.cat([
                 torch.stack(action_mask).to(DEVICE),
                 torch.zeros(max_length - len(action_mask), len(self.action_embedder.small_action_dict)).to(DEVICE)],

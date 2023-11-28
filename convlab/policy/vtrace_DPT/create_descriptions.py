@@ -13,7 +13,7 @@ def create_description_dicts(name='multiwoz21'):
     default_state = ontology['state']
     domains = list(ontology['domains'].keys())
 
-    if name == "multiwoz21" or name == "crosswoz":
+    if name in ["multiwoz21", "crosswoz", "emowoz"]:
         db = load_database(name)
         db_domains = db.domains
     else:
