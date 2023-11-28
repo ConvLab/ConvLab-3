@@ -16,6 +16,7 @@ def arg_parser():
                         default=500, help="# of evaluation dialogue")
     parser.add_argument("--model", type=str,
                         default="ddpt", help="# of evaluation dialogue")
+    parser.add_argument("--sub-folder", type=str, default="")
     return parser.parse_args()
 
 
@@ -50,7 +51,10 @@ def interact(model_name, config, seed=0, num_goals=500, model_path=None):
         dialogue = {"seed": seed, "log": []}
         set_seed(seed)
         sess.init_session(goal=goals[seed-1000])
-        sys_response = []
+        if sess.sys_agent.nlg is not None:
+            sys_response = ""
+        else:
+            sys_response = []
         actions = 0.0
         total_return = 0.0
         turns = 0
@@ -70,7 +74,7 @@ def interact(model_name, config, seed=0, num_goals=500, model_path=None):
                  "act": env.usr.policy.policy.semantic_action})
             conduct = sess.sys_agent.policy.get_conduct()
             dialogue["log"].append(
-                {"role": "sys", "utt": sys_response, "conduct": conduct})
+                {"role": "sys", "utt": sys_response, "conduct": conduct, "act": sess.sys_agent.output_action, "state": sess.sys_agent.state})
 
             # logging.info(f"Actions in turn: {len(sys_response)}")
             turns += 1
@@ -106,8 +110,10 @@ if __name__ == "__main__":
     data = {"config": json.load(open(args.config)),
             "conversation": conversation}
     folder_name = os.path.join("convlab/policy/emoUS_v2", "conversation")
+    if args.sub_folder:
+        folder_name = os.path.join(folder_name, args.sub_folder)
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     json.dump(data,
-              open(os.path.join(folder_name, f"{time}.json"), 'w'),
+              open(os.path.join(folder_name, "conversation.json"), 'w'),
               indent=2)

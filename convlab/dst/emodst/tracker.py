@@ -17,11 +17,12 @@
 
 import copy
 import logging
+import os
 
 import torch
 import transformers
 
-
+import json
 from convlab.dst.emodst.modeling.emotion_estimator import EmotionEstimator
 
 # dst prerequisit
@@ -73,19 +74,24 @@ class EMODST(DST):
                  dst_model_name: str = 'setsumbt',
                  kwargs_for_erc: dict = {},
                  kwargs_for_dst: dict = {}):
-        
+
         super(EMODST, self).__init__()
 
         self.erc = EmotionEstimator(kwargs_for_erc)
-        
+
         # if use dst
         if dst_model_name in SUPPORTED_DST:
             self.dst = SUPPORTED_DST[dst_model_name](**kwargs_for_dst)
         # if use nlu-ruledst pipeline
         elif dst_model_name in SUPPORTED_NLU:
-            self.dst = NLU_DST(nlu_model_name=dst_model_name, kwargs_for_nlu=kwargs_for_dst)
+            self.dst = NLU_DST(nlu_model_name=dst_model_name,
+                               kwargs_for_nlu=kwargs_for_dst)
         else:
             raise NameError('DSTNotImplemented')
+        dir_name = os.path.dirname(os.path.abspath(__file__))
+        self.emotion2id = json.load(
+            open(os.path.join(dir_name, 'modeling/emotion2id.json')))
+        self.id2emotion = {v: k for k, v in self.emotion2id.items()}
 
     def init_session(self):
         self.dst.init_session()
@@ -93,7 +99,6 @@ class EMODST(DST):
         self.state = self.dst.state
         self.state['user_emotion'] = None
         self.state['user_emotion_trajectory'] = []
-
 
     def update(self, user_act: str = '') -> dict:
         """
@@ -115,9 +120,13 @@ class EMODST(DST):
             user_utt=user_act,
             dialog_state_history=self.dialog_state_history
         )
-        emotion = emotion.to('cpu').item()
+        emotion = self.id2emotion[emotion.to('cpu').item()]
 
         self.state['user_emotion_trajectory'].append(emotion)
         self.state['user_emotion'] = emotion
 
         return self.state
+
+    def get_emotion(self):
+        # TODO
+        return self.state['user_emotion']

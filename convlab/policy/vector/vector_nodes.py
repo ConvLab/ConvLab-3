@@ -105,8 +105,8 @@ class VectorNodes(VectorBase):
 
     def get_emotion_features(self, state):
         feature_type = 'user emotion'
-        if 'emotion' in state:
-            user_emotion = state['emotion']
+        if 'user_emotion' in state:
+            user_emotion = state['user_emotion']
             description = f"user emotion-{user_emotion}".lower()
             self.add_graph_node("general", feature_type, description, value=1.0)
 

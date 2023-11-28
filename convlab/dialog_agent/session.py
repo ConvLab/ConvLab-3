@@ -92,15 +92,14 @@ class BiSession(Session):
         return next_agent
 
     def next_response(self, observation, **kwargs):
-        sys_conduct = kwargs.get("sys_conduct", "default")
         next_agent = self.next_agent()
-        if sys_conduct == "default":
-            response = next_agent.response(observation)
-        else:
-            # only for user simulator
-            response = next_agent.response(observation, conduct=sys_conduct)
-        # print(response)
-        return response
+        return next_agent.response(observation, **kwargs)
+
+    def _system_action(self):
+        if self.user_agent.nlu is not None:
+            # predict user action by user nlu
+            return None
+        return self.sys_agent.output_action
 
     def next_turn(self, last_observation):
         """Conduct a new turn of dialog, which consists of the system response and user response.
@@ -124,34 +123,49 @@ class BiSession(Session):
             reward (float):
                 The reward given by the user.
         """
-        if hasattr(self.sys_agent.policy, 'get_conduct'):
+        user_response_type = self.user_agent.get_response_type()
+        if user_response_type == "utterance_to_user":
+            if type(last_observation) is not str:
+                raise Exception(
+                    "last_observation from the system should be string")
+            system_action = self._system_action()
+            user_response = self.next_response(
+                last_observation, action=system_action)
+        elif user_response_type == "need_conduct_user":
             sys_conduct = self.sys_agent.policy.get_conduct()
             user_response = self.next_response(
-                last_observation, sys_conduct=sys_conduct)
+                last_observation, conduct=sys_conduct)
         else:
             user_response = self.next_response(last_observation)
+
         if self.evaluator:
             self.evaluator.add_sys_da(
-                self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
+                self.user_agent.get_in_da(), self.sys_agent.dst.state['belief_state'])
             self.evaluator.add_usr_da(self.user_agent.get_out_da())
 
         session_over = self.user_agent.is_terminated()
         if hasattr(self.sys_agent, 'dst'):
             self.sys_agent.dst.state['terminated'] = session_over
-        if hasattr(self.user_agent.policy, 'get_emotion'):
-            emotion = self.user_agent.policy.get_emotion().lower()
-            self.sys_agent.dst.state['emotion'] = emotion
+
+        # Get user emotion
+        self.update_user_emotion()
+
         # if session_over and self.evaluator:
-            # prec, rec, f1 = self.evaluator.inform_F1()
-            # print('inform prec. {} rec. {} F1 {}'.format(prec, rec, f1))
-            # print('book rate {}'.format(self.evaluator.book_rate()))
-            # print('task success {}'.format(self.evaluator.task_success()))
+        # prec, rec, f1 = self.evaluator.inform_F1()
+        # print('inform prec. {} rec. {} F1 {}'.format(prec, rec, f1))
+        # print('book rate {}'.format(self.evaluator.book_rate()))
+        # print('task success {}'.format(self.evaluator.task_success()))
         reward = self.user_agent.get_reward(
-        ) if self.evaluator is None else self.evaluator.get_reward()
+        ) if self.evaluator is None else self.evaluator.get_reward(session_over)
         sys_response = self.next_response(user_response)
         self.dialog_history.append([self.user_agent.name, user_response])
         self.dialog_history.append([self.sys_agent.name, sys_response])
         return sys_response, user_response, session_over, reward
+
+    def update_user_emotion(self):
+        if not hasattr(self.sys_agent.dst, 'get_emotion') and hasattr(self.user_agent.policy, 'get_emotion'):
+            emotion = self.user_agent.policy.get_emotion().lower()
+            self.sys_agent.dst.state['user_emotion'] = emotion
 
     def next_turn_two_way(self, system_utterance, system_action):
         """Conduct a new turn of dialog, which consists of the system response and user response.
@@ -184,7 +198,7 @@ class BiSession(Session):
 
         if self.evaluator:
             self.evaluator.add_sys_da(
-                self.user_agent.get_in_da_eval(), self.sys_agent.dst.state['belief_state'])
+                self.user_agent.get_in_da(), self.sys_agent.dst.state['belief_state'])
             self.evaluator.add_usr_da(self.user_agent.get_out_da())
 
         session_over = self.user_agent.is_terminated()

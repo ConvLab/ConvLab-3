@@ -25,6 +25,7 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.no_conduct = kwargs.get("no_conduct", False)
         self.sub_goal_succ = kwargs.get("sub_goal_succ", False)
+        self.need_conduct = True
 
         if not os.path.exists(os.path.dirname(model_checkpoint)):
             os.makedirs(os.path.dirname(model_checkpoint))
@@ -58,12 +59,16 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             # weight=weight,
             model_type=self.model.model_type,
             **self.emotion_weight)
-        data_emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
+        dirname = os.path.dirname((os.path.dirname(os.path.abspath(__file__))))
+
+        data_emotion = json.load(
+            open(os.path.join(dirname, "emoUS/emotion.json")))
         self.emotion_list = [""]*len(data_emotion)
         for emotion, index in data_emotion.items():
             self.emotion_list[index] = emotion
 
-        sent2emo = json.load(open("convlab/policy/emoUS/sent2emo.json"))
+        sent2emo = json.load(
+            open(os.path.join(dirname, "emoUS/sent2emo.json")))
         self.emo2sent = {}
         for sent, emos in sent2emo.items():
             for emo in emos:
@@ -454,6 +459,7 @@ class UserPolicy(Policy):
                  sample=False,
                  action_penalty=False,
                  **kwargs):
+        self.need_conduct = True
         # self.config = config
         print("emoUS model checkpoint: ", model_checkpoint)
         if sample:

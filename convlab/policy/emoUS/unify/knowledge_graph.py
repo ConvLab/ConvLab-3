@@ -1,6 +1,6 @@
 import json
 from random import choices
-
+import os
 from convlab.policy.genTUS.token_map import tokenMap
 from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph as GenTUSKnowledgeGraph
 
@@ -22,10 +22,10 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
                  **kwargs):
         super().__init__(tokenizer, ontology_file, dataset="multiwoz", **kwargs)
         self.use_sentiment = use_sentiment
-
+        dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if use_sentiment:
             data_sentiment = json.load(
-                open("convlab/policy/emoUS/sentiment.json"))
+                open(os.path.join(dirname, "sentiment.json")))
             self.kg_map = {"sentiment": tokenMap(
                 tokenizer=self.tokenizer, model_type=self.model_type)}
             self.sentiment = [""]*len(data_sentiment)
@@ -36,14 +36,14 @@ class KnowledgeGraph(GenTUSKnowledgeGraph):
                 self.kg_map[sentiment] = tokenMap(
                     tokenizer=self.tokenizer, model_type=self.model_type)
             self.sent2emo = json.load(
-                open("convlab/policy/emoUS/sent2emo.json"))
+                open(os.path.join(dirname, "sent2emo.json")))
             for sent in self.sent2emo:
                 for emo in self.sent2emo[sent]:
                     self.kg_map[sent].add_token(emo, emo)
 
         else:
             data_emotion = json.load(
-                open("convlab/policy/emoUS/emotion.json"))
+                open(os.path.join(dirname, "emotion.json")))
             self.emotion = [""]*len(data_emotion)
             for emotion, index in data_emotion.items():
                 self.emotion[index] = emotion

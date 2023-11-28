@@ -34,7 +34,8 @@ try:
 except RuntimeError:
     pass
 
-emotion_dict = {"satisfied": 1, "neutral": 0, "dissatisfied": -1, "abusive": -1}
+emotion_dict = {"satisfied": 1, "neutral": 0,
+                "dissatisfied": -1, "abusive": -1}
 
 
 def create_episodes(environment, policy, num_episodes, memory, goals):
@@ -47,28 +48,29 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
         prev_emotion = "none"
 
         user_act_list, sys_act_list, s_vec_list, action_list, reward_list, small_act_list, action_mask_list, mu_list, \
-        trajectory_list, vector_mask_list, critic_value_list, description_idx_list, value_list, current_domain_mask, \
-        non_current_domain_mask, use_temperature_list = \
+            trajectory_list, vector_mask_list, critic_value_list, description_idx_list, value_list, current_domain_mask, \
+            non_current_domain_mask, use_temperature_list = \
             [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 
         emotion_temperature_list = []
 
         for t in range(traj_len):
 
-            if hasattr(environment.usr.policy, 'get_emotion'):
+            if hasattr(environment.sys_dst, 'get_emotion'):
+                emotion = environment.sys_dst.get_emotion()
+            elif hasattr(environment.usr.policy, 'get_emotion'):
                 emotion = environment.usr.policy.get_emotion().lower()
+                s['user_emotion'] = emotion
             else:
                 emotion = "none"
-
-            if policy.use_emotion and emotion != "none":
-                s['emotion'] = emotion
 
             s_vec, mask = policy.vector.state_vectorize(s)
             with torch.no_grad():
                 a = policy.predict(s)
                 sys_conduct = policy.get_conduct()
 
-            emotion_temperature_list.append([emotion, policy.info_dict["temperature"], sys_conduct])
+            emotion_temperature_list.append(
+                [emotion, policy.info_dict["temperature"], sys_conduct])
 
             # s_vec_list.append(policy.info_dict['kg'])
             action_list.append(policy.info_dict['big_act'].detach())
@@ -77,11 +79,14 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             mu_list.append(policy.info_dict['a_prob'].detach())
             critic_value_list.append(policy.info_dict['critic_value'])
             vector_mask_list.append(torch.Tensor(mask))
-            description_idx_list.append(policy.info_dict["description_idx_list"])
+            description_idx_list.append(
+                policy.info_dict["description_idx_list"])
             value_list.append(policy.info_dict["value_list"])
             current_domain_mask.append(policy.info_dict["current_domain_mask"])
-            non_current_domain_mask.append(policy.info_dict["non_current_domain_mask"])
-            use_temperature_list.append(torch.Tensor([policy.info_dict["use_temperature"]]))
+            non_current_domain_mask.append(
+                policy.info_dict["non_current_domain_mask"])
+            use_temperature_list.append(torch.Tensor(
+                [policy.info_dict["use_temperature"]]))
 
             sys_act_list.append(policy.vector.action_vectorize(a))
             trajectory_list.extend([s['user_action'], a])
@@ -99,7 +104,8 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
                 if hasattr(environment.usr.policy, 'get_emotion'):
                     emotion = environment.usr.policy.get_emotion().lower()
                     if prev_emotion != "none":
-                        emotion_reward = emotion_dict.get(emotion, 0) - emotion_dict.get(prev_emotion, 0)
+                        emotion_reward = emotion_dict.get(
+                            emotion, 0) - emotion_dict.get(prev_emotion, 0)
                         # exclude the case where we go from satisfaction to neutral because that happens
                         if not (emotion_dict.get(emotion, 0) == 0 and emotion_dict.get(prev_emotion, 0) == 1):
                             r += emotion_reward
@@ -172,7 +178,8 @@ if __name__ == '__main__':
     policy_sys.log_dir = config_save_path.replace('configs', 'logs')
     policy_sys.save_dir = save_path
 
-    save_config(vars(parser.parse_args()), environment_config, config_save_path, policy_config=policy_sys.cfg)
+    save_config(vars(parser.parse_args()), environment_config,
+                config_save_path, policy_config=policy_sys.cfg)
 
     env, sess = env_config(conf, policy_sys, check_book_constraints=conf['model'].get('check_book_constraints', True),
                            action_length_penalty=conf['model'].get('action_length_penalty', 0.0))
@@ -193,8 +200,10 @@ if __name__ == '__main__':
     allowed_domains = conf['goals']['allowed_domains']
     logging.info(f"Single domains only: {single_domains}")
     logging.info(f"Allowed domains {allowed_domains}")
-    logging.info(f"We check booking constraints: {conf['model'].get('check_book_constraints', True)}")
-    logging.info(f"Action length penalty: {conf['model'].get('action_length_penalty', 0.0)}")
+    logging.info(
+        f"We check booking constraints: {conf['model'].get('check_book_constraints', True)}")
+    logging.info(
+        f"Action length penalty: {conf['model'].get('action_length_penalty', 0.0)}")
 
     logging.info(f"Evaluating at start - {time_now}" + '-'*60)
     time_now = time.time()
@@ -248,7 +257,8 @@ if __name__ == '__main__':
 
         if num_dialogues % conf['model']['eval_frequency'] == 0:
             time_now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-            logging.info(f"Evaluating after Dialogues: {num_dialogues} - {time_now}" + '-' * 60)
+            logging.info(
+                f"Evaluating after Dialogues: {num_dialogues} - {time_now}" + '-' * 60)
 
             eval_dict = eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path,
                                     single_domain_goals=single_domains, allowed_domains=allowed_domains)

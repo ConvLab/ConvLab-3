@@ -14,6 +14,7 @@ def arg_parser():
     parser.add_argument("--file", type=str, help="the conversation file")
     parser.add_argument("--result-dir", type=str,
                         default="convlab/policy/emoUS_v2/result")
+    parser.add_argument("--task-map", '-t', type=str, default="")
     return parser.parse_args()
 
 
@@ -42,7 +43,7 @@ def advance(conversation):
     return info
 
 
-def get_turn_emotion(conversation, result_dir):
+def get_turn_emotion(conversation):
     """ Get the emotion of each turn in the conversation 
     Args:
         conversation (list): a list of dialog
@@ -104,9 +105,11 @@ def get_turn_emotion(conversation, result_dir):
                     data[f"{metric}_std"].append(std)
     for x in data:
         data[x] = np.array(data[x])
+    return data, max_turn
 
+
+def plot(data, max_turn, result_dir, pick="Complete"):
     fig, ax = plt.subplots(figsize=(6, 6))
-    pick = "Complete"
     p = {f"{pick}": {"color": "C0", "label": "Success"},
          f"Not {pick}": {"color": "C1", "label": "Fail"},
          "all": {"color": "C2", "label": "all"}}
@@ -130,7 +133,7 @@ def get_turn_emotion(conversation, result_dir):
     plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, "turn2emotion.png"))
+    plt.savefig(os.path.join(result_dir, f"success-all-fail.png"))
 
 
 def turn_score(score_list):
@@ -159,10 +162,6 @@ def emotion_score(emotion):
     if emotion in ["Abusive", "Dissatisfied"]:
         return -1
     return 0
-
-
-def plot(conversation):
-    pass
 
 
 def turn_level(dialog):
@@ -227,7 +226,10 @@ def neglect_reply(pre_usr, sys, cur_usr):
     if not request:
         return {}
 
-    system_inform = get_inform(sys["utt"])
+    if "act" in sys:
+        system_inform = get_inform(sys["act"])
+    else:
+        system_inform = get_inform(sys["utt"])
 
     for domain, slots in request.items():
         if domain not in system_inform:
@@ -239,7 +241,10 @@ def neglect_reply(pre_usr, sys, cur_usr):
 
 
 def miss_info(pre_usr, sys, cur_usr):
-    system_request = get_request(sys["utt"])
+    if "act" in sys:
+        system_request = get_request(sys["act"])
+    else:
+        system_request = get_request(sys["utt"])
     if not system_request:
         return {}
     user_inform = get_inform(pre_usr["act"])
@@ -257,8 +262,10 @@ def confirm(pre_usr, sys, cur_usr):
 
     if not user_inform:
         return {}
-
-    system_inform = get_inform(sys["utt"])
+    if "act" in sys:
+        system_inform = get_inform(sys["act"])
+    else:
+        system_inform = get_inform(sys["utt"])
 
     for domain, slots in user_inform.items():
         if domain not in system_inform:
@@ -280,7 +287,9 @@ def loop(u0, u1):
 
 def dict2csv(data, result_dir):
     r = {}
-    emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
+    dirname = os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))))
+    emotion = json.load(open(os.path.join(dirname, "emoUS/emotion.json")))
     for act, value in data.items():
         temp = [0]*(len(emotion)+1)
         for emo, count in value.items():
@@ -294,13 +303,11 @@ def dict2csv(data, result_dir):
     dataframe.to_csv(open(os.path.join(result_dir, "act2emotion.csv"), 'w'))
 
 
-def main():
-    args = arg_parser()
-    result_dir = args.result_dir
+def do_analysis(result_dir, file):
     result = {}
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    conversation = json.load(open(args.file))["conversation"]
+    conversation = json.load(open(file))["conversation"]
     basic_info = basic_analysis(conversation)
     result["basic_info"] = basic_info
     # print(basic_info)
@@ -311,7 +318,22 @@ def main():
         os.path.join(result_dir, "conversation_result.json"), 'w'), indent=2)
 
     dict2csv(advance_info, result_dir)
-    get_turn_emotion(conversation, result_dir)
+    data, max_turn = get_turn_emotion(conversation)
+    plot(data, max_turn, result_dir)
+
+
+def main():
+    args = arg_parser()
+    if args.task_map:
+        task_map = json.load(open(args.task_map))
+        for model, config in task_map["models"].items():
+            file = config["file"]
+            print(file)
+            result_dir = os.path.dirname(file)
+            do_analysis(result_dir, file)
+
+    else:
+        do_analysis(args.result_dir, args.file)
 
 
 if __name__ == "__main__":

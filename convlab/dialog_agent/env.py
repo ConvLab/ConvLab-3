@@ -43,12 +43,12 @@ class Environment():
                 if intent == "book":
                     self.sys_dst.state['booked'][domain] = [{slot: value}]
 
-        if sys_conduct == "default":
-            # no system conduct
-            observation = self.usr.response(model_response)
+        if self.usr.response_type == "utterance_to_user":
+            observation = self.usr.response(model_response, action=action)
+        elif self.usr.response_type == "need_conduct_user":
+            observation = self.usr.response(model_response, conduct=sys_conduct)
         else:
-            observation = self.usr.response(
-                model_response, sys_conduct=sys_conduct)
+            observation = self.usr.response(model_response)
 
         if self.evaluator:
             self.evaluator.add_sys_da(

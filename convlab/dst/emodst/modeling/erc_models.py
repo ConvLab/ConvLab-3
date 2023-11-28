@@ -19,6 +19,7 @@ class ContextBERT_ERToD(nn.Module):
     def __init__(self,
                  model_name_or_path: str = "",
                  base_model_type: str = "bert-base-uncased",
+                 base_model_path: str = "contextbert-ertod",
                  model_type: str = "contextbert-ertod",
                  use_context: bool = True,
                  use_dialog_state: bool = True,
@@ -38,8 +39,8 @@ class ContextBERT_ERToD(nn.Module):
         self.ds_ctx_window_size = ds_ctx_window_size
         self.config_class, self.model_class, self.tokenizer_class = MODEL_CLASSES[base_model_type]
 
-        self.config = self.config_class.from_pretrained(base_model_type)
-        self.bert = self.model_class.from_pretrained(base_model_type, config=self.config)
+        self.config = self.config_class.from_pretrained(base_model_path)
+        self.bert = self.model_class.from_pretrained(base_model_path, config=self.config)
         
         if use_dialog_state:
             self.ds_projection = nn.Linear(ds_dim*ds_ctx_window_size, ds_output_dim)
@@ -55,7 +56,7 @@ class ContextBERT_ERToD(nn.Module):
         self.out_elicitor = nn.Linear(feature_dim, 3)   # linear layer for elicitor classification
         self.out_conduct = nn.Linear(feature_dim, 2)   # linear layer for conduct classification
 
-        self.tokenizer = self.tokenizer_class.from_pretrained(base_model_type)
+        self.tokenizer = self.tokenizer_class.from_pretrained(base_model_path)
         self.vectoriser = VectorBinary()
 
     def forward(self, input_ids, attention_mask, ds=None):
