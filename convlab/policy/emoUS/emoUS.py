@@ -45,12 +45,13 @@ class UserActionPolicy(GenTUSUserActionPolicy):
             use_sentiment=self.use_sentiment,
             weight=weight,
             model_type=self.model.model_type)
-        data_emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        data_emotion = json.load(open(os.path.join(dirname, "emotion.json")))
         self.emotion_list = [""]*len(data_emotion)
         for emotion, index in data_emotion.items():
             self.emotion_list[index] = emotion
 
-        sent2emo = json.load(open("convlab/policy/emoUS/sent2emo.json"))
+        sent2emo = json.load(open(os.path.join(dirname, "sent2emo.json")))
         self.emo2sent = {}
         for sent, emos in sent2emo.items():
             for emo in emos:

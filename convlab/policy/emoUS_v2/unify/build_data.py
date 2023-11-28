@@ -43,15 +43,16 @@ class DataBuilder(GenTUSDataBuilder):
             print("!!! You are not including user persona. !!!")
 
         self.emotion = {}
-        for emotion, index in json.load(open("convlab/policy/emoUS/emotion.json")).items():
+        dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        for emotion, index in json.load(open(os.path.join(dirname, "emoUS/emotion.json"))).items():
             self.emotion[int(index)] = emotion
         use_sentiment = self.use_sentiment
         if use_sentiment:
             self.sentiment = {}
-            for sentiment, index in json.load(open("convlab/policy/emoUS/sentiment.json")).items():
+            for sentiment, index in json.load(open(os.path.join(dirname, "emoUS/sentiment.json"))).items():
                 self.sentiment[int(index)] = sentiment
             self.sent2emo = json.load(
-                open("convlab/policy/emoUS/sent2emo.json"))
+                open(os.path.join(dirname, "emoUS/sent2emo.json")))
             # TODO check excited distribution
         self.system_conduct_label = json.load(
             open("data/unified_datasets/emowoz/data/system_conduct_label.json"))

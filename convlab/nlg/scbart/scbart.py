@@ -37,6 +37,8 @@ class SCBART(NLG):
         if isinstance(action, dict):
             # da in unified format
             pass
+        elif not action:
+            return ""
         elif isinstance(action[0], dict):
             # da without da type
             action = {'categorical': action}

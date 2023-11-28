@@ -113,9 +113,10 @@ class Evaluator:
         if self.use_sentiment:
             self.r["golden_sentiment"] = []
             self.r["gen_sentiment"] = []
-
+        dirname = os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))))
         sent2emo = json.load(
-            open("convlab/policy/emoUS/sent2emo.json"))
+            open(os.path.join(dirname, "emoUS/sent2emo.json")))
         self.emo2sent = {}
         for sent, emotions in sent2emo.items():
             for emo in emotions:

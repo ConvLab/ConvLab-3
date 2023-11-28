@@ -5,7 +5,9 @@ from convlab.policy.emoUS.evaluate import Evaluator
 
 
 def main():
-    structures = json.load(open("convlab/policy/emoUS/structure.json"))
+    dirname = os.path.dirname(os.path.abspath(__file__))
+
+    structures = json.load(open(os.path.join(dirname, "structure.json")))
     exp_dir = "convlab/policy/emoUS/unify/experiments"
     result = {"model": [], "weight": []}
     for s in structures:

@@ -156,7 +156,7 @@ class BiSession(Session):
         # print('book rate {}'.format(self.evaluator.book_rate()))
         # print('task success {}'.format(self.evaluator.task_success()))
         reward = self.user_agent.get_reward(
-        ) if self.evaluator is None else self.evaluator.get_reward()
+        ) if self.evaluator is None else self.evaluator.get_reward(session_over)
         sys_response = self.next_response(user_response)
         self.dialog_history.append([self.user_agent.name, user_response])
         self.dialog_history.append([self.sys_agent.name, sys_response])

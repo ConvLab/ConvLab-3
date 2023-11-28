@@ -35,17 +35,17 @@ class DataBuilder(GenTUSDataBuilder):
         self.emotion_mid = kwargs.get("emotion_mid", False)
         self.add_persona = kwargs.get("add_persona", False)
         self.emotion_only = kwargs.get("emotion_only", False)
-
+        dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.emotion = {}
-        for emotion, index in json.load(open("convlab/policy/emoUS/emotion.json")).items():
+        for emotion, index in json.load(open(os.path.join(dirname, "emotion.json"))).items():
             self.emotion[int(index)] = emotion
         use_sentiment = self.use_sentiment
         if use_sentiment:
             self.sentiment = {}
-            for sentiment, index in json.load(open("convlab/policy/emoUS/sentiment.json")).items():
+            for sentiment, index in json.load(open(os.path.join(dirname, "sentiment.json"))).items():
                 self.sentiment[int(index)] = sentiment
             self.sent2emo = json.load(
-                open("convlab/policy/emoUS/sent2emo.json"))
+                open(os.path.join(dirname, "sent2emo.json")))
             # TODO check excited distribution
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
