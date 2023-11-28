@@ -11,6 +11,7 @@ from convlab.util.custom_util import flatten_acts
 from convlab.util.multiwoz.state import default_state
 from convlab.policy.vector.dataset import ActDatasetKG
 from tqdm import tqdm
+from copy import deepcopy
 
 emotion_dict = {
     0: "Neutral",
@@ -31,7 +32,7 @@ mwoz_domains = ['restaurant', 'hotel', 'train', 'taxi', 'attraction']
 
 class PolicyDataVectorizer:
 
-    def __init__(self, dataset_name='multiwoz21', vector=None, percentage=1.0, dialogue_order=0):
+    def __init__(self, dataset_name='multiwoz21', vector=None, percentage=1.0, dialogue_order=0, dst=None):
         self.dataset_name = dataset_name
         self.percentage = percentage
         self.dialogue_order = dialogue_order
@@ -39,12 +40,14 @@ class PolicyDataVectorizer:
             self.vector = VectorBinary(dataset_name)
         else:
             self.vector = vector
+        self.dst = dst
         self.process_data()
 
     def process_data(self):
 
         processed_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                      f'processed_data/{self.dataset_name}_{type(self.vector).__name__}')
+        processed_dir += f"_{type(self.dst).__name__}" if self.dst is not None else ""
         if self.percentage != 1.0:
             processed_dir += f"_{self.percentage}_{self.dialogue_order}"
         if os.path.exists(processed_dir):
@@ -68,23 +71,40 @@ class PolicyDataVectorizer:
             self.data[split] = []
             raw_data = data_split[split]
 
+            if self.dst is not None:
+                self.dst.init_session()
+
             for data_point in tqdm(raw_data):
-                state = default_state()
+
+                if self.dst is None:
+                    state = default_state()
+                    state['belief_state'] = data_point['context'][-1]['state']
+                    state['user_action'] = flatten_acts(data_point['context'][-1]['dialogue_acts'])
+                elif "setsumbt" in str(self.dst):
+                    last_system_utt = data_point['context'][-2]['utterance'] if len(data_point['context']) > 1 else ''
+                    self.dst.state['history'].append(['sys', last_system_utt])
+                    usr_utt = data_point['context'][-1]['utterance']
+                    state = deepcopy(self.dst.update(usr_utt))
+                    self.dst.state['history'].append(['usr', usr_utt])
+                else:
+                    NameError(f"Only SetSUMBT is usable at the moment.")
 
                 user_emotion = emotion_dict[data_point['context'][-1]['emotion'][-1]['emotion']].lower()
                 system_conduct = conduct_dict[int(
                     emowoz_data["-".join([data_point["dialogue_id"], str(data_point["utt_idx"])])])]
 
-                state['belief_state'] = data_point['context'][-1]['state']
-                state['user_action'] = flatten_acts(data_point['context'][-1]['dialogue_acts'])
                 last_system_act = data_point['context'][-2]['dialogue_acts'] \
                     if len(data_point['context']) > 1 else {}
                 state['system_action'] = flatten_acts(last_system_act)
                 state['terminated'] = data_point['terminated']
+
                 state['emotion'] = user_emotion
                 if 'booked' in data_point:
                     state['booked'] = data_point['booked']
                 dialogue_act = flatten_acts(data_point['dialogue_acts'])
+
+                if self.dst is not None and state['terminated']:
+                    self.dst.init_session()
 
                 vectorized_state, mask = self.vector.state_vectorize(state)
                 vectorized_action = self.vector.action_vectorize(dialogue_act)
@@ -125,6 +145,7 @@ class PolicyDataVectorizer:
         data_dir = os.path.join(root_dir, "data", self.dataset_name)
         os.makedirs(data_dir, exist_ok=True)
         file_path = os.path.join(data_dir, part)
+        file_path += f"_{type(self.dst).__name__}" if self.dst is not None else ""
         if multiwoz_like:
             file_path += "mw"
 

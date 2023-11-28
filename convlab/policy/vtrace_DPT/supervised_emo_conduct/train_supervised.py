@@ -174,8 +174,35 @@ def arg_parser():
     parser.add_argument("--model_path", type=str, default="")
     parser.add_argument("--user_emotion", action='store_true')
 
+    parser.add_argument("--dst", type=str, default=None)
+    parser.add_argument("--dst_args", type=str, default=None)
+    parser.add_argument("--erc_args", type=str, default=None)
+
     args = parser.parse_args()
     return args
+
+
+def load_dst_from_args(args):
+
+    dst_args = [arg.split('=', 1) for arg in args.dst_args.split(', ')
+                if '=' in arg] if args.dst_args is not None else []
+    dst_args = {key: eval(value) for key, value in dst_args}
+
+    erc_args = [arg.split('=', 1) for arg in args.erc_args.split(', ')
+                if '=' in arg] if args.erc_args is not None else []
+    erc_args = {key: eval(value) for key, value in erc_args}
+
+    if erc_args is not None:
+        from convlab.dst.emodst.tracker import EMODST
+        return EMODST(args.dst, erc_args, dst_args)
+    elif args.dst == "setsumbt":
+        from convlab.dst.setsumbt import SetSUMBTTracker
+        return SetSUMBTTracker(**dst_args)
+    elif args.dst == "trippy":
+        from convlab.dst.trippy import TRIPPY
+        return TRIPPY(**dst_args)
+    else:
+        raise NameError(f"Tracker: {args.dst} not implemented.")
 
 
 if __name__ == '__main__':
@@ -204,10 +231,13 @@ if __name__ == '__main__':
     logging.info(f"Dialogue order used: {cfg['dialogue_order']}")
     logging.info(f"We utilize user emotion: {args.user_emotion}")
 
+    dst = None if args.dst is None else load_dst_from_args(args)
     vector = VectorNodes(dataset_name=args.dataset_name, use_masking=False, filter_state=True)
     vector.use_emotion = args.user_emotion
+
     manager = PolicyDataVectorizer(dataset_name=args.dataset_name, vector=vector,
-                                   percentage=cfg['data_percentage'], dialogue_order=cfg["dialogue_order"])
+                                   percentage=cfg['data_percentage'], dialogue_order=cfg["dialogue_order"],
+                                   dst=dst)
     policy = EncoderDecoder(**cfg, action_dict=vector.act2vec).to(device=DEVICE)
     try:
         policy.load_state_dict(torch.load(args.model_path, map_location=DEVICE))
