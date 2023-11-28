@@ -186,11 +186,11 @@ def load_dst_from_args(args):
 
     dst_args = [arg.split('=', 1) for arg in args.dst_args.split(', ')
                 if '=' in arg] if args.dst_args is not None else []
-    dst_args = {key: eval(value) for key, value in dst_args}
+    dst_args = {key: value for key, value in dst_args}
 
     erc_args = [arg.split('=', 1) for arg in args.erc_args.split(', ')
                 if '=' in arg] if args.erc_args is not None else []
-    erc_args = {key: eval(value) for key, value in erc_args}
+    erc_args = {key: value for key, value in erc_args}
 
     if erc_args is not None:
         from convlab.dst.emodst.tracker import EMODST

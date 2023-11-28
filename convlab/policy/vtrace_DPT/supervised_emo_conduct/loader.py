@@ -80,6 +80,12 @@ class PolicyDataVectorizer:
                     state = default_state()
                     state['belief_state'] = data_point['context'][-1]['state']
                     state['user_action'] = flatten_acts(data_point['context'][-1]['dialogue_acts'])
+                elif "emodst" in str(self.dst).lower():
+                    last_system_utt = data_point['context'][-2]['utterance'] if len(data_point['context']) > 1 else ''
+                    self.dst.state['history'].append(['sys', last_system_utt])
+                    usr_utt = data_point['context'][-1]['utterance']
+                    state = deepcopy(self.dst.update(usr_utt))
+                    self.dst.state['history'].append(['usr', usr_utt])
                 elif "setsumbt" in str(self.dst):
                     last_system_utt = data_point['context'][-2]['utterance'] if len(data_point['context']) > 1 else ''
                     self.dst.state['history'].append(['sys', last_system_utt])
@@ -98,7 +104,8 @@ class PolicyDataVectorizer:
                 state['system_action'] = flatten_acts(last_system_act)
                 state['terminated'] = data_point['terminated']
 
-                state['emotion'] = user_emotion
+                if 'emotion' not in state:
+                    state['emotion'] = user_emotion
                 if 'booked' in data_point:
                     state['booked'] = data_point['booked']
                 dialogue_act = flatten_acts(data_point['dialogue_acts'])
