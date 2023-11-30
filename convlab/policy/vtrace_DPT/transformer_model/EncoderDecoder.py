@@ -25,7 +25,7 @@ class EncoderDecoder(nn.Module):
                  freeze_roberta=True, use_pooled=False, verbose=False, mean=False, ignore_features=None,
                  only_active_values=False, roberta_actions=False, independent_descriptions=False, need_weights=True,
                  random_matrix=False, distance_metric=False, noisy_linear=False, dataset_name='multiwoz21',
-                 temperature_activation="relu", predict_conduct=False, **kwargs):
+                 temperature_activation="relu", predict_conduct=False, temperature=1.0, **kwargs):
         super(EncoderDecoder, self).__init__()
         self.node_embedder = NodeEmbedderRoberta(node_embedding_dim, freeze_roberta=freeze_roberta,
                                                  use_pooled=use_pooled, roberta_path=roberta_path,
@@ -59,6 +59,7 @@ class EncoderDecoder(nn.Module):
         self.temperature_activation = temperature_activation
         self.argmax = kwargs.get("argmax", False)
         self.predict_conduct = predict_conduct
+        self.temperature = temperature
 
         if noisy_linear:
             logging.info("EncoderDecoder: We use noisy linear layers.")
@@ -89,7 +90,7 @@ class EncoderDecoder(nn.Module):
         value_list = torch.Tensor([node['value'] for node in kg_list[0]]).unsqueeze(1).to(DEVICE)
         return description_idx_list, value_list
 
-    def select_action(self, kg_list, mask=None, eval=False, use_temperature=False, **kwargs):
+    def select_action(self, kg_list, mask=None, eval=False, **kwargs):
         '''
         :param kg_list: A single knowledge graph consisting of a list of nodes
         :return: multi-action
@@ -102,6 +103,8 @@ class EncoderDecoder(nn.Module):
 
         current_domains = self.get_current_domains(kg_list)
         legal_mask = self.action_embedder.get_legal_mask(mask)
+
+        temperature = self.temperature if not eval else 1
 
         if self.only_active_values:
             kg_list = [[node for node in kg if node['value'] != 0.0] for kg in kg_list]
@@ -141,15 +144,6 @@ class EncoderDecoder(nn.Module):
             attention_weights_list.append(att_weights_decoder)
             action_logits = self.action_embedder(self.action_projector(decoder_output))
 
-            if t == 0:
-                if use_temperature:
-                    if self.temperature_activation == "sigmoid":
-                        temperature = 5 * self.sigmoid(self.temperature_predictor(decoder_output)).squeeze()
-                    else:
-                        temperature = self.relu(self.temperature_predictor(decoder_output)).squeeze()
-                else:
-                    temperature = 0.0
-
             if t % 3 == 0:
                 # We need to choose a domain
                 current_domain_empty = float((len(current_domains[0]) == 0))
@@ -175,7 +169,7 @@ class EncoderDecoder(nn.Module):
 
             else:
                 action_logits = action_logits - action_mask * sys.maxsize
-                action_distribution = self.softmax(action_logits/(1 + temperature)).squeeze(-1)
+                action_distribution = self.softmax(action_logits/temperature).squeeze(-1)
 
             if (not eval or t % 3 != 0) and not self.argmax:
                 dist = Categorical(action_distribution)
@@ -276,10 +270,8 @@ class EncoderDecoder(nn.Module):
         self.info_dict["non_current_domain_mask"] = non_current_domain_mask
         self.info_dict["active_domains"] = active_domains
         self.info_dict["attention_weights"] = attention_weights_list
-        if use_temperature:
-            self.info_dict["temperature"] = temperature.item()
-        else:
-            self.info_dict["temperature"] = temperature
+
+        self.info_dict["temperature"] = 0 # should be changed at some point
 
         if self.verbose:
             print("NEW SELECTION **************************")
@@ -292,11 +284,10 @@ class EncoderDecoder(nn.Module):
         return self.action_embedder.small_action_list_to_real_actions(action_list)
 
     def get_log_prob(self, actions, action_mask_list, max_length, action_targets,
-                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list, no_slots=False,
-                     temperature_used=0.0):
+                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list, no_slots=False):
 
         action_probs, entropy_probs = self.get_prob(actions, action_mask_list, max_length, action_targets,
-                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list, temperature_used)
+                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list)
         log_probs = torch.log(action_probs)
 
         entropy_probs = torch.where(entropy_probs < 0.00001, torch.ones(entropy_probs.size()).to(DEVICE), entropy_probs)
@@ -315,7 +306,7 @@ class EncoderDecoder(nn.Module):
         return log_probs.sum(-1), entropy
 
     def get_prob(self, actions, action_mask_list, max_length, action_targets,
-                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list, temperature_used=0.0):
+                 current_domain_mask, non_current_domain_mask, descriptions_list, value_list):
         if not self.freeze_roberta:
             self.node_embedder.form_embedded_descriptions()
 
@@ -336,19 +327,12 @@ class EncoderDecoder(nn.Module):
 
         # TODO: double check which dimension is batch-size and which is sequence length
         # only use temperature if it was used during action selection
-        if self.temperature_activation == "sigmoid":
-            temperature = 5 * self.sigmoid(self.temperature_predictor(decoder_output.permute(1, 0, 2)).clone())[:, 0, :]
-        else:
-            temperature = self.relu(self.temperature_predictor(decoder_output.permute(1, 0, 2)).clone())[:, 0, :]
-
-        temperature = temperature * temperature_used + 1.0
-        temperature = temperature.unsqueeze(-1)
 
         action_logits = self.action_embedder(self.action_projector(decoder_output.permute(1, 0, 2)))
 
         # do the general mask for intent and slots, domain must be treated separately
         action_logits_general = action_logits - action_mask_list * sys.maxsize
-        action_distribution_general = self.softmax(action_logits_general/temperature)
+        action_distribution_general = self.softmax(action_logits_general/self.temperature)
 
         # only pick from current domains
         action_logits_current_domain = action_logits - (action_mask_list + current_domain_mask).bool().float() * sys.maxsize

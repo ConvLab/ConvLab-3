@@ -61,6 +61,9 @@ class VTRACE(nn.Module, Policy):
         self.use_emotion_reward_difference = cfg['use_emotion_reward_difference']
         self.argmax = cfg['argmax']
         self.predict_conduct = cfg['predict_conduct']
+        self.starting_temperature = cfg["starting_temperature"]
+        self.total_temperature_updates = cfg["total_temperature_updates"]
+
 
         logging.info(f"Entropy weight: {self.entropy_weight}")
         logging.info(f"Online-Offline-ratio: {self.online_offline_ratio}")
@@ -74,10 +77,13 @@ class VTRACE(nn.Module, Policy):
         logging.info(f"We use emotion prediction for action selection: {self.use_emotion_prediction}")
         logging.info(f"We use argmax for sampling: {self.argmax}")
         logging.info(f"We predict conduct: {self.predict_conduct}")
+        logging.info(f"Starting temperature: {self.starting_temperature}")
+        logging.info(f"Total temperature updates: {self.total_temperature_updates}")
 
         set_seed(seed)
 
         self.last_action = None
+        self.num_updates = 0
 
         if vectorizer is None:
             vectorizer = VectorNodes(dataset_name=kwargs['dataset_name'],
@@ -89,7 +95,8 @@ class VTRACE(nn.Module, Policy):
 
         self.vector = vectorizer
         self.cfg['dataset_name'] = self.vector.dataset_name
-        self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
+        self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec,
+                                     temperature=self.starting_temperature).to(device=DEVICE)
         self.value_helper = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
 
         try:
@@ -227,6 +234,17 @@ class VTRACE(nn.Module, Policy):
         torch.nn.utils.clip_grad_norm_(self.policy.parameters(), 10)
 
         self.optimizer.step()
+
+        self.num_updates += 1
+        self.update_policy_temperature()
+
+
+    def update_policy_temperature(self):
+
+        new_temperature = 1 + (self.starting_temperature - 1) \
+                          - (self.starting_temperature - 1) * (self.num_updates/self.total_temperature_updates)
+
+        self.policy.temperature = max(1, new_temperature)
 
     def get_loss(self, memory):
 
