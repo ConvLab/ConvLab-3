@@ -173,10 +173,10 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
             select_acts, offer_acts, recommend_acts, emotion_return = evaluate(sess,
-                                                               num_dialogues=conf['model']['num_eval_dialogues'],
-                                                               sys_semantic_to_usr=conf['model'][
-                                                                   'sys_semantic_to_usr'],
-                                                               save_flag=save_eval, save_path=log_save_path, goals=goals)
+                                                                               num_dialogues=conf['model']['num_eval_dialogues'],
+                                                                               sys_semantic_to_usr=conf['model'][
+                                                                                   'sys_semantic_to_usr'],
+                                                                               save_flag=save_eval, save_path=log_save_path, goals=goals)
 
         total_acts = book_acts + inform_acts + request_acts + \
             select_acts + offer_acts + recommend_acts
@@ -333,16 +333,22 @@ def create_env(args, policy_sys):
 
 
 def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
+    conversation_dir = os.path.join(save_path, 'conversation')
+    if not os.path.exists(conversation_dir):
+        os.path.makedirs(conversation_dir)
+
     eval_save = {}
     turn_counter_dict = {}
     turn_counter = 0.0
-    emotion_dict = {"satisfied": 1, "neutral": 0, "dissatisfied": -1, "abusive": -1}
+    emotion_dict = {"satisfied": 1, "neutral": 0,
+                    "dissatisfied": -1, "abusive": -1}
 
     task_success = {'All_user_sim': [], 'All_evaluator': [], "All_evaluator_strict": [],
                     'total_return': [], 'turns': [], 'avg_actions': [],
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
                     'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': [], 'emotion_return': []}
     dial_count = 0
+    conversation = {}
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
         goal = goals.pop()
@@ -360,9 +366,27 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         total_emotion_return = 0.0
         recommend = 0
         # this 40 represents the max turn of dialogue
+        conversation[seed] = {"goal": goal.domain_goals}
+        dialog = []
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
+            user_turn = {"utt": user_response}
+            if hasattr(sess.user_agent, "output_action"):
+                user_turn["act"] = sess.user_agent.output_action
+            if hasattr(sess.user_agent.policy, "get_emotion"):
+                user_turn["emotion"] = sess.user_agent.policy.get_emotion()
+
+            system_turn = {"utt": sys_response}
+            if hasattr(sess.sys_agent, "output_action"):
+                system_turn["act"] = sess.sys_agent.output_action
+            if hasattr(sess.sys_agent.policy, "get_conduct"):
+                system_turn["conduct"] = sess.sys_agent.policy.get_conduct()
+            if hasattr(sess.sys_agent, "state"):
+                system_turn["state"] = sess.sys_agent.state
+
+            dialog.append({"user": user_turn})
+            dialog.append({"system": system_turn})
 
             if hasattr(sess.user_agent.policy, 'get_emotion'):
                 emotion = sess.user_agent.policy.get_emotion().lower()
@@ -409,6 +433,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                 task_success[key] = []
             else:
                 task_success[key].append(task_succ_strict)
+        conversation[seed]["dialog"] = dialog
 
         task_success['All_user_sim'].append(complete)
         task_success['All_evaluator'].append(task_succ)
@@ -425,14 +450,16 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_offer_acts'].append(offer)
         task_success['total_recommend_acts'].append(recommend)
         task_success['emotion_return'].append(total_emotion_return)
-
+        conversation[seed]["info"] = task_success
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
             i for i in sess.sys_agent.agent_saves]
         sess.sys_agent.agent_saves.clear()
         dial_count += 1
         # print('length of dict ' + str(len(eval_save)))
-
+    current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    json.dump(conversation, open(os.path.join(conversation_dir,
+              f"conversation-{current_time}.json"), 'w'), cls=NumpyEncoder, indent=2)
     if save_flag:
         torch.save(eval_save, os.path.join(save_path, 'evaluate_INFO.pt'))
     # save dialogue_info and clear mem
