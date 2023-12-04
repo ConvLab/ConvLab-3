@@ -152,9 +152,12 @@ if __name__ == '__main__':
                         help="Set level for logger")
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
-
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'configs',
-                        f"{parser.parse_args().config_name}.json")
+    # We can specifiy the config file path or the config name
+    if os.path.exists(parser.parse_args().config_name):
+        path = parser.parse_args().config_name
+    else:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'configs',
+                            f"{parser.parse_args().config_name}.json")
     seed = parser.parse_args().seed
     mode = parser.parse_args().mode
     save_eval = parser.parse_args().save_eval_dials

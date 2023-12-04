@@ -127,7 +127,7 @@ def plot(data, max_turn, result_dir, pick="Complete"):
     ax.legend()
     ax.set_xlabel("turn")
     ax.set_ylabel("Sentiment")
-    ax.set_ylim([-1.0, 0.4])
+    # ax.set_ylim([-1.0, 0.4])
     ax.set_xticks([t for t in range(0, max_turn, 2)])
     plt.grid(axis='x', color='0.95')
     plt.grid(axis='y', color='0.95')

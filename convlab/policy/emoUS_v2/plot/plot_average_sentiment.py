@@ -5,6 +5,7 @@ import pandas as pd
 
 from convlab.policy.emoUS_v2.plot.success_all_fail import get_turn_emotion
 import matplotlib.pyplot as plt
+from convlab.nlg.evaluate import fine_SER
 
 
 def arg_parser():
@@ -45,8 +46,17 @@ def plot(data, max_turn, result_dir, pick="all"):
     plt.savefig(os.path.join(result_dir, f"{pick}.png"))
 
 
-def success_table():
-    pass
+def get_ser(conversation):
+    acts = []
+    utts = []
+    for d in conversation:
+        for t in d["log"]:
+            if t["role"] == "sys":
+                acts.append(t["act"])
+                utts.append(t["utt"])
+    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+        acts, utts)
+    return {"missing": missing/total, "hallucinate": hallucinate/total, "SER": (missing+hallucinate)/total}
 
 
 def main():
@@ -63,12 +73,15 @@ def main():
     col = ["Complete", "Success", "Success strict", "turns"]
     basic_info = {}
     data = {}
+    ner = {}
+    ner_col = ["missing", "hallucinate", "SER"]
     for model, config in task_map["models"].items():
         conversation = json.load(open(config["file"]))
         config["data"], max_turn = get_turn_emotion(
             conversation["conversation"])
         config["color"] = colors[config["color"]]
         data[model] = config
+        ner[model] = get_ser(conversation["conversation"])
 
     plot(data,
          max_turn,
@@ -77,13 +90,13 @@ def main():
 
     if pick == "all":
         basic_info = {}
-        col = ["Complete", "Success", "Success strict", "turns"]
         for model, config in task_map["models"].items():
             folder = os.path.dirname(config["file"])
             basic_info[model] = [json.load(
                 open(os.path.join(folder, "conversation_result.json")))["basic_info"][s] for s in col]
+            basic_info[model].extend([ner[model][s] for s in ner_col])
 
-        df = pd.DataFrame(basic_info, index=col)
+        df = pd.DataFrame(basic_info, index=col+ner_col).T
         df.to_csv(os.path.join(result_dir, "basic_info.csv"))
 
 

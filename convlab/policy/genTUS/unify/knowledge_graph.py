@@ -78,7 +78,6 @@ class KnowledgeGraph:
         self.add_token("none", "value")
 
     def _update_user_goal(self, intent, domain, slot, value, source="goal", replace_question_mark=True):
-
         if value == "?" and replace_question_mark:
             value = "<?>"
 

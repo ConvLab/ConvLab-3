@@ -340,6 +340,7 @@ class Evaluator:
 
 
 def emotion_score(golden_emotions, gen_emotions, dirname=".", no_neutral=False):
+    os.makedirs(dirname, exist_ok=True)
     labels = ["Neutral", "Fearful", "Dissatisfied",
               "Apologetic", "Abusive", "Excited", "Satisfied"]
     if no_neutral:
