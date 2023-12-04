@@ -195,6 +195,7 @@ class Goal:
 
     def _system_action_update(self, action):
         for intent, domain, slot, value in action:
+            value = missing_value_in_binary_action(intent, domain, slot, value)
             goal_intent = self._check_slot_and_intent(domain, slot)
             if not goal_intent:
                 continue
@@ -234,6 +235,15 @@ class Goal:
             if slot in self.domain_goals[domain][intent]:
                 return intent
         return not_found
+
+
+def missing_value_in_binary_action(intent, domain, slot, value):
+    # a workaround for missing slot value in binary action, e.g. hotel-inform(parking)
+    if len(value) < 1:
+        if intent == "inform" and domain is not None and slot is not None:
+            return "yes"
+        return None
+    return value
 
 
 def is_inform(intent):
