@@ -164,7 +164,7 @@ if __name__ == '__main__':
     save_eval = parser.parse_args().save_eval_dials
 
     exp_dir = os.path.dirname(os.path.abspath(__file__))
-    if parser.parse_args().exp_dir is None:
+    if parser.parse_args().exp_dir is not None:
         exp_dir = os.path.join(exp_dir, parser.parse_args().exp_dir)
 
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
