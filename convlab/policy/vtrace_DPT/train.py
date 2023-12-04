@@ -290,4 +290,4 @@ if __name__ == '__main__':
     f.close()
 
     move_finished_training(dir_path, os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "finished_experiments"))
+        exp_dir, "finished_experiments"))
