@@ -61,6 +61,9 @@ class VTRACE(nn.Module, Policy):
         self.use_emotion_reward_difference = cfg['use_emotion_reward_difference']
         self.argmax = cfg['argmax']
         self.predict_conduct = cfg['predict_conduct']
+        self.starting_temperature = cfg["starting_temperature"]
+        self.total_temperature_updates = cfg["total_temperature_updates"]
+
 
         logging.info(f"Entropy weight: {self.entropy_weight}")
         logging.info(f"Online-Offline-ratio: {self.online_offline_ratio}")
@@ -74,10 +77,13 @@ class VTRACE(nn.Module, Policy):
         logging.info(f"We use emotion prediction for action selection: {self.use_emotion_prediction}")
         logging.info(f"We use argmax for sampling: {self.argmax}")
         logging.info(f"We predict conduct: {self.predict_conduct}")
+        logging.info(f"Starting temperature: {self.starting_temperature}")
+        logging.info(f"Total temperature updates: {self.total_temperature_updates}")
 
         set_seed(seed)
 
         self.last_action = None
+        self.num_updates = 0
 
         if vectorizer is None:
             vectorizer = VectorNodes(dataset_name=kwargs['dataset_name'],
@@ -89,7 +95,8 @@ class VTRACE(nn.Module, Policy):
 
         self.vector = vectorizer
         self.cfg['dataset_name'] = self.vector.dataset_name
-        self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
+        self.policy = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec,
+                                     temperature=self.starting_temperature).to(device=DEVICE)
         self.value_helper = EncoderDecoder(**self.cfg, action_dict=self.vector.act2vec).to(device=DEVICE)
 
         try:
@@ -167,8 +174,7 @@ class VTRACE(nn.Module, Policy):
 
                 a_prob, _ = self.policy.get_prob(a.unsqueeze(0), self.info_dict['action_mask'].unsqueeze(0),
                                                  len(self.info_dict['small_act']), [self.info_dict['small_act']],
-                                                 current_domain_mask, non_current_domain_mask, [descr_list], [value_list],
-                                                 temperature_used=torch.Tensor([float(use_temperature)]).unsqueeze(-1).to(DEVICE))
+                                                 current_domain_mask, non_current_domain_mask, [descr_list], [value_list])
                 semantic_action = self.vector.action_devectorize(a.detach().numpy())
                 emotion = self.emotion_model.estimate_emotion(semantic_action)
                 try:
@@ -196,9 +202,7 @@ class VTRACE(nn.Module, Policy):
             a_prob, _ = self.policy.get_prob(a.unsqueeze(0), self.info_dict['action_mask'].unsqueeze(0),
                                              len(self.info_dict['small_act']), [self.info_dict['small_act']],
                                              current_domain_mask, non_current_domain_mask, [descr_list],
-                                             [value_list],
-                                             temperature_used=torch.Tensor([float(use_temperature)]).unsqueeze(
-                                                 -1).to(DEVICE))
+                                             [value_list])
             action = self.vector.action_devectorize(a.detach().numpy())
 
         self.info_dict["use_temperature"] = int(use_temperature)
@@ -228,6 +232,17 @@ class VTRACE(nn.Module, Policy):
 
         self.optimizer.step()
 
+        self.num_updates += 1
+        self.update_policy_temperature()
+
+
+    def update_policy_temperature(self):
+
+        new_temperature = 1 + (self.starting_temperature - 1) \
+                          - (self.starting_temperature - 1) * (self.num_updates/self.total_temperature_updates)
+
+        self.policy.temperature = max(1, new_temperature)
+
     def get_loss(self, memory):
 
         self.is_train = True
@@ -251,7 +266,7 @@ class VTRACE(nn.Module, Policy):
 
                 pi_prob, _ = self.policy.get_prob(actions, action_masks, max_length, small_actions,
                                                   current_domain_mask, non_current_domain_mask,
-                                                  description_batch, value_batch, temperature_used=use_temperature)
+                                                  description_batch, value_batch)
                 pi_prob = pi_prob.prod(dim=-1)
 
                 rho = torch.min(torch.Tensor([self.rho_bar]).to(DEVICE), pi_prob / mu)
@@ -278,8 +293,7 @@ class VTRACE(nn.Module, Policy):
 
                 actor_loss, entropy = self.policy.get_log_prob(actions, action_masks, max_length, small_actions,
                                                                current_domain_mask, non_current_domain_mask,
-                                                               description_batch, value_batch,
-                                                               temperature_used=use_temperature)
+                                                               description_batch, value_batch)
                 actor_loss = -1 * actor_loss
                 actor_loss = actor_loss * (advantages.to(DEVICE) * rho)
                 actor_loss = actor_loss.mean() - entropy * self.entropy_weight
