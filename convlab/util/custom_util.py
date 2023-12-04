@@ -335,7 +335,7 @@ def create_env(args, policy_sys):
 def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
     conversation_dir = os.path.join(save_path, 'conversation')
     if not os.path.exists(conversation_dir):
-        os.path.makedirs(conversation_dir)
+        os.makedirs(conversation_dir)
 
     eval_save = {}
     turn_counter_dict = {}
