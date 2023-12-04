@@ -152,6 +152,7 @@ if __name__ == '__main__':
                         help="Set level for logger")
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
+    parser.add_argument("--save_dir", type=str, default=None)
     # We can specifiy the config file path or the config name
     if os.path.exists(parser.parse_args().config_name):
         path = parser.parse_args().config_name
@@ -162,8 +163,12 @@ if __name__ == '__main__':
     mode = parser.parse_args().mode
     save_eval = parser.parse_args().save_eval_dials
 
+    exp_dir = os.path.dirname(os.path.abspath(__file__))
+    if parser.parse_args().save_dir is None:
+        exp_dir = os.path.join(exp_dir, parser.parse_args().save_dir)
+
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
-        init_logging(os.path.dirname(os.path.abspath(__file__)), mode)
+        init_logging(exp_dir, mode)
 
     args = [('model', 'seed', seed)] if seed is not None else list()
 
