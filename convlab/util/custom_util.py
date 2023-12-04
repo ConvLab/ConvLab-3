@@ -372,8 +372,11 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
             user_turn = {"utt": user_response}
-            if hasattr(sess.user_agent, "output_action"):
+            if hasattr(sess.user_agent.policy, "semantic_action"):
                 user_turn["act"] = sess.user_agent.output_action
+            else:
+                if hasattr(sess.user_agent, "output_action"):
+                    user_turn["act"] = sess.user_agent.output_action
             if hasattr(sess.user_agent.policy, "get_emotion"):
                 user_turn["emotion"] = sess.user_agent.policy.get_emotion()
 
