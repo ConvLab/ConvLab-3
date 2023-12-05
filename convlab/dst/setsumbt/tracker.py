@@ -360,10 +360,11 @@ class SetSUMBTTracker(DST):
         # Extract system utterance from dialog history
         context = self.state['history']
         if context:
-            if context[-1][0] != 'sys':
-                system_act = ''
+            sys_context = [utt for speaker, utt in context if speaker == 'sys']
+            if sys_context:
+                system_act = sys_context[-1]
             else:
-                system_act = context[-1][-1]
+                system_act = ''
         else:
             system_act = ''
 

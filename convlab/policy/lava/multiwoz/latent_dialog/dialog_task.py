@@ -24,7 +24,7 @@ class Dialog(object):
     def _is_eod(self, out):
         return len(out) == 2 and out[0] == EOD and out[1] == EOS
 
-    def _eval _dialog(self, conv, g_key, goal):
+    def _eval_dialog(self, conv, g_key, goal):
         generated_dialog = dict()
         generated_dialog[g_key] = {'goal': goal, 'log': list()}
         for t_id, (name, utt) in enumerate(conv):
