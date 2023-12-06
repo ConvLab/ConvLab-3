@@ -14,12 +14,21 @@ def arg_parser():
 
 
 def training_info(conversation: dict):
+    r = {"complete": [], "task_succ": [], "task_succ_strict": []}
     for seed, dialog in conversation.items():
         if "All_user_sim" in dialog["info"]:
             # old version
             return {"complete": np.average(dialog["info"]["All_user_sim"]),
                     "task_succ": np.average(dialog["info"]["All_evaluator"]),
                     "task_succ_strict": np.average(dialog["info"]["All_evaluator_strict"])}
+        if "Complete" in dialog["info"]:
+            # new version
+            r["complete"].append(dialog["info"]["Complete"])
+            r["task_succ"].append(dialog["info"]["Success"])
+            r["task_succ_strict"].append(dialog["info"]["Success_strict"])
+    return {"complete": np.average(r["complete"]),
+            "task_succ": np.average(r["task_succ"]),
+            "task_succ_strict": np.average(r["task_succ_strict"])}
 
 
 def main():
@@ -28,7 +37,9 @@ def main():
     files = sorted(glob(os.path.join(folder, "*.json")))
     results = {}
     for i, file in enumerate(files):
-        results[i] = training_info(json.load(open(file)))
+        conversation = json.load(open(file))
+        print(type(conversation))
+        results[i] = training_info(conversation)
     pprint(results)
 
 
