@@ -37,6 +37,7 @@ def main():
     files = sorted(glob(os.path.join(folder, "*.json")))
     results = {}
     for i, file in enumerate(files):
+        print(file)
         conversation = json.load(open(file))
         print(type(conversation))
         results[i] = training_info(conversation)
