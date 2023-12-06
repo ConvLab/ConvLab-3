@@ -13,7 +13,7 @@ def arg_parser():
     return parser.parse_args()
 
 
-def training_info(conversation: dict):
+def training_info(conversation):
     r = {"complete": [], "task_succ": [], "task_succ_strict": []}
     for seed, dialog in conversation.items():
         if "All_user_sim" in dialog["info"]:
