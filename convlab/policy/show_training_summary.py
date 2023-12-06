@@ -13,7 +13,7 @@ def arg_parser():
     return parser.parse_args()
 
 
-def training_info(conversation):
+def training_info(conversation: dict):
     r = {"complete": [], "task_succ": [], "task_succ_strict": []}
     for seed, dialog in conversation.items():
         if "All_user_sim" in dialog["info"]:
@@ -37,9 +37,7 @@ def main():
     files = sorted(glob(os.path.join(folder, "*.json")))
     results = {}
     for i, file in enumerate(files):
-        print(file)
         conversation = json.load(open(file))
-        print(type(conversation))
         results[i] = training_info(conversation)
     pprint(results)
 
