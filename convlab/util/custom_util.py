@@ -453,7 +453,8 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_offer_acts'].append(offer)
         task_success['total_recommend_acts'].append(recommend)
         task_success['emotion_return'].append(total_emotion_return)
-        conversation[seed]["info"] = task_success
+        conversation[seed]["info"] = {
+            "Complete": complete, "Success": task_succ, "Success_strict": task_succ_strict}
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
             i for i in sess.sys_agent.agent_saves]
