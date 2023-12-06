@@ -149,9 +149,10 @@ def save_best(policy_sys, best_complete_rate, best_success_rate, best_return, co
         best_return = avg_return
     if success_rate > best_success_rate:
         best_success_rate = success_rate
+        policy_sys.save(save_path, "best-success")
     if complete_rate > best_complete_rate:
         best_complete_rate = complete_rate
-        # policy_sys.save(save_path, "best")
+        policy_sys.save(save_path, "best-complete")
     logging.info(
         f"Best Complete Rate: {best_complete_rate}, Best Success Rate: {best_success_rate}, "
         f"Best Average Return: {best_return}")
