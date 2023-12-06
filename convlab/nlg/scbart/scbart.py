@@ -10,8 +10,9 @@ from convlab.util.file_util import cached_path
 
 ACT_PLACEHOLDER = "__sem_act_placeholder__"
 CON_PLACEHOLDER = "__conduct_placeholder__"
-PROMPT_TEMPLATE = f"The realisation of dialogue actions {ACT_PLACEHOLDER} in natural language with {CON_PLACEHOLDER} conduct is "
-
+USER_UTT_PLACEHOLDER = "__user_utt_placeholder__"
+PROMPT_TEMPLATE_0 = f"The realisation of dialogue actions {ACT_PLACEHOLDER} in natural language with {CON_PLACEHOLDER} conduct is "
+PROMPT_TEMPLATE_1 = f"Given the user request '{USER_UTT_PLACEHOLDER}', the realisation of dialogue actions {ACT_PLACEHOLDER} in natural language with {CON_PLACEHOLDER} conduct is "
 
 class SCBART(NLG):
     def __init__(self, dataset_name='multiwoz21', model_path='/home/shutong/models/scbart-nlprompt-semact-conduct', device='cuda'):
@@ -27,13 +28,16 @@ class SCBART(NLG):
         self.model.eval()
         self.require_conduct = True
 
-    def save_to_pretrained(self, output_dir):
-        self.model = BartForConditionalGeneration.from_pretrained(
-            'facebook/bart-base').to(self.device)
-        self.tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
-        self.model.save_pretrained(output_dir)
+    def save_to_pretrained(model_path, output_dir):
+        model = BartForConditionalGeneration.from_pretrained(
+            'facebook/bart-base').to('cuda')
+        tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
+        model.load_state_dict(torch.load(
+            model_path, map_location=torch.device('cuda'))['state_dict'])
+        model.save_pretrained(output_dir)
+        tokenizer.save_pretrained(output_dir)
 
-    def generate(self, action, conduct='neutral'):
+    def generate(self, action, conduct='neutral', user_utt=None):
         if isinstance(action, dict):
             # da in unified format
             pass
@@ -49,9 +53,17 @@ class SCBART(NLG):
         else:
             raise ValueError(f"invalid dialog acts format {action}")
         action_str = act2str(action)
-        prompt = PROMPT_TEMPLATE.replace(
-            ACT_PLACEHOLDER, action_str).replace(CON_PLACEHOLDER, conduct)
-        # print(prompt)
+        
+        if user_utt == None:
+            prompt = PROMPT_TEMPLATE_0.replace(
+                        ACT_PLACEHOLDER, action_str).replace(
+                        CON_PLACEHOLDER, conduct)
+        else:
+            prompt = PROMPT_TEMPLATE_1.replace(
+                        ACT_PLACEHOLDER, action_str).replace(
+                        CON_PLACEHOLDER, conduct).replace(
+                        USER_UTT_PLACEHOLDER, user_utt)
+        print(prompt)
         output = self._inference(prompt)[0]
         return output
 
