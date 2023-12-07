@@ -19,7 +19,11 @@ class SCBART(NLG):
     def __init__(self, dataset_name='multiwoz21', model_path='/home/shutong/models/scbart-nlprompt-semact-conduct', device='cuda'):
         super(SCBART, self).__init__()
         self.dataset_name = dataset_name
-        self.device = device
+        if torch.cuda.is_available():
+            self.device = "cuda"
+        else:
+            self.device = "cpu"
+
         self.model = BartForConditionalGeneration.from_pretrained(
             model_path).to(self.device)
 
@@ -65,7 +69,7 @@ class SCBART(NLG):
                 ACT_PLACEHOLDER, action_str).replace(
                 CON_PLACEHOLDER, conduct).replace(
                 USER_UTT_PLACEHOLDER, user_utt)
-        print(prompt)
+        # print(prompt)
         output = self._inference(prompt)[0]
         return output
 
