@@ -333,10 +333,64 @@ def create_env(args, policy_sys):
     return env, sess
 
 
+class SaveDialog:
+    def __init__(self, save_path):
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        self.save_path = save_path
+        self.data = {"conversation": []}
+        self.dialog = []
+
+    def new_conversation(self):
+        self.dialog = []
+
+    def save(self):
+        current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        file_path = os.path.join(
+            self.save_path, f"conversation-{current_time}.json")
+        json.dump(self.data,
+                  open(os.path.join(file_path), 'w'),
+                  cls=NumpyEncoder, indent=2)
+
+    def append_dialog(self, seed, goal, complete, task_succ, task_succ_strict, total_return, turns):
+        self.data["conversation"].append(
+            {"seed": seed,
+             "log": self.dialog,
+             "goal": goal,
+             "Complete": complete,
+             "Success": task_succ,
+             "Success strict": task_succ_strict,
+             "total_return": total_return,
+             "turns": turns})
+
+    def append_turn(self, sess, user_response, sys_response):
+        user_turn = {
+            "role": "usr",
+            "utt": user_response}
+        if hasattr(sess.user_agent.policy, "semantic_action"):
+            user_turn["act"] = sess.user_agent.policy.semantic_action
+        else:
+            if hasattr(sess.user_agent, "output_action"):
+                user_turn["act"] = sess.user_agent.output_action
+        if hasattr(sess.user_agent.policy, "get_emotion"):
+            user_turn["emotion"] = sess.user_agent.policy.get_emotion()
+
+        system_turn = {
+            "role": "sys",
+            "utt": sys_response}
+        if hasattr(sess.sys_agent, "output_action"):
+            system_turn["act"] = sess.sys_agent.output_action
+        if hasattr(sess.sys_agent.policy, "get_conduct"):
+            system_turn["conduct"] = sess.sys_agent.policy.get_conduct()
+        if hasattr(sess.sys_agent, "state"):
+            system_turn["state"] = sess.sys_agent.state
+
+        self.dialog.append(user_turn)
+        self.dialog.append(system_turn)
+
+
 def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
-    conversation_dir = os.path.join(save_path, 'conversation')
-    if not os.path.exists(conversation_dir):
-        os.makedirs(conversation_dir)
+    dialog_saver = SaveDialog(os.path.join(save_path, 'conversation'))
 
     eval_save = {}
     turn_counter_dict = {}
@@ -349,7 +403,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
                     'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': [], 'emotion_return': []}
     dial_count = 0
-    conversation = {}
+
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
         goal = goals.pop()
@@ -367,30 +421,13 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         total_emotion_return = 0.0
         recommend = 0
         # this 40 represents the max turn of dialogue
-        conversation[seed] = {"goal": goal.domain_goals}
-        dialog = []
+        dialog_saver.new_conversation()
+
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
-            user_turn = {"utt": user_response}
-            if hasattr(sess.user_agent.policy, "semantic_action"):
-                user_turn["act"] = sess.user_agent.policy.semantic_action
-            else:
-                if hasattr(sess.user_agent, "output_action"):
-                    user_turn["act"] = sess.user_agent.output_action
-            if hasattr(sess.user_agent.policy, "get_emotion"):
-                user_turn["emotion"] = sess.user_agent.policy.get_emotion()
 
-            system_turn = {"utt": sys_response}
-            if hasattr(sess.sys_agent, "output_action"):
-                system_turn["act"] = sess.sys_agent.output_action
-            if hasattr(sess.sys_agent.policy, "get_conduct"):
-                system_turn["conduct"] = sess.sys_agent.policy.get_conduct()
-            if hasattr(sess.sys_agent, "state"):
-                system_turn["state"] = sess.sys_agent.state
-
-            dialog.append({"user": user_turn})
-            dialog.append({"system": system_turn})
+            dialog_saver.append_turn(sess, user_response, sys_response)
 
             if hasattr(sess.user_agent.policy, 'get_emotion'):
                 emotion = sess.user_agent.policy.get_emotion().lower()
@@ -437,7 +474,6 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
                 task_success[key] = []
             else:
                 task_success[key].append(task_succ_strict)
-        conversation[seed]["dialog"] = dialog
 
         task_success['All_user_sim'].append(complete)
         task_success['All_evaluator'].append(task_succ)
@@ -454,17 +490,18 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_offer_acts'].append(offer)
         task_success['total_recommend_acts'].append(recommend)
         task_success['emotion_return'].append(total_emotion_return)
-        conversation[seed]["info"] = {
-            "Complete": complete, "Success": task_succ, "Success_strict": task_succ_strict}
+
+        dialog_saver.append_dialog(seed, goal.domain_goals, complete, task_succ, task_succ_strict,
+                                   total_return, turns)
+
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
             i for i in sess.sys_agent.agent_saves]
         sess.sys_agent.agent_saves.clear()
         dial_count += 1
         # print('length of dict ' + str(len(eval_save)))
-    current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-    json.dump(conversation, open(os.path.join(conversation_dir,
-              f"conversation-{current_time}.json"), 'w'), cls=NumpyEncoder, indent=2)
+
+    dialog_saver.save()
     if save_flag:
         torch.save(eval_save, os.path.join(save_path, 'evaluate_INFO.pt'))
     # save dialogue_info and clear mem
