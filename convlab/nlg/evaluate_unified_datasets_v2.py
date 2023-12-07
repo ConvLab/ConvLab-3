@@ -1,15 +1,12 @@
 import sys
-from nltk.translate.bleu_score import corpus_bleu
 import sacrebleu
-from nltk.tokenize import word_tokenize
-sys.path.append('../..')
 import json
 from pprint import pprint
-from evaluate_util import GentScorer
 from convlab.util.unified_datasets_util import load_ontology
 import numpy as np
 
 
+sys.path.append('../..')
 int2word = {'0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten'}
 logger = None
 
@@ -31,7 +28,6 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
     metrics = {}
 
     # BLEU Score
-    evaluator = GentScorer()
     references = []
     candidates = []
     for i in range(len(predict_result)):
@@ -109,20 +105,26 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
             continue
         ## redundant values
         for val in val2ds_dict:
-            if f' {val.strip().lower()} ' in f' {utterance.strip().lower()} ' and val.strip().lower() not in all_values:
+            # problem 1: the checked value from other domain-slot is a substring of one of the values in the dialogue action
+            # e.g. centre vs centre area
+            mentioned_flag = False
+            for mentioned_value in all_values:
+                if val.strip().lower() in mentioned_value.strip().lower():
+                    mentioned_flag = True
+            if f' {val.strip().lower()} ' in f' {utterance.strip().lower()} ' and not mentioned_flag:
                 wlist = val2ds_dict[val].split('-')
                 domain, slot = wlist[0], wlist[1]
                 redundant_flag = False
                 norm_slot = slot.strip().lower()
                 if f' {norm_slot}' in f' {utterance.strip().lower()} ':
                     redundant_flag = True
-                    # problem 1: same slot and value in different domains
-                    # problem 2: binary slots
-                    if norm_slot in [da['slot'] for da in da['categorical']+da['non-categorical']+da['binary']]:
+                    # problem 2: binary slots not checked
+                    if norm_slot in [da['slot'] for da in da['binary']]:
                         redundant_flag = False
                     # problem 3: for the dataset, missing annotation in dialogue_acts
                 if redundant_flag:
                     redundant_count += 1
+                    logger.log(f"{all_values}")
                     logger.log(f"redundant: {val}/{val2ds_dict[val]} | {item['prediction']} | {item['utterance']}")
         item_score = float(missing_count + redundant_count) / all_count
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
