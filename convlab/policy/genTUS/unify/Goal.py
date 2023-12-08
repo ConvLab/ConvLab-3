@@ -140,6 +140,7 @@ class Goal:
             (boolean): True to accomplish.
         """
         if self.evaluator.task_success():
+            print("evaluate success")
             return True
         return False
 

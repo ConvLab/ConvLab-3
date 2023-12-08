@@ -585,6 +585,7 @@ class UserActionPolicy(Policy):
 
     def is_success(self):
         task_complete = self.goal.task_complete()
+        print("task_complete", task_complete)
         # goal_status = self.goal.all_mentioned()
         # should mentioned all slots
         if task_complete:  # and goal_status["complete"] > 0.6:
