@@ -4,6 +4,8 @@ The user goal for unify data format
 import json
 from convlab.policy.tus.unify.Goal import old_goal2list
 from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
+
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal as ABUS_Goal
 from convlab.policy.tus.unify.Goal import Goal as TUS_Goal
 from convlab.util.custom_util import slot_mapping
@@ -32,8 +34,11 @@ class Goal:
         self.status = {}
         self.invert_slot_mapping = {v: k for k, v in slot_mapping.items()}
         self.raw_goal = None
+
         self._init_goal_from_data(goal, goal_generator)
         self._init_status()
+        self.evaluator = MultiWozEvaluator(check_book_constraints=False)
+        self.evaluator.add_goal(self.raw_goal)
 
     def __str__(self):
         return '-----Goal-----\n' + \
@@ -134,6 +139,10 @@ class Goal:
         Returns:
             (boolean): True to accomplish.
         """
+        if self.evaluator.task_success():
+            return True
+        return False
+
         for domain, domain_goal in self.domain_goals.items():
             if not self.sub_goal_success(domain, domain_goal):
                 return False
@@ -174,8 +183,10 @@ class Goal:
     def update_user_goal(self, action, char="usr"):
         # update request and booked
         if char == "usr":
+            self.evaluator.add_usr_da(action)
             self._user_action_update(action)
         elif char == "sys":
+            self.evaluator.add_sys_da(action)
             self._system_action_update(action)
         else:
             print("!!!UNKNOWN CHAR!!!")
