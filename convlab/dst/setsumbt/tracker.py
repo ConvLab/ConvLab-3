@@ -79,9 +79,11 @@ class SetSUMBTTracker(DST):
     def load_weights(self):
         """Load model weights and model ontology"""
         logging.info('Loading SetSUMBT pretrained model.')
-        self.tokenizer = self.tokenizer.from_pretrained(self.model_name_or_path)
+        self.tokenizer = self.tokenizer.from_pretrained(
+            self.model_name_or_path)
         logging.info(f'Model tokenizer loaded from {self.model_name_or_path}.')
-        self.model = self.model.from_pretrained(self.model_name_or_path, config=self.config)
+        self.model = self.model.from_pretrained(
+            self.model_name_or_path, config=self.config)
         logging.info(f'Model loaded from {self.model_name_or_path}.')
 
         # Transfer model to compute device and setup eval environment
@@ -93,14 +95,17 @@ class SetSUMBTTracker(DST):
         self.ontology = self.tokenizer.ontology
 
         if self.return_confidence_scores:
-            logging.info('Model returns user action and belief state confidence scores.')
+            logging.info(
+                'Model returns user action and belief state confidence scores.')
             self.get_thresholds(self.confidence_threshold)
             logging.info('Uncertain Querying set up and thresholds set up at:')
             logging.info(self.confidence_thresholds)
         if self.return_belief_state_entropy:
-            logging.info('Model returns belief state distribution entropy scores (Total uncertainty).')
+            logging.info(
+                'Model returns belief state distribution entropy scores (Total uncertainty).')
         if self.return_belief_state_mutual_info:
-            logging.info('Model returns belief state distribution mutual information scores (Knowledge uncertainty).')
+            logging.info(
+                'Model returns belief state distribution mutual information scores (Knowledge uncertainty).')
         logging.info('Ontology loaded successfully.')
 
     def get_thresholds(self, threshold='auto') -> dict:
@@ -120,10 +125,12 @@ class SetSUMBTTracker(DST):
                 if domain not in self.confidence_thresholds:
                     self.confidence_thresholds[domain] = dict()
                 if threshold == 'auto':
-                    thres = 1.0 / (float(len(slot_info['possible_values'])) - 2.1)
+                    thres = 1.0 / \
+                        (float(len(slot_info['possible_values'])) - 2.1)
                     self.confidence_thresholds[domain][slot] = max(0.05, thres)
                 else:
-                    self.confidence_thresholds[domain][slot] = max(0.05, threshold)
+                    self.confidence_thresholds[domain][slot] = max(
+                        0.05, threshold)
 
         return self.confidence_thresholds
 
@@ -225,7 +232,8 @@ class SetSUMBTTracker(DST):
                     if domain == 'bus':
                         continue
                     else:
-                        logging.debug('Error: domain <{}> not in belief state'.format(domain))
+                        logging.debug(
+                            'Error: domain <{}> not in belief state'.format(domain))
 
                 # Uncertainty clipping of state
                 if belief_state_confidence is not None:
@@ -238,7 +246,7 @@ class SetSUMBTTracker(DST):
                     user_acts.append(['inform', domain, slot, value])
                 else:
                     bug = f'Unknown slot name <{slot}> with value <{value}> of domain <{domain}>'
-                    logging.debug(bug)
+                    # logging.debug(bug)
 
         # Make all action domains active
         for domain in outputs.state['active_domains']:
@@ -248,8 +256,10 @@ class SetSUMBTTracker(DST):
             outputs.state['active_domains'][domain] = True
 
         # Get new domain activation actions
-        new_domains = [d for d, active in outputs.state['active_domains'].items() if active]
-        new_domains = [d for d in new_domains if not self.active_domains.get(d, False)]
+        new_domains = [
+            d for d, active in outputs.state['active_domains'].items() if active]
+        new_domains = [
+            d for d in new_domains if not self.active_domains.get(d, False)]
         self.active_domains = outputs.state['active_domains']
 
         for domain in new_domains:
@@ -265,11 +275,13 @@ class SetSUMBTTracker(DST):
         if state_mutual_info is not None:
             new_state['mutual_information'] = state_mutual_info
 
-        user_acts = [act for act in user_acts if act not in new_state['system_action']]
+        user_acts = [
+            act for act in user_acts if act not in new_state['system_action']]
         new_state['user_action'] = user_acts
 
         if outputs.turn_pooled_representation is not None:
-            new_state['turn_pooled_representation'] = outputs.turn_pooled_representation.reshape(-1)
+            new_state['turn_pooled_representation'] = outputs.turn_pooled_representation.reshape(
+                -1)
 
         self.state = new_state
         # self.info_dict['belief_state'] = copy.deepcopy(dict(new_state))
@@ -309,16 +321,22 @@ class SetSUMBTTracker(DST):
         if self.return_confidence_scores:
             state_entropy = None
             if self.return_belief_state_entropy:
-                state_entropy = {slot: probs[0, 0, :] for slot, probs in outputs.belief_state.items()}
-                state_entropy = {slot: self.relative_entropy(p).item() for slot, p in state_entropy.items()}
+                state_entropy = {slot: probs[0, 0, :]
+                                 for slot, probs in outputs.belief_state.items()}
+                state_entropy = {slot: self.relative_entropy(
+                    p).item() for slot, p in state_entropy.items()}
 
             # Confidence score is the max probability across all not "none" values candidates.
-            belief_state_conf = {slot: probs[0, 0, 1:].max().item() for slot, probs in outputs.belief_state.items()}
-            _request_probs = {slot: p[0, 0].item() for slot, p in outputs.request_probabilities.items()}
-            _active_domain_probs = {domain: p[0, 0].item() for domain, p in outputs.active_domain_probabilities.items()}
+            belief_state_conf = {slot: probs[0, 0, 1:].max().item(
+            ) for slot, probs in outputs.belief_state.items()}
+            _request_probs = {slot: p[0, 0].item(
+            ) for slot, p in outputs.request_probabilities.items()}
+            _active_domain_probs = {domain: p[0, 0].item(
+            ) for domain, p in outputs.active_domain_probabilities.items()}
             _general_act_probs = {'bye': outputs.general_act_probabilities[0, 0, 1].item(),
                                   'thank': outputs.general_act_probabilities[0, 0, 2].item()}
-            confidence_scores = (belief_state_conf, _request_probs, _active_domain_probs, _general_act_probs)
+            confidence_scores = (
+                belief_state_conf, _request_probs, _active_domain_probs, _general_act_probs)
         else:
             confidence_scores = None
             state_entropy = None
@@ -374,7 +392,8 @@ class SetSUMBTTracker(DST):
         }]]
 
         # Tokenize dialog
-        features = self.tokenizer.encode(dialogue, max_seq_len=self.config.max_turn_len, max_turns=1)
+        features = self.tokenizer.encode(
+            dialogue, max_seq_len=self.config.max_turn_len, max_turns=1)
 
         for key in features:
             if features[key] is not None:
