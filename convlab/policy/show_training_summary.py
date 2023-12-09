@@ -16,16 +16,17 @@ def arg_parser():
 def training_info(conversation: dict):
     r = {"complete": [], "task_succ": [], "task_succ_strict": []}
     for seed, dialog in conversation.items():
-        if "All_user_sim" in dialog["info"]:
-            # old version
-            return {"complete": np.average(dialog["info"]["All_user_sim"]),
-                    "task_succ": np.average(dialog["info"]["All_evaluator"]),
-                    "task_succ_strict": np.average(dialog["info"]["All_evaluator_strict"])}
-        if "Complete" in dialog["info"]:
-            # new version
-            r["complete"].append(dialog["info"]["Complete"])
-            r["task_succ"].append(dialog["info"]["Success"])
-            r["task_succ_strict"].append(dialog["info"]["Success_strict"])
+        if "info" in dialog:
+            if "All_user_sim" in dialog["info"]:
+                # old version
+                return {"complete": np.average(dialog["info"]["All_user_sim"]),
+                        "task_succ": np.average(dialog["info"]["All_evaluator"]),
+                        "task_succ_strict": np.average(dialog["info"]["All_evaluator_strict"])}
+            if "Complete" in dialog["info"]:
+                # new version
+                r["complete"].append(dialog["info"]["Complete"])
+                r["task_succ"].append(dialog["info"]["Success"])
+                r["task_succ_strict"].append(dialog["info"]["Success_strict"])
         if "Complete" in dialog:
             # new version
             r["complete"].append(dialog["Complete"])
