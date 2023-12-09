@@ -153,6 +153,8 @@ if __name__ == '__main__':
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
     parser.add_argument("--exp_dir", type=str, default=None)
+    parser.add_argument("--hyperparameter", type=str,
+                        default="multiwoz21_dpt.json",)
     # We can specifiy the config file path or the config name
     if os.path.exists(parser.parse_args().config_name):
         path = parser.parse_args().config_name
@@ -178,8 +180,11 @@ if __name__ == '__main__':
     seed = conf['model']['seed']
     set_seed(seed)
 
-    policy_sys = VTRACE(is_train=True, seed=seed, vectorizer=conf['vectorizer_sys_activated'],
-                        load_path=conf['model']['load_path'])
+    policy_sys = VTRACE(is_train=True,
+                        seed=seed,
+                        vectorizer=conf['vectorizer_sys_activated'],
+                        load_path=conf['model']['load_path'],
+                        config_path=parser.parse_args().hyperparameter)
     policy_sys.share_memory()
     memory = Memory(seed=seed)
     policy_sys.current_time = current_time
