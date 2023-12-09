@@ -26,6 +26,12 @@ def training_info(conversation: dict):
             r["complete"].append(dialog["info"]["Complete"])
             r["task_succ"].append(dialog["info"]["Success"])
             r["task_succ_strict"].append(dialog["info"]["Success_strict"])
+        if "Complete" in dialog:
+            # new version
+            r["complete"].append(dialog["Complete"])
+            r["task_succ"].append(dialog["Success"])
+            r["task_succ_strict"].append(dialog["Success strict"])
+
     return {"complete": np.average(r["complete"]),
             "task_succ": np.average(r["task_succ"]),
             "task_succ_strict": np.average(r["task_succ_strict"])}
