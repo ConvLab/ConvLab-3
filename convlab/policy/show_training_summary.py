@@ -15,6 +15,18 @@ def arg_parser():
 
 def training_info(conversation: dict):
     r = {"complete": [], "task_succ": [], "task_succ_strict": []}
+    for dialog in conversation.items():
+        r["complete"].append(dialog["Complete"])
+        r["task_succ"].append(dialog["Success"])
+        r["task_succ_strict"].append(dialog["Success strict"])
+
+    return {"complete": np.average(r["complete"]),
+            "task_succ": np.average(r["task_succ"]),
+            "task_succ_strict": np.average(r["task_succ_strict"])}
+
+
+def _training_info(conversation: dict):
+    r = {"complete": [], "task_succ": [], "task_succ_strict": []}
     for seed, dialog in conversation.items():
         if "info" in dialog:
             if "All_user_sim" in dialog["info"]:
