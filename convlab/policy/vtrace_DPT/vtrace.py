@@ -27,11 +27,11 @@ class VTRACE(nn.Module, Policy):
     def __init__(self, is_train=True, seed=0, vectorizer=None, load_path="", emotion_model=None, config_path="multiwoz21_dpt.json", **kwargs):
 
         super(VTRACE, self).__init__()
+        dir_name = os.path.dirname(os.path.abspath(__file__))
 
         if os.path.exists(config_path):
             self.config_path = config_path
         else:
-            dir_name = os.path.dirname(os.path.abspath(__file__))
             self.config_path = os.path.join(
                 dir_name, 'configs', 'multiwoz21_dpt.json')
 
