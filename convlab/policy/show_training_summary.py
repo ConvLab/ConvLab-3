@@ -13,9 +13,9 @@ def arg_parser():
     return parser.parse_args()
 
 
-def training_info(conversation: dict):
+def training_info(conversation):
     r = {"complete": [], "task_succ": [], "task_succ_strict": []}
-    for dialog in conversation.items():
+    for dialog in conversation:
         r["complete"].append(dialog["Complete"])
         r["task_succ"].append(dialog["Success"])
         r["task_succ_strict"].append(dialog["Success strict"])
@@ -57,7 +57,7 @@ def main():
     results = {}
     for i, file in enumerate(files):
         conversation = json.load(open(file))
-        results[i] = training_info(conversation)
+        results[i] = training_info(conversation["conversation"])
     pprint(results)
 
 
