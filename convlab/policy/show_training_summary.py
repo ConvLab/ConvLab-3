@@ -20,6 +20,7 @@ def training_info(conversation):
         r["complete"].append(dialog["Complete"])
         r["task_succ"].append(dialog["Success"])
         r["task_succ_strict"].append(dialog["Success strict"])
+    print("training_info", r)
     return r
 
 
@@ -114,6 +115,7 @@ def main():
             for seed, exp_folder in enumerate(glob(os.path.join(folder, "*"))):
                 data[seed] = {}
                 for epoch, file in enumerate(glob(os.path.join(exp_folder, "logs", "conversation", "*.json"))):
+                    print(file)
                     conversation = json.load(open(file))
                     data[seed][epoch] = training_info(
                         conversation["conversation"])
