@@ -1,0 +1,31 @@
+{
+    "result_dir": "convlab/policy/emoUS_v2/results/different_learning_rates",
+    "colors": {
+        "c1": "cornflowerblue",
+        "c2": "mediumseagreen",
+        "c3": "coral",
+        "c4": "gray"
+    },
+    "models": [
+        {
+            "folder": "convlab/policy/vtrace_DPT/_original_vtrace",
+            "color": "c1",
+            "label": "$lr=5e-06$"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/_original_vtrace_low",
+            "color": "c2",
+            "label": "$lr=1e-06$"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/_original_vtrace_low_low",
+            "color": "c3",
+            "label": "$lr=5e-07$"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/original_vtrace_low_low_low",
+            "color": "c4",
+            "label": "$lr=1e-07$"
+        }
+    ]
+}
