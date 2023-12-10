@@ -100,6 +100,7 @@ def merge_seeds(data):
     r["x"] = sorted(list(epochs.keys()))
     for e in r["x"]:
         for m in epochs[0]:
+            print(len(epochs[e][m]))
             r[m]["mean"].append(np.average(epochs[e][m]))
             r[m]["std"].append(np.std(epochs[e][m]))
     return r
