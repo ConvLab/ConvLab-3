@@ -20,7 +20,6 @@ def training_info(conversation):
         r["complete"].append(dialog["Complete"])
         r["task_succ"].append(dialog["Success"])
         r["task_succ_strict"].append(dialog["Success strict"])
-    print("training_info", r)
     return r
 
 
@@ -54,7 +53,6 @@ def plot(data: dict, folder: str, title: str = None):
 
     if not os.path.exists(folder):
         os.makedirs(folder)
-    pprint(data)
     for m in ["complete", "task_succ", "task_succ_strict"]:
         fig, ax = plt.subplots()
         for label, exp in data.items():
@@ -109,22 +107,20 @@ def main():
     if args.plot:
         task_map = json.load(open(args.folder))
         results = {}
+        colors = task_map["colors"]
         for exp in task_map["models"]:
             folder = exp["folder"]
             data = {}
             for seed, exp_folder in enumerate(glob(os.path.join(folder, "experiments", "*"))):
                 data[seed] = {}
-                print("exp_folder", exp_folder)
                 for epoch, file in enumerate(glob(os.path.join(exp_folder, "logs", "conversation", "*.json"))):
-                    print(file)
                     conversation = json.load(open(file))
                     data[seed][epoch] = training_info(
                         conversation["conversation"])
-            print("data", data)
 
             r = merge_seeds(data)
-            print("r", r)
-            results[exp["label"]] = {"result": r, "color": exp["color"]}
+            results[exp["label"]] = {
+                "result": r, "color": colors[exp["color"]]}
         plot(results, task_map["result_dir"])
 
     else:
