@@ -112,7 +112,7 @@ def main():
         for exp in task_map["models"]:
             folder = exp["folder"]
             data = {}
-            for seed, exp_folder in enumerate(glob(os.path.join(folder, "*"))):
+            for seed, exp_folder in enumerate(glob(os.path.join(folder, "experiments", "*"))):
                 data[seed] = {}
                 print("exp_folder", exp_folder)
                 for epoch, file in enumerate(glob(os.path.join(exp_folder, "logs", "conversation", "*.json"))):
