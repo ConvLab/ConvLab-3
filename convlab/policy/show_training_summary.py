@@ -53,37 +53,36 @@ def plot(data: dict, folder: str, title: str = None):
 
     if not os.path.exists(folder):
         os.makedirs(folder)
-    m = "task_succ_strict"
-    # for m in ["complete", "task_succ", "task_succ_strict"]:
-    fig, ax = plt.subplots()
-    for label, exp in data.items():
-        print(label)
-        print(exp)
-        data = exp["result"]
-        x = np.array(data['x'])*1000
-        mean = np.array(data[m]["mean"])
-        std = np.array(data[m]["std"])
-        ax.plot(x,
-                mean,
-                marker='o',
-                linestyle='--',
-                color=exp["color"],
-                label=label)
-        ax.fill_between(x,
-                        mean+std,
-                        mean-std,
-                        alpha=0.5)
+    for m in ["complete", "task_succ", "task_succ_strict"]:
+        fig, ax = plt.subplots()
+        for label, exp in data.items():
+            print(label)
+            print(exp)
+            d = exp["result"]
+            x = np.array(d['x'])*1000
+            mean = np.array(d[m]["mean"])
+            std = np.array(d[m]["std"])
+            ax.plot(x,
+                    mean,
+                    marker='o',
+                    linestyle='--',
+                    color=exp["color"],
+                    label=label)
+            ax.fill_between(x,
+                            mean+std,
+                            mean-std,
+                            alpha=0.5)
 
-    ax.legend()
-    if title:
-        ax.set_title(title)
-    ax.set_xlabel("# of dialog")
-    ax.set_ylabel(m)
-    plt.tight_layout()
-    plt.savefig(os.path.join(folder, f"{m}.png"))
-    # plt.grid(axis='x', color='0.95')
-    # plt.grid(axis='y', color='0.95')
-    # plt.show()
+        ax.legend()
+        if title:
+            ax.set_title(title)
+        ax.set_xlabel("# of dialog")
+        ax.set_ylabel(m)
+        plt.tight_layout()
+        plt.savefig(os.path.join(folder, f"{m}.png"))
+        # plt.grid(axis='x', color='0.95')
+        # plt.grid(axis='y', color='0.95')
+        # plt.show()
 
 
 def merge_seeds(data):
