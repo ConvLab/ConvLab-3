@@ -121,8 +121,10 @@ def main():
                         conversation["conversation"])
 
             r = merge_seeds(data)
+            print("exp_label", exp["label"])
             results[exp["label"]] = {
                 "result": r, "color": colors[exp["color"]]}
+        print("keys", [x for x in results])
         plot(results, task_map["result_dir"])
 
     else:
