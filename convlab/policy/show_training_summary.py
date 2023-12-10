@@ -114,6 +114,7 @@ def main():
             data = {}
             for seed, exp_folder in enumerate(glob(os.path.join(folder, "*"))):
                 data[seed] = {}
+                print("exp_folder", exp_folder)
                 for epoch, file in enumerate(glob(os.path.join(exp_folder, "logs", "conversation", "*.json"))):
                     print(file)
                     conversation = json.load(open(file))
