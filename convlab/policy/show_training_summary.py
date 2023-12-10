@@ -112,13 +112,15 @@ def main():
             folder = exp["folder"]
             data = {}
             for seed, exp_folder in enumerate(glob(os.path.join(folder, "*"))):
-                print("exp_folder", exp_folder)
                 data[seed] = {}
                 for epoch, file in enumerate(glob(os.path.join(exp_folder, "logs", "conversation", "*.json"))):
                     conversation = json.load(open(file))
                     data[seed][epoch] = training_info(
                         conversation["conversation"])
+            print("data", data)
+
             r = merge_seeds(data)
+            print("r", r)
             results[exp["label"]] = {"result": r, "color": exp["color"]}
         plot(results, task_map["result_dir"])
 
