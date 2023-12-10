@@ -62,17 +62,16 @@ def plot(data: dict, folder: str, title: str = None):
             x = np.array(d['x'])*1000
             mean = np.array(d[m]["mean"])
             std = np.array(d[m]["std"])
-            print(std)
             ax.plot(x,
                     mean,
                     marker='o',
                     linestyle='--',
                     color=exp["color"],
                     label=label)
-            # ax.fill_between(x,
-            #                 mean+std,
-            #                 mean-std,
-            #                 alpha=0.5)
+            ax.fill_between(x,
+                            mean+std,
+                            mean-std,
+                            alpha=0.5)
 
         ax.legend()
         if title:
@@ -100,9 +99,9 @@ def merge_seeds(data):
     r["x"] = sorted(list(epochs.keys()))
     for e in r["x"]:
         for m in epochs[0]:
-            print("---->", len(epochs[e][m]))
             r[m]["mean"].append(np.average(epochs[e][m]))
-            r[m]["std"].append(np.std(epochs[e][m]))
+            r[m]["std"].append(np.std(epochs[e][m], ddof=1) /
+                               np.sqrt(len(epochs[e][m])))
     return r
 
 
