@@ -93,7 +93,8 @@ def merge_seeds(data):
             else:
                 for m in info:
                     epochs[e][m] += info[m]
-    r = {m: {"mean": [], "std": []} for m in epochs[0]}
+    r = {m: {"mean": [], "std": []}
+         for m in ["complete", "task_succ", "task_succ_strict"]}
     r["x"] = sorted(list(epochs.keys()))
     for e in r["x"]:
         for m in epochs[0]:
