@@ -4,7 +4,6 @@ from argparse import ArgumentParser
 import os
 import numpy as np
 from pprint import pprint
-import matplotlib.pyplot as plt
 
 
 def arg_parser():
@@ -50,6 +49,8 @@ def _training_info(conversation: dict):
 
 
 def plot(data: dict, folder: str, title: str = None):
+    import matplotlib.pyplot as plt
+
     if not os.path.exists(folder):
         os.makedirs(folder)
     pprint(data)
