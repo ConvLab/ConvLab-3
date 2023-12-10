@@ -62,16 +62,17 @@ def plot(data: dict, folder: str, title: str = None):
             x = np.array(d['x'])*1000
             mean = np.array(d[m]["mean"])
             std = np.array(d[m]["std"])
+            print(std)
             ax.plot(x,
                     mean,
                     marker='o',
                     linestyle='--',
                     color=exp["color"],
                     label=label)
-            ax.fill_between(x,
-                            mean+std,
-                            mean-std,
-                            alpha=0.5)
+            # ax.fill_between(x,
+            #                 mean+std,
+            #                 mean-std,
+            #                 alpha=0.5)
 
         ax.legend()
         if title:
