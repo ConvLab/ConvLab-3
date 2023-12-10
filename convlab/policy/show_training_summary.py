@@ -71,6 +71,7 @@ def plot(data: dict, folder: str, title: str = None):
             ax.fill_between(x,
                             mean+std,
                             mean-std,
+                            color=exp["color"],
                             alpha=0.5)
 
         ax.legend()
