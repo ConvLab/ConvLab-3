@@ -56,8 +56,6 @@ def plot(data: dict, folder: str, title: str = None):
     for m in ["complete", "task_succ", "task_succ_strict"]:
         fig, ax = plt.subplots()
         for label, exp in data.items():
-            print(label)
-            print(exp)
             d = exp["result"]
             x = np.array(d['x'])*1000
             mean = np.array(d[m]["mean"])
@@ -123,10 +121,8 @@ def main():
                         conversation["conversation"])
 
             r = merge_seeds(data)
-            print("exp_label", exp["label"])
             results[exp["label"]] = {
                 "result": r, "color": colors[exp["color"]]}
-        print("keys", [x for x in results])
         plot(results, task_map["result_dir"])
 
     else:
