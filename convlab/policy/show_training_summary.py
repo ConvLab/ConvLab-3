@@ -56,6 +56,7 @@ def plot(data: dict, folder: str, title: str = None):
     for m in ["complete", "task_succ", "task_succ_strict"]:
         fig, ax = plt.subplots()
         for label, exp in data.items():
+            print(exp)
             data = exp["result"]
             x = np.array(data['x'])*1000
             mean = np.array(data[m]["mean"])
