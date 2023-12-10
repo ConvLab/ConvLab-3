@@ -115,7 +115,7 @@ def main():
             data = {}
             for seed, exp_folder in enumerate(glob(os.path.join(folder, "experiments", "*"))):
                 data[seed] = {}
-                for epoch, file in enumerate(glob(os.path.join(exp_folder, "logs", "conversation", "*.json"))):
+                for epoch, file in enumerate(sorted(glob(os.path.join(exp_folder, "logs", "conversation", "*.json")))):
                     conversation = json.load(open(file))
                     data[seed][epoch] = training_info(
                         conversation["conversation"])
