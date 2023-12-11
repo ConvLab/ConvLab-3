@@ -86,7 +86,7 @@ def plot(data: dict, folder: str, title: str = None):
 
 def merge_seeds(data):
     epochs = {}
-    for seed, exp in data.items():
+    for exp in data:
         for e, info in exp.items():
             if e not in epochs:
                 epochs[e] = info
@@ -112,13 +112,15 @@ def main():
         colors = task_map["colors"]
         for exp in task_map["models"]:
             folder = exp["folder"]
-            data = {}
-            for seed, exp_folder in enumerate(glob(os.path.join(folder, "experiments", "*"))):
-                data[seed] = {}
-                for epoch, file in enumerate(sorted(glob(os.path.join(exp_folder, "logs", "conversation", "*.json")))):
-                    conversation = json.load(open(file))
-                    data[seed][epoch] = training_info(
-                        conversation["conversation"])
+            data = []
+            for experiment in ["experiments", "finished_experiments"]:
+                for exp_folder in glob(os.path.join(folder, experiment, "*")):
+                    temp = {}
+                    for epoch, file in enumerate(sorted(glob(os.path.join(exp_folder, "logs", "conversation", "*.json")))):
+                        conversation = json.load(open(file))
+                        temp[epoch] = training_info(
+                            conversation["conversation"])
+                    data.append(temp)
 
             r = merge_seeds(data)
             results[exp["label"]] = {
