@@ -10,11 +10,11 @@ from .vector_base import VectorBase
 class VectorNodes(VectorBase):
 
     def __init__(self, dataset_name='multiwoz21', character='sys', use_masking=False, manually_add_entity_names=True,
-                 seed=0, filter_state=True):
+                 seed=0, filter_state=True, use_emotion=False):
 
         super().__init__(dataset_name, character, use_masking, manually_add_entity_names, seed)
         self.filter_state = filter_state
-        self.use_emotion = False
+        self.use_emotion = use_emotion
         logging.info(f"We filter state by active domains: {self.filter_state}")
 
     def get_state_dim(self):

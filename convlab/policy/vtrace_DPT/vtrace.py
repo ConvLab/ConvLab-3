@@ -103,7 +103,8 @@ class VTRACE(nn.Module, Policy):
                                      manually_add_entity_names=kwargs.get(
                                          'manually_add_entity_names', True),
                                      seed=seed,
-                                     filter_state=kwargs.get('filter_state', True))
+                                     filter_state=kwargs.get('filter_state', True),
+                                     use_emotion=self.use_emotion)
         vectorizer.use_emotion = self.use_emotion
 
         self.vector = vectorizer

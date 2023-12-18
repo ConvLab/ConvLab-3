@@ -57,7 +57,8 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
         for t in range(traj_len):
 
             if hasattr(environment.sys_dst, 'get_emotion'):
-                emotion = environment.sys_dst.get_emotion()
+                emotion = environment.sys_dst.get_emotion().lower()
+                s['user_emotion'] = emotion
             elif hasattr(environment.usr.policy, 'get_emotion'):
                 emotion = environment.usr.policy.get_emotion().lower()
                 s['user_emotion'] = emotion
@@ -95,10 +96,8 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             next_s, r, done = environment.step(a, sys_conduct=sys_conduct)
 
             if policy.use_emotion_reward:
-                if hasattr(environment.usr.policy, 'get_emotion'):
-                    emotion = environment.usr.policy.get_emotion().lower()
-                    emotion_reward = emotion_dict.get(emotion, 0)
-                    r += emotion_reward
+                emotion_reward = emotion_dict.get(emotion, 0)
+                r += emotion_reward
 
             if policy.use_emotion_reward_difference:
                 if hasattr(environment.usr.policy, 'get_emotion'):
