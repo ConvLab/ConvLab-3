@@ -4,7 +4,7 @@
 		"allowed_domains": null
 	},
 	"model": {
-		"load_path": "",
+		"load_path": "convlab/policy/vtrace_DPT/sl_SetSumbt/best_vtrace",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"seed": 0,
@@ -54,7 +54,7 @@
 		"SCBART": {
 			"class_path": "convlab.nlg.scbart.scbart.SCBART",
 			"ini_params": {
-				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-aug-downsample",
+				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-userutt-aug",
 				"dataset_name": "multiwoz21",
 				"device": "cuda"
 			}
