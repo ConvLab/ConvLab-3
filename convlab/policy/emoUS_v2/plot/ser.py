@@ -40,15 +40,16 @@ def get_exp_data(exp_folder):
             "hallucinate": {"mean": [], "std": []},
             "SER": {"mean": [], "std": []}}
     temp = []
-    for f in sorted(glob(os.path.join(exp_folder, "finished_experiments", "*"))):
-        d = {"x": [], "missing": [], "hallucinate": [], "SER": []}
-        for i, c in enumerate(sorted(glob(os.path.join(f, "logs", "conversation", "*")))):
-            r = get_ser(json.load(open(c))["conversation"])
-            d["x"].append(i)
-            d["missing"].append(r["missing"])
-            d["hallucinate"].append(r["hallucinate"])
-            d["SER"].append(r["SER"])
-        temp.append(d)
+    for exp in ["experiments", "finished_experiments"]:
+        for f in sorted(glob(os.path.join(exp_folder, exp, "*"))):
+            d = {"x": [], "missing": [], "hallucinate": [], "SER": []}
+            for i, c in enumerate(sorted(glob(os.path.join(f, "logs", "conversation", "*")))):
+                r = get_ser(json.load(open(c))["conversation"])
+                d["x"].append(i)
+                d["missing"].append(r["missing"])
+                d["hallucinate"].append(r["hallucinate"])
+                d["SER"].append(r["SER"])
+            temp.append(d)
     for x in temp[0]["x"]:
         data["x"].append(x)
         for m in ["missing", "hallucinate", "SER"]:
