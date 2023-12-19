@@ -8,19 +8,8 @@ import numpy as np
 
 def arg_parser():
     parser = ArgumentParser()
-    parser.add_argument("--file1", type=str,
-                        help="sl-conduct")
-    parser.add_argument("--file2", type=str,
-                        help="sl-no-conduct")
-    parser.add_argument("--file3", type=str,
-                        help="rl-conduct")
-    parser.add_argument("--file4", type=str,
-                        help="rl-no-conduct")
-    parser.add_argument("--file5", type=str,
-                        help="sl-conduct")
-    parser.add_argument("--file6", type=str,
-                        help="sl-no-conduct")
-    parser.add_argument("--result-dir", type=str,
+    parser.add_argument("--file", "-f", type=str)
+    parser.add_argument("--result-dir", "-r", type=str,
                         default="convlab/policy/emoUS_v2/result")
 
     return parser.parse_args()
@@ -53,11 +42,6 @@ def get_turn_conduct_distribution(conversation, pick="all"):
 
 
 def plot(data, max_turn, result_dir, normalize=None, pick="all"):
-    # colors = {"neutral": "darkgrey",
-    #           "compassionate": "blueviolet",
-    #           "apologetic": "cornflowerblue",
-    #           "enthusiastic": "coral",
-    #           "appreciative": "tan"}
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     fig, ax = plt.subplots(figsize=(6, 6))
@@ -90,21 +74,15 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
 
 def main():
     args = arg_parser()
-    p_list = ['rl-scratch-conduct',
-              'rl-pretrain-conduct',
-              'sl-conduct']
-    for index, folder in enumerate([args.file1, args.file2, args.file3]):
-        file_name = os.path.join(folder, "conversation.json")
-        for pick in ["all", "Success strict", "Not Success strict"]:
-            data, normalize = get_turn_conduct_distribution(
-                json.load(open(file_name))["conversation"], pick)
-            # if pick == "all":
-            #     normalize = None
-            plot(data,
-                 20,
-                 os.path.join(args.result_dir, p_list[index]),
-                 normalize,
-                 pick)
+    file_name = args.file
+    data, normalize = get_turn_conduct_distribution(
+        json.load(open(file_name))["conversation"], "all")
+    # if pick == "all":
+    #     normalize = None
+    plot(data,
+         20,
+         args.result_dir,)
+    # normalize)
 
 
 if __name__ == "__main__":

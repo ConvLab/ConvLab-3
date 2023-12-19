@@ -1,0 +1,31 @@
+{
+    "result_dir": "convlab/policy/emoUS_v2/results/ablation/lr=1e-7",
+    "colors": {
+        "c1": "cornflowerblue",
+        "c2": "mediumseagreen",
+        "c3": "coral",
+        "c4": "gray"
+    },
+    "models": [
+        {
+            "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+EmoNLG",
+            "color": "c1",
+            "label": "emotion_reward+emotion_state"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/emotion_reward+normal_state+EmoNLG",
+            "color": "c2",
+            "label": "emotion_reward+normal_state"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/normal_reward+emotion_state+EmoNLG",
+            "color": "c3",
+            "label": "normal_reward+emotion_state"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+EmoNLG",
+            "color": "c4",
+            "label": "normal_reward+normal_state"
+        }
+    ]
+}

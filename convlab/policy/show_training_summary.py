@@ -9,6 +9,7 @@ from pprint import pprint
 def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--folder", "-f", type=str, default="")
+    parser.add_argument("--task-map", "-t", type=str, default="")
     parser.add_argument("--plot", "-p", action="store_true")
 
     return parser.parse_args()
@@ -107,7 +108,7 @@ def merge_seeds(data):
 def main():
     args = arg_parser()
     if args.plot:
-        task_map = json.load(open(args.folder))
+        task_map = json.load(open(args.task_map))
         results = {}
         colors = task_map["colors"]
         for exp in task_map["models"]:
