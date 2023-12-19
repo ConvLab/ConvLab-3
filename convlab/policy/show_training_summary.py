@@ -16,12 +16,27 @@ def arg_parser():
 
 
 def training_info(conversation):
-    r = {"complete": [], "task_succ": [], "task_succ_strict": []}
+    r = {"complete": [],
+         "task_succ": [],
+         "task_succ_strict": [],
+         "sentiment": []}
     for dialog in conversation:
         r["complete"].append(dialog["Complete"])
         r["task_succ"].append(dialog["Success"])
         r["task_succ_strict"].append(dialog["Success strict"])
+        for turn in dialog["log"]:
+            if turn["role"] == "usr":
+                r["sentiment"].append(get_sentiment(turn["emotion"]))
     return r
+
+
+def get_sentiment(emotion: str):
+    emotion = emotion.lower()
+    if emotion in ["Dissatisfied", "Abusive"]:
+        return -1
+    if emotion in ["Satisfied"]:
+        return 1
+    return 0
 
 
 def _training_info(conversation: dict):
@@ -54,7 +69,7 @@ def plot(data: dict, folder: str, title: str = None):
 
     if not os.path.exists(folder):
         os.makedirs(folder)
-    for m in ["complete", "task_succ", "task_succ_strict"]:
+    for m in ["complete", "task_succ", "task_succ_strict", "sentiment"]:
         fig, ax = plt.subplots()
         for label, exp in data.items():
             d = exp["result"]
@@ -95,7 +110,7 @@ def merge_seeds(data):
                 for m in info:
                     epochs[e][m] += info[m]
     r = {m: {"mean": [], "std": []}
-         for m in ["complete", "task_succ", "task_succ_strict"]}
+         for m in ["complete", "task_succ", "task_succ_strict", "sentiment"]}
     r["x"] = sorted(list(epochs.keys()))
     for e in r["x"]:
         for m in epochs[0]:
@@ -117,7 +132,9 @@ def main():
             for experiment in ["experiments", "finished_experiments"]:
                 for exp_folder in glob(os.path.join(folder, experiment, "*")):
                     temp = {}
-                    for epoch, file in enumerate(sorted(glob(os.path.join(exp_folder, "logs", "conversation", "*.json")))):
+                    path = os.path.join(
+                        exp_folder, "logs", "conversation", "*.json")
+                    for epoch, file in enumerate(sorted(glob(path))):
                         conversation = json.load(open(file))
                         temp[epoch] = training_info(
                             conversation["conversation"])
