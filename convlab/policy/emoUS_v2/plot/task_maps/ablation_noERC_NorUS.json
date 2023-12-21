@@ -15,19 +15,19 @@
         },
         {
             "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+NorNLG+noERC",
-            "color": "c2",
+            "color": "c1",
             "label": "$Emo_{r+s}+NorNLG$",
             "marker": "x"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+EmoNLG+noERC",
-            "color": "c3",
+            "color": "c2",
             "label": "$Nor_{r+s}+EmoNLG$",
             "marker": "o"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+NorNLG+noERC",
-            "color": "c4",
+            "color": "c2",
             "label": "$Nor_{r+s}+NorNLG$",
             "marker": "x"
         }

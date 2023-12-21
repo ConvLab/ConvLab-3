@@ -72,6 +72,7 @@ def plot(data, result_dir):
             mean = np.array(d["data"][m]["mean"])
             std = np.array(d["data"][m]["std"])
             marker = d.get("marker", "o")
+            print("(ser) result_dir", result_dir, marker)
             ax.plot(x,
                     mean,
                     marker=marker,
