@@ -10,22 +10,26 @@
         {
             "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+EmoNLG+noERC-EmoUS",
             "color": "c1",
-            "label": "$Emo_{r+s}+EmoNLG$"
+            "label": "$Emo_{r+s}+EmoNLG$",
+            "marker": "o"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+NorNLG+noERC-EmoUS",
-            "color": "c2",
-            "label": "$Emo_{r+s}+NorNLG$"
+            "color": "c1",
+            "label": "$Emo_{r+s}+NorNLG$",
+            "marker": "x"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+EmoNLG+noERC-EmoUS",
-            "color": "c3",
-            "label": "$Nor_{r+s}+EmoNLG$"
+            "color": "c2",
+            "label": "$Nor_{r+s}+EmoNLG$",
+            "marker": "o"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+NorNLG+noERC-EmoUS",
-            "color": "c4",
-            "label": "$Nor_{r+s}+NorNLG$"
+            "color": "c2",
+            "label": "$Nor_{r+s}+NorNLG$",
+            "marker": "x"
         }
     ]
 }

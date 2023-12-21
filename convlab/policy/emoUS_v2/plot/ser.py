@@ -71,10 +71,10 @@ def plot(data, result_dir):
             x = d["data"]["x"]
             mean = np.array(d["data"][m]["mean"])
             std = np.array(d["data"][m]["std"])
-
+            marker = d.get("marker", "o")
             ax.plot(x,
                     mean,
-                    marker='o',
+                    marker=marker,
                     linestyle='--',
                     color=d["color"],
                     label=d["label"])
@@ -101,7 +101,8 @@ def main():
             data.append({
                 "label": model["label"],
                 "color": tasks["colors"][model["color"]],
-                "data": get_exp_data(model["folder"])})
+                "data": get_exp_data(model["folder"]),
+                "marker": model["marker"]})
         plot(data, tasks["result_dir"])
 
     else:

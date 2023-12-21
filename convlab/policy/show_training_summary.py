@@ -76,9 +76,10 @@ def plot(data: dict, folder: str, title: str = None):
             x = np.array(d['x'])*1000
             mean = np.array(d[m]["mean"])
             std = np.array(d[m]["std"])
+            marker = d.get("marker", "o")
             ax.plot(x,
                     mean,
-                    marker='o',
+                    marker=marker,
                     linestyle='--',
                     color=exp["color"],
                     label=label)
@@ -142,7 +143,7 @@ def main():
 
             r = merge_seeds(data)
             results[exp["label"]] = {
-                "result": r, "color": colors[exp["color"]]}
+                "result": r, "color": colors[exp["color"]], "marker": exp["marker"]}
         plot(results, task_map["result_dir"])
 
     else:
