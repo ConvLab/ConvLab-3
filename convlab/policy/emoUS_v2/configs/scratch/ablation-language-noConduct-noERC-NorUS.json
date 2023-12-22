@@ -4,7 +4,7 @@
 		"allowed_domains": null
 	},
 	"model": {
-		"load_path": "convlab/policy/vtrace_DPT/sl_SetSumbt/best_vtrace",
+		"load_path": "",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"seed": 0,
