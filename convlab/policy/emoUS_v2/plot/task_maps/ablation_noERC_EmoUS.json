@@ -14,7 +14,7 @@
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+NorNLG+noERC-EmoUS",
+            "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+TRUENorNLG+noERC-EmoUS",
             "color": "c2",
             "label": "$Emo_{r+s}+NorNLG$",
             "marker": "o"
@@ -26,7 +26,7 @@
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+NorNLG+noERC-EmoUS",
+            "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+TRUENorNLG+noERC-EmoUS",
             "color": "c4",
             "label": "$Nor_{r+s}+NorNLG$",
             "marker": "o"
