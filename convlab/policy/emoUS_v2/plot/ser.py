@@ -78,9 +78,10 @@ def plot(data, result_dir):
     for m in ["missing", "hallucinate", "SER"]:
         fig, ax = plt.subplots(figsize=(6, 6))
         for d in data:
-            x = d["data"]["x"]
+            # x = d["data"]["x"]
             mean = np.array(d["data"][m]["mean"])
             std = np.array(d["data"][m]["std"])
+            x = np.array(range(mean.shape[0]))
             marker = d.get("marker", "o")
             print("(ser) result_dir", result_dir, marker)
             ax.plot(x,
