@@ -53,9 +53,16 @@ def get_exp_data(exp_folder):
     for x in temp[0]["x"]:
         data["x"].append(x)
         for m in ["missing", "hallucinate", "SER"]:
+            mean = []
+            std = []
+            for t in temp:
+                if x in t[m]:
+                    mean.append(t[m][x])
+                    std.append(t[m][x])
             mean = np.mean([t[m][x] for t in temp])
             std = np.std([t[m][x] for t in temp], ddof=1) / \
-                np.sqrt(len(temp))
+                np.sqrt(len(mean))
+
             data[m]["mean"].append(mean)
             data[m]["std"].append(std)
     return data
