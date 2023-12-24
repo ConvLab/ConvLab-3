@@ -59,12 +59,15 @@ def get_exp_data(exp_folder):
                 if x in t[m]:
                     mean.append(t[m][x])
                     std.append(t[m][x])
-            mean = np.mean([t[m][x] for t in temp])
-            std = np.std([t[m][x] for t in temp], ddof=1) / \
-                np.sqrt(len(mean))
+            l = len(mean)
+            if l > 1:
 
-            data[m]["mean"].append(mean)
-            data[m]["std"].append(std)
+                mean = np.mean([t[m][x] for t in temp])
+                std = np.std([t[m][x] for t in temp], ddof=1) / \
+                    np.sqrt(l)
+
+                data[m]["mean"].append(mean)
+                data[m]["std"].append(std)
     return data
 
 
