@@ -128,6 +128,7 @@ def main():
         results = {}
         colors = task_map["colors"]
         for exp in task_map["models"]:
+            print("plot...", exp["folder"])
             folder = exp["folder"]
             data = []
             for experiment in ["experiments", "finished_experiments"]:

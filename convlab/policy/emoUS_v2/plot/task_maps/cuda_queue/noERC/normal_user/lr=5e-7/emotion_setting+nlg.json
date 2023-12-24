@@ -1,0 +1,35 @@
+{
+    "result_dir": "convlab/policy/emoUS_v2/results/cuda/noERC/normal_user/lr=5e-7",
+    "colors": {
+        "c1": "cornflowerblue",
+        "c2": "mediumseagreen",
+        "c3": "coral",
+        "c4": "gray"
+    },
+    "models": [
+        {
+            "folder": "convlab/policy/vtrace_DPT/cuda-emotion-conduct-pretrain-5e-7-normal_user",
+            "color": "c1",
+            "label": "$Emo_{r+s}+EmoNLG$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/cuda-emotion-no_conduct-pretrain-5e-7-normal_user",
+            "color": "c2",
+            "label": "$Emo_{r+s}+NorNLG$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/cuda-no_emotion-conduct-pretrain-5e-7-normal_user",
+            "color": "c3",
+            "label": "$Nor_{r+s}+EmoNLG$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/cuda-no_emotion-no_conduct-pretrain-5e-7-normal_user",
+            "color": "c4",
+            "label": "$Nor_{r+s}+NorNLG$",
+            "marker": "o"
+        }
+    ]
+}
