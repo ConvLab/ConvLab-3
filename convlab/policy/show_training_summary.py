@@ -132,7 +132,7 @@ def main():
             folder = exp["folder"]
             data = []
             for experiment in ["experiments", "finished_experiments"]:
-                for exp_folder in glob(os.path.join(folder, experiment, "*")):
+                for exp_folder in glob(os.path.join(folder, experiment, "*"))[-3:]:
                     temp = {}
                     path = os.path.join(
                         exp_folder, "logs", "conversation", "*.json")
