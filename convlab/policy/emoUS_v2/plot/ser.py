@@ -39,35 +39,26 @@ def get_exp_data(exp_folder):
             "missing": {"mean": [], "std": []},
             "hallucinate": {"mean": [], "std": []},
             "SER": {"mean": [], "std": []}}
-    temp = []
+    temp = {}
     for exp in ["experiments", "finished_experiments"]:
         for f in sorted(glob(os.path.join(exp_folder, exp, "*"))):
-            d = {"x": [], "missing": [], "hallucinate": [], "SER": []}
+            temp[f] = {"x": [], "missing": [], "hallucinate": [], "SER": []}
             for i, c in enumerate(sorted(glob(os.path.join(f, "logs", "conversation", "*")))):
                 r = get_ser(json.load(open(c))["conversation"])
-                d["x"].append(i)
-                d["missing"].append(r["missing"])
-                d["hallucinate"].append(r["hallucinate"])
-                d["SER"].append(r["SER"])
-            temp.append(d)
-    for x in temp[0]["x"]:
-        data["x"].append(x)
+                temp[f]["x"].append(i)
+                temp[f]["missing"].append(r["missing"])
+                temp[f]["hallucinate"].append(r["hallucinate"])
+                temp[f]["SER"].append(r["SER"])
+    for f in temp:
+        if len(temp[f]["x"]) > data["x"]:
+            data["x"] = temp[f]["x"]
+    for x in data["x"]:
         for m in ["missing", "hallucinate", "SER"]:
-            mean = []
-            std = []
-            for t in temp:
-                if x in t[m]:
-                    mean.append(t[m][x])
-                    std.append(t[m][x])
-            l = len(mean)
-            if l > 1:
-
-                mean = np.mean([t[m][x] for t in temp])
-                std = np.std([t[m][x] for t in temp], ddof=1) / \
-                    np.sqrt(l)
-
-                data[m]["mean"].append(mean)
-                data[m]["std"].append(std)
+            d = [temp[f][m][x] for f in temp if x in temp[f][m]]
+            mean = np.mean(d)
+            std = np.std(d, ddof=1) / np.sqrt(len(d))
+            data[m]["mean"].append(mean)
+            data[m]["std"].append(std)
     return data
 
 
