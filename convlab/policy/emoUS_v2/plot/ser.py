@@ -54,10 +54,10 @@ def get_exp_data(exp_folder):
     for f in temp:
         if len(temp[f]["x"]) > len(data["x"]):
             data["x"] = temp[f]["x"]
-
+    print(data["x"])
     for x in data["x"]:
         for m in ["missing", "hallucinate", "SER"]:
-            d = [temp[f][m][x] for f in temp if x in temp[f][m]]
+            d = [temp[f][m][x] for f in temp if x < len(temp[f][m])]
             print(d)
             mean = np.mean(d)
             std = np.std(d, ddof=1) / np.sqrt(len(d))
