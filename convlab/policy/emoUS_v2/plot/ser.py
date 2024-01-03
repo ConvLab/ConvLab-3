@@ -50,7 +50,7 @@ def get_exp_data(exp_folder):
                 temp[f]["hallucinate"].append(r["hallucinate"])
                 temp[f]["SER"].append(r["SER"])
     for f in temp:
-        if len(temp[f]["x"]) > data["x"]:
+        if len(temp[f]["x"]) > len(data["x"]):
             data["x"] = temp[f]["x"]
     for x in data["x"]:
         for m in ["missing", "hallucinate", "SER"]:
