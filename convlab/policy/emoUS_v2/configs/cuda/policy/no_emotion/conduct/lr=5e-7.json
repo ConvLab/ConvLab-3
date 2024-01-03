@@ -4,7 +4,7 @@
 	"use_emotion": false,
 	"use_emotion_reward": false,
 	"predict_conduct": true,
-	"batchsz": 32,
+	"batchsz": 16,
 	"epoch": 40,
 	"gamma": 0.99,
 	"supervised_lr": 1e-05,
