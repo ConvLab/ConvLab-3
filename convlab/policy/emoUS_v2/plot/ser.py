@@ -44,6 +44,7 @@ def get_exp_data(exp_folder):
         for f in sorted(glob(os.path.join(exp_folder, exp, "*"))):
             temp[f] = {"x": [], "missing": [], "hallucinate": [], "SER": []}
             for i, c in enumerate(sorted(glob(os.path.join(f, "logs", "conversation", "*")))):
+                print(c)
                 r = get_ser(json.load(open(c))["conversation"])
                 temp[f]["x"].append(i)
                 temp[f]["missing"].append(r["missing"])
