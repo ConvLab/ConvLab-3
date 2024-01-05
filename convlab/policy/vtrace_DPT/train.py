@@ -264,6 +264,7 @@ if __name__ == '__main__':
         for r in range(conf['model']['update_rounds']):
             if num_dialogues > 50:
                 # print("Updating policy")
+                torch.cuda.empty_cache()
                 policy_sys.update(memory)
                 torch.cuda.empty_cache()
 
