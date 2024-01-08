@@ -74,20 +74,20 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
                 [emotion, policy.info_dict["temperature"], sys_conduct])
 
             # s_vec_list.append(policy.info_dict['kg'])
-            action_list.append(policy.info_dict['big_act'].detach())
-            small_act_list.append(policy.info_dict['small_act'])
-            action_mask_list.append(policy.info_dict['action_mask'])
-            mu_list.append(policy.info_dict['a_prob'].detach())
-            critic_value_list.append(policy.info_dict['critic_value'])
-            vector_mask_list.append(torch.Tensor(mask))
+            action_list.append(policy.info_dict['big_act'].detach().cpu())
+            small_act_list.append(policy.info_dict['small_act'].cpu())
+            action_mask_list.append(policy.info_dict['action_mask'].cpu())
+            mu_list.append(policy.info_dict['a_prob'].detach().cpu())
+            critic_value_list.append(policy.info_dict['critic_value'].cpu())
+            vector_mask_list.append(torch.Tensor(mask).cpu())
             description_idx_list.append(
-                policy.info_dict["description_idx_list"])
-            value_list.append(policy.info_dict["value_list"])
-            current_domain_mask.append(policy.info_dict["current_domain_mask"])
+                policy.info_dict["description_idx_list"].cpu())
+            value_list.append(policy.info_dict["value_list"].cpu())
+            current_domain_mask.append(policy.info_dict["current_domain_mask"].cpu())
             non_current_domain_mask.append(
-                policy.info_dict["non_current_domain_mask"])
+                policy.info_dict["non_current_domain_mask"].cpu())
             use_temperature_list.append(torch.Tensor(
-                [policy.info_dict["use_temperature"]]))
+                [policy.info_dict["use_temperature"]]).cpu())
 
             sys_act_list.append(policy.vector.action_vectorize(a))
             trajectory_list.extend([s['user_action'], a])
