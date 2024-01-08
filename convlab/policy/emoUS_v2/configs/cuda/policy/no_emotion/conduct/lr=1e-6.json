@@ -3,6 +3,7 @@
 	"value_lr": 1e-3,
 	"use_emotion": false,
 	"use_emotion_reward": false,
+	"emotion_reward_weight": 0,
 	"predict_conduct": true,
 	"batchsz": 8,
 	"epoch": 40,
