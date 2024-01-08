@@ -357,10 +357,10 @@ class VTRACE(nn.Module, Policy):
         states = [kg for kg_list in unflattened_states for kg in kg_list]
         description_batch = batch['description_idx_list']
         description_batch = [
-            descr_ for descr_episode in description_batch for descr_ in descr_episode]
+            descr_.to(DEVICE) for descr_episode in description_batch for descr_ in descr_episode]
         value_batch = batch['value_list']
         value_batch = [
-            value_ for value_episode in value_batch for value_ in value_episode]
+            value_.to(DEVICE) for value_episode in value_batch for value_ in value_episode]
 
         current_domain_mask = batch['current_domain_mask']
         current_domain_mask = torch.stack([curr_mask for curr_mask_episode in current_domain_mask
