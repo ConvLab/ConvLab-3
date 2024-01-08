@@ -69,6 +69,7 @@ class VTRACE(nn.Module, Policy):
         self.predict_conduct = cfg['predict_conduct']
         self.starting_temperature = cfg["starting_temperature"]
         self.total_temperature_updates = cfg["total_temperature_updates"]
+        self.emotion_reward_weight = cfg["emotion_reward_weight"]
 
         logging.info(f"Entropy weight: {self.entropy_weight}")
         logging.info(f"Online-Offline-ratio: {self.online_offline_ratio}")

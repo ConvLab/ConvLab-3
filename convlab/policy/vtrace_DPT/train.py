@@ -97,7 +97,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
 
             if policy.use_emotion_reward:
                 emotion_reward = emotion_dict.get(emotion, 0)
-                r += emotion_reward
+                r += emotion_reward * policy.emotion_reward_weight
 
             if policy.use_emotion_reward_difference:
                 if hasattr(environment.usr.policy, 'get_emotion'):
