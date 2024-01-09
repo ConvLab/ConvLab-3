@@ -44,26 +44,22 @@ def get_exp_data(exp_folder):
         for f in sorted(glob(os.path.join(exp_folder, exp, "*"))):
             temp[f] = {"x": [], "missing": [], "hallucinate": [], "SER": []}
             for i, c in enumerate(sorted(glob(os.path.join(f, "logs", "conversation", "*")))):
-                print(c)
                 r = get_ser(json.load(open(c))["conversation"])
                 temp[f]["x"].append(i)
                 temp[f]["missing"].append(r["missing"])
                 temp[f]["hallucinate"].append(r["hallucinate"])
                 temp[f]["SER"].append(r["SER"])
-            print(temp[f]["x"], temp[f]["missing"])
+            print(f, temp[f]["x"])
     for f in temp:
         if len(temp[f]["x"]) > len(data["x"]):
             data["x"] = temp[f]["x"]
-    print(data["x"])
     for x in data["x"]:
         for m in ["missing", "hallucinate", "SER"]:
             d = [temp[f][m][x] for f in temp if x < len(temp[f][m])]
-            print(d)
             mean = np.mean(d)
             std = np.std(d, ddof=1) / np.sqrt(len(d))
             data[m]["mean"].append(mean)
             data[m]["std"].append(std)
-    print(data)
     return data
 
 
@@ -79,7 +75,6 @@ def plot(data, result_dir):
             std = np.array(d["data"][m]["std"])
             # x = np.array(range(mean.shape[0]))
             marker = d.get("marker", "o")
-            print("(ser) result_dir", result_dir, marker, x, mean)
             ax.plot(x,
                     mean,
                     marker=marker,
