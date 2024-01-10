@@ -83,7 +83,8 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             description_idx_list.append(
                 policy.info_dict["description_idx_list"].cpu())
             value_list.append(policy.info_dict["value_list"].cpu())
-            current_domain_mask.append(policy.info_dict["current_domain_mask"].cpu())
+            current_domain_mask.append(
+                policy.info_dict["current_domain_mask"].cpu())
             non_current_domain_mask.append(
                 policy.info_dict["non_current_domain_mask"].cpu())
             use_temperature_list.append(torch.Tensor(
@@ -97,7 +98,7 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
 
             if policy.use_emotion_reward:
                 emotion_reward = emotion_dict.get(emotion, 0)
-                r += emotion_reward * policy.emotion_reward_weight
+                r += emotion_reward * policy.emotion_reward_weight - policy.emotion_reward_weight
 
             if policy.use_emotion_reward_difference:
                 if hasattr(environment.usr.policy, 'get_emotion'):
