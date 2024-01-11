@@ -142,8 +142,8 @@ def main():
                             conversation["conversation"])
                     data.append(temp)
                     print(exp_folder)
-                    print([temp[x]["task_succ_strict"] for x in temp])
-                    print([temp[x]["sentiment"] for x in temp])
+                    print(np.mean([temp[x]["task_succ_strict"] for x in temp]))
+                    print(np.mean([temp[x]["sentiment"] for x in temp]))
 
             r = merge_seeds(data)
             results[exp["label"]] = {
