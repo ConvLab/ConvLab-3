@@ -8,25 +8,25 @@
     },
     "models": [
         {
-            "folder": "convlab/policy/vtrace_DPT/cuda-emotion-conduct-pretrain-1e-7-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+conduct_1e-7+noERC-normal_user",
             "color": "c1",
             "label": "$Emo_{r+s}+EmoNLG$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/cuda-emotion-no_conduct-pretrain-1e-7-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+no_conduct_1e-7+noERC-normal_user",
             "color": "c2",
             "label": "$Emo_{r+s}+NorNLG$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/cuda-no_emotion-conduct-pretrain-1e-7-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+conduct_1e-7+noERC-normal_user",
             "color": "c3",
             "label": "$Nor_{r+s}+EmoNLG$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/cuda-no_emotion-no_conduct-pretrain-1e-7-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+no_conduct_1e-7+noERC-normal_user",
             "color": "c4",
             "label": "$Nor_{r+s}+NorNLG$",
             "marker": "o"
