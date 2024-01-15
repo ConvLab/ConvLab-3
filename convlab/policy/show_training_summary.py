@@ -24,22 +24,22 @@ def training_info(conversation):
         r["complete"].append(dialog["Complete"])
         r["task_succ"].append(dialog["Success"])
         r["task_succ_strict"].append(dialog["Success strict"])
-        sentiment = []
+        # sentiment = []
         for turn in dialog["log"]:
             if turn["role"] == "usr":
-                sentiment.append(get_sentiment(turn["emotion"]))
-                r["sentiment"].append(np.mean(sentiment))
-                # r["sentiment"].append(get_sentiment(turn["emotion"]))
+                # sentiment.append(get_sentiment(turn["emotion"]))
+                # r["sentiment"].append(np.mean(sentiment))
+                r["sentiment"].append(get_sentiment(turn["emotion"]))
     return r
 
 
 def get_sentiment(emotion: str):
     emotion = emotion.lower()
     if emotion in ["dissatisfied", "abusive"]:
-        return -5  # -1
+        return -1  # -1
     if emotion in ["satisfied"]:
-        return -1  # 1
-    return -3  # 0
+        return 1  # 1
+    return 0  # 0
 
 
 def _training_info(conversation: dict):
