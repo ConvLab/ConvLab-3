@@ -24,9 +24,11 @@ def training_info(conversation):
         r["complete"].append(dialog["Complete"])
         r["task_succ"].append(dialog["Success"])
         r["task_succ_strict"].append(dialog["Success strict"])
+        sentiment = []
         for turn in dialog["log"]:
             if turn["role"] == "usr":
-                r["sentiment"].append(get_sentiment(turn["emotion"]))
+                sentiment.append(get_sentiment(turn["emotion"]))
+        r["sentiment"].append(np.sum(sentiment))
     return r
 
 
@@ -115,10 +117,7 @@ def merge_seeds(data):
     r["x"] = sorted(list(epochs.keys()))
     for e in r["x"]:
         for m in epochs[0]:
-            if m == "sentiment":
-                r[m]["mean"].append(np.sum(epochs[e][m]))
-            else:
-                r[m]["mean"].append(np.mean(epochs[e][m]))
+            r[m]["mean"].append(np.mean(epochs[e][m]))
             r[m]["std"].append(np.std(epochs[e][m], ddof=1) /
                                np.sqrt(len(epochs[e][m])))
     return r
