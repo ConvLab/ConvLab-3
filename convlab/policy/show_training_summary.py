@@ -28,17 +28,18 @@ def training_info(conversation):
         for turn in dialog["log"]:
             if turn["role"] == "usr":
                 sentiment.append(get_sentiment(turn["emotion"]))
-        r["sentiment"].append(np.mean(sentiment))
+                r["sentiment"].append(np.mean(sentiment))
+                # r["sentiment"].append(get_sentiment(turn["emotion"]))
     return r
 
 
 def get_sentiment(emotion: str):
     emotion = emotion.lower()
     if emotion in ["dissatisfied", "abusive"]:
-        return -1  # -4
+        return -5  # -1
     if emotion in ["satisfied"]:
-        return +1  # 0
-    return 0  # -2
+        return -1  # 1
+    return -3  # 0
 
 
 def _training_info(conversation: dict):
