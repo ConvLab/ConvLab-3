@@ -14,6 +14,7 @@ from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.policy import Policy
 from convlab.task.multiwoz.goal_generator import GoalGenerator
 from convlab.util.custom_util import model_downloader
+from convlab.policy.genTUS.unify.build_data import DataBuilder
 
 
 DEBUG = False
@@ -302,6 +303,8 @@ class UserActionPolicy(Policy):
         # TODO
         allow_general_intent = False
         self.model.eval()
+        if self.sgd_style:
+            sys_act = self.data_builder.norm_domain(sys_act)
 
         if not self.add_sys_from_reward:
             self.goal.update_user_goal(action=sys_act, char="sys")
@@ -355,6 +358,14 @@ class UserActionPolicy(Policy):
             # print("out", self.utterance)
             return self.utterance
         else:
+            if self.sgd_style:
+                action = []
+                for act in self.semantic_action:
+                    domain = act[1]
+                    if domain in self.domain_number:
+                        domain = domain + "_" + self.domain_number[domain]
+                    action.append([act[0], domain, act[2], act[3]])
+                return action
             return self.semantic_action
 
     def init_session(self, goal=None):
@@ -362,6 +373,18 @@ class UserActionPolicy(Policy):
         self.token_map.default(only_action=self.only_action)
         self.time_step = 0
         remove_domain = "police"  # remove police domain in inference
+        self.domain_number = {}
+        self.sgd_style = False
+        if goal is not None:
+            for g in goal:
+                if "_" in g[0]:
+                    self.sgd_style = True
+                    d = g[0].split("_")[0]
+                    n = g[0].split("_")[1]
+                    self.domain_number[d] = n
+        if self.sgd_style:
+            self.data_builder = DataBuilder("sgd")
+            goal = self.data_builder.norm_domain_goal(goal)
 
         if not goal:
             self._new_goal(remove_domain=remove_domain)

@@ -14,15 +14,18 @@ def main():
     # get a goal from sgd dataset
     data_builder = DataBuilder("sgd")
     data = load_dataset("sgd")
-    g = data_builder.norm_domain_goal(create_goal(data["train"][0]))
-
+    # g = data_builder.norm_domain_goal(
+    #     create_goal(data["train"][0]), remove_domain_number=False)
+    g = create_goal(data["train"][0])
     # initial the user with the goal from dataset
+    print(g)
+    print('-'*10)
     usr.init_session(goal=g)
 
     # a mock conversation
     print(usr.response([]))
-    print(usr.response([['request', 'Restaurants', 'area', '?']]))
-    print(usr.response([['request', 'Restaurants', 'city', '?']]))
+    print(usr.response([['request', 'Restaurants_1', 'area', '?']]))
+    print(usr.response([['request', 'Restaurants_1', 'city', '?']]))
 
 
 if __name__ == "__main__":
