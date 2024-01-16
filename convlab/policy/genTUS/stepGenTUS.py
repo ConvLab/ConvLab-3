@@ -22,6 +22,7 @@ DEBUG = False
 
 class UserActionPolicy(Policy):
     def __init__(self, model_checkpoint, mode="semantic", only_action=True, max_turn=40, **kwargs):
+        self.sub_goal_succ = kwargs.get("sub_goal_succ", True)
         self.mode = mode
         # if mode == "semantic" and only_action:
         #     # only generate semantic action in prediction
@@ -320,7 +321,7 @@ class UserActionPolicy(Policy):
             else:
                 history = self.usr_acts[-1*self.max_history:]
         inputs = json.dumps({"system": sys_act,
-                             "goal": self.goal.get_goal_list(),
+                             "goal": self.goal.get_goal_list(sub_goal_success=self.sub_goal_succ),
                              "history": history,
                              "turn": str(int(self.time_step/2))})
         with torch.no_grad():
@@ -655,6 +656,7 @@ class UserPolicy(Policy):
             mode = "max"
         response = self.policy.predict(sys_act, mode)
         self.semantic_action = self.policy.semantic_action
+
         return response
 
     def init_session(self, goal=None):
