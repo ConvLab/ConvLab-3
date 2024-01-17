@@ -1,5 +1,5 @@
 {
-    "result_dir": "convlab/policy/emoUS_v2/results/cuda/noERC/normal_user/lr=5e-6",
+    "result_dir": "convlab/policy/emoUS_v2/results/cuda/noERC/normal_user/lr=5e-7",
     "colors": {
         "c1": "cornflowerblue",
         "c2": "mediumseagreen",
@@ -8,25 +8,25 @@
     },
     "models": [
         {
-            "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+conduct_5e-6+noERC-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+conduct_5e-7+noERC-normal_user",
             "color": "c1",
             "label": "$Emo_{r+s}+conduct$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+no_conduct_5e-6+noERC-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+no_conduct_5e-7+noERC-normal_user",
             "color": "c2",
             "label": "$Emo_{r+s}$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+conduct_5e-6+noERC-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+conduct_5e-7+noERC-normal_user",
             "color": "c3",
             "label": "$Nor_{r+s}+conduct$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+no_conduct_5e-6+noERC-normal_user",
+            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+no_conduct_5e-7+noERC-normal_user",
             "color": "c4",
             "label": "$Nor_{r+s}$",
             "marker": "o"
