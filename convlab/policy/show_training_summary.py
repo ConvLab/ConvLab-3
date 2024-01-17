@@ -36,10 +36,10 @@ def training_info(conversation):
 def get_sentiment(emotion: str):
     emotion = emotion.lower()
     if emotion in ["dissatisfied", "abusive"]:
-        return -1  # -1
+        return -5  # -1
     if emotion in ["satisfied"]:
-        return 1  # 1
-    return 0  # 0
+        return -1  # 1
+    return -3  # 0
 
 
 def _training_info(conversation: dict):
