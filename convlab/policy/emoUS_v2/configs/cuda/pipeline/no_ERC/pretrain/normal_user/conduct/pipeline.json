@@ -12,7 +12,7 @@
 		"eval_frequency": 1000,
 		"num_eval_dialogues": 250,
 		"process_num_train": 1,
-		"total_dialogues": 10000,
+		"total_dialogues": 15000,
 		"update_rounds": 1,
 		"new_dialogues": 2,
 		"sys_semantic_to_usr": false,
@@ -45,7 +45,7 @@
 		"SCBART": {
 			"class_path": "convlab.nlg.scbart.scbart.SCBART",
 			"ini_params": {
-				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-userutt-aug",
+				"model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-userutt-aug-withdialmage",
 				"dataset_name": "multiwoz21",
 				"device": "cuda"
 			}
