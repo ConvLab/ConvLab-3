@@ -25,7 +25,7 @@ class SCBART(NLG):
             self.device = "cpu"
 
         self.model = BartForConditionalGeneration.from_pretrained(
-            model_path, from_flax=True).to(self.device)
+            model_path).to(self.device)
 
         self.tokenizer = BartTokenizer.from_pretrained(model_path)
         # model_path = cached_path(model_path)
