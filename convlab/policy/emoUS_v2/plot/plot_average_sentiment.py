@@ -6,6 +6,7 @@ import pandas as pd
 from convlab.policy.emoUS_v2.plot.success_all_fail import get_turn_emotion
 import matplotlib.pyplot as plt
 from convlab.nlg.evaluate import fine_SER
+from convlab.nlg.evaluate_unified_datasets_v2 import ser_new
 
 
 def arg_parser():
@@ -54,7 +55,10 @@ def get_ser(conversation):
             if t["role"] == "sys":
                 acts.append(t["act"])
                 utts.append(t["utt"])
-    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+    # shutong: new code here
+    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+        # acts, utts)
+    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = ser_new(
         acts, utts)
     return {"missing": missing/total, "hallucinate": hallucinate/total, "SER": (missing+hallucinate)/total}
 

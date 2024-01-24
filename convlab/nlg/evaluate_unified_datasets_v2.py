@@ -139,6 +139,107 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
 
     return metrics
 
+def ser_new(dialog_acts, utts, filter_empty_acts=True):
+    ontology = load_ontology('multiwoz21')
+    predict_result = json.load(open(predict_result))
+    metrics = {}
+
+    # ERROR Rate
+    ## get all values in ontology
+    val2ds_dict = {}
+    for domain_name in ontology['domains']:
+        domain = ontology['domains'][domain_name]
+        for slot_name in domain['slots']:
+            slot = domain['slots'][slot_name]
+            if 'possible_values' not in slot:
+                continue
+            possible_vals = slot['possible_values']
+            if len(possible_vals) > 0:
+                for val in possible_vals:
+                    val2ds_dict[val] = f'{domain_name}-{slot_name}'
+
+    score_list = []
+    total_count = 0
+    total_missing = 0
+    total_hallucination = 0
+    # for item in predict_result:
+    for utterance, da in zip(utts, dialog_acts):
+        # da = dialog_act
+        # utterance = utt
+        missing_count = 0
+        redundant_count = 0
+        all_count = 0
+        all_values = set()
+        ## missing values
+        for idsv in da:
+            i, d, s, v = [x.lower() for x in idsv]
+            # slot_value = da[key]
+            # for triple in slot_value:
+            #     if 'value' in triple:
+            if v != 'none':
+                all_values.add(v)
+                missing_flag = False
+                norm_value = v.strip().lower()
+                if norm_value not in utterance.lower():
+                    missing_flag = True
+                    # problem 1: values with multiple tokens considered missing if some spaces are dropped in the nlg output
+                    # e.g. "53 - 57 Lensfield road" considered missing despite "53-57 Lensfield road" in the output
+                    # temporary solution: for values with multiple tokens, remove spaces in the value and the sentence before comparing
+                    if len(norm_value.split()) > 1:
+                        if norm_value.replace(' ', '') in utterance.lower().replace(' ', ''):
+                            missing_flag = False
+                    # problem 2: integer values considered missing if they are realised in words
+                    # e.g. "4 stars" considered missing despite "four stars" in the output
+                    # temporary solution: use a dictionary (int2word) for value matching
+                    if norm_value in int2word:
+                        if int2word[norm_value] in utterance.lower():
+                            missing_flag = False
+                    # problem 3: misspelt values.
+                    # problem 3.1: truly misspelt: "huntingdon marriot hotel" vs "huntingdon marriott hotel"
+                    # problem 3.2: British vs American (probably some other usage) English: "caffe" vs "cafe", "theatre" vs "theater"
+                    # ignore for now
+                if missing_flag:
+                    missing_count += 1
+                    logger.log(f"missing: {s}-{v} | {utterance}")
+                all_count += 1
+            if all_count == 0:
+                continue
+        ## redundant values
+        for val in val2ds_dict:
+            # problem 1: the checked value from other domain-slot is a substring of one of the values in the dialogue action
+            # e.g. centre vs centre area
+            mentioned_flag = False
+            for mentioned_value in all_values:
+                if val.strip().lower() in mentioned_value.strip().lower():
+                    mentioned_flag = True
+            if f' {val.strip().lower()} ' in f' {utterance.strip().lower()} ' and not mentioned_flag:
+                wlist = val2ds_dict[val].split('-')
+                domain, slot = wlist[0], wlist[1]
+                redundant_flag = False
+                norm_slot = slot.strip().lower()
+                if f' {norm_slot}' in f' {utterance.strip().lower()} ':
+                    redundant_flag = True
+                    # # problem 2: binary slots not checked - not applicable for old format
+                    # if norm_slot in [da['slot'] for da in da['binary']]:
+                    #     redundant_flag = False
+                    # problem 3: for the dataset, missing annotation in dialogue_acts
+                if redundant_flag:
+                    redundant_count += 1
+                    logger.log(f"{all_values}")
+                    logger.log(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
+        item_score = float(missing_count + redundant_count) / all_count
+        # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
+        score_list.append(item_score)
+        total_missing += missing_count
+        total_hallucination += redundant_count
+        total_count += all_count
+    metrics['err'] = np.mean(score_list)
+    metrics['missing'] = total_missing
+    metrics['redundant'] = total_hallucination
+    metrics['total'] = total_count
+
+    return total_missing, total_hallucination, total_count, None, None
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
