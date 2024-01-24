@@ -2,10 +2,10 @@ import json
 from tqdm import tqdm
 from convlab.nlg.scbart.scbart import SCBART
 
-# model_path = '/home/shutong/models/scbart-nlprompt-semact-conduct-userutt-aug.pt'
-# model_out_path = '/home/shutong/models/scbart-nlprompt-semact-conduct-userutt-aug'
-# SCBART.save_to_pretrained(model_path, model_out_path)
-
+model_path = '/home/shutong/models/scbart-nlprompt-semact-conduct-userutt-aug-withdialmage.pt'
+model_out_path = '/home/shutong/models/scbart-nlprompt-semact-conduct-userutt-aug-withdialmage'
+SCBART.save_to_pretrained(model_path, model_out_path)
+exit()
 conv_log = json.load(open('/home/shutong/emoUS_v2_results_conversation_nlg_langEmoUS-augSCBart_conversation.json', 'r'))
 conv = conv_log['conversation']
 actions = []
