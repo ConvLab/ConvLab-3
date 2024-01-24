@@ -59,7 +59,8 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
         policy_sys = GDPL(vectorizer=conf['vectorizer_sys_activated'])
     elif model_name == "DDPT":
         from convlab.policy.vtrace_DPT import VTRACE
-        policy_sys = VTRACE(is_train=False, vectorizer=conf['vectorizer_sys_activated'])
+        policy_sys = VTRACE(
+            is_train=False, vectorizer=conf['vectorizer_sys_activated'])
 
     try:
         if model_path:
@@ -87,7 +88,7 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
     for seed in tqdm(range(1000, 1000 + dialogues)):
         set_seed(seed)
         sess.init_session(goal=goals[seed-1000])
-        sys_response = []
+        sys_response = [] if sess.sys_agent.nlg is None else ''
         actions = 0.0
         total_return = 0.0
         turns = 0
@@ -125,11 +126,12 @@ def evaluate(config_path, model_name, verbose=False, model_path="", goals_from_d
                 task_succ = sess.evaluator.task_success()
                 task_succ = sess.evaluator.success
                 task_succ_strict = sess.evaluator.success_strict
-                if goals_from_data:
-                    complete = sess.user_agent.policy.policy.goal.task_complete()
-                else:
-                    complete = sess.evaluator.complete
-                break
+                # if goals_from_data:
+                #     complete = sess.user_agent.policy.policy.goal.task_complete()
+                # else:
+                #     complete = sess.evaluator.complete
+                # break
+                complete = sess.user_agent.policy.policy.goal.task_complete()
 
         if verbose:
             logging.info(f"Complete: {complete}")

@@ -57,7 +57,8 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
         for t in range(traj_len):
 
             if hasattr(environment.sys_dst, 'get_emotion'):
-                emotion = environment.sys_dst.get_emotion()
+                emotion = environment.sys_dst.get_emotion().lower()
+                s['user_emotion'] = emotion
             elif hasattr(environment.usr.policy, 'get_emotion'):
                 emotion = environment.usr.policy.get_emotion().lower()
                 s['user_emotion'] = emotion
@@ -73,20 +74,21 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
                 [emotion, policy.info_dict["temperature"], sys_conduct])
 
             # s_vec_list.append(policy.info_dict['kg'])
-            action_list.append(policy.info_dict['big_act'].detach())
-            small_act_list.append(policy.info_dict['small_act'])
-            action_mask_list.append(policy.info_dict['action_mask'])
-            mu_list.append(policy.info_dict['a_prob'].detach())
-            critic_value_list.append(policy.info_dict['critic_value'])
-            vector_mask_list.append(torch.Tensor(mask))
+            action_list.append(policy.info_dict['big_act'].detach().cpu())
+            small_act_list.append(policy.info_dict['small_act'].cpu())
+            action_mask_list.append(policy.info_dict['action_mask'].cpu())
+            mu_list.append(policy.info_dict['a_prob'].detach().cpu())
+            critic_value_list.append(policy.info_dict['critic_value'].cpu())
+            vector_mask_list.append(torch.Tensor(mask).cpu())
             description_idx_list.append(
-                policy.info_dict["description_idx_list"])
-            value_list.append(policy.info_dict["value_list"])
-            current_domain_mask.append(policy.info_dict["current_domain_mask"])
+                policy.info_dict["description_idx_list"].cpu())
+            value_list.append(policy.info_dict["value_list"].cpu())
+            current_domain_mask.append(
+                policy.info_dict["current_domain_mask"].cpu())
             non_current_domain_mask.append(
-                policy.info_dict["non_current_domain_mask"])
+                policy.info_dict["non_current_domain_mask"].cpu())
             use_temperature_list.append(torch.Tensor(
-                [policy.info_dict["use_temperature"]]))
+                [policy.info_dict["use_temperature"]]).cpu())
 
             sys_act_list.append(policy.vector.action_vectorize(a))
             trajectory_list.extend([s['user_action'], a])
@@ -95,10 +97,8 @@ def create_episodes(environment, policy, num_episodes, memory, goals):
             next_s, r, done = environment.step(a, sys_conduct=sys_conduct)
 
             if policy.use_emotion_reward:
-                if hasattr(environment.usr.policy, 'get_emotion'):
-                    emotion = environment.usr.policy.get_emotion().lower()
-                    emotion_reward = emotion_dict.get(emotion, 0)
-                    r += emotion_reward
+                emotion_reward = emotion_dict.get(emotion, 0)
+                r += emotion_reward * policy.emotion_reward_weight - policy.emotion_reward_weight
 
             if policy.use_emotion_reward_difference:
                 if hasattr(environment.usr.policy, 'get_emotion'):
@@ -153,6 +153,8 @@ if __name__ == '__main__':
     parser.add_argument("--save_eval_dials", type=bool, default=False,
                         help="Flag for saving dialogue_info during evaluation")
     parser.add_argument("--exp_dir", type=str, default=None)
+    parser.add_argument("--hyperparameter", type=str,
+                        default="multiwoz21_dpt.json",)
     # We can specifiy the config file path or the config name
     if os.path.exists(parser.parse_args().config_name):
         path = parser.parse_args().config_name
@@ -178,8 +180,11 @@ if __name__ == '__main__':
     seed = conf['model']['seed']
     set_seed(seed)
 
-    policy_sys = VTRACE(is_train=True, seed=seed, vectorizer=conf['vectorizer_sys_activated'],
-                        load_path=conf['model']['load_path'])
+    policy_sys = VTRACE(is_train=True,
+                        seed=seed,
+                        vectorizer=conf['vectorizer_sys_activated'],
+                        load_path=conf['model']['load_path'],
+                        config_path=parser.parse_args().hyperparameter)
     policy_sys.share_memory()
     memory = Memory(seed=seed)
     policy_sys.current_time = current_time
@@ -259,7 +264,8 @@ if __name__ == '__main__':
 
         for r in range(conf['model']['update_rounds']):
             if num_dialogues > 50:
-                print("Updating policy")
+                # print("Updating policy")
+                torch.cuda.empty_cache()
                 policy_sys.update(memory)
                 torch.cuda.empty_cache()
 

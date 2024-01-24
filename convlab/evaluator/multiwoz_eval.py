@@ -105,8 +105,9 @@ class MultiWozEvaluator(Evaluator):
         self.successful_domains = []
         self.current_sys_act = []
         self.action_length_penalty = action_length_penalty
-        logging.info(
-            f"We check booking constraints: {self.check_book_constraints}")
+        if self.check_book_constraints:
+            logging.info(
+                f"We check booking constraints: {self.check_book_constraints}")
 
     def _init_dict(self):
         dic = {}
@@ -167,7 +168,8 @@ class MultiWozEvaluator(Evaluator):
         new_acts = list()
         for intent, domain, slot, value in da_turn:
             if intent.lower() == 'book' and not value:
-                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain == domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
+                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain ==
+                       domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
                 ref = ref[0] if ref else ''
                 value = ref
             new_acts.append([intent, domain, slot, value])
@@ -658,7 +660,8 @@ class MultiWozEvaluator(Evaluator):
         else:
             if self.action_length_penalty != 0.0:
                 # if action penalty is not 0.0, we use this more general definition of efficiency penalty
-                reward = -self.action_length_penalty * len(self.current_sys_act)
+                reward = -self.action_length_penalty * \
+                    len(self.current_sys_act)
             else:
                 reward = -1
 

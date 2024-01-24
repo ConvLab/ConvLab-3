@@ -1,0 +1,35 @@
+{
+    "result_dir": "convlab/policy/emoUS_v2/results/ablation/noERC/EmoUS/lr=1e-7",
+    "colors": {
+        "c1": "cornflowerblue",
+        "c2": "mediumseagreen",
+        "c3": "coral",
+        "c4": "gray"
+    },
+    "models": [
+        {
+            "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+EmoNLG+noERC-EmoUS",
+            "color": "c1",
+            "label": "$Emo_{r+s}+EmoNLG$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/emotion_reward+emotion_state+TRUENorNLG+noERC-EmoUS",
+            "color": "c2",
+            "label": "$Emo_{r+s}+NorNLG$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+EmoNLG+noERC-EmoUS",
+            "color": "c3",
+            "label": "$Nor_{r+s}+EmoNLG$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/normal_reward+normal_state+TRUENorNLG+noERC-EmoUS",
+            "color": "c4",
+            "label": "$Nor_{r+s}+NorNLG$",
+            "marker": "o"
+        }
+    ]
+}

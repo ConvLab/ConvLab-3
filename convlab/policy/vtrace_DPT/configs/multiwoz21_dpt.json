@@ -37,6 +37,7 @@
 	"use_emotion_temperature": false,
 	"only_negative_emotion_temperature": false,
 	"use_emotion_reward": false,
+	"emotion_reward_weight": 1.0,
 	"use_emotion_reward_difference": false,
 	"temperature_activation": "sigmoid",
 	"use_emotion_prediction": false,
