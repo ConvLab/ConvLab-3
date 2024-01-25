@@ -56,10 +56,10 @@ def get_ser(conversation):
                 acts.append(t["act"])
                 utts.append(t["utt"])
     # shutong: new code here
-    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-        # acts, utts)
-    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = ser_new(
+    missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
         acts, utts)
+    # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = ser_new(
+    #     acts, utts)
     return {"missing": missing/total, "hallucinate": hallucinate/total, "SER": (missing+hallucinate)/total}
 
 
