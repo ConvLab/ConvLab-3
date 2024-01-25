@@ -57,7 +57,7 @@ def get_ser(conversation):
                 utts.append(t["utt"])
     # shutong: new code here
     # missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
-        # acts, utts)
+    #     acts, utts)
     missing, hallucinate, total, hallucination_dialogs, missing_dialogs = ser_new(
         acts, utts)
     return {"missing": missing/total, "hallucinate": hallucinate/total, "SER": (missing+hallucinate)/total}
@@ -85,23 +85,23 @@ def main():
             conversation["conversation"])
         config["color"] = colors[config["color"]]
         data[model] = config
-        ner[model] = get_ser(conversation["conversation"])
+        # ner[model] = get_ser(conversation["conversation"])
 
     plot(data,
          max_turn,
          result_dir,
          pick)
 
-    if pick == "all":
-        basic_info = {}
-        for model, config in task_map["models"].items():
-            folder = os.path.dirname(config["file"])
-            basic_info[model] = [json.load(
-                open(os.path.join(folder, "conversation_result.json")))["basic_info"][s] for s in col]
-            basic_info[model].extend([ner[model][s] for s in ner_col])
+    # if pick == "all":
+    #     basic_info = {}
+    #     for model, config in task_map["models"].items():
+    #         folder = os.path.dirname(config["file"])
+    #         basic_info[model] = [json.load(
+    #             open(os.path.join(folder, "conversation_result.json")))["basic_info"][s] for s in col]
+    #         basic_info[model].extend([ner[model][s] for s in ner_col])
 
-        df = pd.DataFrame(basic_info, index=col+ner_col).T
-        df.to_csv(os.path.join(result_dir, "basic_info.csv"))
+    #     df = pd.DataFrame(basic_info, index=col+ner_col).T
+    #     df.to_csv(os.path.join(result_dir, "basic_info.csv"))
 
 
 if __name__ == "__main__":

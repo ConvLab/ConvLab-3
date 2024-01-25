@@ -3,6 +3,7 @@ import json
 from argparse import ArgumentParser
 import os
 import numpy as np
+import pandas as pd
 from pprint import pprint
 
 
@@ -124,9 +125,42 @@ def merge_seeds(data):
     return r
 
 
+class Table:
+    def __init__(self, max_epoch=15):
+        self.success = {"exp": [], "seed": []}
+        self.sentiment = {"exp": [], "seed": []}
+        self.max_epoch = max_epoch
+        for e in range(max_epoch+1):
+            self.success[str(e)] = []
+            self.sentiment[str(e)] = []
+
+    def update(self, folder, data):
+        x = folder.split("/")
+        exp = x[-3]
+        seed = x[-1]
+        self.success["exp"].append(exp)
+        self.success["seed"].append(seed)
+        self.sentiment["exp"].append(exp)
+        self.sentiment["seed"].append(seed)
+        for e in range(self.max_epoch+1):
+            if e < len(data):
+                self.success[str(e)].append(
+                    np.mean(data[e]["task_succ_strict"]))
+                self.sentiment[str(e)].append(np.mean(data[e]["sentiment"]))
+            else:
+                self.success[str(e)].append(0)
+                self.sentiment[str(e)].append(0)
+
+    def to_csv(self, path):
+        pd.DataFrame(self.success).to_csv(os.path.join(path, "success.csv"))
+        pd.DataFrame(self.sentiment).to_csv(
+            os.path.join(path, "sentiment.csv"))
+
+
 def main():
     args = arg_parser()
     if args.plot:
+        table = Table(15)
         task_map = json.load(open(args.task_map))
         results = {}
         colors = task_map["colors"]
@@ -147,11 +181,13 @@ def main():
                     print(exp_folder)
                     print([np.mean(temp[x]["task_succ_strict"]) for x in temp])
                     print([np.mean(temp[x]["sentiment"]) for x in temp])
+                    table.update(exp_folder, temp)
 
             r = merge_seeds(data)
             results[exp["label"]] = {
                 "result": r, "color": colors[exp["color"]], "marker": exp["marker"]}
         plot(results, task_map["result_dir"])
+        table.to_csv(task_map["result_dir"])
 
     else:
         folder = os.path.join(args.folder, "logs", "conversation")
