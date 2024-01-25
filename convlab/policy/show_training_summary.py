@@ -144,8 +144,9 @@ class Table:
         self.sentiment["seed"].append(seed)
         for e in range(self.max_epoch+1):
             if e < len(data):
-                self.success[str(e)].append(data[e]["task_succ_strict"])
-                self.sentiment[str(e)].append(data[e]["sentiment"])
+                self.success[str(e)].append(
+                    np.mean(data[e]["task_succ_strict"]))
+                self.sentiment[str(e)].append(np.mean(data[e]["sentiment"]))
             else:
                 self.success[str(e)].append(0)
                 self.sentiment[str(e)].append(0)
