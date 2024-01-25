@@ -141,7 +141,6 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
 
 def ser_new(dialog_acts, utts, filter_empty_acts=True):
     ontology = load_ontology('multiwoz21')
-    predict_result = json.load(open(predict_result))
     metrics = {}
 
     # ERROR Rate
@@ -200,7 +199,7 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
                     # ignore for now
                 if missing_flag:
                     missing_count += 1
-                    logger.log(f"missing: {s}-{v} | {utterance}")
+                    # logger.log(f"missing: {s}-{v} | {utterance}")
                 all_count += 1
             if all_count == 0:
                 continue
@@ -225,15 +224,15 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
                     # problem 3: for the dataset, missing annotation in dialogue_acts
                 if redundant_flag:
                     redundant_count += 1
-                    logger.log(f"{all_values}")
-                    logger.log(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
-        item_score = float(missing_count + redundant_count) / all_count
+                    # logger.log(f"{all_values}")
+                    # logger.log(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
+        # item_score = float(missing_count + redundant_count) / all_count
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
-        score_list.append(item_score)
+        # score_list.append(item_score)
         total_missing += missing_count
         total_hallucination += redundant_count
         total_count += all_count
-    metrics['err'] = np.mean(score_list)
+    # metrics['err'] = np.mean(score_list)
     metrics['missing'] = total_missing
     metrics['redundant'] = total_hallucination
     metrics['total'] = total_count
