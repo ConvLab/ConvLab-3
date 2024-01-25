@@ -7,28 +7,22 @@
         "c4": "gray"
     },
     "models": {
-        "$emotion+conduct$": {
+        "$rl+emotion+conduct$": {
             "file": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+conduct_5e-7+noERC-normal_user/finished_experiments/experiment_2024-01-18-14-09-04/logs/conversation/conversation-2024-01-20-18-33-27.json",
             "color": "c1",
-            "label": "$emotion+conduct$",
+            "label": "$rl+emotion+conduct$",
             "marker": "o"
         },
-        "$emotion$": {
-            "file": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+no_conduct_5e-7+noERC-normal_user/finished_experiments/experiment_2024-01-18-14-09-04/logs/conversation/conversation-2024-01-20-17-51-33.json",
-            "color": "c2",
-            "label": "$emotion$",
-            "marker": "o"
-        },
-        "$conduct$": {
-            "file": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+conduct_5e-7+noERC-normal_user/finished_experiments/experiment_2024-01-18-14-09-26/logs/conversation/conversation-2024-01-20-13-10-41.json",
-            "color": "c3",
-            "label": "$conduct$",
-            "marker": "o"
-        },
-        "$baseline$": {
+        "$rl$": {
             "file": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+no_conduct_5e-7+noERC-normal_user/finished_experiments/experiment_2024-01-18-14-09-13/logs/conversation/conversation-2024-01-20-20-14-07.json",
-            "color": "c4",
-            "label": "$baseline$",
+            "color": "c2",
+            "label": "$rl$",
+            "marker": "o"
+        },
+        "$sl$": {
+            "file": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+conduct_5e-7+noERC-normal_user/finished_experiments/experiment_2024-01-18-14-09-04/logs/conversation/conversation-2024-01-18-14-47-37.json",
+            "color": "c3",
+            "label": "$sl$",
             "marker": "o"
         }
     }
