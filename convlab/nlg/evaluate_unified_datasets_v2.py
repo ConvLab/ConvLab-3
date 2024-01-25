@@ -7,8 +7,10 @@ import numpy as np
 
 
 sys.path.append('../..')
-int2word = {'0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten'}
+int2word = {'0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
+            '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten'}
 logger = None
+
 
 class Logging:
     def __init__(self, path):
@@ -23,6 +25,7 @@ class Logging:
             f.write('\n')
             f.close()
 
+
 def evaluate(predict_result, ontology, filter_empty_acts=True):
     predict_result = json.load(open(predict_result))
     metrics = {}
@@ -33,7 +36,8 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
     for i in range(len(predict_result)):
         if filter_empty_acts:
             acts = predict_result[i]['dialogue_acts']
-            acts_size = len(acts['binary']) + len(acts['categorical']) + len(acts['non-categorical'])
+            acts_size = len(
+                acts['binary']) + len(acts['categorical']) + len(acts['non-categorical'])
             if acts_size == 0:
                 continue
         references.append(predict_result[i]['utterance'])
@@ -42,11 +46,12 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
         else:
             candidates.append(predict_result[i]['predictions']['utterance'])
     # metrics['bleu'] = corpus_bleu(references, candidates)
-    references = [" " if ref=="" else ref for ref in references]
-    metrics['bleu'] = sacrebleu.corpus_bleu(candidates, [references], lowercase=True).score
+    references = [" " if ref == "" else ref for ref in references]
+    metrics['bleu'] = sacrebleu.corpus_bleu(
+        candidates, [references], lowercase=True).score
 
     # ERROR Rate
-    ## get all values in ontology
+    # get all values in ontology
     val2ds_dict = {}
     for domain_name in ontology['domains']:
         domain = ontology['domains'][domain_name]
@@ -70,7 +75,7 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
         redundant_count = 0
         all_count = 0
         all_values = set()
-        ## missing values
+        # missing values
         for key in da:
             slot_value = da[key]
             for triple in slot_value:
@@ -99,11 +104,12 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
                         # ignore for now
                     if missing_flag:
                         missing_count += 1
-                        logger.log(f"missing: {triple['slot']}-{triple['value']} | {item['prediction']} | {item['utterance']}")
+                        logger.log(
+                            f"missing: {triple['slot']}-{triple['value']} | {item['prediction']} | {item['utterance']}")
                     all_count += 1
         if all_count == 0:
             continue
-        ## redundant values
+        # redundant values
         for val in val2ds_dict:
             # problem 1: the checked value from other domain-slot is a substring of one of the values in the dialogue action
             # e.g. centre vs centre area
@@ -125,7 +131,8 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
                 if redundant_flag:
                     redundant_count += 1
                     logger.log(f"{all_values}")
-                    logger.log(f"redundant: {val}/{val2ds_dict[val]} | {item['prediction']} | {item['utterance']}")
+                    logger.log(
+                        f"redundant: {val}/{val2ds_dict[val]} | {item['prediction']} | {item['utterance']}")
         item_score = float(missing_count + redundant_count) / all_count
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
         score_list.append(item_score)
@@ -139,13 +146,14 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
 
     return metrics
 
+
 def ser_new(dialog_acts, utts, filter_empty_acts=True):
     ontology = load_ontology('multiwoz21')
-    predict_result = json.load(open(predict_result))
+    # predict_result = json.load(open(predict_result))
     metrics = {}
 
     # ERROR Rate
-    ## get all values in ontology
+    # get all values in ontology
     val2ds_dict = {}
     for domain_name in ontology['domains']:
         domain = ontology['domains'][domain_name]
@@ -170,7 +178,7 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
         redundant_count = 0
         all_count = 0
         all_values = set()
-        ## missing values
+        # missing values
         for idsv in da:
             i, d, s, v = [x.lower() for x in idsv]
             # slot_value = da[key]
@@ -204,7 +212,7 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
                 all_count += 1
             if all_count == 0:
                 continue
-        ## redundant values
+        # redundant values
         for val in val2ds_dict:
             # problem 1: the checked value from other domain-slot is a substring of one of the values in the dialogue action
             # e.g. centre vs centre area
@@ -226,7 +234,8 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
                 if redundant_flag:
                     redundant_count += 1
                     logger.log(f"{all_values}")
-                    logger.log(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
+                    logger.log(
+                        f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
         item_score = float(missing_count + redundant_count) / all_count
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
         score_list.append(item_score)
@@ -243,8 +252,9 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
-    
-    parser = ArgumentParser(description="calculate NLG metrics for unified datasets")
+
+    parser = ArgumentParser(
+        description="calculate NLG metrics for unified datasets")
     parser.add_argument('--predict_result', '-p', type=str, required=True,
                         help='path to the prediction file that in the unified data format')
     parser.add_argument('--dataset_name', type=str, required=True,
