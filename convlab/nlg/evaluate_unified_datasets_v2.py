@@ -149,7 +149,6 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
 
 def ser_new(dialog_acts, utts, filter_empty_acts=True):
     ontology = load_ontology('multiwoz21')
-    predict_result = json.load(open(predict_result))
     metrics = {}
 
     # ERROR Rate
@@ -233,9 +232,9 @@ def ser_new(dialog_acts, utts, filter_empty_acts=True):
                     # problem 3: for the dataset, missing annotation in dialogue_acts
                 if redundant_flag:
                     redundant_count += 1
-                    logger.log(f"{all_values}")
-                    logger.log(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
-        item_score = float(missing_count + redundant_count) / all_count
+                    # logger.log(f"{all_values}")
+                    # logger.log(f"redundant: {val}/{val2ds_dict[val]} | {utterance}")
+        # item_score = float(missing_count + redundant_count) / all_count
         # logger.log(f"redundant: {redundant_count} | missing_count: {missing_count} |all_count: {all_count}")
         # score_list.append(item_score)
         total_missing += missing_count
