@@ -325,7 +325,7 @@ class PipelineAgent(Agent):
 
         # policy
         self.output_action = deepcopy(self.policy.predict(
-            sys_act=action, sys_utt=utterance))
+            sys_act=self.input_action, sys_utt=utterance))
 
         # nlg
         model_response = self._do_nlg(self.output_action)

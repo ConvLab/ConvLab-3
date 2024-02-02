@@ -1,12 +1,13 @@
 from argparse import ArgumentParser
 
 from convlab.dialog_agent import PipelineAgent
-from convlab.policy.emoUS_v2.semanticEmoUS import UserPolicy
+from convlab.policy.emoUS_v2.langEmoUS import UserPolicy
 from convlab.policy.vector.vector_nodes import VectorNodes
 from convlab.policy.vtrace_DPT import VTRACE
 from convlab.dst.rule.multiwoz.dst import RuleDST
 from convlab.dialog_agent.session import BiSession
 from convlab.dialog_agent.env import Environment
+from convlab.nlu.jointBERT.unified_datasets.nlu import BERTNLU
 
 
 def arg_parser():
@@ -28,36 +29,12 @@ def test():
         use_sentiment=use_sentiment,
         emotion_mid=emotion_mid,
         model_type="encoder_decoder")
-    usr = PipelineAgent(None, None, usr_policy, None, name='user')
+    nlu = BERTNLU(mode="sys", config_file="multiwoz21_sys_context3.json",
+                  model_file="https://huggingface.co/ConvLab/bert-base-nlu/resolve/main/bertnlu_unified_multiwoz21_system_context3.zip")
+    usr = PipelineAgent(nlu, None, usr_policy, None, name='user')
     usr.init_session()
-    print(usr.response([], sys_conduct="neutral"))
-    print(usr.response([], sys_conduct="enthusiastic"))
-
-    vectorizer = VectorNodes(dataset_name='multiwoz21',
-                             use_masking=True,
-                             manually_add_entity_names=True,
-                             seed=0,
-                             filter_state=True)
-    sys_policy = VTRACE(is_train=False,
-                        seed=0,
-                        vectorizer=vectorizer,
-                        load_path="")
-    # test for seestion
-    dst = RuleDST()
-    sys = PipelineAgent(None, dst, sys_policy, None, name='sys')
-    print("Create session")
-    sess = BiSession(sys, usr)
-    print("get next turn")
-    x = sess.next_turn([])
-    print(x)
-
-    print("="*20)
-    env = Environment(sys_nlg=None, usr=usr, sys_nlu=None, sys_dst=dst)
-    s = env.reset()
-    sys_act = sys_policy.predict(s)
-    sys_conduct = sys_policy.get_conduct()
-    s = env.step(action=sys_act, sys_conduct=sys_conduct)
-    print(x)
+    print(usr.response("what can I help you?"))
+    print(usr.response("the restaurant area is north"))
 
 
 if __name__ == "__main__":
