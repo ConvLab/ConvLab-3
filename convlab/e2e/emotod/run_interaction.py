@@ -1,4 +1,5 @@
-from convlab.util.analysis_tool.analyzer import Analyzer, PipelineAgent
+from convlab.util.analysis_tool.analyzer import Analyzer
+from convlab.dialog_agent import PipelineAgent
 
 from convlab.e2e.emotod.emotod import EMOTODAgent
 from convlab.policy.emoUS.emoUS import UserPolicy
