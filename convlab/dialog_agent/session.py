@@ -139,8 +139,11 @@ class BiSession(Session):
             user_response = self.next_response(last_observation)
 
         if self.evaluator:
-            self.evaluator.add_sys_da(
-                self.user_agent.get_in_da(), self.sys_agent.dst.state['belief_state'])
+            if hasattr(self.sys_agent, 'dst'):
+                self.evaluator.add_sys_da(
+                    self.user_agent.get_in_da(), self.sys_agent.dst.state['belief_state'])
+            else:
+                self.evaluator.add_sys_da(self.user_agent.get_in_da())
             self.evaluator.add_usr_da(self.user_agent.get_out_da())
 
         session_over = self.user_agent.is_terminated()
