@@ -13,6 +13,7 @@ seed_all(1)
 
 sys_nlu = None
 sys_dst = None
+print('Initialising Emo-TOD')
 sys_policy = EMOTODAgent(model_file='/home/fengs/projects/pretrained_models/gpt2_prev_emo')
 sys_nlg = None
 
@@ -20,13 +21,17 @@ sys_nlg = None
 sys_agent = E2EAgentWrapper(sys_policy, 'emotod')
 
 # user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json', model_file='/home/fengs/projects/pretrained_models/bert_multiwoz_sys_context.zip')
+print('Initialising T5NLU')
 user_nlu = T5NLU(speaker='system', context_window_size=3, model_name_or_path='/home/fengs/projects/pretrained_models/t5-small-nlu-all-multiwoz21-context3')
 user_dst = None
+print('Initialising EmoUS_Lang')
 user_policy = UserPolicy(model_checkpoint='/home/fengs/projects/pretrained_models/emous_lang')
 user_nlg = None
 
 user_agent = PipelineAgent(user_nlu, user_dst, user_policy, user_nlg, name='user')
 
+print('Initialising analyzer')
 analyzer = Analyzer(user_agent=user_agent, dataset='multiwoz')
 
+print('Start to analyze')
 analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name='emotod_gpt2-emous_lang', total_dialog=250)
