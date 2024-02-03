@@ -67,7 +67,7 @@ class EMOTODAgent(Agent):
         for i, t in enumerate(trunc_utt_hist):
             if i%2 == 0: # user turn
                 context += f" <|user|> {t}"
-                if i//2 < len(trunc_utt_hist):
+                if i//2 < len(trunc_usr_emo_hist):
                     context += f" <|useremotion|> {EMOTION_PLACEHOLDER} <|endofuseremotion|>"
                     context = context.replace(EMOTION_PLACEHOLDER, trunc_usr_emo_hist[i//2])
             else:
