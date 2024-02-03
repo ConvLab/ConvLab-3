@@ -25,7 +25,13 @@ print('Initialising T5NLU')
 user_nlu = T5NLU(speaker='system', context_window_size=3, model_name_or_path='/home/fengs/projects/pretrained_models/t5-small-nlu-all-multiwoz21-context3')
 user_dst = None
 print('Initialising EmoUS_Lang')
-user_policy = UserPolicy(model_checkpoint='/home/fengs/projects/pretrained_models/emous_lang')
+emous_configs = {
+    'Neutral': 0.95,
+    'Satisfied': 0.95,
+    'sub_goal_succ': True
+}
+user_policy = UserPolicy(
+    model_checkpoint='/home/fengs/projects/pretrained_models/emous_lang', kwargs=emous_configs)
 user_nlg = None
 
 user_agent = PipelineAgent(user_nlu, user_dst, user_policy, user_nlg, name='user')
