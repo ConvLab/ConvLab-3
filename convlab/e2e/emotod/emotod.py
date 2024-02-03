@@ -28,6 +28,7 @@ class EMOTODAgent(Agent):
         super(EMOTODAgent, self).__init__(name=name)
         
         self.model = AutoModelForCausalLM.from_pretrained(model_file, device_map="auto")
+        self.model.eval()
         self.tokenizer = AutoTokenizer.from_pretrained(model_file)
         self.device = self.model.device
         self.eos_token = "<|endofresponse|>" 
