@@ -128,8 +128,9 @@ class Analyzer:
                 # print('sys out', sess.sys_agent.get_out_da(),file=flog)
                 print('User:', user_response, file=flog)
                 print('System:', sys_response, file=flog)
-                print('DST state:', sess.sys_agent.state_return()
-                      ['dst_state'], file=flog)
+                if sess.sys_agent.state_return() is not None:
+                    print('DST state:', sess.sys_agent.state_return()
+                        ['dst_state'], file=flog)
 
                 step += 2
 
