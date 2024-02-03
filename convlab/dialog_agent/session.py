@@ -166,9 +166,10 @@ class BiSession(Session):
         return sys_response, user_response, session_over, reward
 
     def update_user_emotion(self):
-        if not hasattr(self.sys_agent.dst, 'get_emotion') and hasattr(self.user_agent.policy, 'get_emotion'):
-            emotion = self.user_agent.policy.get_emotion().lower()
-            self.sys_agent.dst.state['user_emotion'] = emotion
+        if hasattr(self.sys_agent, 'dst'):
+            if not hasattr(self.sys_agent.dst, 'get_emotion') and hasattr(self.user_agent.policy, 'get_emotion'):
+                emotion = self.user_agent.policy.get_emotion().lower()
+                self.sys_agent.dst.state['user_emotion'] = emotion
 
     def next_turn_two_way(self, system_utterance, system_action):
         """Conduct a new turn of dialog, which consists of the system response and user response.
