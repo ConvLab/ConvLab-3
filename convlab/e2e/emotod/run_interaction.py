@@ -6,6 +6,10 @@ from convlab.e2e.emotod.emotod import EMOTODAgent
 from convlab.policy.emoUS_v2.langEmoUS import UserPolicy
 from convlab.nlu.jointBERT.multiwoz.nlu import BERTNLU
 
+from utils import seed_all
+
+seed_all(1)
+
 sys_nlu = None
 sys_dst = None
 sys_policy = EMOTODAgent(model_file='/home/fengs/projects/pretrained_models/gpt2_prev_emo')

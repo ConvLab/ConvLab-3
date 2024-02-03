@@ -1,6 +1,11 @@
 import re
 import json
+import random
 from collections import Counter
+
+import torch
+import numpy as np
+
 from convlab.util import *
 
 DEFAULTS = {
@@ -22,6 +27,17 @@ TAXI_SLOT_MAPS = {
     'phone': 'taxi_phone'
     
 }
+
+def seed_all(seed_value):
+    random.seed(seed_value) # Python
+    np.random.seed(seed_value) # cpu vars
+    torch.manual_seed(seed_value) # cpu  vars
+ 
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed_value)
+        torch.cuda.manual_seed_all(seed_value) # gpu vars
+        torch.backends.cudnn.deterministic = True  #needed
+        torch.backends.cudnn.benchmark = False
 
 def find_substrings(input_string, start_tag, end_tag):
     pattern = fr'{re.escape(start_tag)}(.*?){re.escape(end_tag)}'
@@ -134,7 +150,10 @@ def lexcalise(full_sequence, database):
         else:
             for d, all_entities in domain_entities.items():
                 if s not in filled_slot_count:
-                    entity = all_entities[0]
+                    try:
+                        entity = all_entities[0]
+                    except:
+                        entity = {}
                 else:
                     try:
                         entity = all_entities[filled_slot_count[s]]
