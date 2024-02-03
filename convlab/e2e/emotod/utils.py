@@ -8,6 +8,8 @@ import numpy as np
 
 from convlab.util import *
 
+additional_special_tokens = ['<|belief|>', '<|endofbelief|>', '<|action|>', '<|endofaction|>', '<|response|>', '<|endofresponse|>', '<|context|>', '<|endofcontext|>', '<|user|>', '<|system|>', '<|useremotion|>', '<|endofuseremotion|>', '[address]', '[area]','[arriveby]','[bookday]','[bookpeople]','[bookstay]','[booktime]', '[choice]','[day]','[department]','[departure]','[destination]','[duration]','[entrancefee]','[food]','[leaveat]','[name]','[openhours]','[phone]','[postcode]','[price]','[pricerange]','[ref]','[stars]','[trainid]','[type]']
+
 DEFAULTS = {
     'ref': '00000000',
     'bookpeople': '2',

@@ -7,7 +7,7 @@ Created on
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from convlab.dialog_agent import Agent
-from utils import lexcalise, find_substrings
+from utils import lexcalise, find_substrings, additional_special_tokens
 from convlab.util import load_database
 
 EMOTION_PLACEHOLDER = '__emotion_placeholder__'
@@ -29,7 +29,14 @@ class EMOTODAgent(Agent):
         
         self.model = AutoModelForCausalLM.from_pretrained(model_file, device_map="auto")
         self.model.eval()
+
         self.tokenizer = AutoTokenizer.from_pretrained(model_file)
+        self.tokenizer.padding_side = "left"
+        self.tokenizer.pad_token = self.tokenizer.eos_token
+        self.tokenizer.add_special_tokens({'additional_special_tokens': additional_special_tokens})
+
+        self.model.resize_token_embeddings(len(self.tokenizer))
+
         self.device = self.model.device
         self.eos_token = "<|endofresponse|>" 
         self.dataset_name = 'multiwoz21'
