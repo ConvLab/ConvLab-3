@@ -3,7 +3,7 @@ from convlab.dialog_agent import PipelineAgent
 from convlab.e2e.emotod.e2ewrapper import E2EAgentWrapper
 
 from convlab.e2e.emotod.emotod import EMOTODAgent
-from convlab.policy.emoUS.emoUS import UserPolicy
+from convlab.policy.emoUS_v2.langEmoUS import UserPolicy
 from convlab.nlu.jointBERT.multiwoz.nlu import BERTNLU
 
 sys_nlu = None
