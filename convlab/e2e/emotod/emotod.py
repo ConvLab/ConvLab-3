@@ -4,6 +4,8 @@ Created on
 
 @author: 
 """
+import copy
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from convlab.dialog_agent import Agent
@@ -15,6 +17,7 @@ EMOTION_PLACEHOLDER = '__emotion_placeholder__'
 
 class EMOTODAgent(Agent):
     def __init__(self,
+                 context_size=15, # set by experience. GPT-2 supports 1024 context window
                  model_file='/home/shutong/models/emotod',
                  name='emotod'):
         """
@@ -42,6 +45,9 @@ class EMOTODAgent(Agent):
         self.dataset_name = 'multiwoz21'
         self.database = load_database(self.dataset_name)
 
+        self.context_size = context_size
+        assert self.context_size % 2 == 1
+
         self.init_session()
 
     
@@ -51,13 +57,17 @@ class EMOTODAgent(Agent):
     
     def prepare_input(self, usr):
         self.utterance_history.append(usr)
+
+        trunc_utt_hist = copy.deepcopy(self.utterance_history[-self.context_size:])
+        trunc_usr_emo_hist = copy.deepcopy(self.user_emotion_history[-(self.context_size//2):])
+        
         context = "<|context|>"
-        for i, t in enumerate(self.utterance_history):
+        for i, t in enumerate(trunc_utt_hist):
             if i%2 == 0: # user turn
                 context += f" <|user|> {t}"
                 if i//2 < len(self.user_emotion_history):
                     context += f" <|useremotion|> {EMOTION_PLACEHOLDER} <|endofuseremotion|>"
-                    context = context.replace(EMOTION_PLACEHOLDER, self.user_emotion_history[i//2])
+                    context = context.replace(EMOTION_PLACEHOLDER, trunc_usr_emo_hist[i//2])
             else:
                 context += f" <|system|> {t}"
                 
@@ -80,7 +90,7 @@ class EMOTODAgent(Agent):
         context = self.prepare_input(usr)
         
         encoding = self.tokenizer(context, return_tensors="pt", padding=True).to(self.device)
-
+        
         outputs = self.model.generate(
             input_ids=encoding.input_ids,
             attention_mask=encoding.attention_mask,
