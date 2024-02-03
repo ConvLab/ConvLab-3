@@ -17,3 +17,6 @@ class E2EAgentWrapper(Agent):
 
     def get_out_da(self):
         return None
+    
+    def state_return(self):
+        return None

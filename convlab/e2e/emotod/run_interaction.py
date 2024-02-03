@@ -11,8 +11,8 @@ sys_dst = None
 sys_policy = EMOTODAgent(model_file='/home/fengs/projects/pretrained_models/gpt2_prev_emo')
 sys_nlg = None
 
-sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
-# sys_agent = E2EAgentWrapper(sys_policy, 'emotod')
+# sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
+sys_agent = E2EAgentWrapper(sys_policy, 'emotod')
 
 user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json', model_file='/home/fengs/projects/pretrained_models/bert_multiwoz_sys_context.zip')
 user_dst = None
