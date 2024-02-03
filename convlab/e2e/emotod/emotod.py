@@ -13,11 +13,12 @@ from utils import lexcalise, find_substrings, additional_special_tokens
 from convlab.util import load_database
 
 EMOTION_PLACEHOLDER = '__emotion_placeholder__'
-
+MAX_GPT2_INPUT = 1024
 
 class EMOTODAgent(Agent):
     def __init__(self,
                  context_size=15, # set by experience. GPT-2 supports 1024 context window
+                 max_output_len=128,
                  model_file='/home/shutong/models/emotod',
                  name='emotod'):
         """
@@ -47,6 +48,7 @@ class EMOTODAgent(Agent):
 
         self.context_size = context_size
         assert self.context_size % 2 == 1
+        self.max_output_len = max_output_len
 
         self.init_session()
 
@@ -65,7 +67,7 @@ class EMOTODAgent(Agent):
         for i, t in enumerate(trunc_utt_hist):
             if i%2 == 0: # user turn
                 context += f" <|user|> {t}"
-                if i//2 < len(self.user_emotion_history):
+                if i//2 < len(trunc_utt_hist):
                     context += f" <|useremotion|> {EMOTION_PLACEHOLDER} <|endofuseremotion|>"
                     context = context.replace(EMOTION_PLACEHOLDER, trunc_usr_emo_hist[i//2])
             else:
@@ -91,6 +93,8 @@ class EMOTODAgent(Agent):
         
         encoding = self.tokenizer(context, return_tensors="pt", padding=True).to(self.device)
         
+        # while encoding.input_ids.shape[2] > 
+
         outputs = self.model.generate(
             input_ids=encoding.input_ids,
             attention_mask=encoding.attention_mask,
