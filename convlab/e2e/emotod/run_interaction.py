@@ -41,4 +41,4 @@ print('Initialising analyzer')
 analyzer = Analyzer(user_agent=user_agent, dataset='multiwoz')
 
 print('Start to analyze')
-analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=f'emotod_gpt2-emous_lang-seed={str(seed)}', total_dialog=500)
+analyzer.comprehensive_analyze(sys_agent=sys_agent, model_name=f'emotod_gpt2-emous_lang-seed={str(seed)}', total_dialog=2)
