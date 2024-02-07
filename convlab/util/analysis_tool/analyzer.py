@@ -246,8 +246,6 @@ class Analyzer:
                 if domain_success is not None:
                     reporter.record(domain, domain_success, sess.evaluator.domain_reqt_inform_analyze(domain), failed_da_sys, failed_da_usr, cycle_start, domain_turn)
 
-            from pprint import pprint
-            pprint(self.sess.evaluator.goal)
             dialog_saver.append_dialog(goal_seed, self.sess.evaluator.goal, task_complete, task_success, task_succ_strict, total_return, turns)
 
         tmp = 0 if suc_num == 0 else turn_suc_num / suc_num
