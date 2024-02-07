@@ -286,6 +286,8 @@ class Analyzer:
         reporter.report(complete_num/total_dialog, suc_num/total_dialog, np.mean(
             precision), np.mean(recall), np.mean(f1), tmp, turn_num / total_dialog)
 
+        dialog_saver.save()
+
         return complete_num/total_dialog, suc_num/total_dialog, np.mean(precision), np.mean(recall), np.mean(f1), np.mean(match), turn_num / total_dialog
 
     def compare_models(self, agent_list, model_name, total_dialog=100):
