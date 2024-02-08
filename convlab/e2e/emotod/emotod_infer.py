@@ -40,4 +40,4 @@ for split in ['train', 'valid', 'test']:
             dataset_out[split][dial_id][i]['output_lex'] = lex_resp
 
 with open('corpus_eval/multiwoz21_emotod_resp.json', 'w') as f:
-    json.dump(dataset_out, indent=4)
+    json.dump(dataset_out, f, indent=4)
