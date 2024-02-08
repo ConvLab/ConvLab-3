@@ -288,7 +288,9 @@ class AgentFactory(object):
         self.agents[agent_id].nlu = self.nlu
         self.agents[agent_id].nlg = self.nlg
 
-        self.agents[agent_id].dst.init_session()
+        if hasattr(self.agents[agent_id].dst, 'init_session'):
+            print('blablabla')
+            self.agents[agent_id].dst.init_session()
 
         if self.subjectiveFeedbackEnabled:
             self.agents[agent_id].policy = self.subjectiveFeedbackManager.getUpdatedPolicy(
