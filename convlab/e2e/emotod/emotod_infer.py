@@ -2,6 +2,7 @@
 import json
 
 from emotod import EMOTODAgent
+from utils import lexcalise
 
 with open('corpus_eval/emo_prev.json', 'r') as f:
     dataset = json.load(f)
@@ -31,7 +32,8 @@ for split in ['train', 'valid', 'test']:
             
             full_generation = tokenizer.decode(outputs[0], skip_special_tokens=False)
 
-            print(full_generation)
+            lex_resp = lexcalise(full_generation, s.database)
+            print(lex_resp)
             exit()
 
 
