@@ -57,6 +57,7 @@ class EMOTODAgent(Agent):
     def init_session(self):
         self.utterance_history = []
         self.user_emotion_history = []
+        self.info_dict = {}
     
     def prepare_input(self, usr):
         self.utterance_history.append(usr)
@@ -78,6 +79,8 @@ class EMOTODAgent(Agent):
 
         return context
     
+    def predict(self, usr):
+        return self.response(usr)
 
     def response(self, usr):
         """
@@ -92,9 +95,9 @@ class EMOTODAgent(Agent):
         """
         context = self.prepare_input(usr)
 
-        self.info_dict['utterance_history'] = copy.deepcopy(self.utterance_history)
-        self.info_dict['user_emotion_history'] = copy.deepcopy(self.user_emotion_history)
-        self.info_dict['input'] = context
+        # self.info_dict['utterance_history'] = copy.deepcopy(self.utterance_history)
+        # self.info_dict['user_emotion_history'] = copy.deepcopy(self.user_emotion_history)
+        # self.info_dict['input'] = context
         
         encoding = self.tokenizer(context, return_tensors="pt", padding=True).to(self.device)
         
