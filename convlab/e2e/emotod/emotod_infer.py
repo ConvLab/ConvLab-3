@@ -6,7 +6,7 @@ from emotod import EMOTODAgent
 with open('corpus_eval/emo_prev.json', 'r') as f:
     dataset = json.load(f)
 
-s = EMOTODAgent()
+s = EMOTODAgent(model_file='/home/fengs/projects/pretrained_models/gpt2_prev_emo')
 
 model = s.model
 tokenizer = s.tokenizer
