@@ -100,7 +100,8 @@ def plot(data: dict, folder: str, title: str = None):
             ax.plot(x,
                     mean,
                     marker="o",
-                    color="tab:gray")
+                    color="tab:gray",
+                    label="$EmoTOD$")
             ax.fill_between(x,
                             mean+std,
                             mean-std,
