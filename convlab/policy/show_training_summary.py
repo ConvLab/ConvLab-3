@@ -95,8 +95,8 @@ def plot(data: dict, folder: str, title: str = None):
 
         # workaround: baseline model for EmoTOD
         if m == "sentiment":
-            mean = [0.3559166155732679]*len(x)
-            std = [0.007344526665759563]*len(x)
+            mean = np.array([0.3559166155732679]*len(x))
+            std = np.array([0.007344526665759563]*len(x))
             ax.plot(x,
                     mean,
                     marker="o",
