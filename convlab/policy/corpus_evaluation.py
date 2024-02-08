@@ -89,6 +89,8 @@ def evaluate(pipeline, model, config, weight="", output="result.json"):
         for d in data[m]:
             result += generate_dialog(system, d)
         folder = os.path.dirname(output)
+        if os.path.exists(folder) is False:
+            os.makedirs(folder)
         basename = os.path.basename(output)
         file_name = os.path.join(folder, f"{m}-{basename}")
 
