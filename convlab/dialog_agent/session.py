@@ -77,7 +77,7 @@ class BiSession(Session):
         self.dialog_history = []
         self.__turn_indicator = 0
 
-        self.init_session()
+        # self.init_session()
 
     def next_agent(self):
         """The user and system agent response in turn."""
