@@ -93,13 +93,27 @@ def plot(data: dict, folder: str, title: str = None):
                             color=exp["color"],
                             alpha=0.5)
 
+        # workaround: baseline model for EmoTOD
+        if m == "sentiment":
+            mean = [0.3559166155732679]*len(x)
+            std = [0.007344526665759563]*len(x)
+            ax.plot(x,
+                    mean,
+                    marker="o",
+                    color="tab:gray")
+            ax.fill_between(x,
+                            mean+std,
+                            mean-std,
+                            color="tab:gray",
+                            alpha=0.5)
+
         ax.legend()
         if title:
             ax.set_title(title)
         ax.set_xlabel("# of dialog")
         ax.set_ylabel(m)
         plt.tight_layout()
-        plt.savefig(os.path.join(folder, f"{m}.png"))
+        plt.savefig(os.path.join(folder, f"{m}.pdf"))
         # plt.grid(axis='x', color='0.95')
         # plt.grid(axis='y', color='0.95')
         # plt.show()

@@ -1,10 +1,10 @@
 {
     "result_dir": "convlab/policy/emoUS_v2/results/cuda/noERC/normal_user/lr=5e-7",
     "colors": {
-        "c1": "cornflowerblue",
-        "c2": "mediumseagreen",
-        "c3": "coral",
-        "c4": "gray"
+        "c1": "tab:blue",
+        "c2": "tab:orange",
+        "c3": "tab:green",
+        "c4": "tab:red"
     },
     "models": [
         {
