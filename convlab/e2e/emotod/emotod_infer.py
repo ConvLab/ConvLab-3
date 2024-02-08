@@ -5,7 +5,7 @@ from copy import deepcopy
 from emotod import EMOTODAgent
 from utils import lexcalise
 
-with open('corpus_eval/emo_prev.json', 'r') as f:
+with open('/home/fengs/projects/ConvLab3/convlab/e2e/emotod/corpus_eval/emo_prev.json', 'r') as f:
     dataset = json.load(f)
 
 dataset_out = deepcopy(dataset)
@@ -39,5 +39,5 @@ for split in ['train', 'valid', 'test']:
             dataset_out[split][dial_id][i]['output_delex'] = full_generation
             dataset_out[split][dial_id][i]['output_lex'] = lex_resp
 
-with open('corpus_eval/multiwoz21_emotod_resp.json', 'w') as f:
+with open('/home/fengs/projects/ConvLab3/convlab/e2e/emotod/corpus_eval/multiwoz21_emotod_resp.json', 'w') as f:
     json.dump(dataset_out, f, indent=4)
