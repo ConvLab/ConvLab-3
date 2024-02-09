@@ -15,7 +15,7 @@ class EmoTOD(DialogueAgent):
         nlu = None
         dst = None
         nlg = None
-        sys_policy = EMOTODAgent(model_file='/home/shutong/models/emotod')
+        sys_policy = EMOTODAgent(model_file='/home/shutong/models/acl2024_ckpts/emotod/')
 
         super().__init__(nlu, dst, sys_policy, nlg)
 
