@@ -55,6 +55,7 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
         if normalize is not None:
             d = d / normalize
         d = d / num
+        print(d, "d")
         ax.bar(x,
                d,
                width,
