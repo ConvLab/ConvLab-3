@@ -69,7 +69,7 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
     # plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, f"{pick}-conduct.png"))
+    plt.savefig(os.path.join(result_dir, f"{pick}-conduct.pdf"))
 
 
 def main():
