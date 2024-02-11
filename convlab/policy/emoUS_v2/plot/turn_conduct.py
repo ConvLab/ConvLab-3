@@ -49,6 +49,7 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
     x = list(range(max_turn))
     bottom = np.zeros(max_turn)
     num = np.sum([data[x][0] for x in data])
+    print(num, "num")
 
     for c, d in data.items():
         if normalize is not None:
