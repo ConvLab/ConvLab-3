@@ -580,7 +580,7 @@ class DialogueAgent(Agent):
         for name in self.module_names:
             module = getattr(self, name)
             module_info = getattr(module, "info_dict", None)
-            info_dict[name] = module_info
+            info_dict[name] = deepcopy(module_info)
 
         return info_dict
 
