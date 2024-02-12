@@ -66,7 +66,8 @@ def generate_dialog(system, dialog):
 
         else:
             sys_ref = turn["utterance"]
-            dst.state['history'].append(["sys", sys_ref])
+            # dst.state['history'].append(["sys", sys_ref])
+            dst.state['history'].append(["sys", sys_utt])
             result.append({
                 "utt_idx": f'{dialog["original_id"]}_{turn["utt_idx"]}',
                 "state": state,
