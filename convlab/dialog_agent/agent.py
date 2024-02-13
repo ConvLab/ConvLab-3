@@ -736,6 +736,10 @@ class EmoLoopDialogueAgent(Agent):
             state = self.dst.update(self.input_action)
             if state['user_emotion'] == 'Dissatisfied':
                 state['user_emotion'] = 'Neutral'
+
+            for i in range(len(state['user_emotion_trajectory'])):
+                if state['user_emotion_trajectory'][i] == 'Dissatisfied':
+                    state['user_emotion_trajectory'][i] = 'Neutral'
             print('------state------')
             pprint(state)
             print('------end of state------')
