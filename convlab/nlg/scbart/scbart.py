@@ -58,6 +58,8 @@ class SCBART(NLG):
             for da in action:
                 if da[3] != 'not available':
                     action_unified_format['categorical'].append({'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]})
+                else:
+                    print('Invalid action:', da, '. Skipped')
             # action = {'categorical': [
             #     {'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]} for da in action]}
                     
