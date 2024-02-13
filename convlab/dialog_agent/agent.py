@@ -734,6 +734,8 @@ class EmoLoopDialogueAgent(Agent):
         if self.dst is not None:
             self.dst.state['user_action'] = self.input_action
             state = self.dst.update(self.input_action)
+            if state['user_emotion'] == 'Dissatisfied':
+                state['user_emotion'] = 'Neutral'
             print('------state------')
             pprint(state)
             print('------end of state------')
