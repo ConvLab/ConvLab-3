@@ -8,7 +8,7 @@ Build up an pipeline agent with nlu, dst, policy and nlg.
 from convlab.dialog_agent.agent import EmoLoopDialogueAgent
 
 
-class BaseAgent(EmoLoopDialogueAgent):
+class BaseEmoLoopAgent(EmoLoopDialogueAgent):
 
     def __init__(self, config, policy_sys):
 

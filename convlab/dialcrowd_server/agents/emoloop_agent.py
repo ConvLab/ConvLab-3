@@ -5,12 +5,12 @@ Build up an pipeline agent with nlu, dst, policy and nlg.
 @author: Chris Geishauser
 '''
 
-from convlab.dialcrowd_server.agents.base_agent_emoloop import BaseAgent
+from convlab.dialcrowd_server.agents.base_agent_emoloop import BaseEmoLoopAgent
 from convlab.policy.vtrace_DPT import VTRACE
 from convlab.util.custom_util import get_config
 
 
-class EmoLoopAgent(BaseAgent):
+class EmoLoopAgent(BaseEmoLoopAgent):
 
     def __init__(self):
 
