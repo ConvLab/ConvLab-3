@@ -44,7 +44,7 @@
                 },
                 "dst_model_name": "setsumbt",
                 "kwargs_for_dst": {
-                    "model_name_or_path": "/home/shutong/models/acl2024_ckpts/setsumbt-dst-multiwoz21"
+                    "model_name_or_path": "/home/shutong/models/acl2024_ckpts/setsumbt-dst_nlu-multiwoz21-EnD2"
                 }
             }
         }
