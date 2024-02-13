@@ -671,7 +671,7 @@ class EmoLoopDialogueAgent(Agent):
                 The natural language generator module of agent.
         """
 
-        super(DialogueAgent, self).__init__(name=name)
+        super(EmoLoopDialogueAgent, self).__init__(name=name)
         assert self.name in ['sys']
         self.opponent_name = 'user'
         self.nlu = nlu
