@@ -4,7 +4,7 @@
         "allowed_domains": null
     },
     "model": {
-        "load_path": "/home/shutong/models/acl2024_ckpts/emoloop_policy",
+        "load_path": "/home/shutong/models/acl2024_ckpts/emoloop-0/best_vtrace",
         "use_pretrained_initialisation": false,
         "pretrained_load_path": "",
         "seed": 0,

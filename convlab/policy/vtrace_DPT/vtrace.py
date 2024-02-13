@@ -495,6 +495,7 @@ class VTRACE(nn.Module, Policy):
                     torch.load(policy_mdl, map_location=DEVICE))
                 self.value_helper.load_state_dict(
                     torch.load(policy_mdl, map_location=DEVICE))
+                print('---------------**************')
                 print(f"Loaded policy checkpoint from file: {policy_mdl}")
                 logging.info(
                     '<<dialog policy>> loaded checkpoint from file: {}'.format(policy_mdl))
