@@ -751,9 +751,14 @@ class EmoLoopDialogueAgent(Agent):
         # get action
         # get rid of reference problem
         self.output_action = deepcopy(self.policy.predict(state))
+        if hasattr(self.policy, 'get_conduct'):
+            conduct = self.policy.get_conduct()
+        else:
+            conduct = 'neutral'
 
         print('------sys_action------')
         pprint(self.output_action)
+        pprint(self.policy.get_conduct())
         print('------end of sys_action------')
         if hasattr(self.policy, "last_action"):
             self.sys_action_history.append(self.policy.last_action)
@@ -767,7 +772,7 @@ class EmoLoopDialogueAgent(Agent):
 
         # get model response
         if self.nlg is not None:
-            model_response = self.nlg.generate(self.output_action)
+            model_response = self.nlg.generate(self.output_action, conduct=conduct, user_utt=observation)
         else:
             model_response = self.output_action
 
