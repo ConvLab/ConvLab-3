@@ -54,8 +54,14 @@ class SCBART(NLG):
             action = {'categorical': action}
         elif isinstance(action[0], list):
             # da is a list of list (convlab-2 format)
-            action = {'categorical': [
-                {'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]} for da in action]}
+            action_unified_format = {'categorical': []}
+            for da in action:
+                if da[3] != 'not available':
+                    action_unified_format['categorical'].append({'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]})
+            # action = {'categorical': [
+            #     {'intent': da[0], 'domain': da[1], 'slot': da[2], 'value': da[3]} for da in action]}
+                    
+            action = action_unified_format
         else:
             raise ValueError(f"invalid dialog acts format {action}")
         action_str = act2str(action)
