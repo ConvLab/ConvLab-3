@@ -68,7 +68,7 @@ def plot(data, result_dir):
         os.makedirs(result_dir)
 
     for m in ["missing", "hallucinate", "SER"]:
-        fig, ax = plt.subplots(figsize=(6, 3))
+        fig, ax = plt.subplots(figsize=(12, 8))
         for d in data:
             x = d["data"]["x"]
             mean = np.array(d["data"][m]["mean"])
