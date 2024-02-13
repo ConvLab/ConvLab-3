@@ -3,8 +3,6 @@ import numpy as np
 
 from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 
-old_multiwoz_path = "/Users/geishaus/Downloads/MultiWOZ_2.1/data.json"
-
 
 def load_json(file_path):
     with open(file_path, 'r') as f:
@@ -41,7 +39,7 @@ def calculate_success_inform(evaluator, soft=False):
         inform = evaluator.final_goal_analyze()
     return success, inform
 
-def create_dialogue_dicts(file_path, soft=False):
+def create_dialogue_dicts(file_path, old_multiwoz_path, soft=False):
 
     corpus_logs = load_json(file_path)
     dialogue_dicts = []
@@ -74,7 +72,8 @@ def create_dialogue_dicts(file_path, soft=False):
 
 if __name__ == "__main__":
     file_path = "results.json"
-    dialogue_dicts = create_dialogue_dicts(file_path, soft=False)
+    old_multiwoz_path = "/Users/geishaus/Downloads/MultiWOZ_2.1/data.json"
+    dialogue_dicts = create_dialogue_dicts(file_path, old_multiwoz_path, soft=False)
 
     success_list = [dialogue["success"] for dialogue in dialogue_dicts]
     inform_list = [dialogue["inform"] for dialogue in dialogue_dicts]
