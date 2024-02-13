@@ -85,7 +85,7 @@ def plot(data, result_dir):
                             mean+std,
                             mean-std,
                             color=d["color"],
-                            alpha=0.5)
+                            alpha=0.1)
 
         ax.legend()
         ax.set_xlabel("epoch")
