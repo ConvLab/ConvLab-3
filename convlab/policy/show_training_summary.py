@@ -94,19 +94,19 @@ def plot(data: dict, folder: str, title: str = None):
                             alpha=0.5)
 
         # workaround: baseline model for EmoTOD
-        # if m == "sentiment":
-        #     mean = np.array([0.3559166155732679]*len(x))
-        #     std = np.array([0.007344526665759563]*len(x))
-        #     ax.plot(x,
-        #             mean,
-        #             marker="o",
-        #             color="tab:gray",
-        #             label="$EmoTOD$")
-        #     ax.fill_between(x,
-        #                     mean+std,
-        #                     mean-std,
-        #                     color="tab:gray",
-        #                     alpha=0.5)
+        if m == "sentiment":
+            mean = np.array([0.3559166155732679]*len(x))
+            std = np.array([0.007344526665759563]*len(x))
+            ax.plot(x,
+                    mean,
+                    marker="o",
+                    color="tab:gray",
+                    label="$EmoTOD$")
+            ax.fill_between(x,
+                            mean+std,
+                            mean-std,
+                            color="tab:gray",
+                            alpha=0.5)
 
         ax.legend()
         if title:
