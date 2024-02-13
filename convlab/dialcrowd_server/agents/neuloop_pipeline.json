@@ -56,7 +56,7 @@
             "ini_params": {
                 "model_path": "/home/shutong/models/acl2024_ckpts/scbart-nlprompt-semact-conduct-userutt-aug",
                 "dataset_name": "multiwoz21",
-                "device": "cuda"
+                "device": "cpu"
             }
         }
     },

@@ -1,0 +1,35 @@
+{
+    "result_dir": "convlab/policy/emoUS_v2/results/cuda/noERC/semantic",
+    "colors": {
+        "c1": "tab:blue",
+        "c2": "tab:orange",
+        "c3": "tab:green",
+        "c4": "tab:red"
+    },
+    "models": [
+        {
+            "folder": "convlab/policy/vtrace_DPT/semantic+emotion_{r+s}+conduct_1e-6+noERC",
+            "color": "c1",
+            "label": "$Emo_{r+s}+conduct$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/semantic+emotion_{r+s}+no_conduct_1e-6+noERC",
+            "color": "c2",
+            "label": "$Emo_{r+s}$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/semantic+no_emotion_{r+s}+conduct_1e-6+noERC",
+            "color": "c3",
+            "label": "$Nor_{r+s}+conduct$",
+            "marker": "o"
+        },
+        {
+            "folder": "convlab/policy/vtrace_DPT/semantic+no_emotion_{r+s}+no_conduct_1e-6+noERC",
+            "color": "c4",
+            "label": "$Nor_{r+s}$",
+            "marker": "o"
+        }
+    ]
+}

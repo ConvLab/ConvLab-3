@@ -116,7 +116,7 @@ class Evaluator:
         dirname = os.path.dirname(os.path.dirname(
             os.path.dirname(os.path.abspath(__file__))))
         sent2emo = json.load(
-            open(os.path.join(dirname, "emoUS/sent2emo.json")))
+            open(os.path.join(dirname, "policy/emoUS/sent2emo.json")))
         self.emo2sent = {}
         for sent, emotions in sent2emo.items():
             for emo in emotions:

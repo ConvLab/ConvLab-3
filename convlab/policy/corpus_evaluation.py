@@ -66,12 +66,15 @@ def generate_dialog(system, dialog):
 
         else:
             sys_ref = turn["utterance"]
-            dst.state['history'].append(["sys", sys_ref])
+            # dst.state['history'].append(["sys", sys_ref])
+            dst.state['history'].append(["sys", sys_utt])
             result.append({
                 "utt_idx": f'{dialog["original_id"]}_{turn["utt_idx"]}',
                 "state": state,
                 "user_utt": user_utt,
                 "user_emotion": user_emotion,
+                "sys_act": action,
+                "sys_conduct": conduct,
                 "sys_utt": sys_utt,
                 "sys_ref": sys_ref
             })
@@ -84,7 +87,8 @@ def evaluate(pipeline, model, config, weight="", output="result.json"):
     system = sess.sys_agent
 
     data = load_dataset("multiwoz21")
-    for m in data:
+    # for m in data:
+    for m in ["test"]:
         result = []
         for d in data[m]:
             result += generate_dialog(system, d)
