@@ -31,7 +31,7 @@ def single_plot(x, y, label, result_dir):
     ax.set_ylabel(label)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, f"{label}.png"))
+    plt.savefig(os.path.join(result_dir, f"{label}.pdf"))
 
 
 def get_exp_data(exp_folder):
@@ -92,7 +92,7 @@ def plot(data, result_dir):
         ax.set_ylabel(m)
 
         plt.tight_layout()
-        plt.savefig(os.path.join(result_dir, f"{m}.png"))
+        plt.savefig(os.path.join(result_dir, f"{m}.pdf"))
 
 
 def main():
