@@ -54,7 +54,7 @@ def dict2seq(d):
                 slot_str = str(slot).lower()
                 value_str = str(value).lower()
                 if domain_action_str == 'booking-book':
-                    if slot_str == 'none':
+                    if slot_str == 'none' and value_str != 'none':
                         slot_str = 'ref'
                 # if domain_action_str == 'booking-book':
                 #     if slot_str == 'none':
