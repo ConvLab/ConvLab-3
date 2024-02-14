@@ -87,19 +87,19 @@ def plot(data, result_dir):
                             color=d["color"],
                             alpha=0.1)
 
-        if m == "hallucinate":
-            mean = np.array([0.0268946072360081]*len(x))
-            std = np.array([0.00117749482953846]*len(x))
-            ax.plot(x,
-                    mean,
-                    marker="o",
-                    color="tab:gray",
-                    label="$EmoTOD$")
-            ax.fill_between(x,
-                            mean+std,
-                            mean-std,
-                            color="tab:gray",
-                            alpha=0.1)
+        # if m == "hallucinate":
+        #     mean = np.array([0.0268946072360081]*len(x))
+        #     std = np.array([0.00117749482953846]*len(x))
+        #     ax.plot(x,
+        #             mean,
+        #             marker="o",
+        #             color="tab:gray",
+        #             label="$EmoTOD$")
+        #     ax.fill_between(x,
+        #                     mean+std,
+        #                     mean-std,
+        #                     color="tab:gray",
+        #                     alpha=0.1)
 
         ax.legend()
         ax.set_xlabel("epoch")
