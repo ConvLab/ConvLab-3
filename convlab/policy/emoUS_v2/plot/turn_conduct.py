@@ -48,10 +48,14 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
     width = 0.5
     x = list(range(max_turn))
     bottom = np.zeros(max_turn)
+    num = np.sum([data[x][0] for x in data])
+    print(num, "num")
 
     for c, d in data.items():
         if normalize is not None:
             d = d / normalize
+        d = d / num
+        print(d, "d")
         ax.bar(x,
                d,
                width,
@@ -61,15 +65,15 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
         bottom += d
 
     ax.legend()
-    # ax.set_xlabel("turn")
-    # ax.set_ylabel("% of dialogues")
+    ax.set_xlabel("turn")
+    ax.set_ylabel("% of dialogues")
     # # ax.set_ylim([-1.0, 0.4])
-    # ax.set_xticks([t for t in range(0, max_turn, 2)])
+    ax.set_xticks([t for t in range(0, max_turn, 1)])
     # plt.grid(axis='x', color='0.95')
     # plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, f"{pick}-conduct.png"))
+    plt.savefig(os.path.join(result_dir, f"{pick}-conduct.pdf"))
 
 
 def main():

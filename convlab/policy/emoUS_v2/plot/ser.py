@@ -31,7 +31,7 @@ def single_plot(x, y, label, result_dir):
     ax.set_ylabel(label)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, f"{label}.png"))
+    plt.savefig(os.path.join(result_dir, f"{label}.pdf"))
 
 
 def get_exp_data(exp_folder):
@@ -68,7 +68,7 @@ def plot(data, result_dir):
         os.makedirs(result_dir)
 
     for m in ["missing", "hallucinate", "SER"]:
-        fig, ax = plt.subplots(figsize=(6, 6))
+        fig, ax = plt.subplots(figsize=(8, 6))
         for d in data:
             x = d["data"]["x"]
             mean = np.array(d["data"][m]["mean"])
@@ -85,14 +85,14 @@ def plot(data, result_dir):
                             mean+std,
                             mean-std,
                             color=d["color"],
-                            alpha=0.5)
+                            alpha=0.1)
 
         ax.legend()
         ax.set_xlabel("epoch")
         ax.set_ylabel(m)
 
         plt.tight_layout()
-        plt.savefig(os.path.join(result_dir, f"{m}.png"))
+        plt.savefig(os.path.join(result_dir, f"{m}.pdf"))
 
 
 def main():

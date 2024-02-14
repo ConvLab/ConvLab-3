@@ -640,3 +640,449 @@ class DialogueAgent(Agent):
     def is_inactive(self):
         currentTime = int(time.time())
         return currentTime - self.initTime >= 600 and currentTime - self.lastUpdate >= 60
+
+# shutong: fixing dialcrowd_server not taking correct input etc.
+
+class EmoLoopDialogueAgent(Agent):
+    """Pipeline dialog agent base class, including NLU, DST, Policy and NLG.
+    """
+
+    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str = "sys"):
+        """The constructor of DialogueAgent class.
+
+        Here are some special combination cases:
+
+            1. If you use word-level DST (such as Neural Belief Tracker), you should set the nlu_model parameter \
+             to None. The agent will combine the modules automatically.
+
+            2. If you want to aggregate DST and Policy as a single module, set tracker to None.
+
+        Args:
+            nlu (NLU):
+                The natural language understanding module of agent.
+
+            dst (DST):
+                The dialog state tracker of agent.
+
+            policy (Policy):
+                The dialog policy module of agent.
+
+            nlg (NLG):
+                The natural language generator module of agent.
+        """
+
+        super(EmoLoopDialogueAgent, self).__init__(name=name)
+        assert self.name in ['sys']
+        self.opponent_name = 'user'
+        self.nlu = nlu
+        self.dst = dst
+        self.policy = policy
+        self.nlg = nlg
+        self.module_names = ["nlu", "dst", "policy", "nlg"]
+        self.init_session()
+        self.history = []
+        self.session_id = None
+        self.ENDING_DIALOG = False
+        self.USER_RATED = False
+        self.USER_GOAL_ACHIEVED = None
+        self.taskID = None
+        self.feedback = None
+        self.requested_feedback = False
+        self.sys_state_history = []
+        self.sys_action_history = []
+        self.sys_utterance_history = []
+        self.sys_output_history = []
+        self.action_mask_history = []
+        self.action_prob_history = []
+        self.turn = 0
+        self.agent_saves = {"session_id": None, "agent_id": None,
+                            "user_id": None, "timestamp": None, "dialogue_info": [], "dialogue_info_fundamental": []}
+        self.initTime = int(time.time())
+        self.lastUpdate = int(time.time())
+
+        logging.info("Dialogue Agent info_dict check")
+        if not hasattr(self.nlu, 'info_dict'):
+            logging.warning('nlu info_dict is not initialized')
+        if not hasattr(self.dst, 'info_dict'):
+            logging.warning('dst info_dict is not initialized')
+        if not hasattr(self.policy, 'info_dict'):
+            logging.warning('policy info_dict is not initialized')
+        if not hasattr(self.nlg, 'info_dict'):
+            logging.warning('nlg info_dict is not initialized')
+
+    def response(self, observation):
+        """Generate agent response using the agent modules."""
+
+        self.sys_utterance_history.append(observation)
+        fundamental_info = {'observation': observation}
+
+        if self.dst is not None:
+            self.dst.state['history'].append(
+                [self.opponent_name, observation])  # [['sys', sys_utt], ['user', user_utt],...]
+        self.history.append([self.opponent_name, observation])
+        # get dialog act
+        if self.nlu is not None:
+            self.input_action = self.nlu.predict(
+                observation, context=[x[1] for x in self.history[:-1]])
+        else:
+            self.input_action = observation
+        # get rid of reference problem
+        self.input_action = deepcopy(self.input_action)
+        fundamental_info['input_action'] = self.input_action
+
+        # get state
+        if self.dst is not None:
+            self.dst.state['user_action'] = self.input_action
+            state = self.dst.update(self.input_action)
+
+            print('------state------')
+            pprint(state)
+            print('------end of state------')
+            if hasattr(self.dst, 'get_emotion'):
+                emotion = self.dst.get_emotion()
+            else:
+                emotion = 'neutral'
+        else:
+            state = self.input_action
+
+        state = deepcopy(state)  # get rid of reference problem
+        fundamental_info['state'] = state
+        self.sys_state_history.append(state)
+
+        # get action
+        # get rid of reference problem
+        self.output_action = deepcopy(self.policy.predict(state))
+        if hasattr(self.policy, 'get_conduct'):
+            conduct = self.policy.get_conduct()
+        else:
+            conduct = 'neutral'
+
+        print('------sys_action------')
+        pprint(self.output_action)
+        pprint(self.policy.get_conduct())
+        print('------end of sys_action------')
+        if hasattr(self.policy, "last_action"):
+            self.sys_action_history.append(self.policy.last_action)
+        else:
+            self.sys_action_history.append(self.output_action)
+
+        fundamental_info['output_action'] = self.output_action
+
+        if hasattr(self.policy, "prob"):
+            self.action_prob_history.append(self.policy.prob)
+
+        # get model response
+        if self.nlg is not None:
+            model_response = self.nlg.generate(self.output_action, conduct=conduct, user_utt=observation)
+        else:
+            model_response = self.output_action
+
+        self.sys_output_history.append(model_response)
+
+        fundamental_info['model_response'] = model_response
+
+        if self.dst is not None:
+            self.dst.state['history'].append([self.name, model_response])
+            self.dst.state['system_action'] = self.output_action
+            # If system takes booking action add booking info to the 'book-booked' section of the belief state
+            if type(self.output_action) == list:
+                for intent, domain, slot, value in self.output_action:
+                    if intent == "book":
+                        self.dst.state['booked'][domain] = [{slot: value}]
+        self.history.append([self.name, model_response])
+
+        self.turn += 1
+        self.lastUpdate = int(time.time())
+
+        self.agent_saves['dialogue_info_fundamental'].append(fundamental_info)
+        self.agent_saves['dialogue_info'].append(self.get_info())
+        return model_response
+
+    def get_info(self):
+
+        info_dict = {}
+        for name in self.module_names:
+            module = getattr(self, name)
+            module_info = getattr(module, "info_dict", None)
+            info_dict[name] = deepcopy(module_info)
+
+        return info_dict
+
+    def is_terminated(self):
+        if hasattr(self.policy, 'is_terminated'):
+            return self.policy.is_terminated()
+        return None
+
+    def retrieve_reward(self):
+        rewards = [1] * len(self.sys_state_history)
+        for turn in self.feedback:
+            turn_number = int((int(turn) - 2) / 2)
+            if turn_number >= len(self.sys_state_history):
+                continue
+            # TODO possibly use text here to check whether rating belongs to the right utterance of the system
+            text = self.feedback[turn]['text']
+            rating = self.feedback[turn]["isGood"]
+            rewards[turn_number] = int(rating)
+        return rewards
+
+    def get_reward(self):
+        if hasattr(self.policy, 'get_reward'):
+            return self.policy.get_reward()
+        return None
+
+    def init_session(self):
+        """Init the attributes of DST and Policy module."""
+        if self.nlu is not None:
+            self.nlu.init_session()
+        if self.dst is not None:
+            self.dst.init_session()
+            self.dst.state['history'].append([self.name, 'null'])
+        if self.policy is not None:
+            self.policy.init_session()
+        if self.nlg is not None:
+            self.nlg.init_session()
+        self.history = []
+
+    def get_in_da(self):
+        return self.input_action
+
+    def get_out_da(self):
+        return self.output_action
+
+    def print_ending_agent_summary(self):
+        print("session_id")
+        print(self.session_id)
+        print("taskID")
+        print(self.taskID)
+        print("USER_GOAL_ACHIEVED")
+        print(self.USER_GOAL_ACHIEVED)
+        print("sys_state_history")
+        print(self.sys_state_history)
+        print("sys_action_history")
+        print(self.sys_action_history)
+
+    def is_inactive(self):
+        currentTime = int(time.time())
+        return currentTime - self.initTime >= 600 and currentTime - self.lastUpdate >= 60
+    
+
+class NeuLoopDialogueAgent(Agent):
+    """Pipeline dialog agent base class, including NLU, DST, Policy and NLG.
+    """
+
+    def __init__(self, nlu: NLU, dst: DST, policy: Policy, nlg: NLG, name: str = "sys"):
+        """The constructor of DialogueAgent class.
+
+        Here are some special combination cases:
+
+            1. If you use word-level DST (such as Neural Belief Tracker), you should set the nlu_model parameter \
+             to None. The agent will combine the modules automatically.
+
+            2. If you want to aggregate DST and Policy as a single module, set tracker to None.
+
+        Args:
+            nlu (NLU):
+                The natural language understanding module of agent.
+
+            dst (DST):
+                The dialog state tracker of agent.
+
+            policy (Policy):
+                The dialog policy module of agent.
+
+            nlg (NLG):
+                The natural language generator module of agent.
+        """
+
+        super(NeuLoopDialogueAgent, self).__init__(name=name)
+        assert self.name in ['sys']
+        self.opponent_name = 'user'
+        self.nlu = nlu
+        self.dst = dst
+        self.policy = policy
+        self.nlg = nlg
+        self.module_names = ["nlu", "dst", "policy", "nlg"]
+        self.init_session()
+        self.history = []
+        self.session_id = None
+        self.ENDING_DIALOG = False
+        self.USER_RATED = False
+        self.USER_GOAL_ACHIEVED = None
+        self.taskID = None
+        self.feedback = None
+        self.requested_feedback = False
+        self.sys_state_history = []
+        self.sys_action_history = []
+        self.sys_utterance_history = []
+        self.sys_output_history = []
+        self.action_mask_history = []
+        self.action_prob_history = []
+        self.turn = 0
+        self.agent_saves = {"session_id": None, "agent_id": None,
+                            "user_id": None, "timestamp": None, "dialogue_info": [], "dialogue_info_fundamental": []}
+        self.initTime = int(time.time())
+        self.lastUpdate = int(time.time())
+
+        logging.info("Dialogue Agent info_dict check")
+        if not hasattr(self.nlu, 'info_dict'):
+            logging.warning('nlu info_dict is not initialized')
+        if not hasattr(self.dst, 'info_dict'):
+            logging.warning('dst info_dict is not initialized')
+        if not hasattr(self.policy, 'info_dict'):
+            logging.warning('policy info_dict is not initialized')
+        if not hasattr(self.nlg, 'info_dict'):
+            logging.warning('nlg info_dict is not initialized')
+
+    def response(self, observation):
+        """Generate agent response using the agent modules."""
+
+        self.sys_utterance_history.append(observation)
+        fundamental_info = {'observation': observation}
+
+        if self.dst is not None:
+            self.dst.state['history'].append(
+                [self.opponent_name, observation])  # [['sys', sys_utt], ['user', user_utt],...]
+        self.history.append([self.opponent_name, observation])
+        # get dialog act
+        if self.nlu is not None:
+            self.input_action = self.nlu.predict(
+                observation, context=[x[1] for x in self.history[:-1]])
+        else:
+            self.input_action = observation
+        # get rid of reference problem
+        self.input_action = deepcopy(self.input_action)
+        fundamental_info['input_action'] = self.input_action
+
+        # get state
+        if self.dst is not None:
+            self.dst.state['user_action'] = self.input_action
+            state = self.dst.update(self.input_action)
+            print('------state------')
+            pprint(state)
+            print('------end of state------')
+            if hasattr(self.dst, 'get_emotion'):
+                emotion = self.dst.get_emotion()
+            else:
+                emotion = 'neutral'
+        else:
+            state = self.input_action
+
+        state = deepcopy(state)  # get rid of reference problem
+        fundamental_info['state'] = state
+        self.sys_state_history.append(state)
+
+        # get action
+        # get rid of reference problem
+        self.output_action = deepcopy(self.policy.predict(state))
+        if hasattr(self.policy, 'get_conduct'):
+            conduct = self.policy.get_conduct()
+        else:
+            conduct = 'neutral'
+
+        print('------sys_action------')
+        pprint(self.output_action)
+        pprint(self.policy.get_conduct())
+        print('------end of sys_action------')
+        if hasattr(self.policy, "last_action"):
+            self.sys_action_history.append(self.policy.last_action)
+        else:
+            self.sys_action_history.append(self.output_action)
+
+        fundamental_info['output_action'] = self.output_action
+
+        if hasattr(self.policy, "prob"):
+            self.action_prob_history.append(self.policy.prob)
+
+        # get model response
+        if self.nlg is not None:
+            model_response = self.nlg.generate(self.output_action, conduct='neutral', user_utt=observation)
+        else:
+            model_response = self.output_action
+
+        self.sys_output_history.append(model_response)
+
+        fundamental_info['model_response'] = model_response
+
+        if self.dst is not None:
+            self.dst.state['history'].append([self.name, model_response])
+            self.dst.state['system_action'] = self.output_action
+            # If system takes booking action add booking info to the 'book-booked' section of the belief state
+            if type(self.output_action) == list:
+                for intent, domain, slot, value in self.output_action:
+                    if intent == "book":
+                        self.dst.state['booked'][domain] = [{slot: value}]
+        self.history.append([self.name, model_response])
+
+        self.turn += 1
+        self.lastUpdate = int(time.time())
+
+        self.agent_saves['dialogue_info_fundamental'].append(fundamental_info)
+        self.agent_saves['dialogue_info'].append(self.get_info())
+        return model_response
+
+    def get_info(self):
+
+        info_dict = {}
+        for name in self.module_names:
+            module = getattr(self, name)
+            module_info = getattr(module, "info_dict", None)
+            info_dict[name] = deepcopy(module_info)
+
+        return info_dict
+
+    def is_terminated(self):
+        if hasattr(self.policy, 'is_terminated'):
+            return self.policy.is_terminated()
+        return None
+
+    def retrieve_reward(self):
+        rewards = [1] * len(self.sys_state_history)
+        for turn in self.feedback:
+            turn_number = int((int(turn) - 2) / 2)
+            if turn_number >= len(self.sys_state_history):
+                continue
+            # TODO possibly use text here to check whether rating belongs to the right utterance of the system
+            text = self.feedback[turn]['text']
+            rating = self.feedback[turn]["isGood"]
+            rewards[turn_number] = int(rating)
+        return rewards
+
+    def get_reward(self):
+        if hasattr(self.policy, 'get_reward'):
+            return self.policy.get_reward()
+        return None
+
+    def init_session(self):
+        """Init the attributes of DST and Policy module."""
+        if self.nlu is not None:
+            self.nlu.init_session()
+        if self.dst is not None:
+            self.dst.init_session()
+            self.dst.state['history'].append([self.name, 'null'])
+        if self.policy is not None:
+            self.policy.init_session()
+        if self.nlg is not None:
+            self.nlg.init_session()
+        self.history = []
+
+    def get_in_da(self):
+        return self.input_action
+
+    def get_out_da(self):
+        return self.output_action
+
+    def print_ending_agent_summary(self):
+        print("session_id")
+        print(self.session_id)
+        print("taskID")
+        print(self.taskID)
+        print("USER_GOAL_ACHIEVED")
+        print(self.USER_GOAL_ACHIEVED)
+        print("sys_state_history")
+        print(self.sys_state_history)
+        print("sys_action_history")
+        print(self.sys_action_history)
+
+    def is_inactive(self):
+        currentTime = int(time.time())
+        return currentTime - self.initTime >= 600 and currentTime - self.lastUpdate >= 60

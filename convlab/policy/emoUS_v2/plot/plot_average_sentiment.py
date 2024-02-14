@@ -20,7 +20,7 @@ def arg_parser():
 def plot(data, max_turn, result_dir, pick="all"):
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    fig, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(6, 3))
 
     for model, info in data.items():
         d = info["data"]
