@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 import json
 import os
 import pandas as pd
+import numpy as np
 
 from convlab.policy.emoUS_v2.plot.success_all_fail import get_turn_emotion
 import matplotlib.pyplot as plt
@@ -21,7 +22,8 @@ def plot(data, max_turn, result_dir, pick="all"):
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     fig, ax = plt.subplots(figsize=(6, 3))
-
+    offset = 0
+    bar_width = 0.2
     for model, info in data.items():
         d = info["data"]
         ax.plot(d['x'],
@@ -34,17 +36,22 @@ def plot(data, max_turn, result_dir, pick="all"):
                         d[f"{pick}_mean"]+d[f"{pick}_std"],
                         d[f"{pick}_mean"]-d[f"{pick}_std"],
                         color=info["color"], alpha=0.1)
+        # position = np.arange(len(d['x'])) + offset
+        # ax.bar(position, d[f"{pick}_mean"],
+        #        width=bar_width, label=info["label"], color=info["color"], yerr=d[f"{pick}_std"])
+        # offset += bar_width
 
     ax.legend()
     ax.set_xlabel("turn")
     ax.set_ylabel("Sentiment")
     # ax.set_ylim([-1.0, 0.4])
-    ax.set_xticks([t for t in range(0, max_turn, 2)])
-    plt.grid(axis='x', color='0.95')
-    plt.grid(axis='y', color='0.95')
+    ax.set_xticks([t for t in range(0, max_turn, 1)])
+    # ax.set_xticks(position-bar_width)
+    # plt.grid(axis='x', color='0.95')
+    # plt.grid(axis='y', color='0.95')
     # plt.show()
     plt.tight_layout()
-    plt.savefig(os.path.join(result_dir, f"{pick}.png"))
+    plt.savefig(os.path.join(result_dir, f"{pick}.pdf"))
 
 
 def get_ser(conversation):
