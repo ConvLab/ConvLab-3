@@ -40,8 +40,8 @@ class SCBART(NLG):
         tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
         model.load_state_dict(torch.load(
             model_path, map_location=torch.device('cuda'))['state_dict'])
-        model.save_pretrained(output_dir)
-        tokenizer.save_pretrained(output_dir)
+        model.save_pretrained(output_dir, safe_serialization=False)
+        tokenizer.save_pretrained(output_dir, safe_serialization=False)
 
     def generate(self, action, conduct='neutral', user_utt=None):
         if isinstance(action, dict):
