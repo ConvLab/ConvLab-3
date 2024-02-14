@@ -16,7 +16,7 @@ class EmoLoopAgent(BaseEmoLoopAgent):
 
         pipeline_config = "/home/shutong/ConvLab3/convlab/dialcrowd_server/agents/emoloop_pipeline.json"
         policy_config = "/home/shutong/ConvLab3/convlab/dialcrowd_server/agents/emoloop_ddpt_config.json"
-        policy_model_path = "/home/shutong/models/acl2024_ckpts/emoloop_policy"
+        policy_model_path = "/home/shutong/models/acl2024_ckpts/emoloop-0/best_vtrace"
         conf = get_config(pipeline_config, [])
 
         policy = VTRACE(is_train=False, load_path=policy_model_path, config_path=policy_config, vectorizer=conf['vectorizer_sys_activated'])
