@@ -87,7 +87,7 @@ def plot(data, result_dir):
                             color=d["color"],
                             alpha=0.1)
 
-        if m == "SER":
+        if m == "hallucinate":
             mean = np.array([0.0268946072360081]*len(x))
             std = np.array([0.00117749482953846]*len(x))
             ax.plot(x,
