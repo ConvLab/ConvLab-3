@@ -67,12 +67,14 @@ def plot(data, result_dir):
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
 
-    for m in ["missing", "hallucinate", "SER"]:
+    # ["missing", "hallucinate", "SER"]:
+    for m in ["hallucinate"]:
         fig, ax = plt.subplots(figsize=(8, 6))
         for d in data:
             # x = d["data"]["x"]
             x = np.array(d['x'])*1000
             mean = np.array(d["data"][m]["mean"])
+            print(d["label"], m, mean)
             std = np.array(d["data"][m]["std"])
             # x = np.array(range(mean.shape[0]))
             marker = d.get("marker", "o")
