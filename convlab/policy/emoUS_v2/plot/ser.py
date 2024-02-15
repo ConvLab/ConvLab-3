@@ -72,7 +72,7 @@ def plot(data, result_dir):
         fig, ax = plt.subplots(figsize=(8, 6))
         for d in data:
             # x = d["data"]["x"]
-            x = np.array(d['x'])*1000
+            x = np.array(d["data"]["x"])*1000
             mean = np.array(d["data"][m]["mean"])
             print(d["label"], m, mean)
             std = np.array(d["data"][m]["std"])
