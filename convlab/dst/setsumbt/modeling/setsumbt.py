@@ -15,6 +15,8 @@
 # limitations under the License.
 """SetSUMBT Prediction Head"""
 
+from dataclasses import dataclass
+
 import torch
 from torch.nn import (Module, MultiheadAttention, GRU, LSTM, Linear, LayerNorm, Dropout,
                       CosineSimilarity, PairwiseDistance, Sequential, ReLU, Conv1d, GELU, Parameter)
@@ -189,16 +191,17 @@ class SetPooler(Module):
         return hidden
 
 
+@dataclass
 class SetSUMBTOutput(ModelOutput):
     """SetSUMBT Output class"""
-    loss = None
-    belief_state = None
-    request_probabilities = None
-    active_domain_probabilities = None
-    general_act_probabilities = None
-    hidden_state = None
-    belief_state_summary = None
-    belief_state_mutual_information = None
+    loss: torch.Tensor = None
+    belief_state: dict[str: torch.Tensor] = None
+    request_probabilities: dict[str: torch.Tensor] = None
+    active_domain_probabilities: dict[str: torch.Tensor] = None
+    general_act_probabilities: dict[str: torch.Tensor] = None
+    hidden_state: dict[str: torch.Tensor] = None
+    belief_state_summary: dict[str: torch.Tensor] = None
+    belief_state_mutual_information: dict[str: torch.Tensor] = None
 
 
 class SetSUMBTHead(Module):
