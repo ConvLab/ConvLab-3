@@ -10,18 +10,33 @@ def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--file", "-f", type=str)
     parser.add_argument("--result-dir", "-r", type=str,
-                        default="convlab/policy/emoUS_v2/result")
+                        default="convlab/policy/emoUS_v2/results/turn_conduct/")
 
     return parser.parse_args()
 
 
-def get_turn_conduct_distribution(conversation, pick="all"):
-    turn = Counter([len(dialog["log"])//2 for dialog in conversation])
+def get_turn_conduct_distribution(conversation, pick="all", dataset=False):
+
     conduct = {"neutral": [0]*20,
                "compassionate": [0]*20,
                "apologetic": [0]*20,
                "enthusiastic": [0]*20,
                "appreciative": [0]*20}
+
+    if dataset:
+        folder = "data/unified_datasets/emowoz/data_copy/"
+        conduct_map = json.load(
+            open(os.path.join(folder, "system_conduct_label.json")))
+        data = json.load(open(os.path.join(folder, "system_conduct.json")))
+        for turn_id, num in data.items():
+            index = int(turn_id.split("-")[-1])//2
+            if index > 19:
+                continue
+            c = conduct_map[str(num)]
+            print(c, index)
+            conduct[c][index] += 1
+        return conduct, None
+    turn = Counter([len(dialog["log"])//2 for dialog in conversation])
     normalize = [0]*20
     for dialog in conversation:
         if pick == "Success strict" and dialog["Success strict"] != 1:
@@ -79,8 +94,10 @@ def plot(data, max_turn, result_dir, normalize=None, pick="all"):
 def main():
     args = arg_parser()
     file_name = args.file
+    # data, normalize = get_turn_conduct_distribution(
+    #     json.load(open(file_name))["conversation"], "all",)
     data, normalize = get_turn_conduct_distribution(
-        json.load(open(file_name))["conversation"], "all")
+        None, "all", True)
     # if pick == "all":
     #     normalize = None
     plot(data,
