@@ -1,5 +1,7 @@
 ## Official Code for EMNLP2023 Paper "Building Multi-domain Dialog State Trackers from Single-domain Dialogs"
 
+paper link: https://aclanthology.org/2023.emnlp-main.946/
+
 - `get_sgd_groups.ipynb`: get the combination of SGD for experiments.
 - `split_data.py`: split the data into single domain/multi-domain dialogs. Split single dialogs to train:valid:test == 8:1:1 randomly. Split multi-domain dialogs to train:valid:test == 4:1:5 randomly. Also simplify state by removing empty slot-value pairs. Run 
     ```
