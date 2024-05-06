@@ -16,6 +16,7 @@
 
 ## Updates
 
+- **2024.5.6**: Add official code for Paper "Building Multi-domain Dialog State Trackers from Single-domain Dialogs" under `convlab/base_models/t5/mdst`
 - **2023.8.6**: Add LLM-based models.
 - **2023.2.26**: Update ConvLab on PyPI to 3.0.1 to reflect bug fixes.
 - **2022.11.30**: ConvLab-3 release.
