@@ -211,7 +211,7 @@ def main():
         for i, file in enumerate(files):
             conversation = json.load(open(file))
             r = training_info(conversation["conversation"])
-            results[i] = {x: np.average(r[x]) for x in r}
+            results[str(i)] = {x: np.average(r[x]) for x in r}
         pprint(results)
 
 
