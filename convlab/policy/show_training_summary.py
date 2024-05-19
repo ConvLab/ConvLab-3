@@ -212,7 +212,7 @@ def main():
             conversation = json.load(open(file))
             r = training_info(conversation["conversation"])
             results[str(i)] = {x: np.average(r[x]) for x in r}
-        pprint(results)
+        print(results)
 
 
 if __name__ == "__main__":
