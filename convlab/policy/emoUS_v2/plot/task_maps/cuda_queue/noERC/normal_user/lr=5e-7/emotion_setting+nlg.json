@@ -28,7 +28,7 @@
         {
             "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+conduct_5e-7+noERC-normal_user",
             "color": "c3",
-            "label": "$semSimpleLoop+Gen$",
+            "label": "$SimpleLoop+Gen$",
             "marker": "o"
         }
     ]
