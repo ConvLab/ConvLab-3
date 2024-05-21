@@ -3,32 +3,32 @@
     "colors": {
         "c1": "tab:blue",
         "c2": "tab:orange",
-        "c3": "tab:green",
-        "c4": "tab:red"
+        "c3": "tab:red",
+        "c4": "tab:green"
     },
     "models": [
         {
-            "folder": "convlab/policy/vtrace_DPT/semantic+emotion_{r+s}+conduct_1e-6+noERC",
-            "color": "c1",
-            "label": "$EmoLoop$",
+            "folder": "convlab/policy/vtrace_DPT/semantic+no_emotion_{r+s}+no_conduct_1e-6+noERC",
+            "color": "c4",
+            "label": "$semSimpleLoop$",
             "marker": "o"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/semantic+emotion_{r+s}+no_conduct_1e-6+noERC",
             "color": "c2",
-            "label": "$EmoLoop_{rec}$",
+            "label": "$semSimpleLoop+Und/Man$",
             "marker": "o"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/semantic+no_emotion_{r+s}+conduct_1e-6+noERC",
             "color": "c3",
-            "label": "$EmoLoop_{exp}$",
+            "label": "$semSimpleLoop+Gen$",
             "marker": "o"
         },
         {
-            "folder": "convlab/policy/vtrace_DPT/semantic+no_emotion_{r+s}+no_conduct_1e-6+noERC",
-            "color": "c4",
-            "label": "$EmoLoop_{base}$",
+            "folder": "convlab/policy/vtrace_DPT/semantic+emotion_{r+s}+conduct_1e-6+noERC",
+            "color": "c1",
+            "label": "$semEmoLoop$",
             "marker": "o"
         }
     ]
