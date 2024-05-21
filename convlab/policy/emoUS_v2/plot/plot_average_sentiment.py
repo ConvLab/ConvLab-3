@@ -8,6 +8,7 @@ from convlab.policy.emoUS_v2.plot.success_all_fail import get_turn_emotion
 import matplotlib.pyplot as plt
 from convlab.nlg.evaluate import fine_SER
 from convlab.nlg.evaluate_unified_datasets_v2 import ser_new
+# plot average sentiment per turn
 
 
 def arg_parser():
@@ -21,7 +22,7 @@ def arg_parser():
 def plot(data, max_turn, result_dir, pick="all"):
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    fig, ax = plt.subplots(figsize=(6, 3))
+    fig, ax = plt.subplots(figsize=(6, 4))
     offset = 0
     bar_width = 0.2
     for model, info in data.items():

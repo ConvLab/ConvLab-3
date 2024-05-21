@@ -3,8 +3,8 @@
     "colors": {
         "c1": "tab:blue",
         "c2": "tab:orange",
-        "c3": "tab:green",
-        "c4": "tab:red"
+        "c3": "tab:red",
+        "c4": "tab:green"
     },
     "models": [
         {
@@ -14,21 +14,21 @@
             "marker": "o"
         },
         {
+            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+no_conduct_5e-7+noERC-normal_user",
+            "color": "c4",
+            "label": "$SimpleLoop$",
+            "marker": "o"
+        },
+        {
             "folder": "convlab/policy/vtrace_DPT/pretrain+emotion_{r+s}+no_conduct_5e-7+noERC-normal_user",
             "color": "c2",
-            "label": "$EmoLoop_{rec}$",
+            "label": "$SimpleLoop+Und/Man$",
             "marker": "o"
         },
         {
             "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+conduct_5e-7+noERC-normal_user",
             "color": "c3",
-            "label": "$EmoLoop_{exp}$",
-            "marker": "o"
-        },
-        {
-            "folder": "convlab/policy/vtrace_DPT/pretrain+no_emotion_{r+s}+no_conduct_5e-7+noERC-normal_user",
-            "color": "c4",
-            "label": "$EmoLoop_{base}$",
+            "label": "$semSimpleLoop+Gen$",
             "marker": "o"
         }
     ]

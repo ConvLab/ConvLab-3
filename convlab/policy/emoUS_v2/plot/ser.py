@@ -90,21 +90,20 @@ def plot(data, result_dir):
                             color=d["color"],
                             alpha=0.1)
 
-        # if m == "hallucinate":
-        #     mean = np.array([0.0268946072360081]*len(x))
-        #     std = np.array([0.00117749482953846]*len(x))
-        #     ax.plot(x,
-        #             mean,
-        #             marker="o",
-        #             color="tab:gray",
-        #             label="$EmoTOD$")
-        #     ax.fill_between(x,
-        #                     mean+std,
-        #                     mean-std,
-        #                     color="tab:gray",
-        #                     alpha=0.1)
+        if m == "hallucinate":
+            mean = np.array([0.013813419623918136]*len(x))
+            ax.plot(x,
+                    mean,
+                    color="tab:orange",
+                    label="$EmoLLAMA$")
+            mean = np.array([0.01792840233426145]*len(x))
+            ax.plot(x,
+                    mean,
+                    color="tab:red",
+                    label="$SimpleLLAMA$")
 
-        ax.legend()
+        ax.legend(loc="upper right")
+        ax.set_ylim([0.006, 0.02])
         # ax.set_xlabel("epoch")
         ax.set_xlabel("# of dialog")
         ax.set_ylabel(m)
