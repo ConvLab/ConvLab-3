@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+    "formatters": {
+      "simple": {
+        "()": "convlab.dst.setsumbt.utils.logging.LogFormatter"
+      },
+      "jsonl": {
+        "()": "convlab.dst.setsumbt.utils.logging.JSONLFormatter"
+      }
+    },
+    "handlers": {
+      "log": {
+        "class": "logging.FileHandler",
+        "level": "INFO",
+        "formatter": "simple",
+        "filename": ".log"
+      },
+      "jsonl": {
+        "class": "logging.FileHandler",
+        "level": "INFO",
+        "formatter": "jsonl",
+        "filename": ".jsonl",
+        "mode": "a"
+      },
+      "console": {
+          "class": "logging.StreamHandler",
+          "level": "INFO",
+          "formatter": "simple",
+          "stream": "ext://sys.stderr"
+      },
+      "email": {
+        "class": "convlab.dst.setsumbt.utils.logging.SSLSMTPHandler",
+        "level": "INFO",
+        "formatter": "simple",
+        "mailhost": "smtp.example.com",
+        "fromaddr": "noreply@example.com",
+        "toaddrs": [
+          "example@example.com"
+        ],
+        "subject": "Example Subject",
+        "credentials": []
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "DEBUG",
+        "handlers": ["log", "jsonl", "console", "email"]
+      }
+    }
+}

@@ -61,10 +61,15 @@ class BayesianMatchingLoss(Module):
         inputs = torch.exp(inputs[labels != self.ignore_index])
         labels = labels[labels != self.ignore_index]
         
-        # Initialise and reshape prior parameters
+        # Initialise and reshape prior parameters (clamping between 1 and 1/lamb prevents numerical instability)
         if prior is None:
             prior = torch.ones(dimension).to(inputs.device)
-        prior = prior.to(inputs.device)
+
+        # Prior clamping
+        label_priors = prior[range(labels.size(0)), labels].clamp(1.0, 1e8)
+        prior = prior.to(inputs.device).clamp(1.0, 0.1 / self.lamb)
+        prior[range(labels.size(0)), labels] = label_priors
+        del label_priors
 
         # KL divergence term (divergence of predictive distribution from prior over label classes - regularisation term)
         log_gamma_term = lgamma(inputs.sum(-1)) - lgamma(prior.sum(-1)) + (lgamma(prior) - lgamma(inputs)).sum(-1)

@@ -1,6 +1,7 @@
 from transformers import BertConfig, RobertaConfig
 
-from convlab.dst.setsumbt.modeling.setsumbt_nbt import BertSetSUMBT, RobertaSetSUMBT, EnsembleSetSUMBT
+from convlab.dst.setsumbt.modeling.setsumbt_nbt import (BertSetSUMBT, RobertaSetSUMBT, EnsembleSetSUMBT,
+                                                        MetaRobertaSetSUMBT)
 from convlab.dst.setsumbt.modeling.ontology_encoder import OntologyEncoder
 from convlab.dst.setsumbt.modeling.temperature_scheduler import LinearTemperatureScheduler
 from convlab.dst.setsumbt.modeling.trainer import SetSUMBTTrainer
@@ -12,5 +13,6 @@ class RobertaSetSUMBTTokenizer(SetSUMBTTokenizer('roberta')): pass
 SetSUMBTModels = {
     'bert': (BertSetSUMBT, OntologyEncoder('bert'), BertConfig, BertSetSUMBTTokenizer),
     'roberta': (RobertaSetSUMBT, OntologyEncoder('roberta'), RobertaConfig, RobertaSetSUMBTTokenizer),
-    'ensemble': (EnsembleSetSUMBT, None, None, None)
+    'ensemble': (EnsembleSetSUMBT, None, None, None),
+    'meta': (MetaRobertaSetSUMBT, OntologyEncoder('roberta'), RobertaConfig, RobertaSetSUMBTTokenizer)
 }

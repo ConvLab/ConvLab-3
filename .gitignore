@@ -110,3 +110,5 @@ venv
 *.zip
 */dummy_data.json
 *.csv
+.python-version
+poetry.lock

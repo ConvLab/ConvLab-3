@@ -1,7 +1,7 @@
-from convlab.policy.genTUS.stepGenTUS import UserPolicy
 from convlab.dialog_agent import PipelineAgent
-from convlab.policy.tus.unify.util import create_goal
+from convlab.policy.genTUS.stepGenTUS import UserPolicy
 from convlab.policy.genTUS.unify.build_data import DataBuilder
+from convlab.policy.tus.unify.util import create_goal
 from convlab.util import load_dataset
 
 
