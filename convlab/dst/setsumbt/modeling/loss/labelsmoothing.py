@@ -15,7 +15,6 @@
 # limitations under the License.
 """Label smoothing loss function"""
 
-
 import torch
 from torch.nn import Module
 from torch.nn.functional import kl_div
@@ -57,7 +56,9 @@ class LabelSmoothingLoss(Module):
         if labels.max() <= inputs.size(-1):
             dimension = inputs.size(-1)
         else:
-            raise NameError(f'Label dimension {labels.max()} is larger than prediction dimension {inputs.size(-1)}.')
+            raise NameError(
+                f"Label dimension {labels.max()} is larger than prediction dimension {inputs.size(-1)}."
+            )
 
         # Remove observations to be ignored in loss calculation
         inputs = inputs[labels != self.ignore_index]
@@ -69,10 +70,10 @@ class LabelSmoothingLoss(Module):
         # Create target distribution
         inputs = torch.log(torch.softmax(inputs, -1))
         targets = torch.ones(inputs.size()).float().to(inputs.device)
-        targets *= self.label_smoothing / (dimension - 1)
+        targets = targets * self.label_smoothing / (dimension - 1)
         targets[range(labels.size(0)), labels] = 1.0 - self.label_smoothing
 
-        return kl_div(inputs, targets, reduction='none').sum(-1).mean()
+        return kl_div(inputs, targets, reduction="none").sum(-1).mean()
 
 
 class BinaryLabelSmoothingLoss(LabelSmoothingLoss):
@@ -116,4 +117,4 @@ class BinaryLabelSmoothingLoss(LabelSmoothingLoss):
         targets *= self.label_smoothing
         targets[range(labels.size(0)), labels.long()] = 1.0 - self.label_smoothing
 
-        return kl_div(inputs, targets, reduction='none').sum(-1).mean()
+        return kl_div(inputs, targets, reduction="none").sum(-1).mean()

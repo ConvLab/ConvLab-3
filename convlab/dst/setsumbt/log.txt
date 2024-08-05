@@ -1,0 +1,6306 @@
+Dialogue ID: multiwoz21-train-1
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-23
+Expected: ['general', 'hotel', 'police', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-38
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-49
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-54
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-57
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-74
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-85
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-95
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-99
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-122
+Expected: ['general', 'police', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-127
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-135
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-136
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-143
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-145
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-153
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-169
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-182
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-189
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-193
+Expected: ['attraction']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-196
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-203
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-208
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-215
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-237
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-240
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-255
+Expected: ['general', 'train']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-264
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-265
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-282
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-290
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-311
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-312
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-313
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-316
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-332
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-342
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-345
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-347
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-349
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-351
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-354
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-373
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-374
+Expected: ['attraction', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-380
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-390
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-403
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-405
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-407
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-408
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-417
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-429
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-433
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-435
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-462
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-466
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-473
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-476
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-477
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-493
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-495
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-522
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-528
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-529
+Expected: ['hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-532
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-533
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-537
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-538
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-540
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-541
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-549
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-551
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-558
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-569
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-578
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-579
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-584
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-585
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-586
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-593
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-622
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-630
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-642
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-653
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-656
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-660
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-661
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-668
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-670
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-672
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-673
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-682
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-684
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-690
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-695
+Expected: ['general', 'hospital', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-704
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-709
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-710
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-718
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-720
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-744
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-748
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-752
+Expected: ['attraction', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-758
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-769
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-771
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-773
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-779
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-794
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-796
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-798
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-801
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-804
+Expected: ['general', 'police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-805
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-817
+Expected: ['general', 'taxi']
+Actual: ['general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-827
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-829
+Expected: ['general', 'police', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-830
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-834
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-841
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-844
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-850
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-852
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-861
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-883
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-892
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-893
+Expected: ['general', 'hospital', 'restaurant']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-905
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-907
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-910
+Expected: ['general', 'train']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-917
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-918
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-943
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-946
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-949
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-950
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-961
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-988
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-995
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1000
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1005
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1014
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1020
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1023
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1036
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1047
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1053
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1057
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1062
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1067
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1071
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1073
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1075
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1076
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1085
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1109
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1110
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1112
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1116
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1117
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1118
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1119
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1134
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1139
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1141
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1147
+Expected: ['hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-1154
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-1158
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1159
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-1161
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1175
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1189
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1211
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1222
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1229
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1254
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1255
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1256
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1261
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1285
+Expected: ['hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1288
+Expected: ['attraction', 'hotel']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1291
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1295
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hospital', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1298
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1301
+Expected: ['general', 'hospital']
+Actual: ['general', 'hospital', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1353
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1354
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1361
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1363
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1367
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1374
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1379
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1382
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1383
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1391
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1405
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1406
+Expected: ['attraction', 'general', 'restaurant', 'taxi', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1409
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1410
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1413
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1439
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-1444
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1455
+Expected: ['attraction', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1463
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1481
+Expected: ['attraction', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1491
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1498
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1502
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1507
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1515
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1520
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1526
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1537
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1539
+Expected: ['general', 'train']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1546
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1547
+Expected: ['restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1562
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1569
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1572
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1585
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1588
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1593
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1594
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1626
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1631
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1646
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1652
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1653
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1654
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1670
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1673
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1675
+Expected: ['hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-1678
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1679
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1680
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1688
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1696
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1709
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1719
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1720
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1727
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1728
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1730
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1747
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1761
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1768
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1773
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1784
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1790
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1795
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1800
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1811
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1823
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1825
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1827
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1832
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1852
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1859
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1880
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1882
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1885
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1886
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-1889
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1907
+Expected: ['general', 'hospital', 'taxi']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1925
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-1929
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1930
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-1933
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-1937
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-1950
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-1963
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1975
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1993
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-1997
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2003
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2010
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2019
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2020
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2022
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2025
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2029
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2030
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2033
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2044
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2066
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2079
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-2082
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2084
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-2098
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2101
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2105
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2112
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2124
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2143
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2154
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2165
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2185
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2189
+Expected: ['general', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2190
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2228
+Expected: ['general', 'hospital', 'hotel']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-2240
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2244
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2257
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2295
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2296
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2305
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2324
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2326
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2355
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2370
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2373
+Expected: ['attraction', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2389
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2392
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-2393
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2407
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2413
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2429
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2430
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2441
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2460
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2471
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2482
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2487
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2495
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2499
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2504
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2511
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2523
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2526
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2527
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2550
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2552
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2554
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2557
+Expected: ['attraction', 'general', 'taxi', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2569
+Expected: ['attraction', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2588
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2589
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2595
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2602
+Expected: ['general', 'hospital', 'taxi']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2606
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2610
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2612
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2619
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2622
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2623
+Expected: ['general', 'restaurant', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2624
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2626
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2646
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2653
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2681
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2687
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2699
+Expected: ['attraction', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2702
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2704
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2712
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2714
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2723
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-2727
+Expected: ['hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-2728
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2729
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2730
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2732
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2733
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2734
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2745
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2756
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2775
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2785
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2812
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2814
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2822
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2828
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2831
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2836
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2853
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2855
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2876
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2898
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2910
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2920
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2923
+Expected: ['police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-2932
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2944
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2945
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2948
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2952
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2957
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-2964
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2972
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-2973
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-2978
+Expected: ['attraction', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-2993
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-3025
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3032
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3043
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3051
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3053
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3061
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-3066
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3075
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3083
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3106
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3138
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3141
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3146
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3159
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3161
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3167
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3177
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3198
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3206
+Expected: ['general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3212
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3213
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3214
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3219
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3227
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3258
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3262
+Expected: ['general', 'taxi']
+Actual: ['general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-3272
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3273
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3291
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3297
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3298
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3303
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3305
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3307
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3312
+Expected: ['general', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3321
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3335
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3343
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3347
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3351
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3359
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3365
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3367
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3381
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3383
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3386
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3388
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3396
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3397
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3401
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3402
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3403
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3407
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3417
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3433
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3438
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3449
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-3482
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3497
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3515
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3519
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3524
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3525
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3541
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3545
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3546
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3566
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3571
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3581
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3582
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3588
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3593
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3602
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3615
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3621
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3628
+Expected: ['general', 'hotel', 'police', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3643
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3647
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3657
+Expected: ['attraction', 'hotel']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3659
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3663
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3679
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3680
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3690
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3691
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3693
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3700
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3702
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3706
+Expected: ['hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-3710
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3712
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3717
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3728
+Expected: ['attraction', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3729
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3738
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3759
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3765
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3769
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3770
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3775
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3778
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3785
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3789
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3795
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3797
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3801
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3811
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3815
+Expected: ['general', 'hotel', 'restaurant', 'taxi', 'train']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3822
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3823
+Expected: ['general', 'hospital', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3824
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3832
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3837
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3838
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3841
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3842
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3844
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3855
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3864
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3875
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-3877
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3884
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3887
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3907
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-3909
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-3912
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3916
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3925
+Expected: ['attraction', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-3929
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3945
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3950
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3952
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3957
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-3959
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3969
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3975
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3976
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-3984
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-3988
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-3989
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4003
+Expected: ['attraction', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4012
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4020
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4022
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-4032
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-4040
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4046
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4048
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4053
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4063
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4073
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4077
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4100
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4102
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4103
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4105
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4109
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4116
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4120
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4133
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4135
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4142
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4151
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4162
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4183
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4192
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4199
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4207
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4220
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4234
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4252
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4260
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4263
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4265
+Expected: ['general', 'police', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4266
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4271
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4275
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4276
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4277
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4288
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4291
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4293
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4294
+Expected: ['general', 'train']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4295
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4308
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4316
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4332
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4333
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4335
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4352
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4356
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4362
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4365
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4372
+Expected: ['attraction', 'general']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4375
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4376
+Expected: ['general', 'restaurant', 'taxi', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4377
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4387
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-4389
+Expected: ['general', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4394
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4408
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4417
+Expected: ['attraction', 'general', 'taxi', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4422
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4425
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4426
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4431
+Expected: ['attraction', 'general', 'hospital', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-4440
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4446
+Expected: ['attraction', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4452
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4454
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4456
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4458
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4459
+Expected: ['general', 'police', 'restaurant']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4460
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4469
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4480
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4486
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4487
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4489
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4492
+Expected: ['hospital']
+Actual: ['general', 'hospital', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4494
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4503
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4511
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4525
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4530
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4554
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-4558
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-4590
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4597
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4601
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4605
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4612
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4613
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4616
+Expected: ['general', 'taxi']
+Actual: ['attraction', 'general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-4622
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4624
+Expected: ['attraction', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4626
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4650
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4652
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4672
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4673
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4678
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4689
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4692
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4701
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4709
+Expected: ['restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4715
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4720
+Expected: ['general', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4721
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4725
+Expected: ['attraction', 'hotel']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4733
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4743
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4757
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-4761
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4777
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4778
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4784
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4789
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4796
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4801
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4803
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4804
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-4808
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4809
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4811
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4829
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4833
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4841
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4844
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-4854
+Expected: ['hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-4856
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4861
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4863
+Expected: ['attraction', 'general', 'hospital']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-4872
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4873
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4878
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4891
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4894
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4911
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-4921
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-4930
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4936
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-4951
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4954
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4961
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4979
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4985
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-4989
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-4999
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5003
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5012
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5022
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5033
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5035
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5047
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5059
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5060
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5061
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5067
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5068
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5073
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5078
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5093
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5094
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5100
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5117
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5130
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5143
+Expected: ['police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5144
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5157
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5159
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5178
+Expected: ['general', 'hospital', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5181
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5187
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5189
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5192
+Expected: ['general', 'train']
+Actual: ['general', 'hospital', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5193
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5212
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5216
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5217
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5219
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5227
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5236
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5258
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5263
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5269
+Expected: ['attraction', 'general', 'police', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5279
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5280
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5286
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5291
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5293
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5296
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5325
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5343
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5346
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5349
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5351
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5361
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5363
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5380
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5382
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5383
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5386
+Expected: ['general', 'police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5392
+Expected: ['general', 'hospital', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5398
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5406
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5411
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5416
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5418
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5435
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5441
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5446
+Expected: ['general', 'police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5449
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5452
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5471
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-5476
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5479
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5486
+Expected: ['attraction', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5488
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5491
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-5510
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5523
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5524
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5530
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5537
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5547
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5550
+Expected: ['general', 'hospital', 'hotel', 'train']
+Actual: ['general', 'hospital', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5551
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5561
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5583
+Expected: ['general', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5584
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-5585
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5586
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5594
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5617
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5620
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5623
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5624
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5626
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5633
+Expected: ['attraction', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5638
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5652
+Expected: ['general', 'hospital', 'police']
+Actual: ['general', 'hospital']
+------------------
+
+Dialogue ID: multiwoz21-train-5663
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5670
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5676
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5681
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5687
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5690
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5718
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5727
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5730
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5733
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5739
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5742
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5743
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5759
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5763
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5771
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5773
+Expected: ['general', 'hospital', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5775
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5788
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5804
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5805
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5816
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5819
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5831
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5836
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5839
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5843
+Expected: ['attraction', 'general', 'restaurant', 'taxi', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-5853
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5859
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5861
+Expected: ['attraction', 'hotel']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5866
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5867
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5869
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5871
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-5874
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5881
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5893
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5908
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5909
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5912
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5915
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5917
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5928
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5938
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5941
+Expected: ['general', 'hospital']
+Actual: ['general', 'hospital', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5943
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5948
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5950
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-5966
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-5974
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-5982
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-5996
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6005
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6006
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6008
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6015
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6016
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6017
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6020
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6022
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-6025
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6030
+Expected: ['attraction', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6048
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6049
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6051
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6054
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6058
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6063
+Expected: ['attraction', 'general', 'taxi', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6071
+Expected: ['hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6082
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6083
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6089
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6093
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6095
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6100
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6101
+Expected: ['general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6105
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6109
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6111
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6114
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6129
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6130
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6144
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6169
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6171
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6174
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6185
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6191
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6196
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-6209
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6210
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6236
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6250
+Expected: ['attraction', 'general', 'taxi']
+Actual: ['attraction', 'general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6257
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6260
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6273
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6277
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6283
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6288
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6296
+Expected: ['attraction', 'general', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6321
+Expected: ['attraction', 'general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6338
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6364
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6369
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6371
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6372
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6388
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6394
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6417
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6433
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6437
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6443
+Expected: ['attraction', 'hotel']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6447
+Expected: ['general', 'taxi']
+Actual: ['attraction', 'general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6450
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6487
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6490
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6509
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6511
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6518
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6529
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6531
+Expected: ['attraction', 'general', 'restaurant', 'taxi', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6574
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6585
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6607
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6610
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6614
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6625
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6631
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6643
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6657
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6667
+Expected: ['general', 'taxi', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6678
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6682
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6686
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6687
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6689
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6690
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6696
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6708
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6732
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6736
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6754
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6758
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6768
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6769
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6785
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6805
+Expected: ['general', 'taxi', 'train']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6819
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6826
+Expected: ['attraction', 'general', 'hospital', 'hotel']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6833
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6857
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6858
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6862
+Expected: ['general', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6865
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6871
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6873
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6874
+Expected: ['hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6879
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6883
+Expected: ['attraction', 'general', 'police', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6890
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6901
+Expected: ['attraction', 'restaurant']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-6902
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-6908
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6916
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6933
+Expected: ['general', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6945
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6946
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6959
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-6969
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-6971
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-6984
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-6987
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-6994
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7000
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7014
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7021
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7022
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7032
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7037
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7044
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7046
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7049
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7063
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7069
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7076
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7080
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7082
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7084
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7100
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7101
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7116
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7135
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7137
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7141
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7150
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7154
+Expected: ['attraction', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7161
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7169
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7178
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7179
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7187
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7203
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7204
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7205
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7226
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7227
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7229
+Expected: ['general', 'hotel', 'restaurant', 'taxi', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7234
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7242
+Expected: ['general', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7245
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7260
+Expected: ['police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7261
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7266
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7270
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7287
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7291
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7292
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7294
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7315
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7335
+Expected: ['attraction', 'general', 'restaurant']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-7336
+Expected: ['general', 'taxi', 'train']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7348
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7349
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7350
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7351
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7352
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7361
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7399
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7415
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7419
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7423
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7425
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7432
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7438
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7439
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7451
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hospital', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7458
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7484
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7493
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7496
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7502
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7509
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7511
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7522
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7524
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7529
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7537
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7542
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7544
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7551
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7557
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7573
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7576
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7580
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7587
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7602
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7611
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7619
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7624
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7625
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7633
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7637
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7641
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7647
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7657
+Expected: ['general', 'hotel', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7663
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7668
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7672
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7688
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7689
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7700
+Expected: ['hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7703
+Expected: ['general', 'hospital', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7709
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7714
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7727
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7742
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7744
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7749
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7753
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7754
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7757
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7759
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7767
+Expected: ['general', 'restaurant', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7769
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7770
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7776
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7783
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7787
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7812
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7828
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7837
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7849
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7856
+Expected: ['general', 'restaurant', 'taxi', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7857
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7864
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7868
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7879
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7880
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7885
+Expected: ['general', 'taxi', 'train']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7887
+Expected: ['hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7888
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7923
+Expected: ['attraction', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7937
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-7950
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-7954
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-7956
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7957
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-7963
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-7990
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8003
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8006
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8010
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8023
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8045
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8053
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8057
+Expected: ['general', 'hotel', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8061
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8069
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8076
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8080
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8090
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8091
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8092
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8094
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8106
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8113
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8116
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8117
+Expected: ['general', 'train']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8122
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8125
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8128
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8136
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8145
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8149
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8151
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8154
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8156
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8183
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8184
+Expected: ['general', 'police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8195
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8202
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8209
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8223
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8247
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8255
+Expected: ['general', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8266
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8267
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8278
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8281
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8282
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8283
+Expected: ['attraction', 'general', 'taxi', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8296
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8299
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8311
+Expected: ['general', 'hospital']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8317
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8327
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8329
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general']
+------------------
+
+Dialogue ID: multiwoz21-train-8332
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8335
+Expected: ['restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8337
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8340
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8354
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8356
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8362
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8369
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-train-8372
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8387
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8393
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-train-8400
+Expected: ['hotel', 'restaurant']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8401
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8402
+Expected: ['general', 'police']
+Actual: ['general']
+------------------
+
+Dialogue ID: multiwoz21-train-8409
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8418
+Expected: ['general', 'hotel', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-train-8420
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-train-8428
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-48
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-104
+Expected: ['general', 'hotel', 'restaurant', 'taxi', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-108
+Expected: ['attraction', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-154
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hospital', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-180
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-209
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-213
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-222
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-234
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-241
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-252
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-254
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-284
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-311
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-356
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-385
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-392
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-406
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-416
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-426
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-435
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-456
+Expected: ['general', 'hotel', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-459
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-502
+Expected: ['general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-503
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-516
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-527
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-529
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-556
+Expected: ['general', 'taxi']
+Actual: ['attraction', 'general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-599
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-604
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-614
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-627
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-633
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-643
+Expected: ['general', 'restaurant', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-654
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['attraction', 'general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-666
+Expected: ['general', 'taxi']
+Actual: ['general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-692
+Expected: ['attraction', 'general', 'hospital', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-704
+Expected: ['general', 'taxi']
+Actual: ['general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-720
+Expected: ['general', 'taxi', 'train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-722
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-725
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-validation-731
+Expected: ['attraction', 'general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-749
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-754
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-755
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-812
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-832
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-834
+Expected: ['attraction', 'general', 'hotel', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-890
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-validation-925
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-926
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-986
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-validation-991
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-validation-992
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-45
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-55
+Expected: ['attraction', 'general', 'hotel', 'police', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-66
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-83
+Expected: ['general', 'hotel', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-93
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-112
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-159
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-162
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-176
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-177
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-202
+Expected: ['general', 'police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-208
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-222
+Expected: ['general', 'restaurant', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-227
+Expected: ['attraction', 'general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-237
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-251
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-255
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-262
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-272
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-285
+Expected: ['taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-293
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-308
+Expected: ['general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-336
+Expected: ['hotel', 'train']
+Actual: ['general', 'hotel', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-343
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'hotel', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-366
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-389
+Expected: ['general', 'restaurant', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-426
+Expected: ['general', 'hotel', 'restaurant', 'taxi']
+Actual: ['general', 'hotel', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-435
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-437
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-450
+Expected: ['general', 'taxi']
+Actual: ['general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-454
+Expected: ['attraction', 'train']
+Actual: ['attraction', 'general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-457
+Expected: ['general', 'restaurant', 'train']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-476
+Expected: ['general', 'taxi']
+Actual: ['attraction', 'general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-485
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-486
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-489
+Expected: ['general', 'hotel', 'restaurant']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-512
+Expected: ['general', 'restaurant', 'train']
+Actual: ['attraction', 'general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-556
+Expected: ['attraction', 'restaurant']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-561
+Expected: ['attraction', 'general', 'hotel', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-606
+Expected: ['general', 'police', 'taxi']
+Actual: ['general', 'taxi']
+------------------
+
+Dialogue ID: multiwoz21-test-624
+Expected: ['attraction', 'general', 'hotel', 'restaurant']
+Actual: ['attraction', 'general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-640
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-657
+Expected: ['attraction', 'general', 'train']
+Actual: ['attraction', 'general', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-765
+Expected: ['attraction', 'general', 'hotel']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-773
+Expected: ['restaurant']
+Actual: ['general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-774
+Expected: ['general', 'hotel', 'taxi', 'train']
+Actual: ['general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-780
+Expected: ['general', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-797
+Expected: ['train']
+Actual: ['general', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-868
+Expected: ['general', 'hotel', 'train']
+Actual: ['attraction', 'general', 'hotel', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-876
+Expected: ['general', 'hotel']
+Actual: ['general', 'hotel', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-877
+Expected: ['general', 'police', 'restaurant', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-886
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant']
+------------------
+
+Dialogue ID: multiwoz21-test-901
+Expected: ['attraction', 'general', 'restaurant', 'taxi']
+Actual: ['attraction', 'general', 'restaurant', 'taxi', 'train']
+------------------
+
+Dialogue ID: multiwoz21-test-903
+Expected: ['general', 'hotel', 'train']
+Actual: ['general', 'hotel']
+------------------
+
+Dialogue ID: multiwoz21-test-958
+Expected: ['general', 'restaurant', 'taxi', 'train']
+Actual: ['general', 'restaurant', 'train']
+------------------
+
+Errors: 1261

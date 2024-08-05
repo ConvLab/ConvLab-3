@@ -1,9 +1,10 @@
 {
-  "model_type": "SetSUMBT",
+  "model_type": "meta",
+  "no_set_similarity": false,
+  "no_descriptions": false,
   "dataset": "multiwoz21",
   "no_action_prediction": true,
-  "model_name_or_path": "roberta-base",
-  "candidate_embedding_model_name": "roberta-base",
+  "loss_function": "bayesianmatching",
   "train_batch_size": 3,
   "dev_batch_size": 12,
   "test_batch_size": 12

@@ -1,7 +1,7 @@
 {
   "model_type": "SetSUMBT",
   "dataset": "sgd",
-  "no_action_prediction": true,
+  "no_action_prediction": false,
   "model_name_or_path": "roberta-base",
   "transformers_local_files_only": false,
   "train_batch_size": 3,
