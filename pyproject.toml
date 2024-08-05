@@ -24,6 +24,7 @@ spacy = "^3.7.4"
 tensorboardx = "^2.6.2.2"
 # Torch versioning:
 # Specific version for macOS with x86_64 architecture and latest version for other platforms
+# Newer versions of pytorch are not supported on Mac X84 systems
 torch = [
     { version = "==2.2.2", markers = "platform_machine == 'x86_64' and platform_system == 'Darwin'" },
     { version = "^2.3", markers = "platform_machine != 'x86_64' or platform_system != 'Darwin'" },
@@ -33,14 +34,6 @@ transformers = "^4.31.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.1"
 
-[[tool.poetry.source]]
-name = "hhu"
-url = "http://pypi.repo.test.hhu.de/simple/"
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.ruff]
-target-version = "py312"
-extend = "~/.config/ruff/config.toml"
