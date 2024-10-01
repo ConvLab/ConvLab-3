@@ -340,14 +340,17 @@ class SaveDialog:
         self.save_path = save_path
         self.data = {"conversation": []}
         self.dialog = []
+        self.current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+
 
     def new_conversation(self):
         self.dialog = []
 
     def save(self):
-        current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        # shutong
+        # current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         file_path = os.path.join(
-            self.save_path, f"conversation-{current_time}.json")
+            self.save_path, f"conversation-{self.current_time}.json")
         json.dump(self.data,
                   open(os.path.join(file_path), 'w'),
                   cls=NumpyEncoder, indent=2)

@@ -86,12 +86,12 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
                     norm_value = value.strip().lower()
                     if norm_value not in utterance.lower():
                         missing_flag = True
-                        # problem 1: values with multiple tokens considered missing if some spaces are dropped in the nlg output
-                        # e.g. "53 - 57 Lensfield road" considered missing despite "53-57 Lensfield road" in the output
-                        # temporary solution: for values with multiple tokens, remove spaces in the value and the sentence before comparing
-                        if len(norm_value.split()) > 1:
-                            if norm_value.replace(' ', '') in utterance.lower().replace(' ', ''):
-                                missing_flag = False
+                        # # problem 1: values with multiple tokens considered missing if some spaces are dropped in the nlg output
+                        # # e.g. "53 - 57 Lensfield road" considered missing despite "53-57 Lensfield road" in the output
+                        # # temporary solution: for values with multiple tokens, remove spaces in the value and the sentence before comparing
+                        # if len(norm_value.split()) > 1:
+                        #     if norm_value.replace(' ', '') in utterance.lower().replace(' ', ''):
+                        #         missing_flag = False
                         # problem 2: integer values considered missing if they are realised in words
                         # e.g. "4 stars" considered missing despite "four stars" in the output
                         # temporary solution: use a dictionary (int2word) for value matching
@@ -124,9 +124,9 @@ def evaluate(predict_result, ontology, filter_empty_acts=True):
                 norm_slot = slot.strip().lower()
                 if f' {norm_slot}' in f' {utterance.strip().lower()} ':
                     redundant_flag = True
-                    # problem 2: binary slots not checked
-                    if norm_slot in [da['slot'] for da in da['binary']]:
-                        redundant_flag = False
+                    # # problem 2: binary slots not checked
+                    # if norm_slot in [da['slot'] for da in da['binary']]:
+                    #     redundant_flag = False
                     # problem 3: for the dataset, missing annotation in dialogue_acts
                 if redundant_flag:
                     redundant_count += 1

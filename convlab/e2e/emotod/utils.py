@@ -10,6 +10,8 @@ from convlab.util import *
 
 additional_special_tokens = ['<|belief|>', '<|endofbelief|>', '<|action|>', '<|endofaction|>', '<|response|>', '<|endofresponse|>', '<|context|>', '<|endofcontext|>', '<|user|>', '<|system|>', '<|useremotion|>', '<|endofuseremotion|>', '[address]', '[area]','[arriveby]','[bookday]','[bookpeople]','[bookstay]','[booktime]', '[choice]','[day]','[department]','[departure]','[destination]','[duration]','[entrancefee]','[food]','[leaveat]','[name]','[openhours]','[phone]','[postcode]','[price]','[pricerange]','[ref]','[stars]','[trainid]','[type]']
 
+additional_special_tokens_llama = ['<|conduct|>', '<|endofconduct|>', '<|belief|>', '<|endofbelief|>', '<|action|>', '<|endofaction|>', '<|response|>', '<|endofresponse|>', '<|context|>', '<|endofcontext|>', '<|user|>', '<|system|>', '<|useremotion|>', '<|endofuseremotion|>', '[address]', '[area]','[arriveby]','[bookday]','[bookpeople]','[bookstay]','[booktime]', '[choice]','[day]','[department]','[departure]','[destination]','[duration]','[entrancefee]','[food]','[leaveat]','[name]','[openhours]','[phone]','[postcode]','[price]','[pricerange]','[ref]','[stars]','[trainid]','[type]']
+
 DEFAULTS = {
     'ref': '00000000',
     'bookpeople': '2',
@@ -82,9 +84,10 @@ def lexcalise(full_sequence, database):
     informable_domains = ['restaurant', 'attraction', 'hotel', 'train', 'taxi', 'hospital'] #, 'booking', 'general']
     for das in action_triplets:
         d = das[0]
-        a = das[1]
-        if a == 'inform' and d in informable_domains:
-            action_domains.append(d)
+        if len(das) > 1:
+            a = das[1]
+            if a == 'inform' and d in informable_domains:
+                action_domains.append(d)
     if len(action_domains) > 0:
         act_domain_counts = Counter(action_domains)
         active_domain, count = act_domain_counts.most_common(1)[0]
@@ -109,8 +112,12 @@ def lexcalise(full_sequence, database):
             domain = dsv[0]
             slot = dsv[1]
             if slot == 'book':
-                value = ' '.join(dsv[3:])
-                slot = dsv[1] + dsv[2]
+                try:
+                    value = ' '.join(dsv[3:])
+                    slot = dsv[1] + dsv[2]
+                except:
+                    value = ' '.join(dsv[2:])
+                    slot = dsv[1]
             else:
                 value = ' '.join(dsv[2:])
             value = normalize_state_slot_value(slot, value)
@@ -122,16 +129,25 @@ def lexcalise(full_sequence, database):
     try:
         domain_entities = {}
         for d in set(action_domains):
-            entities = database.query(d, [], topk=1000)
+            try:
+                entities = database.query(d, [], topk=1000)
+            except:
+                entities = []
             domain_entities[d] = entities
         for d in constraints:   # from bs
             entities = []
             if d is not None:
-                entities = database.query(d, constraints[d], topk=1000)
+                try:
+                    entities = database.query(d, constraints[d], topk=1000)
+                except:
+                    entities = []
             domain_entities[d] = entities
 
     except:
-        raise ValueError(f'Error in database query')
+        print(f'Error in database query')
+        domain_entities = {}
+
+        # raise ValueError(f'Error in database query')
     
     # selected_entities = []
     # for d in domain_entities:
@@ -171,7 +187,10 @@ def lexcalise(full_sequence, database):
                 else:
                     if d == 'taxi':
                         if s in TAXI_SLOT_MAPS:
-                            value =  entity[TAXI_SLOT_MAPS[s]]
+                            try:
+                                value =  entity[TAXI_SLOT_MAPS[s]]
+                            except:
+                                value = ''
                             break
                     elif d == 'hospital':
                         if s == 'name':

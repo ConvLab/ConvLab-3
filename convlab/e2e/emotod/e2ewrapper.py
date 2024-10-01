@@ -5,6 +5,7 @@ class E2EAgentWrapper(Agent):
         super().__init__(name=name)
         self.policy = e2e_model
         self.policy.init_session()
+        self.nlg = None
 
     def init_session(self):
         self.policy.init_session()
