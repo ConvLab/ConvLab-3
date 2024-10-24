@@ -1,13 +1,11 @@
 import json
 import os
 import sys
+import zipfile
 from argparse import ArgumentParser
 
-from tqdm import tqdm
-
 from convlab.policy.emoUS.unify.Goal import Goal, emotion_info
-from convlab.policy.genTUS.unify.build_data import \
-    DataBuilder as GenTUSDataBuilder
+from convlab.policy.genTUS.unify.build_data import DataBuilder as GenTUSDataBuilder
 from convlab.policy.genTUS.unify.Goal import transform_data_act
 from convlab.policy.tus.unify.util import create_goal, load_experiment_dataset
 
@@ -43,7 +41,7 @@ class DataBuilder(GenTUSDataBuilder):
             print("!!! You are not including user persona. !!!")
 
         self.emotion = {}
-        dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        dirname = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         for emotion, index in json.load(open(os.path.join(dirname, "emoUS/emotion.json"))).items():
             self.emotion[int(index)] = emotion
         use_sentiment = self.use_sentiment
@@ -54,10 +52,15 @@ class DataBuilder(GenTUSDataBuilder):
             self.sent2emo = json.load(
                 open(os.path.join(dirname, "emoUS/sent2emo.json")))
             # TODO check excited distribution
-        self.system_conduct_label = json.load(
-            open("data/unified_datasets/emowoz/data/system_conduct_label.json"))
-        self.system_emotion = json.load(
-            open("data/unified_datasets/emowoz/data/system_conduct.json"))
+        with zipfile.ZipFile("data/unified_datasets/emowoz/data.zip", 'r') as z:
+            with z.open("data/system_conduct_label.json") as f:
+                self.system_conduct_label = json.load(f)
+            with z.open("data/system_conduct.json") as f:
+                self.system_emotion = json.load(f)
+        # self.system_conduct_label = json.load(
+        #     open("data/unified_datasets/emowoz/data/system_conduct_label.json"))
+        # self.system_emotion = json.load(
+        #     open("data/unified_datasets/emowoz/data/system_conduct.json"))
 
     def _one_dialog(self, dialog, add_history=True, random_order=False, no_status=False):
         example = []
@@ -134,7 +137,7 @@ class DataBuilder(GenTUSDataBuilder):
 
     def _dump_in_str(self, sys_act, sys_emo, usr_goal_str, history, turn_id, add_history, user_info=None):
         in_str = {}
-        if type(sys_act) == list:
+        if type(sys_act) is list:
             # only conduct in semantic level
             in_str["system"] = self._modify_act(sys_act)
             in_str["conduct"] = sys_emo

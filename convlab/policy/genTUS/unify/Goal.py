@@ -34,10 +34,11 @@ class Goal:
         self.status = {}
         self.invert_slot_mapping = {v: k for k, v in slot_mapping.items()}
         self.raw_goal = None
-
         self._init_goal_from_data(goal, goal_generator)
         self._init_status()
         self.evaluator = MultiWozEvaluator(check_book_constraints=False)
+        if self.raw_goal is None:
+            self.raw_goal = self.domain_goals
         self.evaluator.add_goal(self.raw_goal)
 
     def __str__(self):
