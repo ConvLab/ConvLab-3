@@ -60,12 +60,12 @@ class Analyzer:
         pprint(sess.evaluator.goal)
         print('=' * 100)
 
-    def comprehensive_analyze(self, sys_agent, model_name, total_dialog=100):
+    def comprehensive_analyze(self, sys_agent, model_name, total_dialog=100, s=5):
         emotion_dict = {"satisfied": 1, "neutral": 0,
                     "dissatisfied": -1, "abusive": -1}
 
         sess = self.build_sess(sys_agent)
-
+        random.seed(s)
         goal_seeds = [random.randint(1, 100000) for _ in range(total_dialog)]
         precision = []
         recall = []
@@ -75,6 +75,7 @@ class Analyzer:
         complete_num = 0
         turn_num = 0
         turn_suc_num = 0
+        total_total_emotion_reward = 0
 
         num_domains = 0
         num_domains_satisfying_constraints = 0
@@ -182,6 +183,7 @@ class Analyzer:
             task_complete = sess.evaluator.complete
             book_rate = sess.evaluator.book_rate()
             stats = sess.evaluator.inform_F1()
+            total_total_emotion_reward += total_emotion_return
 
             if task_success:
                 print('Dialogue succesfully completed!', file=flog)
@@ -212,6 +214,7 @@ class Analyzer:
                 logger.info(sess.evaluator.goal)
                 logger.info('task complete: %.3f', complete_num/(j+1))
                 logger.info('task success: %.3f', suc_num/(j+1))
+                logger.info('emotion reward: %.3f', total_total_emotion_reward/(j+1))
                 logger.info('book rate: %.3f', np.mean(match))
                 logger.info('inform precision/recall/f1: %.3f %.3f %.3f',
                             np.mean(precision), np.mean(recall), np.mean(f1))
@@ -247,11 +250,13 @@ class Analyzer:
                     reporter.record(domain, domain_success, sess.evaluator.domain_reqt_inform_analyze(domain), failed_da_sys, failed_da_usr, cycle_start, domain_turn)
 
             dialog_saver.append_dialog(goal_seed, self.sess.evaluator.goal, task_complete, task_success, task_succ_strict, total_return, turns)
-
+            dialog_saver.save()
+            
         tmp = 0 if suc_num == 0 else turn_suc_num / suc_num
         print("=" * 100)
         print("complete number of dialogs/tot:", complete_num / total_dialog)
         print("success number of dialogs/tot:", suc_num / total_dialog)
+        print('emotion reward: %.3f', total_total_emotion_reward/total_dialog)
         print("average precision:", np.mean(precision))
         print("average recall:", np.mean(recall))
         print("average f1:", np.mean(f1))
