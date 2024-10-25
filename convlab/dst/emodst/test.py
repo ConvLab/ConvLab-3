@@ -1,7 +1,7 @@
 from convlab.dst.emodst.tracker import EMODST 
 
 setsumbt_args = { 
-        'model_name_or_path': '/Users/shutong/Projects/EmoLoop/checkpoints/dst/setsumbt-dst_nlu-multiwoz21-EnD2' # path to the setsumbt repository
+        'model_name_or_path': '/Users/shutong/Projects/EmoLoop/required_files/dst/setsumbt-dst_nlu-multiwoz21-EnD2' # path to the setsumbt repository
     }
 
 trippy_args = {
@@ -11,9 +11,9 @@ trippy_args = {
 tracker = EMODST(
     kwargs_for_erc={
         'base_model_type': 'bert-base-uncased',
-        'base_model_path': '/Users/shutong/Projects/EmoLoop/checkpoints/dst/bert-base-uncased',   # NEW: path to the BERT model that saved locally
+        'base_model_path': '/Users/shutong/Projects/EmoLoop/required_files/dst/bert-base-uncased',   # NEW: path to the BERT model that saved locally
         'model_type': 'contextbert-ertod',
-        'model_name_or_path': '/Users/shutong/Projects/EmoLoop/checkpoints/dst/contextbert-ertod.pt'  # path to the contextbert checkpoint
+        'model_name_or_path': '/Users/shutong/Projects/EmoLoop/required_files/dst/contextbert-ertod.pt'  # path to the contextbert checkpoint
     },
     dst_model_name='setsumbt',
     kwargs_for_dst=setsumbt_args
