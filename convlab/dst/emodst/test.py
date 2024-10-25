@@ -1,32 +1,22 @@
-import convlab
-
 from convlab.dst.emodst.tracker import EMODST 
-from convlab.nlu.jointBERT.unified_datasets.nlu import BERTNLU
-from convlab.dst.rule.multiwoz.dst import RuleDST
 
 setsumbt_args = { 
-        'model_name_or_path': '/home/shutong/models/setsumbt-dst-multiwoz21' # path to the setsumbt repository
+        'model_name_or_path': '/Users/shutong/Projects/EmoLoop/checkpoints/dst/setsumbt-dst_nlu-multiwoz21-EnD2' # path to the setsumbt repository
     }
 
 trippy_args = {
     'model_path': 'ConvLab/roberta-base-trippy-dst-multiwoz21'   # path to the trippy repository on huggingface
 }
 
-bertnlu_args = {
-    'mode': 'user',
-    'config_file': 'multiwoz21_user.json',
-    'model_file': "https://huggingface.co/ConvLab/bert-base-nlu/resolve/main/bertnlu_unified_multiwoz21_user_context0.zip"
-}
-
 tracker = EMODST(
     kwargs_for_erc={
         'base_model_type': 'bert-base-uncased',
-        'base_model_path': '/home/shutong/models/bert-base-uncased',   # NEW: path to the BERT model that saved locally
+        'base_model_path': '/Users/shutong/Projects/EmoLoop/checkpoints/dst/bert-base-uncased',   # NEW: path to the BERT model that saved locally
         'model_type': 'contextbert-ertod',
-        'model_name_or_path': '/home/shutong/models/contextbert-ertod.pt'  # path to the contextbert checkpoint
+        'model_name_or_path': '/Users/shutong/Projects/EmoLoop/checkpoints/dst/contextbert-ertod.pt'  # path to the contextbert checkpoint
     },
-    dst_model_name='bertnlu',
-    kwargs_for_dst=bertnlu_args
+    dst_model_name='setsumbt',
+    kwargs_for_dst=setsumbt_args
 )
 
 tracker.init_session()
@@ -48,7 +38,7 @@ tracker.dst.state['history'].append(['usr', 'If you have something Asian that wo
 tracker.dst.state['history'].append(['sys', 'The Golden Wok is a nice cheap chinese restaurant.'])
 tracker.dst.state['system_action'] = [['inform', 'restaurant', 'food', 'chinese'],
                                     ['inform', 'restaurant', 'name', 'the golden wok']]
-user_act = 'Fuck!'
+user_act = 'Great!'
 state = tracker.update(user_act)
 print(state)
 
