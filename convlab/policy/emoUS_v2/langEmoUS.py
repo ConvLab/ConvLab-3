@@ -140,6 +140,7 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         response = self.policy.predict(sys_utt, sys_act, mode)
+        self.emotion = self.policy.emotion
         self.semantic_action = self.policy.semantic_action
         return response
 
@@ -149,6 +150,14 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         emotion = self.policy.estimate_emotion(sys_act, mode)
+        return emotion
+    
+    def estimate_emotion_language(self, sys_utt, sys_act, mode="max"):
+        if self.sample:
+            mode = "sample"
+        else:
+            mode = "max"
+        emotion = self.policy.estimate_emotion_language(sys_act, sys_utt, mode)
         return emotion
 
     def init_session(self, goal=None):

@@ -94,6 +94,25 @@ class UserActionPolicy(GenTUSUserActionPolicy):
         inputs = json.dumps(input_dict)
         emotion = self._generate_emotion(inputs, mode)
         return emotion
+    
+    def estimate_emotion_language(self, sys_utt, sys_act, mode="max"):
+        self.model.eval()
+        goal = deepcopy(self.goal)
+        goal.update_user_goal(action=sys_act, char="sys")
+        history = self._get_history()
+        time_step = self.time_step + 2
+
+        input_dict = {"system": sys_utt,
+                      "goal": goal.get_goal_list(sub_goal_success=self.sub_goal_succ),
+                      "history": history,
+                      "turn": str(int(time_step/2))}
+        if self.add_persona:
+            for user, info in self.user_info.items():
+                input_dict[user] = info
+
+        inputs = json.dumps(input_dict)
+        emotion = self._generate_emotion(inputs, mode)
+        return emotion
 
     def _get_history(self):
         history = []
