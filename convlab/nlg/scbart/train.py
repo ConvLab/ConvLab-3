@@ -52,7 +52,6 @@ parser.add_argument('--data_dir', type=str, default='.', help="Path to data")
 parser.add_argument('--model_type', type=str, default='bart', help="Select plm. (bart, etc., to be implemented)")
 parser.add_argument('--model_checkpoint', type=str, default="facebook/bart-base", help="Select plm. (bart, etc., to be implemented)")
 
-parser.add_argument('--train_epochs', type=int, default=1.0, help="Training epochs")
 parser.add_argument('--seed', type=int, default=42, metavar='S', help="Random seed (default: 42)")
 parser.add_argument('--max_input_len', type=int, default=128, help="Max input sequence length")
 parser.add_argument('--max_output_len', type=int, default=128, help="Max output sequence length")
