@@ -9,13 +9,9 @@ emotion_dict = {"satisfied": 1, "neutral": 0, 'excited': 1, 'fearful': 0, 'apolo
                     "dissatisfied": -1, "abusive": -1}
 
 model_names = ['simpleemollama', 'simpleconductllama']
-all_seeds = list(range(1, 16))
-seeds = all_seeds
-# seeds = [13, 24, 27, 30]
-# seeds = [11, 13, 14, 16, 17, 19, 21, 23, 24, 26, 27, 28, 30]
-# seeds = [13, 14, 16, 19, 21, 23, 24, 26, 27, 30]
-# seeds = [5, 6, 11]
-log_path_prefix = '/home/shutong/ConvLab3/convlab/e2e/emotod/results'
+seeds = [0, 1, 2, 3, 4]
+
+log_path_prefix = 'path_to/results'
 
 E = [[], []]
 S = [[], []]
