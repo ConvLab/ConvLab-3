@@ -1,9 +1,5 @@
 # Dynamic Dialogue Policy Transformer (DDPT) for EmoLoop - EmoDDPT
 
-The dynamic dialogue policy transformer (Geishauser et. al. 2022) is a model built for continual reinforcement learning. It uses a pre-trained RoBERTa language model to construct embeddings for each state information and domain, slot and value in the action set. As a consequence, it can be used for different ontologies and is able to deal with new state information as well as actions. The backbone architecture is a transformer encoder-decoder.
-
-It uses the CLEAR algorithm (Rolnick et. al. 2019) for continual reinforcement learning that builds on top of VTRACE (Espheholt et. al. 2018). The current folder supports only training in a stationary environment and no continual learning, which uses VTRACE as algorithm.
-
 This README contains instructions for running EmoDDPT, a variant of DDPT that is adapted for EmoLoop (Feng et al., 2024) to additionally take user emotion as input and system conduct as output.
 
 ## Supervised pre-training
@@ -66,7 +62,7 @@ ddpt = VTRACE(is_train=True,
               vectorizer=vectorizer,
               load_path="ddpt")
 ```
-Specify the appropriate load_path in VTRACE.
+Specify the appropriate load_path in VTRACE. An example value for load_path argument is `path_to_the_policy_checkpoint_folders/best_vtrace` where in the folder you find files like `best_vtrace.pol.mdl`. `.pol.mdl` or `.val.mdl` are ignored and only the common prefix is used. In our experiment, we used the checkpoint with the best average return (`best_vtrace`). We also include other checkpoints for, for example, best success.
 
 ## References
 
@@ -88,34 +84,6 @@ Specify the appropriate load_path in VTRACE.
     url = "https://aclanthology.org/2022.coling-1.21",
     pages = "266--284",
     abstract = "Continual learning is one of the key components of human learning and a necessary requirement of artificial intelligence. As dialogue can potentially span infinitely many topics and tasks, a task-oriented dialogue system must have the capability to continually learn, dynamically adapting to new challenges while preserving the knowledge it already acquired. Despite the importance, continual reinforcement learning of the dialogue policy has remained largely unaddressed. The lack of a framework with training protocols, baseline models and suitable metrics, has so far hindered research in this direction. In this work we fill precisely this gap, enabling research in dialogue policy optimisation to go from static to dynamic learning. We provide a continual learning algorithm, baseline architectures and metrics for assessing continual learning models. Moreover, we propose the dynamic dialogue policy transformer (DDPT), a novel dynamic architecture that can integrate new knowledge seamlessly, is capable of handling large state spaces and obtains significant zero-shot performance when being exposed to unseen domains, without any growth in network parameter size. We validate the strengths of DDPT in simulation with two user simulators as well as with humans.",
-}
-
-@inproceedings{NEURIPS2019_fa7cdfad,
- author = {Rolnick, David and Ahuja, Arun and Schwarz, Jonathan and Lillicrap, Timothy and Wayne, Gregory},
- booktitle = {Advances in Neural Information Processing Systems},
- editor = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
- pages = {},
- publisher = {Curran Associates, Inc.},
- title = {Experience Replay for Continual Learning},
- url = {https://proceedings.neurips.cc/paper/2019/file/fa7cdfad1a5aaf8370ebeda47a1ff1c3-Paper.pdf},
- volume = {32},
- year = {2019}
-}
-
-@InProceedings{pmlr-v80-espeholt18a,
-  title = 	 {{IMPALA}: Scalable Distributed Deep-{RL} with Importance Weighted Actor-Learner Architectures},
-  author =       {Espeholt, Lasse and Soyer, Hubert and Munos, Remi and Simonyan, Karen and Mnih, Vlad and Ward, Tom and Doron, Yotam and Firoiu, Vlad and Harley, Tim and Dunning, Iain and Legg, Shane and Kavukcuoglu, Koray},
-  booktitle = 	 {Proceedings of the 35th International Conference on Machine Learning},
-  pages = 	 {1407--1416},
-  year = 	 {2018},
-  editor = 	 {Dy, Jennifer and Krause, Andreas},
-  volume = 	 {80},
-  series = 	 {Proceedings of Machine Learning Research},
-  month = 	 {10--15 Jul},
-  publisher =    {PMLR},
-  pdf = 	 {http://proceedings.mlr.press/v80/espeholt18a/espeholt18a.pdf},
-  url = 	 {https://proceedings.mlr.press/v80/espeholt18a.html},
-  abstract = 	 {In this work we aim to solve a large collection of tasks using a single reinforcement learning agent with a single set of parameters. A key challenge is to handle the increased amount of data and extended training time. We have developed a new distributed agent IMPALA (Importance Weighted Actor-Learner Architecture) that not only uses resources more efficiently in single-machine training but also scales to thousands of machines without sacrificing data efficiency or resource utilisation. We achieve stable learning at high throughput by combining decoupled acting and learning with a novel off-policy correction method called V-trace. We demonstrate the effectiveness of IMPALA for multi-task reinforcement learning on DMLab-30 (a set of 30 tasks from the DeepMind Lab environment (Beattie et al., 2016)) and Atari57 (all available Atari games in Arcade Learning Environment (Bellemare et al., 2013a)). Our results show that IMPALA is able to achieve better performance than previous agents with less data, and crucially exhibits positive transfer between tasks as a result of its multi-task approach.}
 }
 
 @inproceedings{feng-etal-2024-infusing,
