@@ -364,7 +364,7 @@ def inference(model, data_loader, device, args):
             attention_mask = d["attention_mask"].to(device)
             dialog_states = d["dialog_state"].to(device)
 
-            emo_out, _, val_out, eli_out, con_out, int_out, tsuc_out, dsuc_out, src_out = model(input_ids=input_ids, attention_mask=attention_mask, ds=dialog_states)
+            emo_out, val_out, eli_out, con_out = model(input_ids=input_ids, attention_mask=attention_mask, ds=dialog_states)
 
             _, emo_pred = torch.max(emo_out, dim=1)
             _, val_pred = torch.max(val_out, dim=1)
@@ -675,7 +675,7 @@ def load_data(args):
     train_conduct += aug_con
     train_ds += aug_ds
 
-    temp_utt, temp_lab, temp_utt_ids, temp_val, temp_eli, temp_con, temp_ds, temp_int, temp_tsuc, temp_dsuc, temp_src = [], [], [], [], [], [], [], [], [], [], []
+    temp_utt, temp_lab, temp_utt_ids, temp_val, temp_eli, temp_con, temp_ds = [], [], [], [], [], [], []
     if args.augment is not None:    # augment with task-oriented dialogues
         augment = pickle.load(open(f'{args.data_dir}/aug_with_ds_setsumbt.pkl', 'rb'))
 
