@@ -18,6 +18,34 @@ python train.py \
 
 To test the NLG, run `python test_nlg.py` after specifying the `model_path` argument in the script.
 
+## Evaluation
+The training script will store prediction results on the test set in a csv file named `{args.exp_id}/test-best-temperate{args.temperature}.csv`. To evaluate the result in the ConvLab-3 environment, you need to first convert it to the ConvLab-3 unified data format for nlg task (the data object returned from `convlab.util.unified_datasets_util.load_nlg_data` with an additional `prediction` field in each turn). To do so, run the following command:
+
+```
+python convert_result_to_unified.py \
+  --predict_result {path_to_the_csv_file_containing_inference_result} \
+  --emowoz2 {path_to_the_json_file_containing_system_conduct_labels}
+  --output {path_to_the_json_file_storing_converted_data} # default scbart_predict_result_unified.json
+```
+
+Then, use the script in convlab/nlg/evaluate_unified_datasets_v2.py to obtain evaluation metrics.
+
+```
+python evaluate_unified_datasets_v2.py \
+  --predict_result {path_to_the_json_file_storing_converted_data} \ # e.g. scbart/scbart_predict_result_unified.json
+  --dataset_name multiwoz21
+```
+
+The script should print a dictionary of metrics looking something like
+```
+{'bleu': 36.87063725514231,
+ 'err': 0.0371580264616651,
+ 'missing': 282,
+ 'redundant': 157,
+ 'total': 11799}
+```
+where 'err' means the slot error rate: err = (missing + redundant) / total. 
+
 ## References
 ```
 @inproceedings{feng-etal-2022-emowoz,
