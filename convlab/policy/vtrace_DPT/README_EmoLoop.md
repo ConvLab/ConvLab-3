@@ -7,7 +7,7 @@ This README contains instructions for running EmoDDPT, a variant of DDPT that is
 If you want to pre-train the model on a dataset, use the command
 
 ```sh
-$ python supervised_emo_conduct/train_supervised.py --dataset_name=emowoz --seed=SEED --model_path="" --use_emotion
+$ python supervised_emo_conduct/train_supervised.py --dataset_name=emowoz --seed=SEED --model_path="" --user_emotion
 ```
 
 The first time you run that command, it will take longer as the dataset needs to be pre-processed.
