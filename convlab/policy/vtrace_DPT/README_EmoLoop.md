@@ -7,14 +7,19 @@ This README contains instructions for running EmoDDPT, a variant of DDPT that is
 If you want to pre-train the model on a dataset, use the command
 
 ```sh
-$ python supervised_emo_conduct/train_supervised.py --dataset_name=emowoz --seed=SEED --model_path="" --user_emotion
+$ python supervised_emo_conduct/train_supervised.py --dataset_name=emowoz --seed=SEED --model_path="" --user_emotion --conduct_action
 ```
+
+The following flags control the emotion-related configurations of DDPT:
+ - user_emotion: set this flag to include user emotion in the dialog state
+ - conduct_action: set this flag to include conduct in the policy action space
+If both flags are unset, this command supervisedly pre-train the policy, which will be used in the SimpleLoop system in the paper.
 
 The first time you run that command, it will take longer as the dataset needs to be pre-processed.
 
 This will create a corresponding experiments folder under supervised/experiments, where the model is saved in /save.
 
-You can specify hyperparamters such as epoch, supervised_lr and data_percentage (how much of the data you want to use) in the config.json file.
+Training parameters are stored in `configs/multiwoz21_dpt.json` as hard-coded in the training script, `train_supervised.py`. You can specify hyperparamters such as epoch, supervised_lr and data_percentage (how much of the data you want to use) in the configuration file.
 
 ## RL training
 
@@ -24,7 +29,7 @@ Starting a RL training is as easy as executing
 $ python train.py --config_name=configs/emoloop_pipeline_config.json --hyperparameter=configs/emoloop_hyperparameters.json --seed=SEED
 ```
 
-The environment-config for EmoLoop is **configs/emoloop_pipeline_config**, where modules and parameters for the training are specified, for instance
+The environment-config for EmoLoop is **configs/emoloop_pipeline_config.json**, where modules and parameters for the training are specified, for instance
 
 - load_path: provide a path to initialise the model with a pre-trained model, skip the ending .pol.mdl
 - process_num: the number of processes to use during evaluation to speed it up
@@ -35,10 +40,9 @@ The environment-config for EmoLoop is **configs/emoloop_pipeline_config**, where
 
 Moreover, you can specify the full dialogue pipeline here, such as the user policy, NLU for system and user, etc. Please specify paths to model checkpoints in the configuration file for each module.
 
-Parameters that are tied to the RL algorithm and the model architecture can be changed in **configs/emoloop_hyperparameters.json**.
+Parameters that are tied to the RL algorithm and the model architecture can be changed in **configs/emoloop_hyperparameters.json** and **configs/simpleloop_hyperparameters.json**. They differ primarily by `use_emotion`, which determines if emotion reward is used in RL, and `predict_conduct`, which determines if conduct is part of the policy action output. 
 
-NOTE: you can specify which underlying dataset should be used for creating the action and state space through changing in your **environment-config**
-
+To train SimpleLoop, use hyperparameters stored in **configs/simpleloop_hyperparameters.json**. SimpleLoop uses the same pipeline configuration file where the emotion-related components will be automatically ignored.
 
 ## Evaluation
 

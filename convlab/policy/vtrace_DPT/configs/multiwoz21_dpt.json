@@ -43,7 +43,7 @@
 	"use_emotion_prediction": false,
 	"emotion_exploitation": 0.0,
 	"argmax": false,
-	"predict_conduct": true,
+	"predict_conduct": false,
 	"starting_temperature": 1,
 	"total_temperature_updates": 500,
 	"enc_input_dim": 128,

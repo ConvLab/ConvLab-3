@@ -4,7 +4,7 @@
 		"allowed_domains": null
 	},
 	"model": {
-		"load_path": "",
+		"load_path": "path_to_the_policy_checkpoint_folders/best_vtrace",
 		"use_pretrained_initialisation": false,
 		"pretrained_load_path": "",
 		"seed": 0,
