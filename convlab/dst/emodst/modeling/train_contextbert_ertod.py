@@ -141,8 +141,6 @@ def seed_all(seed_value):
         torch.backends.cudnn.benchmark = False
 
 CLS_NUM = 7
-RANDOM_SEED = 40
-seed_all(RANDOM_SEED)
 DS_DIM = 361
 
 EMAP = {'neutral': 0, 'fearful': 1, 'dissatisfied': 2, 'apologetic': 3, 'abusive': 4, 'excited': 5, 'satisfied': 6}
