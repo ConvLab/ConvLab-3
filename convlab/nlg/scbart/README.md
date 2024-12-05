@@ -19,6 +19,8 @@ python train.py \
 To test the NLG, run `python test_nlg.py` after specifying the `model_path` argument in the script.
 
 ## Evaluation
+*Note*: by default, the dataloader will create a test set that generates the response in each of five conduct types. You can amend the dataloader in `train.py` accordingly to speed up inference.
+
 The training script will store prediction results on the test set in a csv file named `{args.exp_id}/test-best-temperate{args.temperature}.csv`. To evaluate the result in the ConvLab-3 environment, you need to first convert it to the ConvLab-3 unified data format for nlg task (the data object returned from `convlab.util.unified_datasets_util.load_nlg_data` with an additional `prediction` field in each turn). To do so, run the following command:
 
 ```
@@ -45,6 +47,9 @@ The script should print a dictionary of metrics looking something like
  'total': 11799}
 ```
 where 'err' means the slot error rate: err = (missing + redundant) / total. 
+
+## SC-BART: non-emotional NLG
+The SC-BART model, as mentioned in the paper as a non-emotional variant of the NLG, is trained and tested by ignoring conduct labels and setting the conduct in all samples to be neutral.
 
 ## References
 ```
