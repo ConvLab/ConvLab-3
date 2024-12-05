@@ -1,4 +1,4 @@
-# ContextBERT-ERToD
+# Emotion Recogniser - ContextBERT-ERToD
 ContextBERT-ERToD is an emotion classifier dedicated to task-oriented scenario. It is based on ContextBERT used to benchmark EmoWOZ dataset. In addition to dialogue history, it considers dialogue state as additional input features, uses augmented data for rare emotions, incorporates a distance-based emotion loss function, incorporates multi-task learning, and is initialised with a sentiment-aware version of BERT. 
 
 ## Environment
@@ -10,7 +10,7 @@ Please obtain the pre-trained sentiment-aware embedding from [here](https://gith
 
 Please obtain the data from the here.
 
-# Training and Testing
+## Training and Testing
 
 ```
 python train_contextbert_ertod.py \
