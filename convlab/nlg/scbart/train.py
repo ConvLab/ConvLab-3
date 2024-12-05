@@ -224,12 +224,14 @@ model = model_class.from_pretrained(args.model_checkpoint)
 
 if args.finetune_from:
     print(f'loading checkpoint from {args.finetune_from}')
-    model.load_state_dict(torch.load(args.finetune_from)['state_dict'])
+    # model.load_state_dict(torch.load(args.finetune_from)['state_dict'])
+    model = model_class.from_pretrained(args.finetune_from)
 
 skip_train = False
-if os.path.exists(f'./{args.exp_id}/ckpt-0.pt'):
-    print(f'loading checkpoint from ./{args.exp_id}/ckpt-best.pt. Skip training')
-    model.load_state_dict(torch.load(f'./{args.exp_id}/ckpt-best.pt')['state_dict'])
+if os.path.exists(f'./{args.exp_id}/ckpt-best'):
+    print(f'loading checkpoint from ./{args.exp_id}/ckpt-best. Skip training')
+    # model.load_state_dict(torch.load(f'./{args.exp_id}/ckpt-best.pt')['state_dict'])
+    model = model_class.from_pretrained(f'./{args.exp_id}/ckpt-best')
     skip_train = True
 
 model.to(args.device)
@@ -323,13 +325,14 @@ def train(args, train_dataset, model):
             optimizer.zero_grad()
             # print(loss.item())
 
-        state = {
-            'epoch': e,
-            'state_dict': model.state_dict(),
-            'optimizer': optimizer.state_dict()
-        }
+        # state = {
+        #     'epoch': e,
+        #     'state_dict': model.state_dict(),
+        #     'optimizer': optimizer.state_dict()
+        # }
 
-        torch.save(state, f'{args.exp_id}/ckpt-{e}.pt')
+        # torch.save(state, f'{args.exp_id}/ckpt-{e}.pt')
+        model.save_pretrained(f'{args.exp_id}/ckpt-{e}')
 
         dev_result, dev_output = evaluate_model(args, dev_dataset, model, tokenizer)
         print(dev_result)
@@ -339,7 +342,7 @@ def train(args, train_dataset, model):
             print(f"Saving best model at Epoch {e}")
             # torch.save(state, f'{args.exp_id}/ckpt-best.pt')
             # best_ppl = dev_result
-            model.save_pretrained(f'{args.exp_id}/ckpt-best.pt')
+            model.save_pretrained(f'{args.exp_id}/ckpt-best')
         else:
             if e > 0:
                 print(f"Early stopping at Epoch {e}")
