@@ -307,7 +307,6 @@ def aspect_to_emotion(v, e, c):
 def train_epoch(model, data_loader, loss_fn, optimizer, device, scheduler, args):
     model = model.train()
     losses = []
-    entropy_loss = EntropyLoss()
     distance_loss = EmotionDistanceLoss(device, balance=args.dloss_balance)
 
     for _, d in tqdm(enumerate(data_loader)):
