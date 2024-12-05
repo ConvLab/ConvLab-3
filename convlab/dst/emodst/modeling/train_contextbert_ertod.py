@@ -823,7 +823,6 @@ if __name__ == '__main__':
     parser.add_argument("--conduct", action='store_true', help="Whether to train a conduct classification head")
     parser.add_argument("--dialog_state", action='store_true', help="Whether to use dialog state as auxiliary feature")
     parser.add_argument('--augment', nargs='+', help='emotions to augment')
-    parser.add_argument("--sentix", action='store_true', help="Whether to load a finetuned-for-sentiment-analysis version of bert")
 
     parser.add_argument("--do_classify", action='store_true', help="Whether to classify a set of utterances")
     parser.add_argument('--model_checkpoint', type=str, help="The model checkpoint to use for inference")
