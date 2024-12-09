@@ -8,6 +8,8 @@ The model can be trained from [this repository](https://github.com/armandstricke
 
 To obtain SimpleLLAMA, follow the `simple` set-up in the respository to have a non-emotional system.
 
+Once you have obtained an EmoLLAMA checkpoint, you can specify the checkpoint path in the main function of `emollama.py` and run `python emollama.py` to test it.
+
 ## Evaluation
 
 The corpus evaluation metrics will be printed out and logged after training using the repository mentioned above. To evaluate the system with the user simulator, run the following code
