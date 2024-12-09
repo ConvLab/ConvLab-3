@@ -2,7 +2,29 @@
 
 This is the repository for the llama2-based end-to-end system used in the work of EmoLoop (Feng et al., 2024). This model is based on the work of Stricker and Paroubek (2024).
 
+## Model Preparation and Training
+
 The model can be trained from [this repository](https://github.com/armandstrickernlp/Emo-TOD). Simply add `<|conduct|> {SYSTEM_CONDUCT} <|endofconduct|>` when formatting the training data after dialogue action and `<|conduct|>` and `<|endofconduct|>` as additional special vocabularies to the tokenizer. System conduct labels come from [EmoWOZ 2.0](). After training, you can specify the saved model path to initialise the `EMOLLAMAAgent` object in `emollama.py`.
+
+To obtain SimpleLLAMA, follow the `simple` set-up in the respository to have a non-emotional system.
+
+## Evaluation
+
+The corpus evaluation metrics will be printed out and logged after training using the repository mentioned above. To evaluate the system with the user simulator, run the following code
+```
+python run_interaction.py \
+    --model_path path_to_the_emollama_state_dict \
+    --output_path path_to_the_folder_where_dialogues_and_results_are_saved \
+    --emous_path path_to_langEmoUS_checkpoint \
+    --user_nlu_path path_to_user_nlu \ we used t5-small-nlu-all-multiwoz21-context3, which can be found in Huggingface ConvLab repository.
+    --num_dialogues number_of_dialogues_to_simulate \
+    --seed random_seed \
+    --simple # specify this if the end-to-end system checkpoint is SimpleLLAMA
+    
+```
+*For this script, we recommend simulating a small number of dialogues for multiple times with different random seed because there may be unexpected errors during the lexicalisation process and model output parsing.
+
+## Reference
 
 ```
 @misc{stricker2024unifiedapproachemotiondetection,

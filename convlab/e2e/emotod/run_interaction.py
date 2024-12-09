@@ -19,7 +19,9 @@ parser.add_argument('--model_path', type=str, help='path to llama e2e model')
 parser.add_argument('--output_path', type=str, help='path to save dir')
 parser.add_argument('--num_dialogues', type=int, default=1, help='number of dialogues to simulate')
 parser.add_argument('--seed', type=int, default=1, help='seed')
-parser.add_argument('--simple', type=bool, help='whether to use simple model')
+parser.add_argument('--simple', action='store_true', help='whether to use simple model')
+parser.add_argument('--emous_path', type=str, help='path to langEmoUS model')
+parser.add_argument('--user_nlu_path', type=str, default='convlab/t5-small-nlu-all-multiwoz21-context3', help='path to the user NLU model')
 
 args = parser.parse_args()
 
@@ -32,12 +34,10 @@ print('Initialising Emo-LLAMA')
 sys_policy = EMOLLAMAAgent(model_file=args.model_path, simple=args.simple)
 sys_nlg = None
 
-# sys_agent = PipelineAgent(sys_nlu, sys_dst, sys_policy, sys_nlg, name='sys')
 sys_agent = E2EAgentWrapper(sys_policy, 'emollama')
 
-# user_nlu = BERTNLU(mode='sys', config_file='multiwoz_sys_context.json', model_file='/home/fengs/projects/pretrained_models/bert_multiwoz_sys_context.zip')
 print('Initialising T5NLU')
-user_nlu = T5NLU(speaker='system', context_window_size=3, model_name_or_path='/home/shutong/pretrained_models/t5-small-nlu-all-multiwoz21-context3')
+user_nlu = T5NLU(speaker='system', context_window_size=3, model_name_or_path=args.user_nlu_path)
 user_dst = None
 print('Initialising EmoUS_Lang')
 emous_configs = {
@@ -46,7 +46,7 @@ emous_configs = {
     'sub_goal_succ': True
 }
 user_policy = UserPolicy(
-    model_checkpoint='/home/shutong/pretrained_models/emous_lang', kwargs=emous_configs)
+    model_checkpoint=args.emous_path, kwargs=emous_configs)
 user_nlg = None
 
 user_agent = PipelineAgent(user_nlu, user_dst, user_policy, user_nlg, name='user')
