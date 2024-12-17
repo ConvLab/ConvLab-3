@@ -14,6 +14,7 @@ The following flags control the emotion-related configurations of DDPT:
  - user_emotion: set this flag to include user emotion in the dialog state
  - conduct_action: set this flag to include conduct in the policy action space
 If both flags are unset, this command supervisedly pre-train the policy, which will be used in the SimpleLoop system in the paper.
+To train SimpleLoop system, simple disable user_emotion and conduct_action flags.
 
 The first time you run that command, it will take longer as the dataset needs to be pre-processed.
 
@@ -42,7 +43,7 @@ Moreover, you can specify the full dialogue pipeline here, such as the user poli
 
 Parameters that are tied to the RL algorithm and the model architecture can be changed in **configs/emoloop_hyperparameters.json** and **configs/simpleloop_hyperparameters.json**. They differ primarily by `use_emotion`, which determines if emotion reward is used in RL, and `predict_conduct`, which determines if conduct is part of the policy action output. 
 
-To train SimpleLoop, use hyperparameters stored in **configs/simpleloop_hyperparameters.json**. SimpleLoop uses the same pipeline configuration file where the emotion-related components will be automatically ignored.
+To train SimpleLoop, use hyperparameters stored in **configs/simpleloop_hyperparameters.json**. SimpleLoop uses the same pipeline configuration file except the policy path should now point to the policy pretrained with non-emotion configuration. The emotion-related information from other modules will be automatically ignored.
 
 ## Evaluation
 
