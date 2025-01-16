@@ -341,7 +341,7 @@ def train(args, train_dataset, model):
         if dev_result < best_ppl:
             print(f"Saving best model at Epoch {e}")
             # torch.save(state, f'{args.exp_id}/ckpt-best.pt')
-            # best_ppl = dev_result
+            best_ppl = dev_result
             model.save_pretrained(f'{args.exp_id}/ckpt-best')
         else:
             if e > 0:
