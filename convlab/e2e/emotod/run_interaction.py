@@ -15,7 +15,8 @@ from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
 from utils import seed_all
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_path', type=str, help='path to llama e2e model')
+parser.add_argument('--model_path', type=str, help='path to emollama state dict file')
+parser.add_argument('--base_model_path', type=str, help='path to llama e2e model')
 parser.add_argument('--output_path', type=str, help='path to save dir')
 parser.add_argument('--num_dialogues', type=int, default=1, help='number of dialogues to simulate')
 parser.add_argument('--seed', type=int, default=1, help='seed')
@@ -31,7 +32,7 @@ seed_all(seed)
 sys_nlu = None
 sys_dst = None
 print('Initialising Emo-LLAMA')
-sys_policy = EMOLLAMAAgent(model_file=args.model_path, simple=args.simple)
+sys_policy = EMOLLAMAAgent(model_file=args.model_path, base_model_path=args.base_model_path, simple=args.simple)
 sys_nlg = None
 
 sys_agent = E2EAgentWrapper(sys_policy, 'emollama')
