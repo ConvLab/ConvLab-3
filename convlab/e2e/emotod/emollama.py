@@ -52,7 +52,7 @@ class EMOLLAMAAgent(Agent):
         # model.load_state_dict(f'{model_path}/pytorch_model.bin')
 
         peft_model = get_peft_model(base_model, lora_config)
-        peft_model.load_state_dict(torch.load(f'{model_file}/pytorch_model.bin'))
+        peft_model.load_state_dict(torch.load(f'{model_file}/pytorch_model.bin'), strict=False)
         self.model = peft_model.to('cuda:0')
 
         self.model.eval()
