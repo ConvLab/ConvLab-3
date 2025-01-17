@@ -8,7 +8,9 @@ The model can be trained from [this repository](https://github.com/armandstricke
 
 To obtain SimpleLLAMA, follow the `simple` set-up in the respository to have a non-emotional system.
 
-Once you have obtained an EmoLLAMA checkpoint, you can specify the checkpoint path in the main function of `emollama.py` and run `python emollama.py` to test it.
+Once you have obtained an EmoLLAMA checkpoint, you can specify the checkpoint path in the main function of `emollama.py`. You will also need to specify the path to the original llama-2-7b model. To test the model alone, run `python emollama.py`.
+
+The code has been tested with transformers==4.29.2 and peft==0.10.0 (see `requirements.txt`). Please note that the transformers library version does not fulfill ConvLab-3 requirement but this does not cause any know issues yet.
 
 ## Evaluation
 
@@ -16,6 +18,7 @@ The corpus evaluation metrics will be printed out and logged after training usin
 ```
 python run_interaction.py \
     --model_path path_to_the_emollama_state_dict \
+    --base_model_path path_to_the_base_llama_2_7b_model \
     --output_path path_to_the_folder_where_dialogues_and_results_are_saved \
     --emous_path path_to_langEmoUS_checkpoint \
     --user_nlu_path path_to_user_nlu \ we used t5-small-nlu-all-multiwoz21-context3, which can be found in Huggingface ConvLab repository.
