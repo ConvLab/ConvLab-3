@@ -126,6 +126,9 @@ class PipelineAgent(Agent):
         if self.name == "user" and hasattr(self.policy, "need_conduct"):
             if self.policy.need_conduct:
                 return "need_conduct_user"
+        if self.name == "user" and hasattr(self.policy, "system_action_utterance"):
+            if self.policy.system_action_utterance:
+                return "action_utterance_to_user"
         return "default"
 
     def state_replace(self, agent_state):
@@ -196,18 +199,18 @@ class PipelineAgent(Agent):
                 self.input_action = observation
         else:
             if self.nlu is not None:
-                self.input_action_eval = self.nlu.predict(
-                    observation, context=[x[1] for x in self.history[:-1]])
+                # self.input_action_eval = self.nlu.predict(
+                #     observation, context=[x[1] for x in self.history[:-1]])
 
                 self.input_action = self.nlu.predict(
                     observation, context=[x[1] for x in self.history[:-1]])
                 # print("system semantic action: ", self.input_action)
             else:
-                self.input_action = observation
+                # self.input_action = observation
                 if action is not None:
-                    self.input_action_eval = action
+                    self.input_action = action
                 else:
-                    self.input_action_eval = observation
+                    self.input_action = observation
         # get rid of reference problem
         self.input_action = deepcopy(self.input_action)
         if self.debug:
@@ -360,6 +363,10 @@ class PipelineAgent(Agent):
         elif self.response_type == "utterance_to_user":
             action = kwargs.get("action", None)
             model_response = self._utterance_semantic_response(
+                observation, action)
+        elif self.response_type == "action_utterance_to_user":
+            action = kwargs.get("action", None)
+            model_response = self._complex_response(
                 observation, action)
         elif self.response_type == "need_conduct_user":
             conduct = kwargs.get("conduct", "Neutral")

@@ -25,20 +25,13 @@ class EMOLLAMAAgent(Agent):
     def __init__(self,
                  context_size=15,
                  max_output_len=128,
-                 model_file='/home/shutong/Emo-TOD/OUT_llama-2-7b-chat-hf-1/training_outputs/emo_prev_conduct/4e-05_42_rank32/checkpoint-3500',
+                 model_file='path_to_the_trained_model',
+                 base_model_path='path_to_the_base_llama2_model',
                  name='emollama',
-                 simple=False):
-        """
-        soloist agent initialization
-        Args:
-            model_file (str):
-                trained model path or url. 
-        Example:
-            model = SOLOISTAgent()
-        """
+                 simple=False,
+                 device='cuda:0'):
         super(EMOLLAMAAgent, self).__init__(name=name)
 
-        base_model_path = '/home/shutong/pretrained_models/llama-2-7b-chat-hf'
         base_model = AutoModelForCausalLM.from_pretrained(base_model_path, torch_dtype=torch.float16)#, device_map="auto")
     
         lora_config = LoraConfig(
@@ -60,8 +53,8 @@ class EMOLLAMAAgent(Agent):
         # model.load_state_dict(f'{model_path}/pytorch_model.bin')
 
         peft_model = get_peft_model(base_model, lora_config)
-        peft_model.load_state_dict(torch.load(f'{model_file}/pytorch_model.bin'))
-        self.model = peft_model.to('cuda:0')
+        peft_model.load_state_dict(torch.load(f'{model_file}/pytorch_model.bin'), strict=False)
+        self.model = peft_model.to(device)
 
         self.model.eval()
 
@@ -169,7 +162,15 @@ class EMOLLAMAAgent(Agent):
         return lexicalised_response
 
 if __name__ == '__main__':
-    s = EMOLLAMAAgent()
+    s = EMOLLAMAAgent(
+        context_size=15,
+        max_output_len=128,
+        model_file='path_to_the_trained_model',
+        base_model_path='path_to_the_base_llama2_model',
+        name='emollama',
+        simple=False,
+        device='cuda:0'
+    )
 
     user = "I want to find a cheap restaurant in the center"
     system = s.response(user)

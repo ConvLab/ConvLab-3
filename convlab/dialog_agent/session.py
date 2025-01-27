@@ -131,6 +131,12 @@ class BiSession(Session):
             system_action = self._system_action()
             user_response = self.next_response(
                 last_observation, action=system_action)
+        elif user_response_type == 'action_utterance_to_user':
+            if len(last_observation) == 0:
+                last_observation = ('', [])
+            system_response, system_action = last_observation
+            user_response = self.next_response(
+                system_response, action=system_action)
         elif user_response_type == "need_conduct_user":
             sys_conduct = self.sys_agent.policy.get_conduct()
             user_response = self.next_response(

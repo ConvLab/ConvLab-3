@@ -18,13 +18,9 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampler
 
-import transformers
 # from evaluate import evaluator
 from transformers import AdamW, get_linear_schedule_with_warmup
-from transformers import (BartTokenizer, BartForConditionalGeneration,
-                          GPT2Tokenizer, GPT2LMHeadModel)
-from transformers import DataCollatorForSeq2Seq, Seq2SeqTrainingArguments, Seq2SeqTrainer
-
+from transformers import (BartTokenizer, BartForConditionalGeneration)
 
 MODEL_CLASSES = {
     'bart': (BartTokenizer, BartForConditionalGeneration)
@@ -52,11 +48,10 @@ sys_emo_dict = {
 parser = argparse.ArgumentParser()
 parser.add_argument('--exp_id', type=str, required=True, help="Enter an identifier for this experiment")
 parser.add_argument('--task', type=str, default='nlg', help="Select task to train the plm on. (nlg, erc)")
-parser.add_argument('--data_dir', type=str, default='./', help="Path to data")
+parser.add_argument('--data_dir', type=str, default='.', help="Path to data")
 parser.add_argument('--model_type', type=str, default='bart', help="Select plm. (bart, etc., to be implemented)")
 parser.add_argument('--model_checkpoint', type=str, default="facebook/bart-base", help="Select plm. (bart, etc., to be implemented)")
 
-parser.add_argument('--train_epochs', type=int, default=1.0, help="Training epochs")
 parser.add_argument('--seed', type=int, default=42, metavar='S', help="Random seed (default: 42)")
 parser.add_argument('--max_input_len', type=int, default=128, help="Max input sequence length")
 parser.add_argument('--max_output_len', type=int, default=128, help="Max output sequence length")
@@ -84,14 +79,9 @@ parser.add_argument('--train_data', type=str, default='train', help="Specify cus
 parser.add_argument("--vanilla", action='store_true', help="vanilla sc-bart")
 parser.add_argument("--emowoz2", action='store_true', help="sc-bart + system conduct (semantic)")
 parser.add_argument("--emowoz2_prev_user_utt", action='store_true', help="sc-bart + system conduct (semantic) + prev user utterance")
-parser.add_argument("--context", action='store_true', help="sc-bart + previous user utterance")
-parser.add_argument("--context_emo", action='store_true', help="sc-bart + previous user utterance + previous user emotion")
-parser.add_argument("--context_emo_trans", action='store_true', help="sc-bart + previous user utterance + user emotion transition")
-
-parser.add_argument("--llm_target_label", action='store_true', help="use target label for augmented samples from LLM")
-parser.add_argument("--llm_predicted_label", action='store_true', help="use ctxbert predicted label for augmented samples from LLM")
-parser.add_argument("--downsample", action='store_true', help="Use downsampled training set")
-
+# parser.add_argument("--context", action='store_true', help="sc-bart + previous user utterance")
+# parser.add_argument("--context_emo", action='store_true', help="sc-bart + previous user utterance + previous user emotion")
+# parser.add_argument("--context_emo_trans", action='store_true', help="sc-bart + previous user utterance + user emotion transition")
 
 args = parser.parse_args()
 args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
@@ -121,18 +111,9 @@ if tokenizer.pad_token is None:
 
 class EmoWOZNLG(Dataset):
     def __init__(self, split, tokenizer, args):
-        if args.downsample and split == 'train':
-            df = pd.read_csv(f'{args.data_dir}/{args.task}-{split}-downsampled-keepaugneutral.csv')
-        else:
-            df = pd.read_csv(f'{args.data_dir}/{args.task}-{split}.csv')
-        with open('emowoz_2.0.json', 'r') as f:
+        df = pd.read_csv(f'{args.data_dir}/{args.task}-{split}.csv')
+        with open(f'{args.data_dir}/emowoz_2.0.json', 'r') as f:
             sys_conduct = json.load(f)
-        if args.llm_target_label:
-            with open('multiwoz_augment_processed.json', 'r') as f:
-                augment = json.load(f)
-        if args.llm_predicted_label:
-            with open('multiwoz_augment_processed_with_predicted_conduct.json', 'r') as f:
-                augment = json.load(f)
 
         # for developing
         # df = df.head(100)
@@ -160,13 +141,6 @@ class EmoWOZNLG(Dataset):
                     text = f"The realisation of dialogue actions {row['actions']} in natural language with {sys_emo_dict[sys_emo]} conduct is "
                 elif args.emowoz2_prev_user_utt:
                     text = f"Given the user request '{history[-1]}', the realisation of dialogue actions {row['actions']} in natural language with {sys_emo_dict[sys_emo]} conduct is "
-
-                # elif args.context:
-                #     text = f'{history[-1]} | {row["actions"]}'
-                # elif args.context_emo:
-                #     text = f'{history[-1]} | {row["actions"]} | {EMAP[row["prev_emotion"]]}'
-                # elif args.context_emo_trans:
-                #     text = f'{history[-1]} | {row["actions"]} | ({EMAP[row["prev_emotion"]]} to {EMAP[row["next_emotion"]]})'
                 else:
                     print('error: no source format is specified')
                     exit()
@@ -176,17 +150,6 @@ class EmoWOZNLG(Dataset):
                 tgt.append(row['target'])
                 con.append(sys_emo)
                 uid.append(f"{row['dialogue_id']}-{row['turn_id']}-{str(sys_emo)}")
-
-            if split == 'train' and (args.llm_predicted_label or args.llm_target_label):
-                for aug_emo in [1,2,3,4]:
-                    aug_id = f"{row['dialogue_id']}-{row['turn_id']}-{str(aug_emo)}"
-                    if aug_id in augment:
-                        did.append(row['dialogue_id'])
-                        tid.append(row['turn_id'])
-                        src.append(text)
-                        tgt.append(augment[aug_id])
-                        con.append(aug_emo)
-                        uid.append(aug_id)
 
         if split == 'train':
             training_samples = list(zip(did, tid, src, tgt, uid, con))
@@ -261,17 +224,17 @@ model = model_class.from_pretrained(args.model_checkpoint)
 
 if args.finetune_from:
     print(f'loading checkpoint from {args.finetune_from}')
-    model.load_state_dict(torch.load(args.finetune_from)['state_dict'])
+    # model.load_state_dict(torch.load(args.finetune_from)['state_dict'])
+    model = model_class.from_pretrained(args.finetune_from)
 
 skip_train = False
-if os.path.exists(f'./{args.exp_id}/ckpt-0.pt'):
-    print(f'loading checkpoint from ./{args.exp_id}/ckpt-best.pt. Skip training')
-    model.load_state_dict(torch.load(f'./{args.exp_id}/ckpt-best.pt')['state_dict'])
+if os.path.exists(f'./{args.exp_id}/ckpt-best'):
+    print(f'loading checkpoint from ./{args.exp_id}/ckpt-best. Skip training')
+    # model.load_state_dict(torch.load(f'./{args.exp_id}/ckpt-best.pt')['state_dict'])
+    model = model_class.from_pretrained(f'./{args.exp_id}/ckpt-best')
     skip_train = True
 
-
 model.to(args.device)
-
 
 def compute_metrics(predictions, labels, tokenizer, metric):
     decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
@@ -362,13 +325,14 @@ def train(args, train_dataset, model):
             optimizer.zero_grad()
             # print(loss.item())
 
-        state = {
-            'epoch': e,
-            'state_dict': model.state_dict(),
-            'optimizer': optimizer.state_dict()
-        }
+        # state = {
+        #     'epoch': e,
+        #     'state_dict': model.state_dict(),
+        #     'optimizer': optimizer.state_dict()
+        # }
 
-        torch.save(state, f'{args.exp_id}/ckpt-{e}.pt')
+        # torch.save(state, f'{args.exp_id}/ckpt-{e}.pt')
+        model.save_pretrained(f'{args.exp_id}/ckpt-{e}')
 
         dev_result, dev_output = evaluate_model(args, dev_dataset, model, tokenizer)
         print(dev_result)
@@ -376,8 +340,9 @@ def train(args, train_dataset, model):
 
         if dev_result < best_ppl:
             print(f"Saving best model at Epoch {e}")
-            torch.save(state, f'{args.exp_id}/ckpt-best.pt')
+            # torch.save(state, f'{args.exp_id}/ckpt-best.pt')
             best_ppl = dev_result
+            model.save_pretrained(f'{args.exp_id}/ckpt-best')
         else:
             if e > 0:
                 print(f"Early stopping at Epoch {e}")

@@ -172,7 +172,8 @@ def arg_parser():
     parser.add_argument("--eval_freq", type=int, default=1)
     parser.add_argument("--dataset_name", type=str, default="multiwoz21")
     parser.add_argument("--model_path", type=str, default="")
-    parser.add_argument("--user_emotion", action='store_true')
+    parser.add_argument("--user_emotion", action='store_true', help="Use user emotion in dialogue state")
+    parser.add_argument("--conduct_action", action='store_true', help="Predict conduct action")
 
     parser.add_argument("--dst", type=str, default=None)
     parser.add_argument("--dst_args", type=str, default=None)
@@ -214,6 +215,7 @@ if __name__ == '__main__':
         cfg = json.load(f)
 
     cfg['dataset_name'] = args.dataset_name
+    cfg['predict_conduct'] = args.conduct_action
 
     logger, tb_writer, current_time, save_path, config_save_path, dir_path, log_save_path = \
         init_logging(os.path.dirname(os.path.abspath(__file__)), "info")

@@ -21,14 +21,6 @@ class EMOTODAgent(Agent):
                  max_output_len=128,
                  model_file='/home/shutong/models/emotod',
                  name='emotod'):
-        """
-        soloist agent initialization
-        Args:
-            model_file (str):
-                trained model path or url. 
-        Example:
-            model = SOLOISTAgent()
-        """
         super(EMOTODAgent, self).__init__(name=name)
         
         self.model = AutoModelForCausalLM.from_pretrained(model_file, device_map="auto")

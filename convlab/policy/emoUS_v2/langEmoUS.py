@@ -2,6 +2,8 @@ import json
 
 import torch
 import os
+from copy import deepcopy
+
 from convlab.util.custom_util import model_downloader
 from convlab.policy.policy import Policy
 
@@ -49,6 +51,43 @@ class UserActionPolicy(semanticEmoUS):
         text = self._get_text(model_input, pos)
 
         return text
+    
+    def _generate_emotion(self, raw_inputs, sys_act=[], mode="max", emotion_mode="normal"):
+        self.kg.parse_input(raw_inputs, sys_act=json.dumps(sys_act))
+        model_input = self.vector.encode(
+            raw_inputs, self.max_in_len, do_padding=self.padding)
+        # start token
+        self.seq = torch.zeros(1, self.max_out_len, device=self.device).long()
+        pos = 0
+        if self.model.model_type == "encoder_decoder":
+            pos = self._update_seq([0], 0)
+        # else:
+        #     pos = self._update_seq([1], 0)
+        pos = self._update_seq(self.token_map.get_id('start_json'), pos)
+        pos = self._update_emotion(
+            pos, model_input, mode, emotion_mode)
+        emotion = self.vector.decode(self.seq[0, :pos]) + '"}'
+
+        return emotion
+
+    def estimate_emotion_language(self, sys_utt, sys_act, mode="max"):
+        self.model.eval()
+        goal = deepcopy(self.goal)
+        goal.update_user_goal(action=sys_act, char="sys")
+        history = self._get_history()
+        time_step = self.time_step + 2
+
+        input_dict = {"system": sys_utt,
+                      "goal": goal.get_goal_list(sub_goal_success=self.sub_goal_succ),
+                      "history": history,
+                      "turn": str(int(time_step/2))}
+        if self.add_persona:
+            for user, info in self.user_info.items():
+                input_dict[user] = info
+
+        inputs = json.dumps(input_dict)
+        emotion = self._generate_emotion(inputs, sys_act, mode)
+        return emotion
 
     def predict(self, sys_utt, sys_act, mode="max", allow_general_intent=True, emotion=None):
 
@@ -140,6 +179,7 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         response = self.policy.predict(sys_utt, sys_act, mode)
+        self.emotion = self.policy.emotion
         self.semantic_action = self.policy.semantic_action
         return response
 
@@ -149,6 +189,14 @@ class UserPolicy(Policy):
         else:
             mode = "max"
         emotion = self.policy.estimate_emotion(sys_act, mode)
+        return emotion
+    
+    def estimate_emotion_language(self, sys_utt, sys_act, mode="max"):
+        if self.sample:
+            mode = "sample"
+        else:
+            mode = "max"
+        emotion = self.policy.estimate_emotion_language(sys_utt, sys_act, mode)
         return emotion
 
     def init_session(self, goal=None):
