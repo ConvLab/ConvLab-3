@@ -252,7 +252,7 @@ def train(model_type, data_name, dial_ids_order, split2ratio, batch_size=16, max
 
     args = Seq2SeqTrainingArguments(
         model_dir,
-        evaluation_strategy="steps",
+        evaluation_strategy="epoch",
         learning_rate=2e-5,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
