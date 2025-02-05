@@ -12,7 +12,7 @@ Once you have obtained an EmoLLAMA checkpoint, you can specify the checkpoint pa
 
 The code has been tested with transformers==4.29.2 and peft==0.10.0 (see `requirements.txt`). Please note that the transformers library version does not fulfill ConvLab-3 requirement but this does not cause any know issues yet.
 
-Please note that at the point of the experiments, there were some issues with model saving using the code provided. The whole state dict object was saved. Therefore, to run this module using ConvLab-3, you will need to initialise a base LLaMA model, resize its vocabulary, and load the state dict.
+Please note that at the point of the experiments, there were some issues with model saving using the trainer object in the code. We therefore modified the code to save the entire model state dict. To run this module using ConvLab-3, you will need to initialise a base LLaMA model, resize its vocabulary, and load the state dict.
 
 ## Evaluation
 
