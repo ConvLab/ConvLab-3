@@ -1,0 +1,6 @@
+{
+  "mailhost": "mail.example.com",
+  "port": 563,
+  "username": "example",
+  "password": "example"
+}

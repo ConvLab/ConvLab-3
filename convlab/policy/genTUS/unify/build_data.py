@@ -150,13 +150,13 @@ class DataBuilder:
                 [self._norm_intent(intent), domain, slot, value])
         return norm_result
 
-    def norm_domain_goal(self, x):
+    def norm_domain_goal(self, x, remove_domain_number=True):
         if not x:
             return x
         norm_result = []
         # take care of the order!
         for domain, intent, slot, value in x:
-            if "_" in domain:
+            if "_" in domain and remove_domain_number:
                 domain = domain.split('_')[0]
             if not domain:
                 domain = "none"

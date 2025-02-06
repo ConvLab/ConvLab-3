@@ -1,0 +1,19 @@
+# Hydra generated dirs
+multirun
+outputs
+
+# VS Code settings
+.vscode
+
+# Poetry virtual environment
+.venv
+poetry.lock
+
+# Python cache
+__pycache__
+
+# Weights and Biases logs
+wandb
+
+# Github convlab
+GithubConvLab3

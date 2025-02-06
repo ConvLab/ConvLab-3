@@ -45,9 +45,10 @@ class EnsembleAggregator:
 
     def __init__(self):
         self.init_session()
-        self.input_items = ['input_ids', 'attention_mask', 'token_type_ids']
+        self.input_items = ['input_ids', 'attention_mask', 'token_type_ids', 'state_labels']
         self.output_items = ['belief_state', 'request_probabilities', 'active_domain_probabilities',
-                             'general_act_probabilities']
+                             'general_act_probabilities', 'belief_state_mutual_information',
+                             'logits']
 
     def init_session(self):
         """Initialize aggregator for new session."""

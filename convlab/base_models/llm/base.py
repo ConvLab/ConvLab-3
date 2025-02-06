@@ -4,6 +4,7 @@ import openai
 import torch
 from copy import deepcopy
 from transformers import pipeline, AutoTokenizer, AutoModel
+from litellm import completion as litellm_completion
 
 class LLM:
     def __init__(self, api_type, model_name_or_path, system_instruction=None, generation_kwargs=None):
@@ -23,6 +24,8 @@ class LLM:
                 self.model = ChatGLM2(model_name_or_path)
             else:
                 self.model = HFModels(model_name_or_path)
+        elif api_type == 'litellm':
+            self.model = LiteLLM_API(model_name_or_path)
         else:
             raise NotImplementedError
         
@@ -69,6 +72,31 @@ class BaseLLM:
         """Generate interface"""
         raise NotImplementedError
     
+class LiteLLM_API(BaseLLM):
+    DEFAULT_SYSTEM_INSTRUCTION = "You are a helpful assistant."
+    def __init__(self, model_name_or_path) -> None:
+        # make sure you set the corresponding API_KEY environment variable for your model
+        self.model_name_or_path = model_name_or_path
+    
+    def chat(self, messages, **kwargs) -> str:
+        completion = litellm_completion(
+            model=self.model_name_or_path,
+            messages=messages,
+            **kwargs
+        )
+        return completion.choices[0].message['content']
+    
+    def generate(self, system_instruction, prompt, **kwargs) -> str:
+        completion = litellm_completion(
+            model=self.model_name_or_path,
+            messages=[
+                {"role": "system", "content": system_instruction},
+                {"role": "user", "content": prompt}
+            ],
+            **kwargs
+        )
+        return completion.choices[0].message['content']
+
 class OpenAI_API(BaseLLM):
     DEFAULT_SYSTEM_INSTRUCTION = "You are a helpful assistant."
 

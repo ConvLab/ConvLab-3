@@ -23,6 +23,8 @@ def main():
     g = data_builder.norm_domain_goal(create_goal(data["train"][1]))
 
     # initial the user with the goal from dataset
+    print(g)
+    print('-'*10)
     usr.init_session(goal=g)
 
     # a mock conversation

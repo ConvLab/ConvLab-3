@@ -1,0 +1,12 @@
+{
+  "model_type": "meta",
+  "no_set_similarity": false,
+  "no_descriptions": false,
+  "dataset": "multiwoz21",
+  "no_action_prediction": true,
+  "loss_function": "distillation_bayesianmatching",
+  "kl_scaling_factor": 0.001,
+  "train_batch_size": 3,
+  "dev_batch_size": 12,
+  "test_batch_size": 12
+}
