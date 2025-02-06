@@ -67,7 +67,7 @@ ddpt = VTRACE(is_train=True,
               vectorizer=vectorizer,
               load_path="ddpt")
 ```
-Specify the appropriate load_path in VTRACE. An example value for load_path argument is `path_to_the_policy_checkpoint_folders/best_vtrace` where in the folder you find files like `best_vtrace.pol.mdl`. `.pol.mdl` or `.val.mdl` are ignored and only the common prefix is used. In our experiment, we used the checkpoint with the best average return (`best_vtrace`). We also include other checkpoints for, for example, best success.
+Specify the appropriate load_path in VTRACE. An example value for load_path argument is `path_to_the_policy_checkpoint_folders/best_vtrace` where in the folder you find files like `best_vtrace.pol.mdl`. `.pol.mdl` or `.val.mdl` are ignored and only the common prefix is used. In our experiment, we used the checkpoint with the best average return (`best_vtrace`). We also include other checkpoints for, for example, best success. Model checkpoints can be found [here](https://zenodo.org/records/14810836) in `system_policy.zip`.
 
 ## References
 

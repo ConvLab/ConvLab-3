@@ -1,10 +1,10 @@
 # SEC-BART
 
-This is the NLG used in EmoLoop system (Feng et al., 2024). EmoLoop is trained on EmoWOZ 2.0, adding additional system conduct labels for original [EmoWOZ](https://zenodo.org/records/6506504) (Feng et al., 2022). EmoWOZ 2.0 can be found [here]().
+This is the NLG used in EmoLoop system (Feng et al., 2024). EmoLoop is trained on EmoWOZ 2.0, adding additional system conduct labels for original [EmoWOZ](https://zenodo.org/records/6506504) (Feng et al., 2022). EmoWOZ 2.0 can be found [here](https://gitlab.cs.uni-duesseldorf.de/general/dsml/emowoz-2.0-public).
 
 ## Data
 
-Please download the data from [here]().
+Please download the formatted data from [here](https://zenodo.org/records/14810836) in `data` folder of `nlg.zip`.
 
 ## Training
 

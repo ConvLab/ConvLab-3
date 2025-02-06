@@ -17,7 +17,7 @@ To train the model, running the following command *from the base convlab directo
 python convlab/policy/emoUS_v2/train_model.py --data-name language_EmoUS_emowoz+dialmage --batch-size 4 --max-in-len 800 --max-out-len 400
 ```
 
-To interact with langEmoUS and verify that if works, please download the langEmoUS model checkpoint from [here]() and run the following command *from the base convlab directory*.
+To interact with langEmoUS and verify that if works, please download the langEmoUS model checkpoint from [here](https://zenodo.org/records/14810836) in `user_policy.zip` and run the following command *from the base convlab directory*.
 
 ```
 python convlab/policy/emoUS_v2/evaluate.py \
