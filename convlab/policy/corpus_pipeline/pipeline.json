@@ -1,0 +1,67 @@
+{
+    "goals": {
+        "single_domains": false,
+        "allowed_domains": null
+    },
+    "model": {
+        "load_path": "convlab/policy/vtrace_DPT/sl_SetSumbt/best_vtrace",
+        "use_pretrained_initialisation": false,
+        "pretrained_load_path": "",
+        "seed": 0,
+        "process_num": 1,
+        "eval_frequency": 1000,
+        "num_eval_dialogues": 250,
+        "process_num_train": 1,
+        "total_dialogues": 15000,
+        "update_rounds": 1,
+        "new_dialogues": 2,
+        "sys_semantic_to_usr": false,
+        "check_book_constraints": true,
+        "action_length_penalty": 0.0
+    },
+    "vectorizer_sys": {
+        "uncertainty_vector_mul": {
+            "class_path": "convlab.policy.vector.vector_nodes.VectorNodes",
+            "ini_params": {
+                "use_masking": true,
+                "manually_add_entity_names": true,
+                "seed": 0,
+                "dataset_name": "multiwoz21",
+                "filter_state": true
+            }
+        }
+    },
+    "nlu_sys": {},
+    "dst_sys": {
+        "EmoDST": {
+            "class_path": "convlab.dst.emodst.tracker.EMODST",
+            "ini_params": {
+                "kwargs_for_erc": {
+                    "base_model_type": "bert-base-uncased",
+                    "base_model_path": "convlab/dst/emodst/emodst-models/bert-base-uncased",
+                    "model_type": "contextbert-ertod",
+                    "model_name_or_path": "convlab/dst/emodst/emodst-models/contextbert-ertod.pt"
+                },
+                "dst_model_name": "setsumbt",
+                "kwargs_for_dst": {
+                    "model_name_or_path": "convlab/dst/emodst/emodst-models/setsumbt-dst_nlu-multiwoz21-EnD2",
+                    "store_full_belief_state": false
+                }
+            }
+        }
+    },
+    "sys_nlg": {
+        "SCBART": {
+            "class_path": "convlab.nlg.scbart.scbart.SCBART",
+            "ini_params": {
+                "model_path": "convlab/nlg/scbart/scbart-models/scbart-nlprompt-semact-conduct-userutt-aug-withdialmage",
+                "dataset_name": "multiwoz21",
+                "device": "cuda"
+            }
+        }
+    },
+    "nlu_usr": {},
+    "dst_usr": {},
+    "policy_usr": {},
+    "usr_nlg": {}
+}

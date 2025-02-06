@@ -7,6 +7,7 @@ class tokenMap:
         self.token_name = {}
         self.hash_map = {}
         self.debug = False
+        self.model_type = kwargs.get("model_type", "encoder_decoder")
         self.default()
 
     def default(self, only_action=False):
@@ -21,6 +22,8 @@ class tokenMap:
             'start_text': 'text": "',
             'end_json': '}',
             'end_json_2': '"}',
+            'end_json_3': "'}",
+            'end_json_4': "'},",
             'book': 'book'
         }
 
@@ -33,9 +36,27 @@ class tokenMap:
     def add_token(self, token_name, value):
         if token_name in self.token_name and self.debug:
             print(f"---> duplicate token: {token_name}({value})!!!!!!!")
+        if self.model_type != "encoder_decoder":
+            prefix = ''
+            suffix = '!'
+            if token_name != "start_json":
+                prefix = '!'
 
-        token_id = self.tokenizer(str(value), add_special_tokens=False)[
-            "input_ids"]
+            workaround = f"{prefix}{value}{suffix}"
+
+            token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
+                "input_ids"]
+            if prefix:
+                token_id = token_id[1:]
+            if suffix:
+                token_id = token_id[:-1]
+            workaround_text = self.tokenizer.decode(token_id)
+            if workaround_text != value:
+                print(f"error!!! +{token_name}+ +{value}+ +{workaround_text}+")
+
+        else:
+            token_id = self.tokenizer(str(value), add_special_tokens=False)[
+                "input_ids"]
         self.token_name[token_name] = {"value": value, "token_id": token_id}
         # print(token_id)
         hash_id = token_id[0]

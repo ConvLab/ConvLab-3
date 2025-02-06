@@ -48,7 +48,7 @@ class RuleBasedMultiwozBot(Policy):
     def init_session(self):
         self.last_state = {}
 
-    def predict(self, state):
+    def predict(self, state, **kwargs):
         """
         Args:
             State, please refer to util/state.py

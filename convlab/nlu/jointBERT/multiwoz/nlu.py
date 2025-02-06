@@ -51,9 +51,9 @@ class BERTNLU(NLU):
 
         state_dict = torch.load(os.path.join(
             output_dir, 'pytorch_model.bin'), DEVICE)
-        if int(transformers.__version__.split('.')[0]) >= 3 and 'bert.embeddings.position_ids' not in state_dict:
-            state_dict['bert.embeddings.position_ids'] = torch.tensor(
-                range(512)).reshape(1, -1).to(DEVICE)
+        # if int(transformers.__version__.split('.')[0]) >= 3 and 'bert.embeddings.position_ids' not in state_dict:
+        #     state_dict['bert.embeddings.position_ids'] = torch.tensor(
+        #         range(512)).reshape(1, -1).to(DEVICE)
 
         model.load_state_dict(state_dict)
         model.to(DEVICE)

@@ -149,9 +149,10 @@ def save_best(policy_sys, best_complete_rate, best_success_rate, best_return, co
         best_return = avg_return
     if success_rate > best_success_rate:
         best_success_rate = success_rate
+        policy_sys.save(save_path, "best-success")
     if complete_rate > best_complete_rate:
         best_complete_rate = complete_rate
-        # policy_sys.save(save_path, "best")
+        policy_sys.save(save_path, "best-complete")
     logging.info(
         f"Best Complete Rate: {best_complete_rate}, Best Success Rate: {best_success_rate}, "
         f"Best Average Return: {best_return}")
@@ -172,18 +173,18 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
     if conf['model']['process_num'] == 1 or save_eval:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts, recommend_acts = evaluate(sess,
-                                                               num_dialogues=conf['model']['num_eval_dialogues'],
-                                                               sys_semantic_to_usr=conf['model'][
-                                                                   'sys_semantic_to_usr'],
-                                                               save_flag=save_eval, save_path=log_save_path, goals=goals)
+            select_acts, offer_acts, recommend_acts, emotion_return = evaluate(sess,
+                                                                               num_dialogues=conf['model']['num_eval_dialogues'],
+                                                                               sys_semantic_to_usr=conf['model'][
+                                                                                   'sys_semantic_to_usr'],
+                                                                               save_flag=save_eval, save_path=log_save_path, goals=goals)
 
         total_acts = book_acts + inform_acts + request_acts + \
             select_acts + offer_acts + recommend_acts
     else:
         complete_rate, success_rate, success_rate_strict, avg_return, turns, \
             avg_actions, task_success, book_acts, inform_acts, request_acts, \
-            select_acts, offer_acts, recommend_acts = \
+            select_acts, offer_acts, recommend_acts, emotion_return = \
             evaluate_distributed(sess, list(range(1000, 1000 + conf['model']['num_eval_dialogues'])),
                                  conf['model']['process_num'], goals)
         total_acts = book_acts + inform_acts + request_acts + \
@@ -220,7 +221,8 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
                  f"Average Actions: {mean_actions}+-{round(err_actions, 2)}, "
                  f"Book Actions: {book_acts/total_acts}, Inform Actions: {inform_acts/total_acts}, "
                  f"Request Actions: {request_acts/total_acts}, Select Actions: {select_acts/total_acts}, "
-                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}")
+                 f"Offer Actions: {offer_acts/total_acts}, Recommend Actions: {recommend_acts/total_acts}, "
+                 f"Emotion Return: {emotion_return}")
 
     for key in task_success:
         logging.info(
@@ -237,10 +239,11 @@ def eval_policy(conf, policy_sys, env, sess, save_eval, log_save_path, single_do
             "request_acts": request_acts/total_acts,
             "select_acts": select_acts/total_acts,
             "offer_acts": offer_acts/total_acts,
-            "recommend_acts": recommend_acts/total_acts}
+            "recommend_acts": recommend_acts/total_acts,
+            "emotion_return": emotion_return}
 
 
-def env_config(conf, policy_sys, check_book_constraints=True):
+def env_config(conf, policy_sys, check_book_constraints=True, action_length_penalty=0.0):
     nlu_sys = conf['nlu_sys_activated']
     dst_sys = conf['dst_sys_activated']
     sys_nlg = conf['sys_nlg_activated']
@@ -264,7 +267,7 @@ def env_config(conf, policy_sys, check_book_constraints=True):
 
     # assemble
     evaluator = MultiWozEvaluator(
-        check_book_constraints=check_book_constraints)
+        check_book_constraints=check_book_constraints, action_length_penalty=action_length_penalty)
     env = Environment(sys_nlg, simulator, nlu_sys, dst_sys, evaluator=evaluator,
                       use_semantic_acts=conf['model']['sys_semantic_to_usr'])
     sess = BiSession(system_pipeline, simulator, None, evaluator)
@@ -330,16 +333,80 @@ def create_env(args, policy_sys):
     return env, sess
 
 
+class SaveDialog:
+    def __init__(self, save_path):
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        self.save_path = save_path
+        self.data = {"conversation": []}
+        self.dialog = []
+        self.current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+
+
+    def new_conversation(self):
+        self.dialog = []
+
+    def save(self):
+        # shutong
+        # current_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        file_path = os.path.join(
+            self.save_path, f"conversation-{self.current_time}.json")
+        json.dump(self.data,
+                  open(os.path.join(file_path), 'w'),
+                  cls=NumpyEncoder, indent=2)
+
+    def append_dialog(self, seed, goal, complete, task_succ, task_succ_strict, total_return, turns):
+        self.data["conversation"].append(
+            {"seed": seed,
+             "log": self.dialog,
+             "goal": goal,
+             "Complete": complete,
+             "Success": task_succ,
+             "Success strict": task_succ_strict,
+             "total_return": total_return,
+             "turns": turns})
+
+    def append_turn(self, sess, user_response, sys_response):
+        user_turn = {
+            "role": "usr",
+            "utt": user_response}
+        if hasattr(sess.user_agent.policy, "semantic_action"):
+            user_turn["act"] = sess.user_agent.policy.semantic_action
+        else:
+            if hasattr(sess.user_agent, "output_action"):
+                user_turn["act"] = sess.user_agent.output_action
+        if hasattr(sess.user_agent.policy, "get_emotion"):
+            user_turn["emotion"] = sess.user_agent.policy.get_emotion()
+
+        system_turn = {
+            "role": "sys",
+            "utt": sys_response}
+        if hasattr(sess.sys_agent, "output_action"):
+            system_turn["act"] = sess.sys_agent.output_action
+        if hasattr(sess.sys_agent.policy, "get_conduct"):
+            system_turn["conduct"] = sess.sys_agent.policy.get_conduct()
+        if hasattr(sess.sys_agent, "state"):
+            system_turn["state"] = sess.sys_agent.state
+
+        self.dialog.append(user_turn)
+        self.dialog.append(system_turn)
+
+
 def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False, save_path=None, goals=None):
+    dialog_saver = SaveDialog(os.path.join(save_path, 'conversation'))
+
     eval_save = {}
     turn_counter_dict = {}
     turn_counter = 0.0
+    emotion_dict = {"satisfied": 1, "neutral": 0,
+                    "dissatisfied": -1, "abusive": -1}
 
     task_success = {'All_user_sim': [], 'All_evaluator': [], "All_evaluator_strict": [],
                     'total_return': [], 'turns': [], 'avg_actions': [],
                     'total_booking_acts': [], 'total_inform_acts': [], 'total_request_acts': [],
-                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': []}
+                    'total_select_acts': [], 'total_offer_acts': [], 'total_recommend_acts': [], 'emotion_return': []}
     dial_count = 0
+
     for seed in range(1000, 1000 + num_dialogues):
         set_seed(seed)
         goal = goals.pop()
@@ -354,11 +421,21 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         request = 0
         select = 0
         offer = 0
+        total_emotion_return = 0.0
         recommend = 0
         # this 40 represents the max turn of dialogue
+        dialog_saver.new_conversation()
+
         for i in range(40):
             sys_response, user_response, session_over, reward = sess.next_turn(
                 sys_response)
+
+            dialog_saver.append_turn(sess, user_response, sys_response)
+
+            if hasattr(sess.user_agent.policy, 'get_emotion'):
+                emotion = sess.user_agent.policy.get_emotion().lower()
+                emotion_reward = emotion_dict.get(emotion, 0)
+                total_emotion_return += emotion_reward
 
             if len(sys_response) not in turn_counter_dict:
                 turn_counter_dict[len(sys_response)] = 1
@@ -404,8 +481,6 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['All_user_sim'].append(complete)
         task_success['All_evaluator'].append(task_succ)
         task_success['All_evaluator_strict'].append(task_succ_strict)
-        total_return = 80 if task_succ_strict else -40
-        total_return -= turns
         task_success['total_return'].append(total_return)
         task_success['turns'].append(turns)
         task_success['avg_actions'].append(avg_actions / turns)
@@ -417,6 +492,10 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         task_success['total_offer_acts'].append(offer)
         task_success['total_offer_acts'].append(offer)
         task_success['total_recommend_acts'].append(recommend)
+        task_success['emotion_return'].append(total_emotion_return)
+
+        dialog_saver.append_dialog(seed, goal.domain_goals, complete, task_succ, task_succ_strict,
+                                   total_return, turns)
 
         # print(agent_sys.agent_saves)
         eval_save['Conversation {}'.format(str(dial_count))] = [
@@ -425,6 +504,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         dial_count += 1
         # print('length of dict ' + str(len(eval_save)))
 
+    dialog_saver.save()
     if save_flag:
         torch.save(eval_save, os.path.join(save_path, 'evaluate_INFO.pt'))
     # save dialogue_info and clear mem
@@ -434,7 +514,7 @@ def evaluate(sess, num_dialogues=400, sys_semantic_to_usr=False, save_flag=False
         np.average(task_success['total_booking_acts']), np.average(task_success['total_inform_acts']), \
         np.average(task_success['total_request_acts']), np.average(task_success['total_select_acts']), \
         np.average(task_success['total_offer_acts']), np.average(
-            task_success['total_recommend_acts'])
+            task_success['total_recommend_acts']), np.average(task_success['emotion_return'])
 
 
 def model_downloader(download_dir, model_path):

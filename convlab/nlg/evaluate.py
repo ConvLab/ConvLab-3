@@ -25,7 +25,7 @@ def slot_error(dialog_acts, utts):
     missing = 0
     total = 0
 
-    for acts,utt in zip(dialog_acts, utts):
+    for acts, utt in zip(dialog_acts, utts):
         for act in acts:
             tmp_act = [x.lower() for x in act]
             tmp_utt = utt.lower()
@@ -36,6 +36,7 @@ def slot_error(dialog_acts, utts):
                     missing = missing + 1
     return missing, total
 
+
 def fine_SER(dialog_acts, utts):
     path = os.path.dirname(os.path.abspath(__file__))
     path = os.path.join(path, 'template', 'multiwoz', 'label_maps.json')
@@ -43,7 +44,8 @@ def fine_SER(dialog_acts, utts):
         mappings = json.load(mapping_file)
         mapping_file.close()
 
-    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    path = os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))))
     path = os.path.join(path, 'data', 'multiwoz', 'ontology_nlg_eval.json')
     with open(path, 'r') as entity_file:
         possible_entity = json.load(entity_file)
@@ -53,7 +55,7 @@ def fine_SER(dialog_acts, utts):
 
     for key in possible_entity.keys():
         entity_list = entity_list + possible_entity[key]
-    
+
     hallucinate = 0
     missing = 0
     total = 0
@@ -65,8 +67,8 @@ def fine_SER(dialog_acts, utts):
     slot_span = []
     domain_span = []
 
-    for acts,utt in zip(dialog_acts, utts):
-        hallucination_flag = False        
+    for acts, utt in zip(dialog_acts, utts):
+        hallucination_flag = False
         tmp_utt = utt.lower()
         origin_utt = utt.lower()
         legal_act_flag = False
@@ -77,32 +79,32 @@ def fine_SER(dialog_acts, utts):
             tmp_act = [x.lower() for x in act]
             i, d, s, v = tmp_act
 
-            if not(d in domain_span):
+            if not (d in domain_span):
                 domain_span.append(d)
-            if not(s in slot_span):
+            if not (s in slot_span):
                 slot_span.append(s)
-            #intializing all possible span keyword
+            # intializing all possible span keyword
 
-            if i in ['inform', 'recommend', 'offerbook', 'offerbooked','book','select']:
+            if i in ['inform', 'recommend', 'offerbook', 'offerbooked', 'book', 'select']:
                 legal_act_flag = True
                 total = total + 1
-                if not (v in origin_utt) and v!='none':
+                if not (v in origin_utt) and v != 'none':
                     exist_flag = False
                     try:
                         synoyms = mappings[v]
                         for item in synoyms:
                             if item in origin_utt:
                                 exist_flag = True
-                                tmp_utt = tmp_utt.replace(item,'')
-                                tmp_utt = tmp_utt.replace(s,'')
-                                #remove span for hallucination detection
+                                tmp_utt = tmp_utt.replace(item, '')
+                                tmp_utt = tmp_utt.replace(s, '')
+                                # remove span for hallucination detection
                     except:
                         pass
-                    if i in ['offerbook', 'offerbooked'] and v =='none':
+                    if i in ['offerbook', 'offerbooked'] and v == 'none':
                         if 'book' in origin_utt:
                             exist_flag = True
-                            tmp_utt = tmp_utt.replace('book','')
-                    if i in ['inform','recommend'] and v=='none':
+                            tmp_utt = tmp_utt.replace('book', '')
+                    if i in ['inform', 'recommend'] and v == 'none':
                         if d in origin_utt:
                             exist_flag = True
                             tmp_utt = tmp_utt.replace(d, '')
@@ -110,25 +112,25 @@ def fine_SER(dialog_acts, utts):
                         missing_flag = True
                         missing_fact = v
                 else:
-                    tmp_utt = tmp_utt.replace(v,'')
-                    tmp_utt = tmp_utt.replace(s,'')
+                    tmp_utt = tmp_utt.replace(v, '')
+                    tmp_utt = tmp_utt.replace(s, '')
 
                 if s in origin_utt:
                     missing_flag = False
-                if s =='booking' and ('book' in origin_utt or 'reserv' in origin_utt):
+                if s == 'booking' and ('book' in origin_utt or 'reserv' in origin_utt):
                     missing_flag = False
 
             elif i == 'request':
                 legal_act_flag = True
                 total = total + 1
-                if s=='depart' or s=='dest' or s=='area':
+                if s == 'depart' or s == 'dest' or s == 'area':
                     if not ('where' in origin_utt):
                         if s in origin_utt:
-                            tmp_utt = tmp_utt.replace(s,'')
+                            tmp_utt = tmp_utt.replace(s, '')
                         else:
                             missing_flag = True
                             missing_fact = s
-                elif s=='leave' or s=='arrive':
+                elif s == 'leave' or s == 'arrive':
                     if (not 'when' in origin_utt):
                         if not ('what' in origin_utt and 'time' in origin_utt):
                             missing_flag = True
@@ -136,17 +138,17 @@ def fine_SER(dialog_acts, utts):
                     else:
                         tmp_utt.replace('time', '')
                 else:
-                    tmp_utt = tmp_utt.replace(s,'')
-                    tmp_utt = tmp_utt.replace(d,'')
+                    tmp_utt = tmp_utt.replace(s, '')
+                    tmp_utt = tmp_utt.replace(d, '')
 
                 if s in origin_utt:
-                        missing_flag = False
-                if s =='booking' and ('book' in origin_utt or 'reserv' in origin_utt):
-                    missing_flag = False    
+                    missing_flag = False
+                if s == 'booking' and ('book' in origin_utt or 'reserv' in origin_utt):
+                    missing_flag = False
 
             try:
-                tmp_utt = tmp_utt.replace(d,'')
-                tmp_utt = tmp_utt.replace(s,'')
+                tmp_utt = tmp_utt.replace(d, '')
+                tmp_utt = tmp_utt.replace(s, '')
                 if 'arrive' in s or 'leave' in s:
                     tmp_utt = tmp_utt.replace('time', '')
             except:
@@ -168,7 +170,6 @@ def fine_SER(dialog_acts, utts):
                 hallucination_dialogs.append(utt)
                 break
 
-
     return missing, hallucinate, total, hallucination_dialogs, missing_dialogs
 
 
@@ -187,9 +188,11 @@ def get_bleu4(dialog_acts, golden_utts, gen_utts):
                 else:
                     v = v.lower()
                     if (' ' + v in utt) or (v + ' ' in utt):
-                        utt = utt.replace(v, '{}-{}'.format(act + '-' + domain, s), 1)
+                        utt = utt.replace(
+                            v, '{}-{}'.format(act + '-' + domain, s), 1)
                     if (' ' + v in gen) or (v + ' ' in gen):
-                        gen = gen.replace(v, '{}-{}'.format(act + '-' + domain, s), 1)
+                        gen = gen.replace(
+                            v, '{}-{}'.format(act + '-' + domain, s), 1)
         hash_key = ''
         for da in sorted(das, key=lambda x: x[0] + x[1] + x[2]):
             hash_key += '-'.join(da[:-1]) + ';'
@@ -202,7 +205,8 @@ def get_bleu4(dialog_acts, golden_utts, gen_utts):
         for gen in das2utts[das]['gens']:
             refs.append([s.split() for s in das2utts[das]['refs']])
             gens.append(gen.split())
-    bleu = corpus_bleu(refs, gens, weights=(0.25, 0.25, 0.25, 0.25), smoothing_function=SmoothingFunction().method1)
+    bleu = corpus_bleu(refs, gens, weights=(0.25, 0.25, 0.25, 0.25),
+                       smoothing_function=SmoothingFunction().method1)
     return bleu
 
 
@@ -230,7 +234,8 @@ if __name__ == '__main__':
             if role == 'usr':
                 model = SCLSTM(is_user=True, use_cuda=True, unk_suppress=False)
             elif role == 'sys':
-                model = SCLSTM(is_user=False, use_cuda=True, unk_suppress=False)
+                model = SCLSTM(is_user=False, use_cuda=True,
+                               unk_suppress=False)
         elif model_name == 'SCLSTM_NoUNK':
             from convlab.nlg.sclstm.multiwoz import SCLSTM
             if role == 'usr':
@@ -250,14 +255,16 @@ if __name__ == '__main__':
             if role == 'usr':
                 model = SCGPT(model_file, is_user=True)
             elif role == 'sys':
-                model  = SCGPT(model_file, is_user=False)
+                model = SCGPT(model_file, is_user=False)
         else:
             raise Exception("Available models: SCLSTM, SCGPT, TEMPLATE")
 
         from convlab.util.dataloader.module_dataloader import SingleTurnNLGDataloader
         from convlab.util.dataloader.dataset_dataloader import MultiWOZDataloader
-        dataloader = SingleTurnNLGDataloader(dataset_dataloader=MultiWOZDataloader())
-        data = dataloader.load_data(data_key='all', role=role, session_id=True)['test']
+        dataloader = SingleTurnNLGDataloader(
+            dataset_dataloader=MultiWOZDataloader())
+        data = dataloader.load_data(
+            data_key='all', role=role, session_id=True)['test']
 
         dialog_acts = []
         golden_utts = []
@@ -268,7 +275,8 @@ if __name__ == '__main__':
 
         # sys.stdout = open(sys.argv[2] + '-' + sys.argv[3] + '-' + 'evaluate_logs_neo.txt','w')
         assert 'utterance' in data and 'dialog_act' in data and 'session_id' in data
-        assert len(data['utterance']) == len(data['dialog_act']) == len(data['session_id'])
+        assert len(data['utterance']) == len(
+            data['dialog_act']) == len(data['session_id'])
 
         # Turns during the same session should be contiguous, so we can call init_session at the first turn of a new session.
         # This is necessary for SCGPT, but unnecessary for SCLSTM and TemplateNLG.
@@ -288,28 +296,32 @@ if __name__ == '__main__':
         #     print(gen_utts[-1])
 
         print("Calculate SER for golden responses")
-        missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(dialog_acts, golden_utts)
-        print("Golden response Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(missing, total, hallucinate, missing/total))
-        
+        missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+            dialog_acts, golden_utts)
+        print("Golden response Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+            missing, total, hallucinate, missing/total))
+
         print("Calculate SER")
-        missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(dialog_acts, gen_utts)
+        missing, hallucinate, total, hallucination_dialogs, missing_dialogs = fine_SER(
+            dialog_acts, gen_utts)
         # with open('{}-{}-genutt_neo.txt'.format(sys.argv[2], sys.argv[3]), mode='wt', encoding='utf-8') as gen_diag:
         #     for x in gen_utts:
         #         gen_diag.writelines(str(x)+'\n')
 
-
         # with open('{}-{}-hallucinate_neo.txt'.format(sys.argv[2], sys.argv[3]), mode='wt', encoding='utf-8') as hal_diag:
         #     for x in hallucination_dialogs:
         #         hal_diag.writelines(str(x)+'\n')
-        
+
         # with open('{}-{}-missing_neo.txt'.format(sys.argv[2], sys.argv[3]), mode='wt', encoding='utf-8') as miss_diag:
         #     for x in missing_dialogs:
         #         miss_diag.writelines(str(x)+'\n')
-        print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(sys.argv[2], missing, total, hallucinate, missing/total))
+        print("{} Missing acts: {}, Total acts: {}, Hallucinations {}, SER {}".format(
+            sys.argv[2], missing, total, hallucinate, missing/total))
         print("Calculate bleu-4")
         bleu4 = get_bleu4(dialog_acts, golden_utts, gen_utts)
         print("BLEU-4: %.4f" % bleu4)
-        print('Model on {} sentences role={}'.format(len(data['utterance']), role))
+        print('Model on {} sentences role={}'.format(
+            len(data['utterance']), role))
         # sys.stdout.close()
 
     else:

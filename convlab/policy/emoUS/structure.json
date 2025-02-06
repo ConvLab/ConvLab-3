@@ -1,0 +1,34 @@
+[
+    {
+        "mode": "MIDemoUS",
+        "model": "MIDemoUS_emowoz+dialmage_0_1/23-01-23-15-03",
+        "use_sentiment": false,
+        "emotion_mid": true,
+        "label": "ActEmoUtt",
+        "prefix": "act_emo"
+    },
+    {
+        "mode": "EmoUS",
+        "model": "EmoUS_emowoz+dialmage_0_1/23-01-23-15-03",
+        "use_sentiment": false,
+        "emotion_mid": false,
+        "label": "EmoActUtt",
+        "prefix": "emo_act"
+    },
+    {
+        "mode": "SentUS",
+        "model": "SentUS_emowoz+dialmage_0_1/23-01-23-15-03",
+        "use_sentiment": true,
+        "emotion_mid": true,
+        "label": "SentActEmoUtt",
+        "prefix": "sent_act_emo"
+    },
+    {
+        "mode": "SentEmoUS",
+        "model": "SentEmoUS_emowoz+dialmage_0_1/23-01-23-15-03",
+        "use_sentiment": true,
+        "emotion_mid": false,
+        "label": "SentEmoActUtt",
+        "prefix": "sent_emo_act"
+    }
+]

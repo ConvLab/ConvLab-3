@@ -90,6 +90,12 @@ class DataBuilder:
                 dialog["turns"][turn_id - 1]["dialogue_acts"]))
         return sys_act
 
+    def _get_sys_utt(self, dialog, turn_id):
+        sys_utt = ""
+        if turn_id > 0:
+            sys_utt = dialog["turns"][turn_id - 1]["utterance"]
+        return sys_utt
+
     def _user_goal_str(self, user_goal, data_goal, random_order, no_status):
         if random_order:
             usr_goal_str = user_goal.get_goal_list()

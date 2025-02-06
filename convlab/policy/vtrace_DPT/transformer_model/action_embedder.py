@@ -23,6 +23,10 @@ class ActionEmbedder(nn.Module):
         self.domain_dict, self.intent_dict, self.slot_dict, self.value_dict, self.slot_value_dict \
             = self.create_dicts(action_dict)
 
+        self.emotion_dict = {'neutral': 0, 'compassionate': 1, 'apologetic': 2, 'enthusiastic': 3, 'appreciative': 4}
+        self.emotion_dict_reversed = \
+            {0: 'neutral', 1: 'compassionate', 2: 'apologetic', 3: 'enthusiastic', 4: 'appreciative'}
+
         #EOS token is considered a "domain"
         self.action_dict = dict((key, value) for key, value in action_dict.items())
         self.action_dict_reversed = dict((value, key) for key, value in self.action_dict.items())
@@ -104,6 +108,12 @@ class ActionEmbedder(nn.Module):
                         action_mask[self.small_action_dict[slot_value]] = 0
                         break
 
+        return action_mask.to(DEVICE)
+
+    def get_emotion_mask(self):
+        action_mask = torch.ones(len(self.small_action_dict))
+        for emotion in self.emotion_dict:
+            action_mask[self.small_action_dict[emotion]] = 0
         return action_mask.to(DEVICE)
 
     def get_action_mask(self, domain=None, intent="", start=False):
@@ -204,6 +214,9 @@ class ActionEmbedder(nn.Module):
             slot, value = slot_value
             action_embeddings.append(f"{slot} {value}")
             small_action_dict[slot_value] = len(small_action_dict)
+        for emotion, idx in self.emotion_dict.items():
+            action_embeddings.append(emotion)
+            small_action_dict[emotion] = len(small_action_dict)
 
         action_embeddings.append("pad")     #add the PAD token
         small_action_dict['pad'] = len(small_action_dict)

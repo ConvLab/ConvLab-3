@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from convlab.util.analysis_tool.helper import Reporter
 from tqdm import tqdm, trange
 import logging
+from convlab.util.custom_util import SaveDialog
 
 
 class Analyzer:
@@ -59,9 +60,12 @@ class Analyzer:
         pprint(sess.evaluator.goal)
         print('=' * 100)
 
-    def comprehensive_analyze(self, sys_agent, model_name, total_dialog=100):
-        sess = self.build_sess(sys_agent)
+    def comprehensive_analyze(self, sys_agent, model_name, total_dialog=100, s=5):
+        emotion_dict = {"satisfied": 1, "neutral": 0,
+                    "dissatisfied": -1, "abusive": -1}
 
+        sess = self.build_sess(sys_agent)
+        random.seed(s)
         goal_seeds = [random.randint(1, 100000) for _ in range(total_dialog)]
         precision = []
         recall = []
@@ -71,6 +75,7 @@ class Analyzer:
         complete_num = 0
         turn_num = 0
         turn_suc_num = 0
+        total_total_emotion_reward = 0
 
         num_domains = 0
         num_domains_satisfying_constraints = 0
@@ -92,15 +97,19 @@ class Analyzer:
 
         flog = open(os.path.join(output_dir, 'log.txt'), 'w')
 
+        dialog_saver = SaveDialog(os.path.join(output_dir, 'conversation'))
+
         for j in tqdm(range(total_dialog), desc="dialogue"):
             print('='*64, file=flog)
             print('Dialogue ID:', j, file=flog)
             sys_response = '' if self.user_agent.nlu else []
-            random.seed(goal_seeds[0])
-            np.random.seed(goal_seeds[0])
-            torch.manual_seed(goal_seeds[0])
+            goal_seed = goal_seeds[0]
+            random.seed(goal_seed)
+            np.random.seed(goal_seed)
+            torch.manual_seed(goal_seed)
             goal_seeds.pop(0)
             sess.init_session()
+            dialog_saver.new_conversation()
 
             usr_da_list = []
             failed_da_sys = []
@@ -108,6 +117,9 @@ class Analyzer:
             last_sys_da = None
 
             step = 0
+            total_return = 0.0
+            total_emotion_return = 0.0
+            turns = 0
 
             # print('init goal:',file=f)
             # # print(sess.evaluator.goal, file=f)
@@ -118,6 +130,14 @@ class Analyzer:
             for i in range(40):
                 sys_response, user_response, session_over, reward = sess.next_turn(
                     sys_response)
+                
+                dialog_saver.append_turn(sess, user_response, sys_response)
+
+                if hasattr(sess.user_agent.policy, 'get_emotion'):
+                    emotion = sess.user_agent.policy.get_emotion().lower()
+                    emotion_reward = emotion_dict.get(emotion, 0)
+                    total_emotion_return += emotion_reward
+
 
                 print('-'*16, file=flog)
                 print('Turn Number:', i, file=flog)
@@ -128,10 +148,13 @@ class Analyzer:
                 # print('sys out', sess.sys_agent.get_out_da(),file=flog)
                 print('User:', user_response, file=flog)
                 print('System:', sys_response, file=flog)
-                print('DST state:', sess.sys_agent.state_return()
-                      ['dst_state'], file=flog)
+                if sess.sys_agent.state_return() is not None:
+                    print('DST state:', sess.sys_agent.state_return()
+                        ['dst_state'], file=flog)
 
                 step += 2
+                turns += 1
+                total_return += reward
 
                 if hasattr(sess.sys_agent, "get_in_da") and isinstance(sess.sys_agent.get_in_da(), list) \
                         and sess.user_agent.get_out_da() != [] \
@@ -154,11 +177,13 @@ class Analyzer:
 
                 if session_over:
                     break
-
+            
             task_success = sess.evaluator.task_success()
+            task_succ_strict = sess.evaluator.success_strict
             task_complete = sess.evaluator.complete
             book_rate = sess.evaluator.book_rate()
             stats = sess.evaluator.inform_F1()
+            total_total_emotion_reward += total_emotion_return
 
             if task_success:
                 print('Dialogue succesfully completed!', file=flog)
@@ -189,6 +214,7 @@ class Analyzer:
                 logger.info(sess.evaluator.goal)
                 logger.info('task complete: %.3f', complete_num/(j+1))
                 logger.info('task success: %.3f', suc_num/(j+1))
+                logger.info('emotion reward: %.3f', total_total_emotion_reward/(j+1))
                 logger.info('book rate: %.3f', np.mean(match))
                 logger.info('inform precision/recall/f1: %.3f %.3f %.3f',
                             np.mean(precision), np.mean(recall), np.mean(f1))
@@ -223,10 +249,14 @@ class Analyzer:
                 if domain_success is not None:
                     reporter.record(domain, domain_success, sess.evaluator.domain_reqt_inform_analyze(domain), failed_da_sys, failed_da_usr, cycle_start, domain_turn)
 
+            dialog_saver.append_dialog(goal_seed, self.sess.evaluator.goal, task_complete, task_success, task_succ_strict, total_return, turns)
+            dialog_saver.save()
+            
         tmp = 0 if suc_num == 0 else turn_suc_num / suc_num
         print("=" * 100)
         print("complete number of dialogs/tot:", complete_num / total_dialog)
         print("success number of dialogs/tot:", suc_num / total_dialog)
+        print('emotion reward: %.3f', total_total_emotion_reward/total_dialog)
         print("average precision:", np.mean(precision))
         print("average recall:", np.mean(recall))
         print("average f1:", np.mean(f1))
@@ -260,6 +290,8 @@ class Analyzer:
 
         reporter.report(complete_num/total_dialog, suc_num/total_dialog, np.mean(
             precision), np.mean(recall), np.mean(f1), tmp, turn_num / total_dialog)
+
+        dialog_saver.save()
 
         return complete_num/total_dialog, suc_num/total_dialog, np.mean(precision), np.mean(recall), np.mean(f1), np.mean(match), turn_num / total_dialog
 

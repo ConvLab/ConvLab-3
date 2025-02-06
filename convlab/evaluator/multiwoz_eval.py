@@ -89,7 +89,7 @@ NOT_SURE_VALS = [DEF_VAL_UNK, DEF_VAL_DNC, DEF_VAL_NUL, DEF_VAL_NOBOOK]
 
 
 class MultiWozEvaluator(Evaluator):
-    def __init__(self, check_book_constraints=True, check_domain_success=False):
+    def __init__(self, check_book_constraints=True, check_domain_success=False, action_length_penalty=0.0):
         self.sys_da_array = []
         self.usr_da_array = []
         self.goal = {}
@@ -103,8 +103,11 @@ class MultiWozEvaluator(Evaluator):
         self.success = 0
         self.success_strict = 0
         self.successful_domains = []
-        logging.info(
-            f"We check booking constraints: {self.check_book_constraints}")
+        self.current_sys_act = []
+        self.action_length_penalty = action_length_penalty
+        if self.check_book_constraints:
+            logging.info(
+                f"We check booking constraints: {self.check_book_constraints}")
 
     def _init_dict(self):
         dic = {}
@@ -165,12 +168,14 @@ class MultiWozEvaluator(Evaluator):
         new_acts = list()
         for intent, domain, slot, value in da_turn:
             if intent.lower() == 'book' and not value:
-                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain == domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
+                ref = [_value for _intent, _domain, _slot, _value in da_turn if _domain ==
+                       domain and _intent.lower() == 'inform' and _slot.lower() == 'ref']
                 ref = ref[0] if ref else ''
                 value = ref
             new_acts.append([intent, domain, slot, value])
         da_turn = new_acts
 
+        self.current_sys_act = deepcopy(da_turn)
         da_turn = self._convert_action(da_turn)
 
         for intent, domain, slot, value in da_turn:
@@ -653,7 +658,12 @@ class MultiWozEvaluator(Evaluator):
             else:
                 reward = -40
         else:
-            reward = -1
+            if self.action_length_penalty != 0.0:
+                # if action penalty is not 0.0, we use this more general definition of efficiency penalty
+                reward = -self.action_length_penalty * \
+                    len(self.current_sys_act)
+            else:
+                reward = -1
 
             if self.check_domain_success and not self.task_success():
                 if self.cur_domain and self.domain_success(self.cur_domain) and \

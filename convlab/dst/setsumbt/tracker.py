@@ -133,7 +133,8 @@ class SetSUMBTTracker(DST):
                     thres = 1.0 / (float(len(slot_info["possible_values"])) - 2.1)
                     self.confidence_thresholds[domain][slot] = max(0.05, thres)
                 else:
-                    self.confidence_thresholds[domain][slot] = max(0.05, threshold)
+                    self.confidence_thresholds[domain][slot] = max(
+                        0.05, threshold)
 
         return self.confidence_thresholds
 

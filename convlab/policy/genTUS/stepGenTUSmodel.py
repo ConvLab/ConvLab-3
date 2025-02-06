@@ -7,51 +7,89 @@ from torch.nn.functional import softmax, one_hot, cross_entropy
 from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.token_map import tokenMap
 from convlab.policy.genTUS.utils import append_tokens
-from transformers import (BartConfig, BartForConditionalGeneration,
-                          BartTokenizer)
+from transformers import (AutoConfig, AutoModelForCausalLM,
+                          AutoTokenizer, AutoModelForSeq2SeqLM)
 
 
-class stepGenTUSmodel(BartForConditionalGeneration):
-    def __init__(self, model_checkpoint, train_whole_model=True, **kwargs):
-        config = BartConfig.from_pretrained(model_checkpoint)
-        super().__init__(config, **kwargs)
+class stepGenTUSmodel(torch.nn.Module):
+    def __init__(self, model_checkpoint, train_whole_model=True, model_status="evaluation", device="cuda", model_type="encoder_decoder", **kwargs):
+        # config = AutoConfig.from_pretrained(model_checkpoint)
+        super().__init__()
+        self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
-        self.tokenizer = BartTokenizer.from_pretrained(model_checkpoint)
+        peft_model_checkpoint = kwargs.get("peft_model_checkpoint", None)
+        if peft_model_checkpoint:
+            model_type = "llama"
+        self.model_type = model_type
+        if model_type == "encoder_decoder":
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(
+                model_checkpoint)
+
+        else:
+            from peft import PeftModel
+            self.model = AutoModelForCausalLM.from_pretrained(model_checkpoint)
+            self.model = PeftModel.from_pretrained(
+                self.model, peft_model_checkpoint)
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        print(device, "device")
+        self.model.to(device)
+        self.device = device
+
         self.vocab = len(self.tokenizer)
-        self.kg = KnowledgeGraph(self.tokenizer)
-        self.action_kg = KnowledgeGraph(self.tokenizer)
-        self.token_map = tokenMap(self.tokenizer)
+        self.kg = KnowledgeGraph(
+            self.tokenizer, model_type=self.model_type, dataset=kwargs.get("dataset", "multiwoz21"))
+        self.action_kg = KnowledgeGraph(
+            self.tokenizer, model_type=self.model_type, dataset=kwargs.get("dataset", "multiwoz21"))
+        self.token_map = tokenMap(self.tokenizer, model_type=self.model_type)
         # only_action doesn't matter. it is only used for get_log_prob
         self.token_map.default(only_action=True)
 
-        if not train_whole_model:
-            for param in self.parameters():
-                param.requires_grad = False
+        if model_status == "evaluation":
+            print("evaluation mode")
+            self.model.eval()
+            self.model.share_memory()
+        elif model_status == "training":
+            print("training mode")
+            self.model.train()
+        else:
+            print("unknown model status")
 
-            for param in self.model.decoder.layers[-1].fc1.parameters():
-                param.requires_grad = True
-            for param in self.model.decoder.layers[-1].fc2.parameters():
-                param.requires_grad = True
+        # if not train_whole_model:
+        #     for param in self.model.parameters():
+        #         param.requires_grad = False
+
+        #     for param in self.model.decoder.layers[-1].fc1.parameters():
+        #         param.requires_grad = True
+        #     for param in self.model.decoder.layers[-1].fc2.parameters():
+        #         param.requires_grad = True
 
     def get_trainable_param(self):
 
         return filter(
-            lambda p: p.requires_grad, self.parameters())
+            lambda p: p.requires_grad, self.model.parameters())
 
     def get_next_token_logits(self, model_input, generated_so_far):
         input_ids = model_input["input_ids"].to(self.device)
         attention_mask = model_input["attention_mask"].to(self.device)
-        outputs = self.forward(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            decoder_input_ids=generated_so_far,
-            return_dict=True)
+        generated_so_far = generated_so_far.to(self.device)
+        if self.model_type == "encoder_decoder":
+            outputs = self.model.forward(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                decoder_input_ids=generated_so_far,
+                return_dict=True)
+        else:
+            input_ids = torch.cat(
+                [input_ids, generated_so_far], -1).to(self.device)
+            outputs = self.model(
+                input_ids=input_ids,
+                return_dict=True)
         return outputs.logits[:, -1, :]
 
     def get_log_prob(self, s, a, action_mask, prob_mask):
-        output = self.forward(input_ids=s,
-                              attention_mask=action_mask,
-                              decoder_input_ids=a)
+        output = self.model.forward(input_ids=s,
+                                    attention_mask=action_mask,
+                                    decoder_input_ids=a)
         prob = self._norm_prob(a[:, 1:].long(),
                                output.logits[:, :-1, :],
                                prob_mask[:, 1:, :].long())
@@ -84,11 +122,11 @@ if __name__ == "__main__":
     set_seed(0)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    model_checkpoint = 'results/genTUS-22-01-31-09-21/'
+    model_checkpoint = 'convlab/policy/genTUS/experiments/multiwoz21-exp'
     usr = UserActionPolicy(model_checkpoint=model_checkpoint)
-    usr.model.load_state_dict(torch.load(
-        os.path.join(model_checkpoint, "pytorch_model.bin"), map_location=device))
-    usr.model.eval()
+    # usr.model.load_state_dict(torch.load(
+    #     os.path.join(model_checkpoint, "pytorch_model.bin"), map_location=device))
+    # usr.model.eval()
 
     test_file = "convlab/policy/genTUS/data/goal_status_validation_v1.json"
     data = json.load(open(test_file))

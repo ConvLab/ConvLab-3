@@ -4,18 +4,23 @@ import torch
 from convlab.policy.genTUS.unify.knowledge_graph import KnowledgeGraph
 from convlab.policy.genTUS.token_map import tokenMap
 from convlab.policy.tus.unify.Goal import Goal
-from transformers import BartTokenizer
+from transformers import AutoTokenizer
 
 
 class stepGenTUSVector:
-    def __init__(self, model_checkpoint, max_in_len=400, max_out_len=80, allow_general_intent=True):
-        self.tokenizer = BartTokenizer.from_pretrained(model_checkpoint)
+    def __init__(self, model_checkpoint, max_in_len=400, max_out_len=80, allow_general_intent=True, force_pad=False, **kwargs):
+        self.model_type = kwargs.get("model_type", "encoder_decoder")
+        self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+        if not force_pad:
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.vocab = len(self.tokenizer)
         self.max_in_len = max_in_len
         self.max_out_len = max_out_len
-        self.token_map = tokenMap(tokenizer=self.tokenizer)
+        self.token_map = tokenMap(
+            tokenizer=self.tokenizer, model_type=self.model_type)
         self.token_map.default(only_action=True)
-        self.kg = KnowledgeGraph(self.tokenizer)
+        self.kg = KnowledgeGraph(
+            self.tokenizer, model_type=self.model_type, dataset=kwargs.get("dataset", "multiwoz21"))
         self.mentioned_domain = []
         self.allow_general_intent = allow_general_intent
         self.candidate_num = 5
@@ -26,12 +31,16 @@ class stepGenTUSVector:
         self.goal = goal
         self.mentioned_domain = []
 
-    def encode(self, raw_inputs, max_length, return_tensors="pt", truncation=True):
+    def encode(self, raw_inputs, max_length, return_tensors="pt", truncation=True, do_padding=True):
+        if do_padding:
+            padding = "max_length"
+        else:
+            padding = False
         model_input = self.tokenizer(raw_inputs,
                                      max_length=max_length,
                                      return_tensors=return_tensors,
                                      truncation=truncation,
-                                     padding="max_length")
+                                     padding=padding)
         return model_input
 
     def decode(self, generated_so_far, skip_special_tokens=True):
