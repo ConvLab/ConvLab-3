@@ -6,5 +6,5 @@
   "candidate_embedding_model_name": "roberta-base",
   "train_batch_size": 3,
   "dev_batch_size": 12,
-  "test_batch_size": 16
+  "test_batch_size": 12
 }

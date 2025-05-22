@@ -71,7 +71,7 @@ class UserActionPolicy(Policy):
             else:
                 return False
 
-    def predict(self, sys_dialog_act, mode="max"):
+    def predict(self, sys_dialog_act, mode="max", **kwargs):
         # update goal
         self.predict_action_list = self.goal.action_list(sys_dialog_act)
         cur_state = self.goal.update(action=sys_dialog_act, char="system")

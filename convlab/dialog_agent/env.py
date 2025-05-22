@@ -27,7 +27,9 @@ class Environment():
         s, r, t = self.step([])
         return self.sys_dst.state
 
-    def step(self, action, user_reward=False):
+    def step(self, action, **kwargs):
+        user_reward = kwargs.get("user_reward", False)
+        sys_conduct = kwargs.get("sys_conduct", "default")
         # save last system action
         self.sys_dst.state['system_action'] = action
         if not self.use_semantic_acts:
@@ -40,7 +42,14 @@ class Environment():
             for intent, domain, slot, value in action:
                 if intent == "book":
                     self.sys_dst.state['booked'][domain] = [{slot: value}]
-        observation = self.usr.response(model_response)
+
+        if self.usr.response_type == "utterance_to_user":
+            observation = self.usr.response(model_response, action=action)
+        elif self.usr.response_type == "need_conduct_user":
+            observation = self.usr.response(model_response, conduct=sys_conduct)
+        else:
+            observation = self.usr.response(model_response)
+
         if self.evaluator:
             self.evaluator.add_sys_da(
                 self.usr.get_in_da(), self.sys_dst.state['belief_state'])

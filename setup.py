@@ -57,7 +57,6 @@ setup(
         'gtts',
         'pydub',
         'openai',
-        'litellm==0.1.516',
         'GitPython'
     ],
     extras_require={

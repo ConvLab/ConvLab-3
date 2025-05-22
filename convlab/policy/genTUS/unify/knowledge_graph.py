@@ -1,19 +1,20 @@
 import json
 from random import choices
-
+from torch import softmax
 from convlab.policy.genTUS.token_map import tokenMap
 
-from transformers import BartTokenizer
+from transformers import AutoTokenizer
 
 DEBUG = False
 DATASET = "unify"
 
 
 class KnowledgeGraph:
-    def __init__(self, tokenizer: BartTokenizer, ontology_file=None, dataset="multiwoz21"):
+    def __init__(self, tokenizer: AutoTokenizer, ontology_file=None, dataset="multiwoz21", **kwargs):
         # print("dataset", dataset)
         self.debug = DEBUG
         self.tokenizer = tokenizer
+        self.model_type = kwargs.get("model_type", "encoder_decoder")
 
         if "multiwoz" in dataset:
             self.domain_intent = ["inform", "request"]
@@ -32,7 +33,8 @@ class KnowledgeGraph:
             self.general_intent = ["thank_you", "goodbye"]
 
         self.general_domain = "none"
-        self.kg_map = {"intent": tokenMap(tokenizer=self.tokenizer)}
+        self.kg_map = {"intent": tokenMap(
+            tokenizer=self.tokenizer, model_type=self.model_type)}
 
         for intent in self.domain_intent + self.general_intent:
             self.kg_map["intent"].add_token(intent, intent)
@@ -41,13 +43,17 @@ class KnowledgeGraph:
 
     def init(self):
         for map_type in ["domain", "slot", "value"]:
-            self.kg_map[map_type] = tokenMap(tokenizer=self.tokenizer)
+            self.kg_map[map_type] = tokenMap(
+                tokenizer=self.tokenizer, model_type=self.model_type)
         self.add_token("<?>", "value")
 
-    def parse_input(self, in_str):
+    def parse_input(self, in_str, sys_act=None):
         self.init()
         inputs = json.loads(in_str)
-        self.sys_act = inputs["system"]
+        if sys_act:
+            self.sys_act = json.loads(sys_act)
+        else:
+            self.sys_act = inputs["system"]
         self.user_goal = {}
         self._add_none_domain()
         for intent, domain, slot, value, _ in inputs["goal"]:
@@ -56,6 +62,14 @@ class KnowledgeGraph:
         for intent, domain, slot, value in self.sys_act:
             self._update_user_goal(intent, domain, slot, value, source="sys")
 
+    def init_from_given_goal(self, goal: list):
+        self.init()
+        self.user_goal = {}
+        self._add_none_domain()
+        for intent, domain, slot, value in goal:
+            self._update_user_goal(
+                intent, domain, slot, value, source="goal", replace_question_mark=False)
+
     def _add_none_domain(self):
         self.user_goal["none"] = {"none": "none"}
         # add slot
@@ -63,9 +77,8 @@ class KnowledgeGraph:
         self.add_token("none", "slot")
         self.add_token("none", "value")
 
-    def _update_user_goal(self, intent, domain, slot, value, source="goal"):
-
-        if value == "?":
+    def _update_user_goal(self, intent, domain, slot, value, source="goal", replace_question_mark=True):
+        if value == "?" and replace_question_mark:
             value = "<?>"
 
         if intent == "request" and source == "sys":
@@ -99,6 +112,7 @@ class KnowledgeGraph:
 
     def _get_max_score(self, outputs, candidate_list, map_type, weight=None):
         score = {}
+        # outputs = softmax(outputs, dim=-1)  # do we need softmax?
         if not candidate_list:
             print(f"ERROR: empty candidate list for {map_type}")
             score[1] = {"token_id": self._get_token_id(
@@ -129,10 +143,11 @@ class KnowledgeGraph:
     def _get_max_domain_token(self, outputs, candidates, map_type, mode="max"):
         score = self._get_max_score(outputs, candidates, map_type)
         s = self._select(score, mode)
+        p = s/sum([x for x in score])
         token_id = score[s]["token_id"]
         token_name = score[s]["token_name"]
 
-        return {"token_id": token_id, "token_name": token_name}
+        return {"token_id": token_id, "token_name": token_name, "prob": p}
 
     def candidate(self, candidate_type, **kwargs):
         if "intent" in kwargs:
@@ -174,8 +189,7 @@ class KnowledgeGraph:
     def get_domain(self, outputs, intent, mode="max"):
         if intent in self.general_intent:
             token_name = self.general_domain
-            token_id = self.tokenizer(token_name, add_special_tokens=False)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent in self.domain_intent:
@@ -192,8 +206,7 @@ class KnowledgeGraph:
     def get_slot(self, outputs, intent, domain, mode="max", is_mentioned=False):
         if intent in self.general_intent:
             token_name = "none"
-            token_id = self.tokenizer(token_name, add_special_tokens=False)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent in self.domain_intent:
@@ -218,14 +231,12 @@ class KnowledgeGraph:
     def get_value(self, outputs, intent, domain, slot, mode="max"):
         if intent in self.general_intent or slot.lower() == "none":
             token_name = "none"
-            token_id = self.tokenizer(token_name, add_special_tokens=False)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent.lower() == "request":
             token_name = "<?>"
-            token_id = self.tokenizer(token_name, add_special_tokens=False)
-            token_map = {"token_id": token_id['input_ids'],
+            token_map = {"token_id": self._get_token_id(token_name),
                          "token_name": token_name}
 
         elif intent in self.domain_intent:
@@ -262,4 +273,15 @@ class KnowledgeGraph:
         return value_list
 
     def _get_token_id(self, token):
+        if self.model_type != "encoder_decoder":
+
+            workaround = f"!{token}!"
+
+            token_id = self.tokenizer(str(workaround), add_special_tokens=False)[
+                "input_ids"]
+            token_id = token_id[1:-1]
+            workaround_text = self.tokenizer.decode(token_id)
+            if workaround_text != token:
+                print(f"error!!! +{token}+ +{workaround_text}+")
+            return token_id
         return self.tokenizer(token, add_special_tokens=False)["input_ids"]

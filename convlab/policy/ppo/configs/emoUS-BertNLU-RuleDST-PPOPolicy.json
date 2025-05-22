@@ -44,10 +44,9 @@
         "emoUS": {
             "class_path": "convlab.policy.emoUS.emoUS.UserPolicy",
             "ini_params": {
-                "model_checkpoint": "convlab/policy/emoUS/unify/experiments/emowoz+dialmage_0_1/23-01-11-15-17",
+                "model_checkpoint": "convlab/policy/emoUS/unify/experiments/EmoUS_default/emoUS_default",
                 "character": "usr",
                 "mode": "language",
-                "only_action": false,
                 "use_sentiment": true,
                 "sample": false
             }

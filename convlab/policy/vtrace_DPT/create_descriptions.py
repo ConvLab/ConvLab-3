@@ -13,7 +13,7 @@ def create_description_dicts(name='multiwoz21'):
     default_state = ontology['state']
     domains = list(ontology['domains'].keys())
 
-    if name == "multiwoz21" or name == "crosswoz":
+    if name in ["multiwoz21", "crosswoz", "emowoz"]:
         db = load_database(name)
         db_domains = db.domains
     else:
@@ -51,6 +51,10 @@ def create_description_dicts(name='multiwoz21'):
         domain = domain.lower()
         act = "_".join(act)
         description_dict_semantic["user-"+act.lower()] = f"user act {domain} {intent} {slot} {value}"
+
+    emotions = ["neutral", "satisfied", "dissatisfied", "abusive", "excited", "fearful", "apologetic"]
+    for emotion in emotions:
+        description_dict_semantic[f"user emotion-{emotion}"] = f"user emotion {emotion}"
 
     root_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(os.path.join(root_dir, "descriptions"), exist_ok=True)

@@ -4,6 +4,8 @@ The user goal for unify data format
 import json
 from convlab.policy.tus.unify.Goal import old_goal2list
 from convlab.task.multiwoz.goal_generator import GoalGenerator
+from convlab.evaluator.multiwoz_eval import MultiWozEvaluator
+
 from convlab.policy.rule.multiwoz.policy_agenda_multiwoz import Goal as ABUS_Goal
 from convlab.policy.tus.unify.Goal import Goal as TUS_Goal
 from convlab.util.custom_util import slot_mapping
@@ -34,6 +36,10 @@ class Goal:
         self.raw_goal = None
         self._init_goal_from_data(goal, goal_generator)
         self._init_status()
+        self.evaluator = MultiWozEvaluator(check_book_constraints=False)
+        if self.raw_goal is None:
+            self.raw_goal = self.domain_goals
+        self.evaluator.add_goal(self.raw_goal)
 
     def __str__(self):
         return '-----Goal-----\n' + \
@@ -94,7 +100,7 @@ class Goal:
                         "value": str(sub_domain_goal[slot]),
                         "status": NOT_MENTIONED}
 
-    def get_goal_list(self, data_goal=None, sub_goal_success=True):
+    def get_goal_list(self, data_goal=None, sub_goal_success=False):
         goal_list = []
         if data_goal:
             # make sure the order!!!
@@ -134,9 +140,14 @@ class Goal:
         Returns:
             (boolean): True to accomplish.
         """
+        if self.evaluator.task_success():
+            return True
+        return False
+
         for domain, domain_goal in self.domain_goals.items():
             if not self.sub_goal_success(domain, domain_goal):
                 return False
+
         # for domain, domain_goal in self.status.items():
         #     if domain not in self.domain_goals:
         #         continue
@@ -173,8 +184,10 @@ class Goal:
     def update_user_goal(self, action, char="usr"):
         # update request and booked
         if char == "usr":
+            self.evaluator.add_usr_da(action)
             self._user_action_update(action)
         elif char == "sys":
+            self.evaluator.add_sys_da(action)
             self._system_action_update(action)
         else:
             print("!!!UNKNOWN CHAR!!!")
@@ -200,6 +213,8 @@ class Goal:
                 continue
             # fulfill request by system
             if is_inform(intent) and is_request(goal_intent):
+                if value in ["not available", "none"]:
+                    continue
                 self._set_status(goal_intent, domain, slot, FULFILLED)
                 self._set_goal(goal_intent, domain, slot, value)
 
@@ -246,6 +261,12 @@ def missing_value_in_binary_action(intent, domain, slot, value):
 def is_inform(intent):
     if "inform" in intent:
         return True
+    if "recommend" in intent:
+        return True
+    # if "select" in intent:
+    #     return True
+    # if "offerbook" in intent:
+    #     return True
     return False
 
 
@@ -268,3 +289,15 @@ def transform_data_act(data_action):
             action_list.append(
                 [act["intent"], act["domain"], act["slot"], value])
     return action_list
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+    from copy import deepcopy
+    goal_generator = GoalGenerator()
+    goal = Goal(goal_generator=goal_generator)
+    new_goal = deepcopy(goal)
+    new_goal.update_user_goal(
+        [["inform", "restaurant", "food", "asian oriental"]], char="sys")
+    pprint(goal.get_goal_list())
+    pprint(new_goal.get_goal_list())

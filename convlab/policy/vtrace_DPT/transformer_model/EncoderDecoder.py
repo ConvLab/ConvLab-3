@@ -24,7 +24,8 @@ class EncoderDecoder(nn.Module):
                  node_embedding_dim, roberta_path="", node_attention=True, max_length=25, semantic_descriptions=True,
                  freeze_roberta=True, use_pooled=False, verbose=False, mean=False, ignore_features=None,
                  only_active_values=False, roberta_actions=False, independent_descriptions=False, need_weights=True,
-                 random_matrix=False, distance_metric=False, noisy_linear=False, dataset_name='multiwoz21', **kwargs):
+                 random_matrix=False, distance_metric=False, noisy_linear=False, dataset_name='multiwoz21',
+                 temperature_activation="relu", predict_conduct=False, temperature=1.0, **kwargs):
         super(EncoderDecoder, self).__init__()
         self.node_embedder = NodeEmbedderRoberta(node_embedding_dim, freeze_roberta=freeze_roberta,
                                                  use_pooled=use_pooled, roberta_path=roberta_path,
@@ -55,6 +56,10 @@ class EncoderDecoder(nn.Module):
         # embeddings for "domain", intent", "slot" and "start"
         self.embedding = nn.Embedding(4, action_embedding_dim).to(DEVICE)
         self.info_dict = {}
+        self.temperature_activation = temperature_activation
+        self.argmax = kwargs.get("argmax", False)
+        self.predict_conduct = predict_conduct
+        self.temperature = temperature
 
         if noisy_linear:
             logging.info("EncoderDecoder: We use noisy linear layers.")
@@ -63,8 +68,11 @@ class EncoderDecoder(nn.Module):
         else:
             self.action_projector = torch.nn.Linear(dec_input_dim, action_embedding_dim).to(DEVICE)
             self.current_domain_predictor = torch.nn.Linear(dec_input_dim, 1).to(DEVICE)
+        self.temperature_predictor = torch.nn.Linear(dec_input_dim, 1).to(DEVICE)
+
         self.softmax = torch.nn.Softmax(dim=-1)
         self.sigmoid = torch.nn.Sigmoid()
+        self.relu = torch.nn.LeakyReLU()
 
         self.num_book = 0
         self.num_nobook = 0
@@ -82,7 +90,7 @@ class EncoderDecoder(nn.Module):
         value_list = torch.Tensor([node['value'] for node in kg_list[0]]).unsqueeze(1).to(DEVICE)
         return description_idx_list, value_list
 
-    def select_action(self, kg_list, mask=None, eval=False):
+    def select_action(self, kg_list, mask=None, eval=False, **kwargs):
         '''
         :param kg_list: A single knowledge graph consisting of a list of nodes
         :return: multi-action
@@ -95,6 +103,8 @@ class EncoderDecoder(nn.Module):
 
         current_domains = self.get_current_domains(kg_list)
         legal_mask = self.action_embedder.get_legal_mask(mask)
+
+        temperature = self.temperature if not eval else 1
 
         if self.only_active_values:
             kg_list = [[node for node in kg if node['value'] != 0.0] for kg in kg_list]
@@ -159,9 +169,9 @@ class EncoderDecoder(nn.Module):
 
             else:
                 action_logits = action_logits - action_mask * sys.maxsize
-                action_distribution = self.softmax(action_logits).squeeze(-1)
+                action_distribution = self.softmax(action_logits/temperature).squeeze(-1)
 
-            if not eval or t % 3 != 0:
+            if (not eval or t % 3 != 0) and not self.argmax:
                 dist = Categorical(action_distribution)
                 rand_state = torch.random.get_rng_state()
                 action = dist.sample().tolist()[-1]
@@ -223,8 +233,32 @@ class EncoderDecoder(nn.Module):
 
         self.num_selected += 1
 
+        # only happens if max length and no eos was chosen. Add eos manually
         if action_list[-1] != 'eos':
-            action_mask_list = action_mask_list[:-1]
+            action_list.append('eos')
+            action_list_num.append(self.action_embedder.small_action_dict['eos'])
+
+        if self.predict_conduct:
+            # predict the conduct for the semantic action
+            action = action_list_num[-1]  # last chosen action is always eos
+            next_input = self.action_embedder.action_projector(
+                self.action_embedder.action_embeddings[action]).view(1, 1, -1) + \
+                         self.embedding(torch.Tensor([1]).to(DEVICE).long())
+            decoder_input = torch.cat([decoder_input, next_input], dim=0)
+            decoder_output, att_weights_decoder = self.decoder(decoder_input, encoded_nodes.permute(1, 0, 2))
+            action_logits = self.action_embedder(self.action_projector(decoder_output))
+            action_mask = self.action_embedder.get_emotion_mask()
+            action_logits = action_logits - action_mask * sys.maxsize
+            action_distribution = self.softmax(action_logits).squeeze(-1)
+
+            dist = Categorical(action_distribution)
+            rand_state = torch.random.get_rng_state()
+            emotion = dist.sample().tolist()[-1][-1]
+            torch.random.set_rng_state(rand_state)
+
+            action_mask_list.append(action_mask)
+            action_list_num.append(emotion)
+            self.info_dict["conduct"] = self.action_embedder.small_action_dict_reversed[emotion]
 
         self.info_dict["kg"] = kg_list[0]
         self.info_dict["small_act"] = torch.Tensor(action_list_num)
@@ -236,6 +270,8 @@ class EncoderDecoder(nn.Module):
         self.info_dict["non_current_domain_mask"] = non_current_domain_mask
         self.info_dict["active_domains"] = active_domains
         self.info_dict["attention_weights"] = attention_weights_list
+
+        self.info_dict["temperature"] = 0 # should be changed at some point
 
         if self.verbose:
             print("NEW SELECTION **************************")
@@ -289,11 +325,14 @@ class EncoderDecoder(nn.Module):
 
         pick_current_domain_prob = self.sigmoid(self.current_domain_predictor(decoder_output.permute(1, 0, 2)).clone())
 
+        # TODO: double check which dimension is batch-size and which is sequence length
+        # only use temperature if it was used during action selection
+
         action_logits = self.action_embedder(self.action_projector(decoder_output.permute(1, 0, 2)))
 
         # do the general mask for intent and slots, domain must be treated separately
         action_logits_general = action_logits - action_mask_list * sys.maxsize
-        action_distribution_general = self.softmax(action_logits_general)
+        action_distribution_general = self.softmax(action_logits_general/self.temperature)
 
         # only pick from current domains
         action_logits_current_domain = action_logits - (action_mask_list + current_domain_mask).bool().float() * sys.maxsize
@@ -436,7 +475,7 @@ class EncoderDecoder(nn.Module):
 
         return attention_mask.bool().to(DEVICE)
 
-    def get_action_masks(self, actions):
+    def get_action_masks(self, actions, conduct_mask=False):
         # active domains
         # active_domain_list = [set([node['domain'].lower() for node in kg] + ['general', 'booking']) for kg in kg_list]
         # print("active domain list", active_domain_list)
@@ -444,6 +483,10 @@ class EncoderDecoder(nn.Module):
         action_targets = [self.action_embedder.real_action_to_small_action_list(act) for act in actions]
         action_lengths = [len(actions) for actions in action_targets]
         max_length = max(action_lengths)
+
+        if conduct_mask:
+            # need one more element since we add conduct mask
+            max_length += 1
 
         semantic_acts = [self.action_embedder.real_action_to_small_action_list(act, semantic=True) for act in actions]
         action_mask_list = []
@@ -474,6 +517,8 @@ class EncoderDecoder(nn.Module):
                     action_mask.append(self.action_embedder.get_action_mask(start=False))
 
             # pad action mask to get list of max_length
+            if conduct_mask:
+                action_mask.append(self.action_embedder.get_emotion_mask())
             action_mask = torch.cat([
                 torch.stack(action_mask).to(DEVICE),
                 torch.zeros(max_length - len(action_mask), len(self.action_embedder.small_action_dict)).to(DEVICE)],

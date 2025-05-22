@@ -6,12 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-result_dir = "convlab/policy/emoUS/result"
+# result_dir = "convlab/policy/emoUS/result"
 
 
 def arg_parser():
     parser = ArgumentParser()
     parser.add_argument("--file", type=str, help="the conversation file")
+    parser.add_argument("--result-dir", type=str,
+                        default="convlab/policy/emoUS/result")
     return parser.parse_args()
 
 
@@ -40,7 +42,7 @@ def advance(conversation):
     return info
 
 
-def get_turn_emotion(conversation):
+def get_turn_emotion(conversation, result_dir):
     """ Get the emotion of each turn in the conversation 
     Args:
         conversation (list): a list of dialog
@@ -81,7 +83,7 @@ def get_turn_emotion(conversation):
         data[f"Not {metric}_mean"] = []
         data[f"Not {metric}_std"] = []
 
-    for t in range(turn):
+    for t in range(max_turn):
         pos, neg, mean, std = turn_score(turn_info["all"][t])
         data[f"all_positive"].append(pos)
         data[f"all_negative"].append(neg)
@@ -103,12 +105,12 @@ def get_turn_emotion(conversation):
     for x in data:
         data[x] = np.array(data[x])
 
-    fig, ax = plt.subplots(figsize=(6.0, 2.5))
-    p = {"Complete": {"color": "C0", "label": "Success"},
-         "Not Complete": {"color": "C1", "label": "Fail"},
+    fig, ax = plt.subplots(figsize=(6, 6))
+    pick = "Complete"
+    p = {f"{pick}": {"color": "C0", "label": "Success"},
+         f"Not {pick}": {"color": "C1", "label": "Fail"},
          "all": {"color": "C2", "label": "all"}}
     for name, para in p.items():
-
         ax.plot(data['x'],
                 data[f"{name}_mean"],
                 'o--',
@@ -221,7 +223,7 @@ def neglect_reply(pre_usr, sys, cur_usr):
     if not request:
         return {}
 
-    system_inform = get_inform(sys["utt"])
+    system_inform = get_inform(sys["act"])
 
     for domain, slots in request.items():
         if domain not in system_inform:
@@ -233,7 +235,7 @@ def neglect_reply(pre_usr, sys, cur_usr):
 
 
 def miss_info(pre_usr, sys, cur_usr):
-    system_request = get_request(sys["utt"])
+    system_request = get_request(sys["act"])
     if not system_request:
         return {}
     user_inform = get_inform(pre_usr["act"])
@@ -252,7 +254,7 @@ def confirm(pre_usr, sys, cur_usr):
     if not user_inform:
         return {}
 
-    system_inform = get_inform(sys["utt"])
+    system_inform = get_inform(sys["act"])
 
     for domain, slots in user_inform.items():
         if domain not in system_inform:
@@ -269,9 +271,10 @@ def loop(s0, s1, u1):
         return {u1["emotion"]: "loop"}
 
 
-def dict2csv(data):
+def dict2csv(data, result_dir):
     r = {}
-    emotion = json.load(open("convlab/policy/emoUS/emotion.json"))
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    emotion = json.load(open(os.path.join(dirname, "emotion.json")))
     for act, value in data.items():
         temp = [0]*(len(emotion)+1)
         for emo, count in value.items():
@@ -287,20 +290,21 @@ def dict2csv(data):
 
 def main():
     args = arg_parser()
+    result_dir = args.result_dir
     result = {}
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
     conversation = json.load(open(args.file))["conversation"]
-    # basic_info = basic_analysis(conversation)
-    # result["basic_info"] = basic_info
+    basic_info = basic_analysis(conversation)
+    result["basic_info"] = basic_info
     # print(basic_info)
-    # advance_info = advance(conversation)
+    advance_info = advance(conversation)
     # print(advance_info)
-    # result["advance_info"] = advance_info
-    # json.dump(result, open(
-    #     os.path.join("conversation_result.json"), 'w'), indent=2)
-    # dict2csv(advance_info)
-    get_turn_emotion(conversation)
+    result["advance_info"] = advance_info
+    json.dump(result, open(
+        os.path.join("conversation_result.json"), 'w'), indent=2)
+    dict2csv(advance_info, result_dir)
+    get_turn_emotion(conversation, result_dir)
 
 
 if __name__ == "__main__":

@@ -43,15 +43,15 @@ def arg_parser():
 
 def gentus_compute_metrics(eval_preds):
     preds, labels = eval_preds
-    if isinstance(preds, tuple):
-        preds = preds[0]
-    decoded_preds = TOKENIZER.batch_decode(
-        preds, skip_special_tokens=True, max_length=MAX_OUT_LEN)
-
     # Replace -100 in the labels as we can't decode them.
     labels = np.where(labels != -100, labels, TOKENIZER.pad_token_id)
     decoded_labels = TOKENIZER.batch_decode(
         labels, skip_special_tokens=True, max_length=MAX_OUT_LEN)
+    if isinstance(preds, tuple):
+        preds = preds[0]
+    preds = np.where(preds != -100, preds, TOKENIZER.pad_token_id)
+    decoded_preds = TOKENIZER.batch_decode(
+        preds, skip_special_tokens=True, max_length=MAX_OUT_LEN)
 
     act, text = postprocess_text(decoded_preds, decoded_labels)
 
