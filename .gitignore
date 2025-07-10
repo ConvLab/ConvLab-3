@@ -112,3 +112,4 @@ venv
 *.csv
 .python-version
 poetry.lock
+uv.lock
