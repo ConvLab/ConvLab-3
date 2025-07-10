@@ -5,7 +5,7 @@ This module is implemented as a wrapper consisting of an emotion recogniser and 
 See `modeling/` for training and inferencing.
 
 ## Dialogue State Tracker
-SetSUMBT (van Niekerk et al., 2021), Trippy (Heck et al., 2020), and BERTNLU+RuleDST (Zhu et al., 2020) have been implemented and tested on the individual module level. Only SetSumbt was fully tested and used in the interactive loop. Respective model checkpoints can be obtained from [ConvLab-3 Huggingface homepage](https://huggingface.co/ConvLab).
+SetSUMBT (van Niekerk et al., 2021), Trippy (Heck et al., 2020), and BERTNLU+RuleDST (Zhu et al., 2020) have been implemented and tested on the individual module level. Only SetSumbt was fully tested and used in the interactive loop. Respective model checkpoints can be obtained from [ConvLab-3 Huggingface homepage](https://huggingface.co/ConvLab). SetSumbt can also be found [here](https://zenodo.org/records/14810836) in `dst.zip`.
 
 ## Testing Emotion Dialogue State Tracker
 See `test.py` to initialise and inference with the emotion dialogue state tracker.

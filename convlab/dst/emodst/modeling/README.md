@@ -8,7 +8,7 @@ We recommend the environment specified in the [EmoWOZ repository](https://gitlab
 
 Please obtain the pre-trained sentiment-aware embedding from [here](https://github.com/DrJZhou/SentiX?tab=readme-ov-file). Alternatively, the vanilla BERT and its other derivatives are also supported. You can specify the initialisation with --pretrained_model_dir argument.
 
-Please obtain the data from the [here]().
+Please obtain the data and features from the [here](https://zenodo.org/records/14810836) in `data` folder of `dst.zip`.
 
 ## Training and Testing
 
